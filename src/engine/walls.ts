@@ -85,6 +85,45 @@ export function voidStop(game: Geo, a: Pt, b: Pt): Pt | null {
 
 interface Grid { key: string; cell: number; cols: number; rows: number; hard: Uint8Array; soft: Uint8Array }
 let grid: Grid | null = null;
+
+/**
+ * 0.3.9.10: cells closed to one empire on top of the clouds (the territories whose borders are closed to it, see
+ * borders.ts), on the same grid as the clouds. `key` identifies them (the routes are cached by it).
+ */
+export interface Obstacles { key: string; cell: number; cols: number; rows: number; hard: Uint8Array }
+/** Size of a cell of the routing grid (light-years). */
+export const gridCell = (game: Pick<GameState, 'width'>) => Math.max(5, Math.min(9, game.width / 240));
+
+/** Next to a closed cell: passable, but the routes keep away from it when they can (one cell). */
+function softOf(hard: Uint8Array, cols: number, rows: number): Uint8Array {
+  const soft = new Uint8Array(cols * rows);
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    let b = 0;
+    for (let dj = -1; dj <= 1 && !b; dj++) for (let di = -1; di <= 1 && !b; di++) {
+      const a = i + di, c = j + dj;
+      if (a >= 0 && c >= 0 && a < cols && c < rows && hard[c * cols + a]) b = 1;
+    }
+    soft[j * cols + i] = b;
+  }
+  return soft;
+}
+
+/** The clouds plus an empire's closed borders (the clouds alone without them). */
+const combined = new Map<string, Grid>();
+function gridWith(game: Geo, extra?: Obstacles | null): Grid | null {
+  const base = gridOf(game);
+  if (!extra) return base;
+  const key = `${base?.key ?? 'open'}#${extra.key}`;
+  const hit = combined.get(key);
+  if (hit) return hit;
+  const { cols, rows, cell } = extra;
+  const hard = new Uint8Array(cols * rows);
+  for (let c = 0; c < hard.length; c++) hard[c] = (base && base.cols === cols && base.rows === rows ? base.hard[c] : 0) | extra.hard[c];
+  const g: Grid = { key, cell, cols, rows, hard, soft: softOf(hard, cols, rows) };
+  if (combined.size > 24) combined.clear();
+  combined.set(key, g);
+  return g;
+}
 const pathCache = new Map<string, { x: number; y: number }[] | null>();
 
 export const hasWalls = (game: Pick<GameState, 'shape'>) => !!game.shape?.walls?.length;
@@ -110,9 +149,9 @@ function gridOf(game: Geo): Grid | null {
   const key = `${game.shape.seed}|${game.width}|${game.shape.walls.length}|${game.shape.passes?.length ?? 0}`;
   if (grid?.key === key) return grid;
   // fine enough to see the narrow passes (0.3.6.8: a third finer than before)
-  const cell = Math.max(5, Math.min(9, game.width / 240));
+  const cell = gridCell(game);
   const cols = Math.ceil(game.width / cell), rows = Math.ceil(game.height / cell);
-  const hard = new Uint8Array(cols * rows), soft = new Uint8Array(cols * rows);
+  const hard = new Uint8Array(cols * rows);
   // a cell is closed when its centre or one of its corners is in a cloud (the ragged edges have bits smaller than a
   // cell: a route planned between cells must not clip them); the corners are shared, each is tested once
   const corner = new Uint8Array((cols + 1) * (rows + 1));
@@ -122,22 +161,16 @@ function gridOf(game: Geo): Grid | null {
     if (corner[c0] || corner[c0 + 1] || corner[c0 + cols + 1] || corner[c0 + cols + 2] || inWall(game, (i + 0.5) * cell, (j + 0.5) * cell)) hard[j * cols + i] = 1;
   }
   // next to a cloud: passable, but the routes keep away from it when they can (one cell)
-  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-    let b = 0;
-    for (let dj = -1; dj <= 1 && !b; dj++) for (let di = -1; di <= 1 && !b; di++) {
-      const a = i + di, c = j + dj;
-      if (a >= 0 && c >= 0 && a < cols && c < rows && hard[c * cols + a]) b = 1;
-    }
-    soft[j * cols + i] = b;
-  }
-  grid = { key, cell, cols, rows, hard, soft };
-  pathCache.clear();
+  grid = { key, cell, cols, rows, hard, soft: softOf(hard, cols, rows) };
+  pathCache.clear(); combined.clear();
   return grid;
 }
 
 /** Does the straight line from a to b cross a dark cloud? */
 export function segmentBlocked(game: Geo, a: { x: number; y: number }, b: { x: number; y: number }): boolean {
-  const g = gridOf(game);
+  return segBlocked(gridOf(game), a, b);
+}
+function segBlocked(g: Grid | null, a: { x: number; y: number }, b: { x: number; y: number }): boolean {
   if (!g) return false;
   const len = Math.hypot(b.x - a.x, b.y - a.y);
   const n = Math.max(1, Math.ceil(len / (g.cell / 3)));
@@ -195,13 +228,16 @@ export function clampOutside(game: Geo, a: { x: number; y: number }, b: { x: num
  * The points to go through from a to b without crossing a cloud (empty when the straight line is free, null when
  * there is no way). A* on the grid, then the path is pulled tight.
  */
-export function detourPoints(game: Geo, a: { x: number; y: number }, b: { x: number; y: number }): { x: number; y: number }[] | null {
-  if (!segmentBlocked(game, a, b)) return [];
-  const g = gridOf(game)!;
-  const ci = (x: number) => Math.max(0, Math.min(g.cols - 1, Math.floor(x / g.cell)));
-  const cj = (y: number) => Math.max(0, Math.min(g.rows - 1, Math.floor(y / g.cell)));
+export function detourPoints(game: Geo, a: { x: number; y: number }, b: { x: number; y: number }, extra?: Obstacles | null): { x: number; y: number }[] | null {
+  let g = gridWith(game, extra);
+  if (!g) return [];
+  const ci = (x: number) => Math.max(0, Math.min(g!.cols - 1, Math.floor(x / g!.cell)));
+  const cj = (y: number) => Math.max(0, Math.min(g!.rows - 1, Math.floor(y / g!.cell)));
   const s = cj(a.y) * g.cols + ci(a.x), t = cj(b.y) * g.cols + ci(b.x);
-  const key = `${s}>${t}`;
+  // 0.3.9.10: starting inside a closed territory, the fleet is leaving it: that territory is open to it on the way out
+  if (extra && extra.hard[s]) g = leavingGrid(game, g, extra, s);
+  if (!segBlocked(g, a, b)) return [];
+  const key = `${g.key}|${s}>${t}`;
   let cells = pathCache.get(key);
   if (cells === undefined) {
     cells = astar(g, s, t);
@@ -215,12 +251,37 @@ export function detourPoints(game: Geo, a: { x: number; y: number }, b: { x: num
   let from = a, i = 0;
   while (i < pts.length - 1) {
     let j = pts.length - 1;
-    while (j > i + 1 && segmentBlocked(game, from, pts[j])) j--;
+    while (j > i + 1 && segBlocked(g, from, pts[j])) j--;
     if (j === pts.length - 1) break;
     const q = { x: Math.round(pts[j].x), y: Math.round(pts[j].y) };
     out.push(q);
     from = q; i = j;
   }
+  return out;
+}
+
+/** The grid with the closed territory around cell s open (a fleet that starts inside may cross it to get out). */
+function leavingGrid(game: Geo, g: Grid, extra: Obstacles, s: number): Grid {
+  const key = `${g.key}|out${s}`;
+  const hit = combined.get(key);
+  if (hit) return hit;
+  const base = gridOf(game);
+  const open = new Uint8Array(g.cols * g.rows), stack = [s];
+  open[s] = 1;
+  while (stack.length) {
+    const c = stack.pop()!, cx = c % g.cols, cy = Math.floor(c / g.cols);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const x = cx + dx, y = cy + dy;
+      if (x < 0 || y < 0 || x >= g.cols || y >= g.rows) continue;
+      const nb = y * g.cols + x;
+      if (!open[nb] && extra.hard[nb]) { open[nb] = 1; stack.push(nb); }
+    }
+  }
+  const hard = new Uint8Array(g.hard);
+  for (let c = 0; c < hard.length; c++) if (open[c]) hard[c] = base && base.cols === g.cols && base.rows === g.rows ? base.hard[c] : 0;
+  const out: Grid = { key, cell: g.cell, cols: g.cols, rows: g.rows, hard, soft: softOf(hard, g.cols, g.rows) };
+  if (combined.size > 24) combined.clear();
+  combined.set(key, out);
   return out;
 }
 
@@ -287,16 +348,22 @@ function astar(g: Grid, s: number, t: number): { x: number; y: number }[] | null
  * The points to go through from a to b for this empire: around the clouds, and along the way into a veiled star it
  * found when one of the two ends is on it (0.3.7).
  */
-export function routePoints(game: Geo, a: Pt, b: Pt, who?: number): Pt[] | null {
+export function routePoints(game: Geo, a: Pt, b: Pt, who?: number, extra?: Obstacles | null): Pt[] | null {
+  // 0.3.9.10: around closed borders too; a destination inside one (or a start inside, leaving it) goes straight in,
+  // around the clouds only
+  if (extra) return routePointsIn(game, a, b, who, extra) ?? routePointsIn(game, a, b, who);
+  return routePointsIn(game, a, b, who);
+}
+function routePointsIn(game: Geo, a: Pt, b: Pt, who?: number, extra?: Obstacles | null): Pt[] | null {
   for (const s of lanesOf(game, who)) {
     const ta = laneT(s, a), tb = laneT(s, b);
     if (ta < 0 && tb < 0) continue;
     if (ta >= 0 && tb >= 0) return laneBetween(s, ta, tb);
     const mouth = s.lane![0];
-    if (ta >= 0) return [...laneBetween(s, ta, 0), ...(ta > 0 ? [{ ...mouth }] : []), ...(detourPoints(game, mouth, b) ?? [])];
-    return [...(detourPoints(game, a, mouth) ?? []), ...(tb > 0 ? [{ ...mouth }] : []), ...laneBetween(s, 0, tb)];
+    if (ta >= 0) return [...laneBetween(s, ta, 0), ...(ta > 0 ? [{ ...mouth }] : []), ...(detourPoints(game, mouth, b, extra) ?? [])];
+    return [...(detourPoints(game, a, mouth, extra) ?? []), ...(tb > 0 ? [{ ...mouth }] : []), ...laneBetween(s, 0, tb)];
   }
-  return detourPoints(game, a, b);
+  return detourPoints(game, a, b, extra);
 }
 
 /** Are these two points connected (a way around the clouds exists)? */
@@ -308,8 +375,8 @@ export function connected(game: Geo, a: { x: number; y: number }, b: { x: number
  * Waypoints with the detours inserted (pass-through points of deep space marked `detour`); `map[i]` is where the
  * original waypoint i ended up. Waypoints inside a cloud are moved to its edge.
  */
-export function withDetours(game: GameState, wps: Waypoint[], posOf: (w: Waypoint) => { x: number; y: number } = w => w, who?: number): { list: Waypoint[]; map: number[] } {
-  if (!hasWalls(game) || wps.length < 2) return { list: wps, map: wps.map((_, i) => i) };
+export function withDetours(game: GameState, wps: Waypoint[], posOf: (w: Waypoint) => { x: number; y: number } = w => w, who?: number, extra?: Obstacles | null): { list: Waypoint[]; map: number[] } {
+  if ((!hasWalls(game) && !extra) || wps.length < 2) return { list: wps, map: wps.map((_, i) => i) };
   const list: Waypoint[] = [wps[0]];
   const map = [0];
   let prev = posOf(wps[0]);
@@ -317,7 +384,7 @@ export function withDetours(game: GameState, wps: Waypoint[], posOf: (w: Waypoin
     let w = wps[i];
     let at = posOf(w);
     if (w.target === 'space' && inWall(game, at.x, at.y, who)) { at = clampOutside(game, prev, at, who); w = { ...w, x: at.x, y: at.y }; }
-    const pts = w.detour ? [] : routePoints(game, prev, at, who) ?? [];
+    const pts = w.detour ? [] : routePoints(game, prev, at, who, extra) ?? [];
     for (const q of pts) list.push({ x: q.x, y: q.y, target: 'space', warp: w.warp, task: 'none', detour: true });
     list.push(w);
     map.push(list.length - 1);

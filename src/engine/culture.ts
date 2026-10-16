@@ -130,6 +130,9 @@ export function territoryOwner(game: GameState, at: { x: number; y: number }, sr
   return tie ? -1 : best;
 }
 
+/** 0.3.9.10: the sources of territory a player knows of (closed borders, borders.ts). */
+export function knownSources(game: GameState, viewer: Player) { return sources(game, viewer); }
+
 /** Territory as a player sees it (colonies they know of). */
 export function knownTerritoryOwner(game: GameState, viewer: Player, at: { x: number; y: number }): number {
   return territoryOwner(game, at, sources(game, viewer));

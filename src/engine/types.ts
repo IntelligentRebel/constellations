@@ -561,6 +561,14 @@ export interface Player {
   exile?: { since: number; refounded?: number };
   /** 0.3.9: last act whose title card this player saw */
   actSeen?: number;
+  /** 0.3.9.10 (closed borders, borders.ts): the empires this one's borders are closed to; the policy for the empires
+   * met from now on; the empires met that the policy was applied to (or that were decided one by one) */
+  closed?: number[];
+  borderPolicy?: 'open' | 'closed';
+  bordersSet?: number[];
+  /** 0.3.9.10: how much each empire's closed borders hinder this one (0 to 1: the share of the worlds within its reach
+   * that lie behind them), measured every year */
+  hindered?: Record<number, number>;
   /** 0.3.9 (golden ages): inspiration gathered, needed for the next golden age, golden ages so far, last year of the current one */
   golden?: { inspiration: number; next: number; count: number; until?: number };
   /** 0.3.9 (dilemmas): year of the last one, kinds met lately */
@@ -1127,7 +1135,8 @@ export interface DiploPair {
 }
 /** What an empire remembers of another (decays with time). */
 export interface DiploMemory { by: number; about: number; kind: 'war' | 'betrayal' | 'dishonor' | 'gift' | 'demand' | 'broken' | 'conquest' | 'assimilation' | 'ally' | 'refused' | 'spying' | 'choice'; value: number; year: number; decay: number }
-export type ProposalKind = 'peace' | 'trade' | 'research' | 'alliance' | 'tribute' | 'embassy';
+/** 0.3.9.10: 'borders': the proposer asks the other empire to open its borders to it. */
+export type ProposalKind = 'peace' | 'trade' | 'research' | 'alliance' | 'tribute' | 'embassy' | 'borders';
 /** A proposal waiting for an answer (to a human player). */
 export interface Proposal { id: number; from: number; to: number; kind: ProposalKind; year: number; expires: number; /** minerals (kt) that change hands with it, and who pays */ minerals?: number; payer?: number }
 export interface DiplomacyState {

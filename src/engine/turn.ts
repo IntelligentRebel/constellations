@@ -61,6 +61,7 @@ import { runOriginWins } from './originwins';
 import { runGovernors } from './governors';
 import { lairAssessments } from './pirates';
 import { runOperations, builtForOp } from './operations';
+import { runBorders } from './borders';
 
 const AUTO_SUMMARY: Partial<Record<QueueItem['kind'], string>> = {
   factory: 'factory', mine: 'mine', defenses: 'defense', autoFactories: 'factory', autoMines: 'mine', autoDefenses: 'defense', autoMinTerraform: 'terraform', autoMaxTerraform: 'terraform', autoAlchemy: 'alchemy', autoPackets: 'packet',
@@ -73,8 +74,12 @@ const AUTO_WORDS: Record<string, [string, string]> = {
 export function generateTurn(game: GameState) {
   const rng = new Rng(game.rng);
   startChronicle(game);
+  // 0.3.9.10: what diplomacy tells at the start of the year (a war declared by a computer, its proposals, an expired
+  // one) is kept for this year's reports: the reports were cleared just after, and those messages never showed
+  const told = game.players.map(p => p.messages.length);
   runDiplomacy(game);
   for (const p of game.players) if (p.ai && !p.dead) runAI(game, p, rng);
+  const early = game.players.map((p, i) => p.messages.slice(told[i]).filter(m => m.kind === 'diplomacy'));
   const techBefore = game.players.map(p => new Set(availableTechNames(p)));
   const levelsBefore = game.players.map(p => ({ ...p.tech }));
   ensureSpecialShift(game);
@@ -82,7 +87,7 @@ export function generateTurn(game: GameState) {
   const forksBefore = game.players.map(p => pendingIds(game, p));
 
   game.year++;
-  for (const p of game.players) p.messages = [];
+  for (const p of game.players) p.messages = (early[p.id] ?? []).map(m => ({ ...m, year: game.year }));
   game.battles = [];
   for (const f of game.fleets) f.age++;
   for (const p of game.planets) p.bonusResources = 0;
@@ -216,6 +221,8 @@ export function generateTurn(game: GameState) {
 
   // ---- knowledge, scores, victory
   updateIntel(game);
+  // 0.3.9.10: closed borders (the policies for the empires just met, the computers' choices, the hindrance)
+  runBorders(game);
   discoverAnomalies(game);
   threatWarnings(game);
   guardianWarnings(game);

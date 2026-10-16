@@ -24,6 +24,7 @@ import { anomalyAt, isSite } from '../engine/anomalies';
 import { SECRET_INFO, PROBE_NEED } from '../engine/secrets';
 import { PULSAR_SHIELD_RANGE } from '../engine/terrain';
 import { cultureOn, territoryField, type TerritoryField } from '../engine/culture';
+import { closersOf } from '../engine/borders';
 import { densityAt, isRegion } from '../engine/shape';
 import { cloudJob, layoutCloudLabels, type CloudRaster } from './clouds';
 import { wallAt, openFor } from '../engine/walls';
@@ -1108,6 +1109,8 @@ function territoryPaths(game: GameState, me: Player) {
 function drawTerritories(ctx: CanvasRenderingContext2D, game: GameState, me: Player, dpr: number, size: { w: number; h: number }, cam: { x: number; y: number; zoom: number }) {
   const z = cam.zoom;
   const list = territoryPaths(game, me);
+  // 0.3.9.10: the territories whose borders are closed to you are hatched, their edge dashed
+  const shut = new Set(closersOf(game, me.id));
   ctx.save();
   ctx.setTransform(dpr * z, 0, 0, dpr * z, dpr * (size.w / 2 - cam.x * z), dpr * (size.h / 2 - cam.y * z));
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
@@ -1123,6 +1126,20 @@ function drawTerritories(ctx: CanvasRenderingContext2D, game: GameState, me: Pla
     ctx.restore();
     ctx.strokeStyle = `rgba(${rgb},0.75)`; ctx.lineWidth = 1.2 / z;
     ctx.stroke(t.edge);
+    if (shut.has(t.owner)) {
+      ctx.save();
+      ctx.clip(t.fill);
+      const x0 = cam.x - size.w / 2 / z, x1 = cam.x + size.w / 2 / z, y0 = cam.y - size.h / 2 / z, y1 = cam.y + size.h / 2 / z, gap = 11 / z, H = y1 - y0;
+      ctx.beginPath();
+      for (let x = Math.floor((x0 - H) / gap) * gap; x <= x1; x += gap) { ctx.moveTo(x, y1); ctx.lineTo(x + H, y0); }
+      ctx.strokeStyle = 'rgba(255,96,96,0.22)'; ctx.lineWidth = 1.2 / z;
+      ctx.stroke();
+      ctx.restore();
+      ctx.setLineDash([7 / z, 5 / z]);
+      ctx.strokeStyle = 'rgba(255,96,96,0.9)'; ctx.lineWidth = 1.8 / z;
+      ctx.stroke(t.edge);
+      ctx.setLineDash([]);
+    }
   }
   ctx.restore();
 }

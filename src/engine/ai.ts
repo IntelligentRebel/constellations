@@ -1,4 +1,5 @@
 // Computer players: research, designs, production, exploration, colonization and war.
+import { closersOf, routeEntries } from './borders';
 import { reachable } from './secrets';
 import type { AIState, Field, Fleet, GameState, Planet, Player, QueueKind, ShipDesign, Waypoint } from './types';
 import { FIELDS } from './types';
@@ -386,6 +387,8 @@ export function safeGoto(game: GameState, f: Fleet, target: { x: number; y: numb
   const spec = fleetSpec(game, f);
   const wp: Waypoint = { x: target.x, y: target.y, target: target.planetId !== undefined ? 'planet' : (target.kind ?? 'space'), targetId: target.planetId ?? target.id, warp: spec.idealSpeed || 5, task };
   const base: Waypoint = { ...f.waypoints[0], task: 'none', transport: undefined, processed: true };
+  // 0.3.9.10: never into a territory whose borders are closed to it (an automatic order makes no war)
+  if (closersOf(game, f.owner).length && routeEntries(game, f.owner, [base, wp]).length) return false;
   // known enemy minefields on the way: stay at or below their safe speed when possible
   const mines = minefieldsOnLeg(game, p, f, target);
   const mineSafe = mines.length ? Math.min(...mines.map(m => m.safeWarp)) : 99;

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { colonyBlocker } from '../engine/culture';
 import type { ComponentChildren } from 'preact';
 import { store, useStore, fmt, fmtPop, pct, MINERAL_COLORS, type ViewSettings } from './store';
+import { closersOf } from '../engine/borders';
 import { PageCtx, MineralLine, useSorted, RangeFilter, rangeOf, rangeDistance, setRangeOf, Num } from './components';
 import type { Fleet, GameState, Planet, Player } from '../engine/types';
 import { MapView, refPos } from './map';
@@ -128,6 +129,7 @@ export function MapPage() {
       <div class="legend" data-tut="legend">
         {v.mode === 8 ? <RadarLegend /> : <><span><i class="lg own" />Votre empire</span>{v.mode === 7 ? <><span><i class="lg rel ally" />Alliés</span><span><i class="lg rel peace" />En paix</span><span><i class="lg rel war" />En guerre</span></> : <span><i class="lg other" />Autres empires</span>}<span><i class="lg good" />Favorable</span><span><i class="lg bad" />Défavorable</span><span><i class="lg unk" />Inexploré</span>
         {v.scan && <><span><i class="lg ring red" />Détection</span><span><i class="lg ring yel" />Analyse</span></>}</>}
+        {v.borders !== false && closersOf(g, me.id).length > 0 && <span title="Territoires dont les frontières vous sont fermées : y entrer déclare la guerre à leur empire (page Diplomatie)"><i class="lg shut" />Frontières fermées</span>}
         {g.settings.terrain && (g.terrain?.length ?? 0) > 0 && <><span title="Scanners deux fois plus courts, Warp limité à 6"><i class="lg ter neb" />Nébuleuse</span><span title="Planètes riches, Warp limité à 5"><i class="lg ter clu" />Amas</span><span title="Boucliers réduits de moitié en combat ; la tempête se déplace chaque année"><i class="lg ter sto" />Tempête</span></>}
       </div>
     </div>

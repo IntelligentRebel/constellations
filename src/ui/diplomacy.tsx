@@ -9,6 +9,7 @@ import { KnownColonies } from './dialogs/misc';
 import { intelOn, perception, EMBASSY } from '../engine/espionage';
 import { DossierBlock, IntelLevel } from './intel';
 import { isNemesis, nemesisOn, NEMESIS_AT } from '../engine/nemesis';
+import * as BD from '../engine/borders';
 
 const pctTxt = (v: number) => `${Math.round(v * 100)} %`;
 
@@ -73,6 +74,20 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
         {!signed && (blocked(k) ? <span class="small muted">{blocked(k)}</span> : <Predict g={g} me={me} other={o} kind={k} />)}
       </div>;
     })}
+    {/* 0.3.9.10: closed borders, both ways */}
+    {BD.bordersOn(g) && st !== 'war' && <div class="diplo-act">
+      {st === 'alliance' ? <span class="small muted">Entre alliés, les frontières restent ouvertes dans les deux sens.</span>
+        : BD.hasClosed(g, me.id, o.id)
+          ? <><button onClick={() => act(() => BD.setBorders(g, me.id, o.id, false), `Frontières rouvertes aux ${o.name}.`)}>Rouvrir vos frontières</button>
+            <span class="diplo-long">Vos frontières leur sont <b class="yellow">fermées</b> : leurs vaisseaux ne peuvent pas entrer dans votre territoire sans vous déclarer la guerre.</span></>
+          : <><button onClick={() => act(() => BD.setBorders(g, me.id, o.id, true), `Frontières fermées aux ${o.name}.`)}>Fermer vos frontières</button>
+            <span class="diplo-long">Vos frontières leur sont ouvertes. Fermées, leurs vaisseaux ne pourront plus entrer dans votre territoire sans vous déclarer la guerre ; ceux qui s'y trouvent pourront en sortir.{o.ai ? ' Ils vous en voudront, d\'autant plus que votre territoire leur barre la route.' : ''}</span></>}
+    </div>}
+    {BD.bordersOn(g) && st === 'peace' && BD.closedTo(g, o.id, me.id) && <div class="diplo-act">
+      <button disabled={!!blocked('borders')} onClick={() => send('borders')}>Demander l'ouverture</button>
+      <span class="diplo-long">Leurs frontières vous sont <b class="red">fermées</b> : entrer dans leur territoire leur déclarerait la guerre.{(me.hindered?.[o.id] ?? 0) > 0 ? ` Elles barrent la route vers ${pctTxt(me.hindered![o.id])} des mondes à votre portée.` : ''} Leur demander de les rouvrir :</span>
+      {blocked('borders') ? <span class="small muted">{blocked('borders')}</span> : <Predict g={g} me={me} other={o} kind="borders" />}
+    </div>}
     <div class="diplo-act">
       <span class="small">Offrir des minerais :</span>
       {[200, 500, 1000].map(v => <button class="small" disabled={v > have} onClick={() => act(() => DIP.gift(g, me.id, o.id, v), `${v} kt offerts aux ${o.name}.`)}>{v} kt</button>)}
@@ -111,9 +126,10 @@ export function DiplomacyDialog() {
       {incoming.length > 0 && <div class="diplo-inbox">{incoming.map(x => {
         const o = g.players[x.from];
         const terms = x.minerals ? (x.payer === x.from ? `, contre ${x.minerals} kt de minerais qu'ils vous versent` : `, contre ${x.minerals} kt de minerais que vous leur versez`) : '';
-        return <div class="alert info diplo-prop"><span><b style={{ color: o.color }}>{o.name}</b> {x.kind === 'tribute' ? `exigent de vous un tribut de ${x.minerals} kt de minerais` : `vous proposent ${DIP.KIND_NAMES[x.kind]}${terms}`}. <span class="small muted">Expire en {x.expires}.</span></span>
+        return <div class="alert info diplo-prop"><span><b style={{ color: o.color }}>{o.name}</b> {x.kind === 'tribute' ? `exigent de vous un tribut de ${x.minerals} kt de minerais` : x.kind === 'borders' ? `vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}` : `vous proposent ${DIP.KIND_NAMES[x.kind]}${terms}`}. <span class="small muted">Expire en {x.expires}.</span></span>
           <span class="row-btns"><button class="primary small" onClick={() => act(() => DIP.answer(g, x.id, true), 'Proposition acceptée.')}>Accepter</button> <button class="small" onClick={() => act(() => DIP.answer(g, x.id, false), 'Proposition refusée.')}>Refuser</button></span></div>;
       })}</div>}
+      {BD.bordersOn(g) && <div class="diplo-policy small">Frontières pour les empires rencontrés désormais : <select value={me.borderPolicy ?? 'open'} onChange={e => { const v = (e.target as HTMLSelectElement).value as 'open' | 'closed'; act(() => { me.borderPolicy = v; }, v === 'closed' ? 'Les empires rencontrés désormais trouveront vos frontières fermées.' : 'Les empires rencontrés désormais trouveront vos frontières ouvertes.'); }}><option value="open">Ouvertes</option><option value="closed">Fermées</option></select> <span class="muted">(puis empire par empire, ci-dessous)</span></div>}
       {met.length === 0 ? <p class="muted">Vous n'avez encore rencontré aucun autre empire. Les empires apparaissent ici après un premier contact (scanner pénétrant, colonie découverte ou combat). En attendant, vous êtes en paix avec tous.</p> :
         <table class="report diplo">
           <thead><tr><th>Empire</th><th>Statut</th><th>Accords</th><th title="ce que cet empire pense de vous (de −100 à +100)">Opinion de vous</th>{intel && <th title="ce que vous savez de cet empire (0 à 100)">Renseignement</th>}<th title="taille de sa flotte de guerre, comparée à la vôtre">Flotte</th></tr></thead>
@@ -130,7 +146,9 @@ export function DiplomacyDialog() {
                 <td><button class="lnk diplo-name" style={{ color: o.color }} aria-expanded={isOpen} onClick={() => setOpen({ ...open, [o.id]: !isOpen })}><span class="caret">{isOpen ? '▾' : '▸'}</span> {o.name}</button>{o.dead ? ' (anéanti)' : ''}
                   <div class="small muted">{o.race.pluralName} · {PRT_INFO[o.race.prt].name}{o.ai ? '' : ' · joueur humain'}</div>
                   {isNemesis(g, o.id, me.id) && <div class="nemesis-tag" title="Ils refusent toute paix tant que leur empire n'est pas brisé (60 % des mondes qu'ils tenaient, ou leur capitale).">Némésis : ont juré votre perte</div>}</td>
-                <td><span class={'diplo-st ' + st}>{DIP.STATUS_NAMES[st]}</span> <span class="small muted">depuis {pr.since}</span>{st === 'war' && o.ai ? <div class="small muted">leur lassitude {DIP.exhaustion(g, o.id, me.id)}</div> : null}</td>
+                <td><span class={'diplo-st ' + st}>{DIP.STATUS_NAMES[st]}</span> <span class="small muted">depuis {pr.since}</span>{st === 'war' && o.ai ? <div class="small muted">leur lassitude {DIP.exhaustion(g, o.id, me.id)}</div> : null}
+                  {st === 'peace' && BD.hasClosed(g, me.id, o.id) && <div class="small yellow" title="Leurs vaisseaux ne peuvent pas entrer dans votre territoire sans vous déclarer la guerre">vos frontières : fermées</div>}
+                  {st === 'peace' && BD.closedTo(g, o.id, me.id) && <div class="small red" title="Entrer dans leur territoire leur déclarerait la guerre">leurs frontières : fermées</div>}</td>
                 <td class="small">{[pr.embassy !== undefined && st !== 'war' ? 'Ambassades' : '', pr.trade !== undefined ? 'Commerce' : '', pr.research !== undefined ? 'Recherche' : ''].filter(Boolean).join(', ') || '–'}</td>
                 <td>{op ? <Opinion v={op.total} /> : <span class="muted">–</span>}</td>
                 {intel && <td><IntelLevel me={me} pid={o.id} /></td>}
@@ -148,7 +166,7 @@ export function DiplomacyDialog() {
         </table>}
       <p class="small">Vos accords vous rapportent <b>+{pctTxt(tb)}</b> de ressources et <b>+{pctTxt(rb)}</b> de recherche (trois partenaires au plus pour chacun).</p>
       {log.length > 0 && <><h4 class="emp-sub">Dernières nouvelles</h4><ul class="emp-obj small">{log.map(e => <li>{e.year} · {e.text}</li>)}</ul></>}
-      <p class="small muted">On ne combat, n'envahit et ne bombarde que les empires avec qui l'on est en guerre, et les champs de mines épargnent les autres. Les ordinateurs pèsent chaque proposition selon les raisons affichées à côté (opinion, rapport de forces, lassitude, minerais) ; leur réponse garde une part d'incertitude : « probablement » n'est pas « sûrement ». Seules les règles fermes (une guerre qui vient de commencer, un accord déjà signé...) sont certaines. Une guerre déclarée malgré un accord ou une alliance est une trahison que tous retiennent ; déclarer la guerre à un allié d'un ordinateur fait entrer cet ordinateur en guerre contre vous.</p>
+      <p class="small muted">On ne combat, n'envahit et ne bombarde que les empires avec qui l'on est en guerre, et les champs de mines épargnent les autres. Les ordinateurs pèsent chaque proposition selon les raisons affichées à côté (opinion, rapport de forces, lassitude, minerais) ; leur réponse garde une part d'incertitude : « probablement » n'est pas « sûrement ». Seules les règles fermes (une guerre qui vient de commencer, un accord déjà signé...) sont certaines. Une guerre déclarée malgré un accord ou une alliance est une trahison que tous retiennent ; déclarer la guerre à un allié d'un ordinateur fait entrer cet ordinateur en guerre contre vous.{BD.bordersOn(g) ? ' Des frontières fermées interdisent votre territoire aux vaisseaux d\'un empire : y entrer, c\'est vous déclarer la guerre. Les ordinateurs mesurent ce que des frontières fermées leur barrent : plus elles les enferment, plus ils en veulent à qui les ferme, plus ils demandent qu\'on les rouvre, et plus ils sont prêts à la guerre.' : ''}</p>
     </Modal>
   );
 }

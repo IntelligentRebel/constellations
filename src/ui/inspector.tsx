@@ -1,4 +1,5 @@
 // Right panel: everything about the selected planet or fleet, with the actions that make sense for it.
+import { bordersOn, routeEntries, automaticFleet } from '../engine/borders';
 import { useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { store, useStore, fmt, fmtPop, fmtGrowth, pct, MINERAL_COLORS } from './store';
@@ -415,6 +416,13 @@ function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
         if (slow < 0) return null;
         const l = est[slow];
         return <div class="alert strong">⚠ {l.ok ? `Étape ${slow + 1} à Warp 1 : ${l.years} ans pour ${fmt(l.dist, 0)} al, faute de carburant.` : `Carburant insuffisant pour l'étape ${slow + 1} : la flotte tombera en panne sèche et finira le trajet à Warp 1.`} Faites escale à un chantier ami ou raccourcissez le trajet.</div>;
+      })()}
+      {(() => {
+        // 0.3.9.10: a closed border on the way (the route already goes around when it can)
+        const en = bordersOn(g) && f.waypoints.length > 1 ? routeEntries(g, me.id, f.waypoints) : [];
+        if (!en.length) return null;
+        const names = en.map(e => g.players[e.closer].name).join(', ');
+        return <div class="alert strong">⚠ {automaticFleet(g, f) ? `Le trajet entre dans le territoire des ${names}, dont les frontières vous sont fermées : sous un ordre automatique, la flotte s'arrêtera à la frontière.` : `Le trajet entre dans le territoire des ${names}, dont les frontières vous sont fermées : y entrer leur déclarera la guerre.`}</div>;
       })()}
       {wi > 0 && leg && <div class="leg">
         <div class="warp-row">

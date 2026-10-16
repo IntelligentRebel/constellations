@@ -1,5 +1,6 @@
 // Fleets: aggregate specs, fuel usage, movement estimates, cargo helpers.
 import { hasWalls, withDetours, voidStop } from './walls';
+import { borderObstacles } from './borders';
 import { canUseWormholes } from './specials';
 import { effectiveWarp } from './terrain';
 import type { Cargo, Fleet, GameState, MinefieldType, Planet, Player, ShipToken, Waypoint } from './types';
@@ -244,8 +245,10 @@ export function isPassThrough(wps: Waypoint[], i: number): boolean {
  */
 export function estimateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[] = fleet.waypoints, startFuel = fleet.fuel): LegEstimate[] {
   // 3.6: around the dark clouds, as the movement will go: the legs of a detour add up into the leg they replace
-  if (hasWalls(game) && waypoints.length > 1) {
-    const { list, map } = withDetours(game, waypoints, undefined, fleet.owner);
+  // 0.3.9.10: and around the territories whose borders are closed to the owner
+  const closed = waypoints.length > 1 ? borderObstacles(game, fleet.owner) : null;
+  if ((hasWalls(game) || closed) && waypoints.length > 1) {
+    const { list, map } = withDetours(game, waypoints, undefined, fleet.owner, closed);
     if (list.length !== waypoints.length) {
       const legs = simulateRoute(game, fleet, list, startFuel);
       const out: LegEstimate[] = [];

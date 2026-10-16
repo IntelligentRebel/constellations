@@ -7,7 +7,7 @@ entirely in the browser, offline, with nothing to install.
 
 **[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
 
-**Version 0.3.9.9** (early version: the numbering restarts at 0.x until the game is considered complete).
+**Version 0.3.9.10** (early version: the numbering restarts at 0.x until the game is considered complete).
 
 ![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
@@ -105,7 +105,8 @@ switched on or off one by one.
   hidden stars found by quests, and announced cataclysms (supernovae, a wandering black hole).
 - **Empire**: efficiency falls with the distance to a capital, regional capitals, conquered worlds that take a
   generation to produce fully; sector governors with talents and standing orders for the production queues;
-  culture, borders and assimilation; golden ages; a logistics network with migration and mining policies and
+  culture, borders (they can be closed to an empire: going in is then war, as in Stellaris) and assimilation;
+  golden ages; a logistics network with migration and mining policies and
   automatic convoys (that can be raided).
 - **Research**: random breakthroughs (as in Master of Orion 2), a variable technology tree, exclusive doctrines.
 - **Combat**: screen, line and artillery roles, targeting by threat, retreat thresholds, veteran crews that gain ranks,

@@ -17,6 +17,7 @@ import { intelOn, perception, levelOf } from './espionage';
 import { addChronicle } from './chronicle';
 import { actOf } from './acts';
 import { worldGrudge, warGrudge, isNemesis, swornAgainst } from './nemesis';
+import { bordersGrievance, bordersWarPush, closedTo, bordersOn, setBorders, openForAllies, hindrance } from './borders';
 
 export const diplomacyOn = (game: GameState) => !!game.settings.diplomacy && !!game.diplomacy;
 const isEmp = (game: GameState, id: number) => !!game.players[id] && !game.players[id].monster;
@@ -30,9 +31,9 @@ export const NEED = { embassy: -20, trade: 0, research: 15, alliance: 30 } as co
 
 export const STATUS_NAMES: Record<DiploStatus, string> = { war: 'Guerre', peace: 'Paix', alliance: 'Alliance' };
 /** What an empire proposes to you ("Les X vous proposent ..."). */
-export const KIND_NAMES: Record<ProposalKind, string> = { peace: 'la paix', trade: 'un accord commercial', research: 'une coopération scientifique', alliance: 'une alliance', tribute: 'un tribut', embassy: 'd\'ouvrir des ambassades entre vos deux empires' };
+export const KIND_NAMES: Record<ProposalKind, string> = { peace: 'la paix', trade: 'un accord commercial', research: 'une coopération scientifique', alliance: 'une alliance', tribute: 'un tribut', embassy: 'd\'ouvrir des ambassades entre vos deux empires', borders: 'd\'ouvrir vos frontières à leurs vaisseaux' };
 /** 0.3.8: your own proposal, as the answer names it ("Les X refusent ..."), so that nobody reads a general refusal. */
-export const OFFER_NAMES: Record<ProposalKind, string> = { peace: 'votre offre de paix', trade: 'votre proposition d\'accord commercial', research: 'votre proposition de coopération scientifique', alliance: 'votre proposition d\'alliance', tribute: 'votre demande de tribut', embassy: 'votre proposition d\'ouvrir des ambassades entre vos deux empires' };
+export const OFFER_NAMES: Record<ProposalKind, string> = { peace: 'votre offre de paix', trade: 'votre proposition d\'accord commercial', research: 'votre proposition de coopération scientifique', alliance: 'votre proposition d\'alliance', tribute: 'votre demande de tribut', embassy: 'votre proposition d\'ouvrir des ambassades entre vos deux empires', borders: 'votre demande d\'ouvrir leurs frontières à vos vaisseaux' };
 
 /** Temper of a computer empire, by its primary trait (0 peaceful, 1 warlike). */
 const AGGRESSION: Record<string, number> = { WM: 0.9, SD: 0.7, SS: 0.6, IT: 0.5, PP: 0.5, JoaT: 0.5, AR: 0.4, HE: 0.35, IS: 0.3, CA: 0.3 };
@@ -207,6 +208,8 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   const portal = game.settings.megaprojects ? portalThreat(game) : null;
   if (portal && portal.owner === about && portal.announced > 0) add('Vous construisez le Portail', -40);
   if (isNemesis(game, of, about)) add('Ils ont juré votre perte', -60);
+  // 0.3.9.10: your borders closed to them, the more resented the more they hem them in
+  add(hindrance(game, of, about) >= 0.25 ? 'Vos frontières fermées étouffent leur expansion' : 'Vos frontières leur sont fermées', bordersGrievance(game, of, about));
   // memories
   const byKind = new Map<DiploMemory['kind'], number>();
   for (const m of D(game).memory) if (m.by === of && m.about === about) byKind.set(m.kind, (byKind.get(m.kind) ?? 0) + memValue(game, m));
@@ -318,6 +321,14 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
       const need = common || game.crisis?.phase === 'active' ? NEED.alliance : NEED.alliance + 20;
       const sc = Math.round(op + sweet - need);
       return weighed(sc, `${fmtOp}, il faudrait une opinion d'au moins ${need}${common ? ', ennemi commun' : ''}`);
+    }
+    case 'borders': {
+      // 0.3.9.10: `from` asks `ai` to open its borders to it; the peaceful open them more readily
+      if (st === 'war') return firm('en guerre');
+      if (!closedTo(game, ai, from)) return firm('leurs frontières vous sont déjà ouvertes', 0);
+      const need = Math.round(30 * aggression(game.players[ai]) - 15);
+      const sc = Math.round(op + sweet - need);
+      return weighed(sc, `${fmtOp}, il faudrait une opinion d'au moins ${need}${sweet ? `, minerais +${Math.round(sweet)}` : ''}`);
     }
     case 'tribute': {
       // `from` demands `minerals` from `ai`: fear against pride, hatred and greed. 0.3.7.1: the fear is of what they
@@ -434,7 +445,7 @@ export function makePeace(game: GameState, a: number, b: number, minerals = 0, p
 export function sign(game: GameState, a: number, b: number, kind: 'trade' | 'research' | 'alliance' | 'embassy', minerals = 0, payer?: number) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status === 'war') return;
-  if (kind === 'alliance') { pr.status = 'alliance'; pr.since = game.year; addChronicle(game, 'alliance', `Alliance entre les ${name(game, a)} et les ${name(game, b)}.`, [a, b]); } else pr[kind] = game.year;
+  if (kind === 'alliance') { pr.status = 'alliance'; pr.since = game.year; addChronicle(game, 'alliance', `Alliance entre les ${name(game, a)} et les ${name(game, b)}.`, [a, b]); openForAllies(game, a, b); } else pr[kind] = game.year;
   let paid = 0;
   if (minerals > 0 && payer !== undefined) paid = transferMinerals(game, payer, payer === a ? b : a, minerals);
   if (paid) tellTransfer(game, lastTransfer, payer!, payer === a ? b : a, `Pour cet accord, les ${name(game, payer!)} vous versent`, `Pour cet accord, vous versez aux ${name(game, payer === a ? b : a)}`);
@@ -483,6 +494,14 @@ function applyProposal(game: GameState, x: { from: number; to: number; kind: Pro
   switch (x.kind) {
     case 'peace': makePeace(game, x.from, x.to, x.minerals ?? 0, x.payer); break;
     case 'trade': case 'research': case 'alliance': case 'embassy': sign(game, x.from, x.to, x.kind, x.minerals ?? 0, x.payer); break;
+    case 'borders': {
+      // the one asked opens its borders to the one who asked
+      let paid = 0;
+      if ((x.minerals ?? 0) > 0 && x.payer !== undefined) paid = transferMinerals(game, x.payer, x.payer === x.from ? x.to : x.from, x.minerals!);
+      setBorders(game, x.to, x.from, false);
+      if (paid) tellTransfer(game, lastTransfer, x.payer!, x.payer === x.from ? x.to : x.from, `Pour l'ouverture des frontières, les ${name(game, x.payer!)} vous versent`, `Pour l'ouverture des frontières, vous versez aux ${name(game, x.payer === x.from ? x.to : x.from)}`);
+      break;
+    }
     case 'tribute': {
       const moved = transferMinerals(game, x.to, x.from, x.minerals ?? 0);
       remember(game, x.to, x.from, 'demand', -15, 1);
@@ -506,6 +525,8 @@ export function proposalBlocker(game: GameState, from: number, to: number, kind:
   if (kind === 'embassy' && !intelOn(game)) return 'règle Renseignement désactivée';
   if (kind === 'embassy' && pairOf(game, from, to)!.embassy !== undefined) return 'ambassades déjà ouvertes';
   if (kind === 'alliance' && st === 'alliance') return 'déjà alliés';
+  if (kind === 'borders' && !bordersOn(game)) return 'il faut les règles Culture et Diplomatie';
+  if (kind === 'borders' && !closedTo(game, to, from)) return 'leurs frontières vous sont ouvertes';
   if (kind === 'tribute' && tributeWait(game, from, to) > 0) return `un tribut tous les ${TRIBUTE_YEARS} ans au plus (prochain en ${game.year + tributeWait(game, from, to)})`;
   if (D(game).proposals.some(x => x.from === from && x.to === to && x.kind === kind)) return 'proposition déjà en attente';
   return null;
@@ -533,7 +554,7 @@ export function propose(game: GameState, from: number, to: number, kind: Proposa
   const p: Proposal = { id: game.nextId++, from, to, kind, year: game.year, expires: game.year + 2, minerals: minerals || undefined, payer: minerals ? payer : undefined };
   D(game).proposals.push(p);
   const terms = minerals ? (payer === from ? ` (ils offrent ${minerals} kt de minerais)` : ` (ils demandent ${minerals} kt de minerais)`) : '';
-  tell(game, to, kind === 'tribute' ? `Les ${name(game, from)} exigent de vous un tribut de ${minerals} kt de minerais. Refuser les mettra en colère.` : `Les ${name(game, from)} vous proposent ${KIND_NAMES[kind]}${terms}. Répondez dans la page Diplomatie.`, from);
+  tell(game, to, kind === 'tribute' ? `Les ${name(game, from)} exigent de vous un tribut de ${minerals} kt de minerais. Refuser les mettra en colère.` : kind === 'borders' ? `Les ${name(game, from)} vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}. Répondez dans la page Diplomatie.` : `Les ${name(game, from)} vous proposent ${KIND_NAMES[kind]}${terms}. Répondez dans la page Diplomatie.`, from);
   return null;
 }
 
@@ -611,6 +632,7 @@ export function warDesire(game: GameState, ai: number, other: number): number {
   if (score(game.players[other]) > 1.3 * Math.max(1, score(game.players[ai]))) d += 10;
   if (!game.players[other].ai) d += 5; // a little more often the player: livelier games
   if (isNemesis(game, ai, other)) d += 70;
+  d += bordersWarPush(game, ai, other);
   return Math.round(d);
 }
 
@@ -622,7 +644,7 @@ export function runDiplomacy(game: GameState) {
   // expired proposals: a refusal
   for (const p of d.proposals.filter(x => x.expires < game.year)) {
     remember(game, p.from, p.to, p.kind === 'tribute' ? 'demand' : 'refused', p.kind === 'tribute' ? -10 : -5, 1);
-    tell(game, p.to, p.kind === 'tribute' ? `Les ${name(game, p.from)} exigeaient de vous un tribut : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : `Les ${name(game, p.from)} vous proposaient ${KIND_NAMES[p.kind]} : faute de réponse de votre part, la proposition a expiré.`, p.from);
+    tell(game, p.to, p.kind === 'tribute' ? `Les ${name(game, p.from)} exigeaient de vous un tribut : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : p.kind === 'borders' ? `Les ${name(game, p.from)} vous demandaient d'ouvrir vos frontières à leurs vaisseaux : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : `Les ${name(game, p.from)} vous proposaient ${KIND_NAMES[p.kind]} : faute de réponse de votre part, la proposition a expiré.`, p.from);
   }
   d.proposals = d.proposals.filter(x => x.expires >= game.year && !game.players[x.from].dead && !game.players[x.to].dead);
   d.memory = d.memory.filter(m => memValue(game, m) !== 0);
@@ -646,6 +668,11 @@ export function runDiplomacy(game: GameState) {
           propose(game, p.id, o.id, 'peace', kt, kt ? (ratio >= 2 ? o.id : p.id) : undefined);
         }
         continue;
+      }
+      // 0.3.9.10: hemmed in by closed borders, a computer asks for them to be opened
+      if (closedTo(game, o.id, p.id) && hindrance(game, p.id, o.id) >= 0.1 && !proposalBlocker(game, p.id, o.id, 'borders')) {
+        if (o.ai) { if (rng.chance(0.3) && decideAnswer(game, o.id, p.id, 'borders', evaluate(game, o.id, p.id, 'borders'))) applyProposal(game, { from: p.id, to: o.id, kind: 'borders' }); }
+        else if (!pending(o.id) && !refusedLately(o.id) && rng.chance(0.35)) propose(game, p.id, o.id, 'borders');
       }
       // treaties
       const op = opinion(game, p.id, o.id).total;
@@ -675,7 +702,7 @@ export function runDiplomacy(game: GameState) {
       const w = warDesire(game, p.id, o.id);
       if (w > bd) { bd = w; best = o; }
     }
-    if (best && bd >= 45 && rng.chance(0.35)) { declareWar(game, p.id, best.id); continue; }
+    if (best && bd >= 45 && rng.chance(0.35)) { declareWar(game, p.id, best.id, hindrance(game, p.id, best.id) >= 0.25 ? 'leur expansion était étouffée par des frontières fermées' : undefined); continue; }
     // a demand on a much weaker neighbour
     if (best && aggression(p) >= 0.6 && bd >= 25 && power(game, p.id) >= 2.5 * Math.max(0.1, perceivedPower(game, p.id, best.id)) && rng.chance(0.15) && !pending(best.id) && tributeWait(game, p.id, best.id) === 0) {
       const have = richest(game, best.id)?.total ?? 0;

@@ -16,6 +16,7 @@ import { RULES_RAW } from '../data/rules-raw';
 import { willAttack } from './battle';
 import { planetSpec } from './planet';
 import { resetPlanetPolicies } from './empire';
+import { borderObstacles, trespass } from './borders';
 
 const MINE_STATS: Record<string, { maxSpeed: number; chanceOfHit: number; minDamagePerFleet: number; damagePerEngine: number; minDamagePerFleetRS: number; damagePerEngineRS: number; minDecay: number; sweepFactor?: number }> = {
   standard: RULES_RAW.minefieldStats.Standard, heavy: RULES_RAW.minefieldStats.Heavy, speedBump: RULES_RAW.minefieldStats.SpeedBump,
@@ -139,10 +140,13 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
     gateFleet(game, rng, f, wp); return;
   }
   // 3.6: around the dark clouds (the detour is recomputed every year: targets move, orders change)
-  if (hasWalls(game)) {
+  // 0.3.9.10: and around the territories whose borders are closed to the owner
+  const closed = borderObstacles(game, f.owner);
+  if (hasWalls(game) || closed || f.waypoints.some(w => w.detour)) {
     const kept = f.waypoints.filter((w, i) => i === 0 || !w.detour);
-    f.waypoints = withDetours(game, kept, w => targetPosition(game, w), f.owner).list;
+    f.waypoints = withDetours(game, kept, w => targetPosition(game, w), f.owner, closed).list;
   }
+  let borderStop = false;
   const trail = [{ x: f.x, y: f.y }];
   // 0.3.7: leaving from near a known black hole, the fleet gains half a year (gravitational slingshot)
   let budget = game.secrets ? slingshot(game, f.owner, f) : 1, first = true, overwarp = false, endedOnPass = false;
@@ -215,8 +219,17 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
       if (!f.outOfFuel) f.fuel = Math.max(0, fuelBefore - Math.min(fuelBefore, fuelForYear(game, f, warp, dist)));
       if (!owner.ai) msg(game, owner, gap && !wall.cloud ? `${f.name} s'arrête : au-delà, c'est le vide entre l'amas et la galaxie, que seul le trou de ver traverse.` : `${f.name} s'arrête : ${wall.cloud || 'un nuage sombre'} lui barre la route, les nuages sombres sont infranchissables.`, f, 'warning');
     }
+    // 0.3.9.10: a closed border ahead: the player's own orders go in (and that is war), the computers and the
+    // automatic orders stop at it
+    const border = trespass(game, f, start, { x: nx, y: ny });
+    if (border) {
+      nx = border.x; ny = border.y; dist = distance(start, border);
+      if (!f.outOfFuel) f.fuel = Math.max(0, fuelBefore - Math.min(fuelBefore, fuelForYear(game, f, warp, dist)));
+      if (!owner.ai) msg(game, owner, `${f.name} s'arrête à la frontière des ${game.players[border.closer].name} : leurs frontières vous sont fermées, et y entrer leur déclarerait la guerre. Ordres de route annulés.`, f, 'warning');
+      borderStop = true;
+    }
     // minefields along the path
-    const hit = checkMinefields(game, rng, f, start, { x: nx, y: ny }, warp) ?? (wall ? { x: nx, y: ny } : null);
+    const hit = checkMinefields(game, rng, f, start, { x: nx, y: ny }, warp) ?? (wall || border ? { x: nx, y: ny } : null);
     if (hit) {
       nx = hit.x; ny = hit.y; dist = distance(start, hit);
       // stopped by a mine: only the distance actually travelled is paid for
@@ -249,6 +262,7 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
     trail.push({ x: f.x, y: f.y });
     f.orbiting = -1;
     f.waypoints[0] = { x: f.x, y: f.y, target: 'space', warp: 0, task: 'none', processed: true };
+    if (borderStop) { f.waypoints = [f.waypoints[0]]; f.repeat = false; f.heading = null; f.pursue = undefined; break; }
     // top up if position rounding left us short of what the rest of the leg needs
     if (gotEnoughFuel && !f.outOfFuel && !hit) {
       const need = fuelForYear(game, f, warp, distance(f, target));

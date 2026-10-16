@@ -983,6 +983,9 @@ table tr.hl > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 .diplo-act { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .diplo-act > span:not(.small) { min-width: 0; }
 .diplo-act .diplo-warn { flex-basis: 100%; }
+/* 0.3.9.10: the unfolded block of an empire wraps its lines (the table cells do not) */
+table.report tr.diplo-sub > td { white-space: normal; }
+.diplo-act > span.diplo-long { flex: 1 1 320px; }
 .diplo-prop { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
 .diplo-inbox { display: grid; gap: 6px; margin-bottom: 10px; }
 button.danger { border-color: #c0504d; color: #ff9b97; }
@@ -1024,6 +1027,8 @@ button.danger { border-color: #c0504d; color: #ff9b97; }
 .modebar .mode-name { font-size: 12px; color: var(--muted); padding: 0 8px 0 6px; white-space: nowrap; }
 @container app (max-width: 900px) { .modebar .mode-name { display: none; } }
 .lg.rel { background: transparent; border: 2px solid; width: 7px; height: 7px; }
+.lg.shut { border-radius: 2px; width: 11px; height: 11px; border: 1px dashed rgba(255, 96, 96, .9); background: repeating-linear-gradient(45deg, rgba(255, 96, 96, .55) 0 1.5px, transparent 1.5px 4px); }
+.diplo-policy { margin: 0 0 10px; }
 .lg.rel.ally { border-color: #ffd24a; } .lg.rel.peace { border-color: #a9b8cc; } .lg.rel.war { border-color: #ff4d4d; }
 .tpl-chain { margin-top: 12px; max-width: 240px; }
 .prod-cats { margin: 0 0 6px; }
