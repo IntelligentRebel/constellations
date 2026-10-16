@@ -1,0 +1,159 @@
+[
+ {
+  "fr": "Sauvegardes de secours…",
+  "en": "Backup files…"
+ },
+ {
+  "fr": "Fichier illisible",
+  "en": "Unreadable file"
+ },
+ {
+  "fr": "Sauvegarde de secours ouverte : {0}, {1}",
+  "en": "Backup opened: {0}, {1}"
+ },
+ {
+  "fr": "Reprendre « {0} » en {1} ? La sauvegarde de cette partie dans le navigateur sera remplacée par ce fichier.",
+  "en": "Go back to “{0}” in {1}? This game's save in the browser will be replaced by this file."
+ },
+ {
+  "fr": "Reprendre",
+  "en": "Go back"
+ },
+ {
+  "fr": "Sauvegardes de secours",
+  "en": "Backup files"
+ },
+ {
+  "fr": "Ouvrir un fichier…",
+  "en": "Open a file…"
+ },
+ {
+  "fr": "Ce navigateur ne permet pas à une page d'écrire dans un dossier (seuls Chrome et Edge le font, et pas depuis une page intégrée à un autre site). Les parties restent dans le stockage du navigateur : pensez à les exporter (bouton Exporter) ; un fichier exporté s'ouvre avec Importer.",
+  "en": "This browser does not let a page write into a folder (only Chrome and Edge do, and not from a page embedded in another site). Games stay in the browser's storage: remember to export them (Export button); an exported file opens with Import."
+ },
+ {
+  "fr": "Ne plus proposer",
+  "en": "Don't ask again"
+ },
+ {
+  "fr": "Plus tard",
+  "en": "Later"
+ },
+ {
+  "fr": "Ne plus écrire de sauvegardes dans « {0} » ? Les fichiers déjà écrits restent dans le dossier.",
+  "en": "Stop writing backups to “{0}”? The files already written stay in the folder."
+ },
+ {
+  "fr": "Sauvegardes de secours dans « {0} »",
+  "en": "Backup files in “{0}”"
+ },
+ {
+  "fr": "Choisir le dossier…",
+  "en": "Choose the folder…"
+ },
+ {
+  "fr": "Changer de dossier…",
+  "en": "Change folder…"
+ },
+ {
+  "fr": "Autoriser « {0} »",
+  "en": "Allow “{0}”"
+ },
+ {
+  "fr": "Le navigateur garde les parties dans son propre stockage : un autre navigateur, un navigateur qui efface ses données ou, dans Firefox, une copie du jeu dans un autre dossier ne les voient pas. En plus, le jeu peut écrire les {0} de chaque partie dans un dossier de votre choix, en fichiers .json (à chaque tour et après vos ordres). Au lancement, si le navigateur n'a plus aucune partie, le jeu reprend la plus récente de ces sauvegardes.",
+  "en": "The browser keeps games in its own storage: another browser, a browser that clears its data or, in Firefox, a copy of the game in another folder does not see them. On top of that, the game can write the {0} of each game into a folder of your choice, as .json files (every turn and after your orders). At launch, if the browser no longer has any game, the game picks up the most recent of these backups."
+ },
+ {
+  "fr": "{0} derniers tours",
+  "en": "last {0} turns"
+ },
+ {
+  "fr": "Choisissez par exemple le dossier du jeu, ou un dossier « Sauvegardes » à côté. Le navigateur demande votre accord ; s'il le propose, choisissez « Autoriser à chaque visite » pour ne pas avoir à le redonner.",
+  "en": "Choose for example the game's folder, or a “Backups” folder next to it. The browser asks for your permission; if it offers it, choose “Allow on every visit” so you don't have to give it again."
+ },
+ {
+  "fr": "Le navigateur demande de nouveau votre accord pour écrire dans « {0} » : cliquez sur « Autoriser » (choisissez « Autoriser à chaque visite » s'il le propose). En attendant, aucune sauvegarde de secours n'est écrite.",
+  "en": "The browser asks again for your permission to write to “{0}”: click “Allow” (choose “Allow on every visit” if it offers it). Until then, no backup is written."
+ },
+ {
+  "fr": "Le dossier « {0} » ne répond plus (déplacé ou supprimé ?) : choisissez-en un autre.",
+  "en": "The folder “{0}” no longer responds (moved or deleted?): choose another one."
+ },
+ {
+  "fr": "Dossier : {0}{1}",
+  "en": "Folder: {0}{1}"
+ },
+ {
+  "fr": " · dernier fichier : {0}",
+  "en": " · last file: {0}"
+ },
+ {
+  "fr": "Aucune sauvegarde pour l'instant : la première s'écrit au prochain tour ou au prochain ordre.",
+  "en": "No backup yet: the first one is written at the next turn or the next order."
+ },
+ {
+  "fr": "{0} · {1} Ko",
+  "en": "{0} · {1} KB"
+ },
+ {
+  "fr": "Ouvrir",
+  "en": "Open"
+ },
+ {
+  "fr": "Les ordres se défont avec « Annuler » ({0}+{1}) jusqu'au tour suivant. La partie est enregistrée automatiquement dans ce navigateur ; « Exporter » en fait un fichier à conserver ailleurs. Dans Chrome et Edge, le jeu peut aussi écrire les cinq derniers tours de chaque partie dans un dossier de votre choix (menu « ⋯ », Sauvegardes de secours) : si le navigateur perd ses parties (données effacées, autre navigateur), le jeu reprend au lancement la plus récente de ces sauvegardes. À plusieurs sur le même appareil : « Nouvelle partie », onglet Adversaires, « Humain (même appareil) ».",
+  "en": "Orders can be undone with “Undo” ({0}+{1}) until the next turn. The game is saved automatically in this browser; “Export” turns it into a file you can keep elsewhere. In Chrome and Edge, the game can also write the last five turns of each game into a folder of your choice (“⋯” menu, Backup files): if the browser loses its games (data cleared, another browser), the game picks up the most recent of these backups at launch. For several players on the same device: “New game”, Opponents tab, “Human (same device)”.",
+  "old": "Les ordres se défont avec « Annuler » ({0}+{1}) jusqu'au tour suivant. La partie est enregistrée automatiquement dans ce navigateur ; « Exporter » en fait un fichier à conserver ailleurs. À plusieurs sur le même appareil : « Nouvelle partie », onglet Adversaires, « Humain (même appareil) »."
+ },
+ {
+  "fr": "Aucune sauvegarde de secours dans ce dossier",
+  "en": "No backup in this folder"
+ },
+ {
+  "fr": "Pas de sauvegardes de secours dans ce navigateur (seuls Chrome et Edge peuvent écrire dans un dossier) : exportez vos parties.",
+  "en": "No backup files in this browser (only Chrome and Edge can write into a folder): export your games."
+ },
+ {
+  "fr": "Partie retrouvée dans la sauvegarde de secours « {0} ».",
+  "en": "Game recovered from the backup “{0}”."
+ },
+ {
+  "fr": "Sauvegardes de secours : les 5 derniers tours de chaque partie dans « {0} ». {1}",
+  "en": "Backup files: the last 5 turns of each game in “{0}”. {1}"
+ },
+ {
+  "fr": "Voir les sauvegardes",
+  "en": "See the backups"
+ },
+ {
+  "fr": "Sauvegardes de secours dans « {0} » : le navigateur demande votre accord. {1}",
+  "en": "Backup files in “{0}”: the browser asks for your permission. {1}"
+ },
+ {
+  "fr": "Autoriser",
+  "en": "Allow"
+ },
+ {
+  "fr": "Autoriser et reprendre la dernière partie",
+  "en": "Allow and resume the last game"
+ },
+ {
+  "fr": "Aucun dossier de sauvegardes de secours.",
+  "en": "No backup folder."
+ },
+ {
+  "fr": "Aucune partie dans ce navigateur.",
+  "en": "No game in this browser."
+ },
+ {
+  "fr": "Choisir un dossier…",
+  "en": "Choose a folder…"
+ },
+ {
+  "fr": "Reprendre depuis un dossier de sauvegardes…",
+  "en": "Resume from a backup folder…"
+ },
+ {
+  "fr": "En savoir plus",
+  "en": "Learn more"
+ }
+]

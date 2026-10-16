@@ -1,0 +1,212 @@
+[
+ {
+  "fr": "{0} ne trouve aucun passage à travers {1} : ordres de route annulés.",
+  "en": "{0} finds no way through {1}: route orders cancelled.",
+  "ctx": "engine/movement.ts:170 call:msg"
+ },
+ {
+  "fr": "un nuage sombre",
+  "en": "a dark cloud",
+  "ctx": "engine/movement.ts:170 call:msg engine/movement.ts:178 call:msg"
+ },
+ {
+  "fr": "{0} s'arrête : {1} lui barre la route, les nuages sombres sont infranchissables.",
+  "en": "{0} stops: {1} bars the way, dark clouds are impassable.",
+  "ctx": "engine/movement.ts:178 call:msg"
+ },
+ {
+  "fr": "Un paquet de minerais lancé vers {0} s'est perdu dans {1} : les nuages sombres sont infranchissables.",
+  "en": "A mineral packet flung at {0} was lost in {1}: dark clouds are impassable.",
+  "ctx": "engine/movement.ts:536 prop:text"
+ },
+ {
+  "fr": "Bras spiral",
+  "en": "Spiral arm",
+  "ctx": "engine/shape.ts:13 prop:arm"
+ },
+ {
+  "fr": "Pouponnière d'étoiles",
+  "en": "Stellar nursery",
+  "ctx": "engine/shape.ts:14 prop:nursery"
+ },
+ {
+  "fr": "Superbulle",
+  "en": "Superbubble",
+  "ctx": "engine/shape.ts:15 prop:bubble"
+ },
+ {
+  "fr": "Galaxie spirale",
+  "en": "Spiral galaxy",
+  "ctx": "engine/shape.ts:17 prop:spiral"
+ },
+ {
+  "fr": "Galaxie elliptique",
+  "en": "Elliptical galaxy",
+  "ctx": "engine/shape.ts:18 prop:elliptical"
+ },
+ {
+  "fr": "Galaxie irrégulière",
+  "en": "Irregular galaxy",
+  "ctx": "engine/shape.ts:19 prop:irregular"
+ },
+ {
+  "fr": "Un secteur de bras spiral, comme le voisinage du Soleil (un bras fait des milliers d'années-lumière de large : la carte en montre un bord) : des étoiles denses d'un côté, plus rares vers le vide entre les bras, des associations d'étoiles jeunes, des superbulles soufflées par d'anciennes supernovae, la bande de poussière du bras coupée de quelques passages, et des nuages sombres infranchissables qui bornent la carte.",
+  "en": "A sector of a spiral arm, like the Sun's neighborhood (an arm is thousands of light-years wide: the map shows one edge of it): dense stars on one side, thinning out towards the gap between the arms, associations of young stars, superbubbles blown by old supernovae, the arm's dust lane broken by a few passes, and impassable dark clouds closing the map.",
+  "ctx": "engine/shape.ts:22 prop:arm"
+ },
+ {
+  "fr": "Un complexe de nuages moléculaires où naissent les étoiles : amas jeunes et serrés, couloirs entre des nuages sombres infranchissables. Des passages obligés à tenir.",
+  "en": "A molecular cloud complex where stars are born: young, tight clusters, corridors between impassable dark clouds. Chokepoints to hold.",
+  "ctx": "engine/shape.ts:23 prop:nursery"
+ },
+ {
+  "fr": "Une cavité de plusieurs centaines d'années-lumière soufflée par des supernovae : moins d'étoiles au centre, un anneau dense d'étoiles nées dans sa coquille, des nuages sombres au-delà.",
+  "en": "A cavity several hundred light-years across, blown by supernovae: fewer stars in the middle, a dense ring of stars born in its shell, dark clouds beyond.",
+  "ctx": "engine/shape.ts:24 prop:bubble"
+ },
+ {
+  "fr": "le Linceul",
+  "en": "the Shroud",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Gueule de Charbon",
+  "en": "the Coal Maw",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Sac à Charbon",
+  "en": "the Coalsack",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "l'Abîme de Tantale",
+  "en": "the Abyss of Tantalus",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Voile des Noyés",
+  "en": "the Veil of the Drowned",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Mâchoire Noire",
+  "en": "the Black Jaw",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Mur des Silences",
+  "en": "the Wall of Silences",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "les Cendres d'Érèbe",
+  "en": "the Ashes of Erebus",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Nuit sans Retour",
+  "en": "the Night of No Return",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Gouffre de Sel",
+  "en": "the Salt Chasm",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Tombe des Pilotes",
+  "en": "the Pilots' Tomb",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "l'Ombre de Charon",
+  "en": "the Shadow of Charon",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Forge Éteinte",
+  "en": "the Dead Forge",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Grand Suaire",
+  "en": "the Great Pall",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Puits des Veuves",
+  "en": "the Widows' Well",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "la Muraille de Suie",
+  "en": "the Soot Rampart",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "les Dents du Néant",
+  "en": "the Teeth of the Void",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "le Cimetière de Kaeth",
+  "en": "the Graveyard of Kaeth",
+  "ctx": "engine/shape.ts:32"
+ },
+ {
+  "fr": "{0} est infranchissable : étape placée à son bord.",
+  "en": "{0} is impassable: waypoint placed at its edge.",
+  "ctx": "ui/actions.ts:43 call:notify"
+ },
+ {
+  "fr": "Contournement ({0}, {1})",
+  "en": "Detour ({0}, {1})",
+  "ctx": "ui/command.tsx:65"
+ },
+ {
+  "fr": "Région de la galaxie",
+  "en": "Region of the galaxy",
+  "ctx": "ui/dialogs/misc.tsx:204 jsx ui/dialogs/newgame.tsx:93 jsx"
+ },
+ {
+  "fr": "Stars! répartit ses planètes uniformément dans un carré. Une carte de Constellations couvre de 400 à 2 000 années-lumière : bien trop peu pour voir une galaxie entière (la Voie lactée en fait cent mille). Une nouvelle partie se déroule donc dans une région d'une galaxie, comme le voisinage du Soleil : un {0} (des milliers d'années-lumière de large : la carte en montre un bord, dense d'un côté, plus clairsemé vers le vide entre les bras, avec sa bande de poussière coupée de quelques passages), une {1} (des amas jeunes entre des nuages sombres : des couloirs à tenir) ou une {2} (une cavité soufflée par des supernovae, entourée d'un anneau d'étoiles). La forme carrée reste au choix. Même nombre de planètes, mêmes écarts minimaux ; les mondes de départ ont des voisins et un peu de place avant le premier nuage ; la carte montre la densité des étoiles comme une lueur. Pour retrouver le jeu d'origine d'un coup, cochez « Expérience proche de Stars! » à la création : galaxie carrée, aucune règle Constellations, flottes identifiées dès qu'elles sont vues, trous de ver franchissables sans recherche, victoire au plus tôt après 50 ans.",
+  "en": "Stars! spreads its planets evenly across a square. A Constellations map spans 400 to 2,000 light-years: far too little to see a whole galaxy (the Milky Way is a hundred thousand across). A new game therefore takes place in a region of a galaxy, like the Sun's neighborhood: a {0} (thousands of light-years wide: the map shows one edge of it, dense on one side, sparser towards the gap between the arms, with its dust lane broken by a few passes), a {1} (young clusters between dark clouds: corridors to hold) or a {2} (a cavity blown by supernovae, ringed with stars). The square shape is still available. Same number of planets, same minimum spacing; starting worlds have neighbors and some room before the first cloud; the map shows the density of stars as a glow. To get the original game back in one go, check “Experience close to Stars!” when creating the game: square galaxy, no Constellations rules, fleets identified as soon as they are seen, wormholes traversable without research, victory no earlier than after 50 years.",
+  "ctx": "ui/dialogs/misc.tsx:205 jsx"
+ },
+ {
+  "fr": "bras spiral",
+  "en": "spiral arm",
+  "ctx": "ui/dialogs/misc.tsx:205 jsx"
+ },
+ {
+  "fr": "pouponnière d'étoiles",
+  "en": "stellar nursery",
+  "ctx": "ui/dialogs/misc.tsx:205 jsx"
+ },
+ {
+  "fr": "superbulle",
+  "en": "superbubble",
+  "ctx": "ui/dialogs/misc.tsx:205 jsx"
+ },
+ {
+  "fr": "{0} Des nuages moléculaires aux noms peu engageants (le Linceul, la Gueule de Charbon, la Tombe des Pilotes...) bornent la carte et la découpent. Ils sont infranchissables : à vitesse Warp, chaque grain de leur poussière frappe comme un obus. Les flottes les contournent d'elles-mêmes : la route passe par des points de l'espace (« Contournement »), comptés dans la distance, le carburant et la durée affichés. Une étape posée dans un nuage glisse à son bord ; un paquet de minerais lancé à travers est perdu. Aucune planète ni aucun trou de ver ne s'y trouve, et aucun monde n'est enfermé derrière. Les passages entre deux nuages sont les points à tenir d'une carte.",
+  "en": "{0} Molecular clouds with unwelcoming names (the Shroud, the Coal Maw, the Pilots' Tomb...) close the map and cut it up. They are impassable: at Warp speeds, every grain of their dust strikes like a shell. Fleets go around them on their own: the route runs through points of space (“Detour”), counted in the distance, fuel and duration shown. A waypoint placed in a cloud slides to its edge; a mineral packet flung through one is lost. No planet or wormhole lies inside them, and no world is shut away behind them. The passes between two clouds are the ground to hold on a map.",
+  "ctx": "ui/dialogs/misc.tsx:206 jsx"
+ },
+ {
+  "fr": "Nuages sombres.",
+  "en": "Dark clouds.",
+  "ctx": "ui/dialogs/misc.tsx:206 jsx"
+ },
+ {
+  "fr": "Nuage sombre, infranchissable : à vitesse Warp, chaque grain de poussière frappe comme un obus. Les flottes le contournent.",
+  "en": "Dark cloud, impassable: at Warp speeds, every grain of dust strikes like a shell. Fleets go around it.",
+  "ctx": "ui/map.tsx:840 prop:text"
+ },
+ {
+  "fr": "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)",
+  "en": "Quick game: Terrans vs. three empires, in a spiral arm (small map)",
+  "ctx": "ui/welcome.tsx:42 call:notify"
+ }
+]

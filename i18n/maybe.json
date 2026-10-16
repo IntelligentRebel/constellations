@@ -1,0 +1,2317 @@
+[
+ {
+  "key": "device",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:10 prop:tags",
+   "data/stories.ts:11 prop:tags",
+   "data/stories.ts:11 prop:tags",
+   "data/stories.ts:11 prop:tags"
+  ]
+ },
+ {
+  "key": "crewed",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:11 prop:tags",
+   "data/stories.ts:11 prop:tags",
+   "data/stories.ts:11 prop:tags",
+   "data/stories.ts:12 prop:tags"
+  ]
+ },
+ {
+  "key": "nature",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:15 prop:tags",
+   "data/stories.ts:15 prop:tags",
+   "data/stories.ts:15 prop:tags",
+   "data/stories.ts:15 prop:tags"
+  ]
+ },
+ {
+  "key": "ruins",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:16 prop:tags",
+   "data/stories.ts:16 prop:tags",
+   "data/stories.ts:16 prop:tags",
+   "data/stories.ts:16 prop:tags"
+  ]
+ },
+ {
+  "key": "well",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:32 prop:t",
+   "data/stories.ts:49 prop:t",
+   "data/stories.ts:64 prop:t",
+   "data/stories.ts:65 prop:t"
+  ]
+ },
+ {
+  "key": "crystals",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:34 prop:t",
+   "data/stories.ts:78 prop:t",
+   "data/stories.ts:94 prop:t"
+  ]
+ },
+ {
+  "key": "vein",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:49 prop:t",
+   "data/stories.ts:64 prop:t",
+   "data/stories.ts:79 prop:t",
+   "data/stories.ts:94 prop:t"
+  ]
+ },
+ {
+  "key": "climate",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:108 prop:t",
+   "data/stories.ts:109 prop:t"
+  ]
+ },
+ {
+  "key": "sarcophagus",
+  "kind": "str",
+  "refs": [
+   "data/stories.ts:110 prop:t"
+  ]
+ },
+ {
+  "key": "minelayer",
+  "kind": "str",
+  "refs": [
+   "engine/ai.ts:209 call:roleDesign",
+   "engine/ai.ts:214 call:count",
+   "engine/ai.ts:433",
+   "engine/ai.ts:434"
+  ]
+ },
+ {
+  "key": "picket",
+  "kind": "str",
+  "refs": [
+   "engine/ai.ts:524"
+  ]
+ },
+ {
+  "key": "vendetta",
+  "kind": "str",
+  "refs": [
+   "engine/ai3.ts:68 call:wants",
+   "engine/objectives.ts:141"
+  ]
+ },
+ {
+  "key": "cartographer",
+  "kind": "str",
+  "refs": [
+   "engine/ai3.ts:73 call:wants"
+  ]
+ },
+ {
+  "key": "architect",
+  "kind": "str",
+  "refs": [
+   "engine/ai3.ts:175 call:wants"
+  ]
+ },
+ {
+  "key": "leviathan",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:160",
+   "engine/guardians.ts:136 prop:3"
+  ]
+ },
+ {
+  "key": "dreadnought",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:160",
+   "engine/guardians.ts:136 prop:2"
+  ]
+ },
+ {
+  "key": "sentinel",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:160",
+   "engine/chains.ts:189 call:spawnGuardian",
+   "engine/guardians.ts:136 prop:1"
+  ]
+ },
+ {
+  "key": "builders",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:333"
+  ]
+ },
+ {
+  "key": "seers",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:333"
+  ]
+ },
+ {
+  "key": "gardens",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:333"
+  ]
+ },
+ {
+  "key": "navigators",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:333"
+  ]
+ },
+ {
+  "key": "library",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:333"
+  ]
+ },
+ {
+  "key": "vault",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:365 call:add",
+   "engine/secrets.ts:234 call:anomaly"
+  ]
+ },
+ {
+  "key": "fragment",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:371 call:add"
+  ]
+ },
+ {
+  "key": "sim",
+  "kind": "str",
+  "refs": [
+   "engine/battle.ts:597",
+   "ui/dialogs/designer.tsx:69 attr:key"
+  ]
+ },
+ {
+  "key": "first",
+  "kind": "str",
+  "refs": [
+   "engine/cataclysms.ts:79 call:rngOf"
+  ]
+ },
+ {
+  "key": "new",
+  "kind": "str",
+  "refs": [
+   "engine/cataclysms.ts:81 call:rngOf",
+   "engine/dilemmas.ts:123 call:rngOf"
+  ]
+ },
+ {
+  "key": "forced",
+  "kind": "str",
+  "refs": [
+   "engine/cataclysms.ts:234 call:rngOf"
+  ]
+ },
+ {
+  "key": "quarantine",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:27"
+  ]
+ },
+ {
+  "key": "open",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:28",
+   "ui/dialogs/research.tsx:112"
+  ]
+ },
+ {
+  "key": "embrace",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:35"
+  ]
+ },
+ {
+  "key": "exile",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:36"
+  ]
+ },
+ {
+  "key": "ai",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:47 call:rngOf",
+   "engine/newgame.ts:372 call:seedFromString"
+  ]
+ },
+ {
+  "key": "signal",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:52"
+  ]
+ },
+ {
+  "key": "plague",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:52"
+  ]
+ },
+ {
+  "key": "prophet",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:52"
+  ]
+ },
+ {
+  "key": "step",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:102 call:rngOf"
+  ]
+ },
+ {
+  "key": "{0} mondes conquis",
+  "kind": "tpl",
+  "refs": [
+   "engine/chronicle.ts:130 call:best"
+  ]
+ },
+ {
+  "key": "{0} niveaux",
+  "kind": "tpl",
+  "refs": [
+   "engine/chronicle.ts:134 call:best"
+  ]
+ },
+ {
+  "key": "{0} mondes perdus",
+  "kind": "tpl",
+  "refs": [
+   "engine/chronicle.ts:136 call:best"
+  ]
+ },
+ {
+  "key": "wave",
+  "kind": "str",
+  "refs": [
+   "engine/crisis.ts:209 call:rngOf"
+  ]
+ },
+ {
+  "key": "nexus",
+  "kind": "str",
+  "refs": [
+   "engine/crisis.ts:290 call:rngOf",
+   "engine/crisis.ts:303 call:researchStory"
+  ]
+ },
+ {
+  "key": "design ",
+  "kind": "str",
+  "refs": [
+   "engine/design.ts:356"
+  ]
+ },
+ {
+  "key": "settle",
+  "kind": "str",
+  "refs": [
+   "engine/dilemmas.ts:149 call:rngOf"
+  ]
+ },
+ {
+  "key": "view",
+  "kind": "str",
+  "refs": [
+   "engine/dilemmas.ts:161 call:rngOf"
+  ]
+ },
+ {
+  "key": "network",
+  "kind": "str",
+  "refs": [
+   "engine/espionage.ts:173 call:add"
+  ]
+ },
+ {
+  "key": "fresh",
+  "kind": "str",
+  "refs": [
+   "engine/espionage.ts:174 call:add"
+  ]
+ },
+ {
+  "key": "hive",
+  "kind": "str",
+  "refs": [
+   "engine/guardians.ts:136 prop:2"
+  ]
+ },
+ {
+  "key": "assess{0}",
+  "kind": "tpl",
+  "refs": [
+   "engine/guardians.ts:242"
+  ]
+ },
+ {
+  "key": "g{0}:{1}",
+  "kind": "tpl",
+  "refs": [
+   "engine/guardians.ts:272"
+  ]
+ },
+ {
+  "key": "emigration",
+  "kind": "str",
+  "refs": [
+   "engine/logistics.ts:43 call:push"
+  ]
+ },
+ {
+  "key": "terrain",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "doctrines",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53",
+   "ui/nav.tsx:27 call:scrollTo",
+   "ui/todo.ts:38 call:scrollTo"
+  ]
+ },
+ {
+  "key": "guardians",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "origins",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "espionage",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "debris",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "veterans",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "acts",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "cataclysms",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "dilemmas",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "governors",
+  "kind": "str",
+  "refs": [
+   "engine/newgame.ts:53"
+  ]
+ },
+ {
+  "key": "conqueror",
+  "kind": "str",
+  "refs": [
+   "engine/objectives.ts:141"
+  ]
+ },
+ {
+  "key": "hunter",
+  "kind": "str",
+  "refs": [
+   "engine/objectives.ts:141"
+  ]
+ },
+ {
+  "key": "corsair",
+  "kind": "str",
+  "refs": [
+   "engine/objectives.ts:141"
+  ]
+ },
+ {
+  "key": "scholar",
+  "kind": "str",
+  "refs": [
+   "engine/objectives.ts:142"
+  ]
+ },
+ {
+  "key": "polymath",
+  "kind": "str",
+  "refs": [
+   "engine/objectives.ts:142"
+  ]
+ },
+ {
+  "key": "cinq arches pleines",
+  "kind": "str",
+  "refs": [
+   "engine/origins.ts:50 prop:pros"
+  ]
+ },
+ {
+  "key": "{0}-{1}-{2}.{3}.json",
+  "kind": "tpl",
+  "refs": [
+   "engine/pbem.ts:103"
+  ]
+ },
+ {
+  "key": "tour",
+  "kind": "str",
+  "refs": [
+   "engine/pbem.ts:103"
+  ]
+ },
+ {
+  "key": "ordres",
+  "kind": "str",
+  "refs": [
+   "engine/pbem.ts:103"
+  ]
+ },
+ {
+  "key": "pbem-{0}-{1}",
+  "kind": "tpl",
+  "refs": [
+   "engine/pbem.ts:118"
+  ]
+ },
+ {
+  "key": "emerge",
+  "kind": "str",
+  "refs": [
+   "engine/pirates.ts:87 call:rngOf"
+  ]
+ },
+ {
+  "key": "plunder",
+  "kind": "str",
+  "refs": [
+   "engine/pirates.ts:281 call:rngOf"
+  ]
+ },
+ {
+  "key": "lair",
+  "kind": "str",
+  "refs": [
+   "engine/pirates.ts:363 call:rngOf",
+   "engine/pirates.ts:382 call:researchStory"
+  ]
+ },
+ {
+  "key": "lair{0}",
+  "kind": "tpl",
+  "refs": [
+   "engine/pirates.ts:451"
+  ]
+ },
+ {
+  "key": "{0}°C",
+  "kind": "tpl",
+  "refs": [
+   "engine/race.ts:422"
+  ]
+ },
+ {
+  "key": "echo",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:130 call:clue"
+  ]
+ },
+ {
+  "key": "drift",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:142 call:clue"
+  ]
+ },
+ {
+  "key": "shepherd",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:233 call:spawnGuardian"
+  ]
+ },
+ {
+  "key": "timing",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:235 call:anomaly"
+  ]
+ },
+ {
+  "key": "mind",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:237 call:spawnGuardian"
+  ]
+ },
+ {
+  "key": "nest",
+  "kind": "str",
+  "refs": [
+   "engine/secrets.ts:241 call:spawnGuardian"
+  ]
+ },
+ {
+  "key": "seal{0}",
+  "kind": "tpl",
+  "refs": [
+   "engine/secrets.ts:432"
+  ]
+ },
+ {
+  "key": "unload",
+  "kind": "str",
+  "refs": [
+   "engine/tasks.ts:170"
+  ]
+ },
+ {
+  "key": "dunnage",
+  "kind": "str",
+  "refs": [
+   "engine/tasks.ts:170"
+  ]
+ },
+ {
+  "key": "defense",
+  "kind": "str",
+  "refs": [
+   "engine/turn.ts:66 prop:defenses",
+   "engine/turn.ts:66 prop:autoDefenses",
+   "engine/turn.ts:143"
+  ]
+ },
+ {
+  "key": "retro",
+  "kind": "str",
+  "refs": [
+   "engine/turn.ts:470"
+  ]
+ },
+ {
+  "key": "constellations-{0}-{1}.json",
+  "kind": "tpl",
+  "refs": [
+   "ui/app.tsx:44 prop:file"
+  ]
+ },
+ {
+  "key": "true",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:62 attr:aria-hidden",
+   "ui/app.tsx:88 attr:aria-hidden",
+   "ui/chronicle.tsx:102 attr:aria-hidden",
+   "ui/dialogs/index.tsx:72 attr:aria-hidden"
+  ]
+ },
+ {
+  "key": "hgood",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:67 attr:class"
+  ]
+ },
+ {
+  "key": "hbad",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:67 attr:class"
+  ]
+ },
+ {
+  "key": "smooth",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:109 prop:behavior",
+   "ui/app.tsx:110 prop:behavior",
+   "ui/app.tsx:114 prop:behavior",
+   "ui/nav.tsx:18 prop:behavior"
+  ]
+ },
+ {
+  "key": "tab",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:175 attr:class"
+  ]
+ },
+ {
+  "key": " on",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:175",
+   "ui/app.tsx:182",
+   "ui/chronicle.tsx:128",
+   "ui/chronicle.tsx:192"
+  ]
+ },
+ {
+  "key": "ghost",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:182 attr:class",
+   "ui/components.tsx:34 attr:class",
+   "ui/pages.tsx:58 attr:class"
+  ]
+ },
+ {
+  "key": "app tab-",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:311"
+  ]
+ },
+ {
+  "key": "cur",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:372 attr:class",
+   "ui/dialogs/research.tsx:62"
+  ]
+ },
+ {
+  "key": "done",
+  "kind": "str",
+  "refs": [
+   "ui/app.tsx:372 attr:class",
+   "ui/dialogs/production.tsx:170",
+   "ui/empire.tsx:196 attr:class",
+   "ui/empire.tsx:212 attr:class"
+  ]
+ },
+ {
+  "key": "lowpass",
+  "kind": "str",
+  "refs": [
+   "ui/audio.ts:69",
+   "ui/audio.ts:104",
+   "ui/audio.ts:170",
+   "ui/audio.ts:193 call:noise"
+  ]
+ },
+ {
+  "key": "sine",
+  "kind": "str",
+  "refs": [
+   "ui/audio.ts:72",
+   "ui/audio.ts:85",
+   "ui/audio.ts:86",
+   "ui/audio.ts:113"
+  ]
+ },
+ {
+  "key": "triangle",
+  "kind": "str",
+  "refs": [
+   "ui/audio.ts:72",
+   "ui/audio.ts:191 call:tone",
+   "ui/audio.ts:191 call:tone",
+   "ui/audio.ts:195 call:tone"
+  ]
+ },
+ {
+  "key": "bandpass",
+  "kind": "str",
+  "refs": [
+   "ui/audio.ts:174"
+  ]
+ },
+ {
+  "key": "epi",
+  "kind": "str",
+  "refs": [
+   "ui/chronicle.tsx:89 attr:class"
+  ]
+ },
+ {
+  "key": " dead",
+  "kind": "str",
+  "refs": [
+   "ui/chronicle.tsx:89"
+  ]
+ },
+ {
+  "key": " won",
+  "kind": "str",
+  "refs": [
+   "ui/chronicle.tsx:89"
+  ]
+ },
+ {
+  "key": "chip",
+  "kind": "str",
+  "refs": [
+   "ui/chronicle.tsx:128 attr:class"
+  ]
+ },
+ {
+  "key": "<p>{0}</p>",
+  "kind": "tpl",
+  "refs": [
+   "ui/chronicle.tsx:158 call:map"
+  ]
+ },
+ {
+  "key": "constellations-chronique-{0}-{1}.html",
+  "kind": "tpl",
+  "refs": [
+   "ui/chronicle.tsx:180 prop:file"
+  ]
+ },
+ {
+  "key": "ach",
+  "kind": "str",
+  "refs": [
+   "ui/chronicle.tsx:192 attr:class"
+  ]
+ },
+ {
+  "key": "small ",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:30 attr:class",
+   "ui/diplomacy.tsx:38 attr:class",
+   "ui/discoveries.tsx:86 attr:class",
+   "ui/factions.tsx:83 attr:class"
+  ]
+ },
+ {
+  "key": "red",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:30",
+   "ui/dialogs/misc.tsx:113",
+   "ui/diplomacy.tsx:30 attr:class",
+   "ui/diplomacy.tsx:38"
+  ]
+ },
+ {
+  "key": "muted",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:30",
+   "ui/dialogs/misc.tsx:113",
+   "ui/dialogs/research.tsx:67 attr:class",
+   "ui/discoveries.tsx:252"
+  ]
+ },
+ {
+  "key": " clickable",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:31",
+   "ui/command.tsx:32"
+  ]
+ },
+ {
+  "key": "button",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:31 attr:role",
+   "ui/tutorial.tsx:1217 call:closest"
+  ]
+ },
+ {
+  "key": "small muted",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:32 attr:class"
+  ]
+ },
+ {
+  "key": "bad",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:58 attr:class",
+   "ui/inspector.tsx:79 attr:class",
+   "ui/inspector.tsx:403",
+   "ui/pages.tsx:221 attr:class"
+  ]
+ },
+ {
+  "key": "on",
+  "kind": "str",
+  "refs": [
+   "ui/command.tsx:101 attr:class",
+   "ui/components.tsx:142 attr:class",
+   "ui/dialogs/designer.tsx:136 attr:class",
+   "ui/dialogs/designer.tsx:136 attr:class"
+  ]
+ },
+ {
+  "key": "tile",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:15 attr:class"
+  ]
+ },
+ {
+  "key": " closed",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:15",
+   "ui/sidebar.tsx:76"
+  ]
+ },
+ {
+  "key": "bar",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:29 attr:class"
+  ]
+ },
+ {
+  "key": " warn",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:29"
+  ]
+ },
+ {
+  "key": "px",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:29 prop:height",
+   "ui/components.tsx:107 prop:width",
+   "ui/components.tsx:132 prop:width",
+   "ui/dialogs/battle.tsx:117 prop:width"
+  ]
+ },
+ {
+  "key": " bad",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:34"
+  ]
+ },
+ {
+  "key": "warpbar",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:56 attr:class"
+  ]
+ },
+ {
+  "key": " gate",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:56",
+   "ui/components.tsx:69"
+  ]
+ },
+ {
+  "key": "seg",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:69"
+  ]
+ },
+ {
+  "key": " over",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:69"
+  ]
+ },
+ {
+  "key": " portal",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:69"
+  ]
+ },
+ {
+  "key": "row ",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:112 attr:class"
+  ]
+ },
+ {
+  "key": "page ",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:123 attr:class",
+   "ui/pages.tsx:33 attr:class"
+  ]
+ },
+ {
+  "key": "modal ",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:132 attr:class"
+  ]
+ },
+ {
+  "key": "wide ",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:132"
+  ]
+ },
+ {
+  "key": "num ",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:186",
+   "ui/dialogs/misc.tsx:113 attr:class"
+  ]
+ },
+ {
+  "key": "sortable",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:186 attr:class"
+  ]
+ },
+ {
+  "key": " sorted",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:186"
+  ]
+ },
+ {
+  "key": "ascending",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:187"
+  ]
+ },
+ {
+  "key": "descending",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:187"
+  ]
+ },
+ {
+  "key": "small ghost",
+  "kind": "str",
+  "refs": [
+   "ui/components.tsx:228 attr:class"
+  ]
+ },
+ {
+  "key": "cbld",
+  "kind": "str",
+  "refs": [
+   "ui/culture.tsx:32 attr:class"
+  ]
+ },
+ {
+  "key": " strong",
+  "kind": "str",
+  "refs": [
+   "ui/culture.tsx:37"
+  ]
+ },
+ {
+  "key": "terr-note small",
+  "kind": "str",
+  "refs": [
+   "ui/culture.tsx:61 attr:class"
+  ]
+ },
+ {
+  "key": " foreign",
+  "kind": "str",
+  "refs": [
+   "ui/culture.tsx:61"
+  ]
+ },
+ {
+  "key": "primary",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/backups.tsx:45 attr:class",
+   "ui/dialogs/index.tsx:72 attr:class",
+   "ui/dialogs/prefs.tsx:23 attr:class",
+   "ui/tutorial.tsx:1253 attr:class"
+  ]
+ },
+ {
+  "key": "short",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/backups.tsx:59 prop:dateStyle",
+   "ui/dialogs/backups.tsx:59 prop:timeStyle"
+  ]
+ },
+ {
+  "key": "vtok",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/battle.tsx:126 attr:class"
+  ]
+ },
+ {
+  "key": " sel",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/battle.tsx:126",
+   "ui/dialogs/reports.tsx:128",
+   "ui/sidebar.tsx:114",
+   "ui/sidebar.tsx:127"
+  ]
+ },
+ {
+  "key": " dying",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/battle.tsx:126"
+  ]
+ },
+ {
+  "key": "{0} ×{1}",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/battle.tsx:126 attr:title",
+   "ui/techinfo.tsx:191 call:map"
+  ]
+ },
+ {
+  "key": "cmp",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:70 attr:key"
+  ]
+ },
+ {
+  "key": "cmpe",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:107 attr:key"
+  ]
+ },
+ {
+  "key": "se",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:159 prop:key"
+  ]
+ },
+ {
+  "key": "so",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:160 prop:key"
+  ]
+ },
+ {
+  "key": "stations",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:160 prop:label",
+   "ui/dialogs/production.tsx:70"
+  ]
+ },
+ {
+  "key": "W{0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/designer.tsx:219 prop:show"
+  ]
+ },
+ {
+  "key": "{0} R",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/designer.tsx:227 prop:show"
+  ]
+ },
+ {
+  "key": "cmp-v l",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:269 attr:class"
+  ]
+ },
+ {
+  "key": " win",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:269",
+   "ui/dialogs/designer.tsx:273"
+  ]
+ },
+ {
+  "key": "win",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:270 attr:class",
+   "ui/dialogs/designer.tsx:272 attr:class"
+  ]
+ },
+ {
+  "key": "cmp-v r",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:273 attr:class"
+  ]
+ },
+ {
+  "key": " kt",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:341 jsx",
+   "ui/pages.tsx:215 attr:unit"
+  ]
+ },
+ {
+  "key": " filled",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:345"
+  ]
+ },
+ {
+  "key": " req",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:345"
+  ]
+ },
+ {
+  "key": " hl",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:345",
+   "ui/dialogs/designer.tsx:487",
+   "ui/dialogs/misc.tsx:75",
+   "ui/diplomacy.tsx:129"
+  ]
+ },
+ {
+  "key": "na",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/designer.tsx:487"
+  ]
+ },
+ {
+  "key": "mg",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/fleetops.tsx:62",
+   "ui/dialogs/fleetops.tsx:69"
+  ]
+ },
+ {
+  "key": "kt",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/fleetops.tsx:62",
+   "ui/dialogs/fleetops.tsx:69"
+  ]
+ },
+ {
+  "key": "race-{0}.json",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/index.tsx:47 prop:file",
+   "ui/dialogs/newgame.tsx:84 prop:file"
+  ]
+ },
+ {
+  "key": "dv",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/index.tsx:50 attr:key"
+  ]
+ },
+ {
+  "key": "dist",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:104 call:useSorted",
+   "ui/dialogs/misc.tsx:107 call:th",
+   "ui/discoveries.tsx:251 call:th",
+   "ui/empire.tsx:94 call:wth"
+  ]
+ },
+ {
+  "key": "pop",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:107 call:th",
+   "ui/pages.tsx:218 attr:initial"
+  ]
+ },
+ {
+  "key": "def",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:107 call:th"
+  ]
+ },
+ {
+  "key": "sb",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:107 call:th"
+  ]
+ },
+ {
+  "key": "year",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:107 call:th"
+  ]
+ },
+ {
+  "key": "green",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:113",
+   "ui/dialogs/reports.tsx:148 attr:class",
+   "ui/diplomacy.tsx:30 attr:class",
+   "ui/diplomacy.tsx:38"
+  ]
+ },
+ {
+  "key": "chk",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:325 attr:class",
+   "ui/dialogs/misc.tsx:328 attr:class"
+  ]
+ },
+ {
+  "key": " locked",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:325",
+   "ui/dialogs/misc.tsx:328",
+   "ui/dialogs/misc.tsx:331"
+  ]
+ },
+ {
+  "key": "chk rule",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/misc.tsx:331 attr:class"
+  ]
+ },
+ {
+  "key": "races",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:40 call:seedFromString"
+  ]
+ },
+ {
+  "key": "preset",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:181 attr:class"
+  ]
+ },
+ {
+  "key": "du ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/production.tsx:92 jsx"
+  ]
+ },
+ {
+  "key": "sel ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/production.tsx:149",
+   "ui/dialogs/production.tsx:170",
+   "ui/dialogs/research.tsx:62",
+   "ui/inspector.tsx:403"
+  ]
+ },
+ {
+  "key": "dis ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/production.tsx:149"
+  ]
+ },
+ {
+  "key": "auto ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/production.tsx:149",
+   "ui/dialogs/production.tsx:170"
+  ]
+ },
+ {
+  "key": "blocked",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/production.tsx:170"
+  ]
+ },
+ {
+  "key": "wizard",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/race.tsx:60 attr:cls"
+  ]
+ },
+ {
+  "key": "adv ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/race.tsx:61 attr:class"
+  ]
+ },
+ {
+  "key": "neg",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/race.tsx:61"
+  ]
+ },
+ {
+  "key": " dis",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/race.tsx:118"
+  ]
+ },
+ {
+  "key": "num",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/reports.tsx:38 attr:class",
+   "ui/dialogs/reports.tsx:39 attr:class"
+  ]
+ },
+ {
+  "key": "{0}-{1}.csv",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/reports.tsx:42 call:saveFile"
+  ]
+ },
+ {
+  "key": "messages",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/reports.tsx:50 call:useState"
+  ]
+ },
+ {
+  "key": "res",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/reports.tsx:123 call:th"
+  ]
+ },
+ {
+  "key": "me",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/reports.tsx:128",
+   "ui/victory.tsx:96 attr:class"
+  ]
+ },
+ {
+  "key": " go",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/reports.tsx:128",
+   "ui/dialogs/reports.tsx:177",
+   "ui/pages.tsx:148"
+  ]
+ },
+ {
+  "key": "good",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:67 attr:class",
+   "ui/inspector.tsx:79 attr:class",
+   "ui/pages.tsx:221 attr:class",
+   "ui/pages.tsx:300 attr:class"
+  ]
+ },
+ {
+  "key": "chosen",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:112"
+  ]
+ },
+ {
+  "key": "closed",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:112"
+  ]
+ },
+ {
+  "key": "later",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:112"
+  ]
+ },
+ {
+  "key": " pending",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:125"
+  ]
+ },
+ {
+  "key": "years",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:209 call:useSorted",
+   "ui/dialogs/research.tsx:221 call:th"
+  ]
+ },
+ {
+  "key": "field",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:221 call:th"
+  ]
+ },
+ {
+  "key": "pc ",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:232 attr:class"
+  ]
+ },
+ {
+  "key": "ont",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:239",
+   "ui/dialogs/research.tsx:239"
+  ]
+ },
+ {
+  "key": "upg",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:256 call:useState",
+   "ui/dialogs/research.tsx:280 call:map",
+   "ui/dialogs/research.tsx:283 call:th"
+  ]
+ },
+ {
+  "key": "lvl",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:272 call:useSorted",
+   "ui/dialogs/research.tsx:283 call:th"
+  ]
+ },
+ {
+  "key": "used",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/research.tsx:283 call:th"
+  ]
+ },
+ {
+  "key": " off",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/upgrade.tsx:32"
+  ]
+ },
+ {
+  "key": "yellow",
+  "kind": "str",
+  "refs": [
+   "ui/diplomacy.tsx:30 attr:class",
+   "ui/diplomacy.tsx:38",
+   "ui/discoveries.tsx:86",
+   "ui/discoveries.tsx:252 attr:class"
+  ]
+ },
+ {
+  "key": "exact",
+  "kind": "str",
+  "refs": [
+   "ui/diplomacy.tsx:137 attr:title"
+  ]
+ },
+ {
+  "key": "×{0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/diplomacy.tsx:137 jsx",
+   "ui/discoveries.tsx:86 jsx",
+   "ui/factions.tsx:83 jsx",
+   "ui/factions.tsx:119 jsx"
+  ]
+ },
+ {
+  "key": "chip small ",
+  "kind": "str",
+  "refs": [
+   "ui/diplomacy.tsx:139 attr:class"
+  ]
+ },
+ {
+  "key": " stale",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:65"
+  ]
+ },
+ {
+  "key": "primary mbtn",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:118 attr:class",
+   "ui/discoveries.tsx:119 attr:class",
+   "ui/missionui.tsx:125 attr:class",
+   "ui/missionui.tsx:127 attr:class"
+  ]
+ },
+ {
+  "key": " slow",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:118",
+   "ui/discoveries.tsx:119",
+   "ui/missionui.tsx:125",
+   "ui/missionui.tsx:127"
+  ]
+ },
+ {
+  "key": "{0} part {1}",
+  "kind": "tpl",
+  "refs": [
+   "ui/discoveries.tsx:133 call:notify"
+  ]
+ },
+ {
+  "key": "nt",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:160 jsx",
+   "ui/discoveries.tsx:182 jsx"
+  ]
+ },
+ {
+  "key": "natural",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:232 call:useSorted",
+   "ui/pages.tsx:440 call:useSorted"
+  ]
+ },
+ {
+  "key": "level",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:251 call:th"
+  ]
+ },
+ {
+  "key": "pct",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:251 call:th"
+  ]
+ },
+ {
+  "key": "status",
+  "kind": "str",
+  "refs": [
+   "ui/discoveries.tsx:251 call:th"
+  ]
+ },
+ {
+  "key": "loss",
+  "kind": "str",
+  "refs": [
+   "ui/empire.tsx:82 call:useSorted",
+   "ui/empire.tsx:94 call:wth"
+  ]
+ },
+ {
+  "key": "eff",
+  "kind": "str",
+  "refs": [
+   "ui/empire.tsx:94 call:wth"
+  ]
+ },
+ {
+  "key": " victory",
+  "kind": "str",
+  "refs": [
+   "ui/empire.tsx:182"
+  ]
+ },
+ {
+  "key": "failed",
+  "kind": "str",
+  "refs": [
+   "ui/empire.tsx:196 attr:class"
+  ]
+ },
+ {
+  "key": "engchart",
+  "kind": "str",
+  "refs": [
+   "ui/enginechart.tsx:28 attr:class"
+  ]
+ },
+ {
+  "key": " compact",
+  "kind": "str",
+  "refs": [
+   "ui/enginechart.tsx:28",
+   "ui/langpick.tsx:8",
+   "ui/missionui.tsx:189"
+  ]
+ },
+ {
+  "key": " ideal",
+  "kind": "str",
+  "refs": [
+   "ui/enginechart.tsx:46"
+  ]
+ },
+ {
+  "key": "end",
+  "kind": "str",
+  "refs": [
+   "ui/enginechart.tsx:54 attr:text-anchor"
+  ]
+ },
+ {
+  "key": "blk ",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:62 attr:class"
+  ]
+ },
+ {
+  "key": "rows",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:120 attr:cls",
+   "ui/inspector.tsx:328 attr:cls"
+  ]
+ },
+ {
+  "key": "rows empire-blk",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:235 attr:cls"
+  ]
+ },
+ {
+  "key": " ×{0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:273 jsx",
+   "ui/pages.tsx:225 jsx"
+  ]
+ },
+ {
+  "key": "blk prodblk",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:281 attr:class"
+  ]
+ },
+ {
+  "key": " open",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:281"
+  ]
+ },
+ {
+  "key": " old",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:316"
+  ]
+ },
+ {
+  "key": "hint",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:448 attr:class"
+  ]
+ },
+ {
+  "key": "crew",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:511 attr:cls"
+  ]
+ },
+ {
+  "key": "rank r",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:511 attr:class"
+  ]
+ },
+ {
+  "key": "stale",
+  "kind": "str",
+  "refs": [
+   "ui/intel.tsx:41 attr:class",
+   "ui/intel.tsx:52 attr:class",
+   "ui/victory.tsx:59 attr:class"
+  ]
+ },
+ {
+  "key": "vs ",
+  "kind": "str",
+  "refs": [
+   "ui/intel.tsx:77 attr:class",
+   "ui/intel.tsx:81 attr:class"
+  ]
+ },
+ {
+  "key": "up",
+  "kind": "str",
+  "refs": [
+   "ui/intel.tsx:77",
+   "ui/intel.tsx:81",
+   "ui/summary.tsx:64"
+  ]
+ },
+ {
+  "key": "down",
+  "kind": "str",
+  "refs": [
+   "ui/intel.tsx:77",
+   "ui/intel.tsx:81",
+   "ui/summary.tsx:64"
+  ]
+ },
+ {
+  "key": "middle",
+  "kind": "str",
+  "refs": [
+   "ui/map.tsx:191"
+  ]
+ },
+ {
+  "key": "{0}px",
+  "kind": "tpl",
+  "refs": [
+   "ui/map.tsx:193"
+  ]
+ },
+ {
+  "key": "right",
+  "kind": "str",
+  "refs": [
+   "ui/map.tsx:482"
+  ]
+ },
+ {
+  "key": "left",
+  "kind": "str",
+  "refs": [
+   "ui/map.tsx:482",
+   "ui/map.tsx:1215"
+  ]
+ },
+ {
+  "key": "grabbing",
+  "kind": "str",
+  "refs": [
+   "ui/map.tsx:1004 prop:cursor"
+  ]
+ },
+ {
+  "key": "grab",
+  "kind": "str",
+  "refs": [
+   "ui/map.tsx:1004 prop:cursor"
+  ]
+ },
+ {
+  "key": "red small",
+  "kind": "str",
+  "refs": [
+   "ui/missionui.tsx:138 attr:class",
+   "ui/missionui.tsx:141 attr:class",
+   "ui/pages.tsx:225"
+  ]
+ },
+ {
+  "key": "muted small",
+  "kind": "str",
+  "refs": [
+   "ui/missionui.tsx:138 attr:class",
+   "ui/missionui.tsx:141 attr:class",
+   "ui/pages.tsx:225"
+  ]
+ },
+ {
+  "key": "mission-row haul",
+  "kind": "str",
+  "refs": [
+   "ui/missionui.tsx:189 attr:class"
+  ]
+ },
+ {
+  "key": "discoveries",
+  "kind": "str",
+  "refs": [
+   "ui/nav.tsx:32 call:scrollTo",
+   "ui/nav.tsx:33 call:scrollTo",
+   "ui/todo.ts:37 call:scrollTo"
+  ]
+ },
+ {
+  "key": "ghost touch-only",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:122 attr:class"
+  ]
+ },
+ {
+  "key": "rep-text kind-",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:148 attr:class"
+  ]
+ },
+ {
+  "key": "yellow small",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:225"
+  ]
+ },
+ {
+  "key": "val",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:282 call:useSorted",
+   "ui/pages.tsx:292 call:th"
+  ]
+ },
+ {
+  "key": "tf",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:292 call:th"
+  ]
+ },
+ {
+  "key": "owner",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:292 call:th"
+  ]
+ },
+ {
+  "key": "conc",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:292 call:th",
+   "ui/pages.tsx:378 call:th"
+  ]
+ },
+ {
+  "key": "ark",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:292 call:th",
+   "ui/pages.tsx:493",
+   "ui/pages.tsx:495"
+  ]
+ },
+ {
+  "key": "fe",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:357 prop:ironium",
+   "ui/pages.tsx:378 call:btn"
+  ]
+ },
+ {
+  "key": "bo",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:357 prop:boranium",
+   "ui/pages.tsx:378 call:btn"
+  ]
+ },
+ {
+  "key": "ge",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:357 prop:germanium",
+   "ui/pages.tsx:378 call:btn"
+  ]
+ },
+ {
+  "key": "total",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:357 call:useSorted",
+   "ui/pages.tsx:378 call:th"
+  ]
+ },
+ {
+  "key": "de ",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:370 jsx"
+  ]
+ },
+ {
+  "key": "surf",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:378 call:th",
+   "ui/pages.tsx:442 call:th"
+  ]
+ },
+ {
+  "key": "flow",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:442 call:th"
+  ]
+ },
+ {
+  "key": "bal",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:442 call:th"
+  ]
+ },
+ {
+  "key": " ghost",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:487"
+  ]
+ },
+ {
+  "key": "low",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:528 attr:class",
+   "ui/sidebar.tsx:118 attr:class"
+  ]
+ },
+ {
+  "key": "mn",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:547 attr:key"
+  ]
+ },
+ {
+  "key": "dip",
+  "kind": "str",
+  "refs": [
+   "ui/pages.tsx:552 attr:key",
+   "ui/pages.tsx:552 attr:key"
+  ]
+ },
+ {
+  "key": "post",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:16"
+  ]
+ },
+ {
+  "key": "pursuit",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:16"
+  ]
+ },
+ {
+  "key": "study",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:16"
+  ]
+ },
+ {
+  "key": "sgroup",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:76 attr:class"
+  ]
+ },
+ {
+  "key": " sub",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:76"
+  ]
+ },
+ {
+  "key": "srow fleet",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:114 attr:class"
+  ]
+ },
+ {
+  "key": "vstars r",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:116 attr:class"
+  ]
+ },
+ {
+  "key": "srow colony",
+  "kind": "str",
+  "refs": [
+   "ui/sidebar.tsx:127 attr:class"
+  ]
+ },
+ {
+  "key": "null",
+  "kind": "str",
+  "refs": [
+   "ui/store.ts:89 call:parse"
+  ]
+ },
+ {
+  "key": "gzip",
+  "kind": "str",
+  "refs": [
+   "ui/store.ts:416 call:pipeThrough",
+   "ui/store.ts:428 call:pipeThrough"
+  ]
+ },
+ {
+  "key": "downloads",
+  "kind": "str",
+  "refs": [
+   "ui/store.ts:474 call:use"
+  ]
+ },
+ {
+  "key": "old",
+  "kind": "str",
+  "refs": [
+   "ui/summary.tsx:118"
+  ]
+ },
+ {
+  "key": "green b",
+  "kind": "str",
+  "refs": [
+   "ui/summary.tsx:119 attr:class"
+  ]
+ },
+ {
+  "key": "red b",
+  "kind": "str",
+  "refs": [
+   "ui/summary.tsx:119 attr:class"
+  ]
+ },
+ {
+  "key": "× {0}{1}",
+  "kind": "tpl",
+  "refs": [
+   "ui/summary.tsx:191 attr:v"
+  ]
+ },
+ {
+  "key": "small primary",
+  "kind": "str",
+  "refs": [
+   "ui/summary.tsx:279 attr:class"
+  ]
+ },
+ {
+  "key": "dec",
+  "kind": "str",
+  "refs": [
+   "ui/todo.ts:37 prop:key"
+  ]
+ },
+ {
+  "key": "doc",
+  "kind": "str",
+  "refs": [
+   "ui/todo.ts:38 prop:key"
+  ]
+ },
+ {
+  "key": "pro",
+  "kind": "str",
+  "refs": [
+   "ui/todo.ts:39 prop:key"
+  ]
+ },
+ {
+  "key": "dil",
+  "kind": "str",
+  "refs": [
+   "ui/todo.ts:40 prop:key"
+  ]
+ },
+ {
+  "key": "menu",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1045 call:goStep",
+   "ui/tutorial.tsx:1050 call:goStep",
+   "ui/tutorial.tsx:1232 call:goStep"
+  ]
+ },
+ {
+  "key": "tutorial",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1064",
+   "ui/tutorial.tsx:1079 call:readSlot"
+  ]
+ },
+ {
+  "key": "nearest",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1173 prop:block"
+  ]
+ },
+ {
+  "key": "block",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1191"
+  ]
+ },
+ {
+  "key": " menu",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1242"
+  ]
+ },
+ {
+  "key": " done",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1248"
+  ]
+ },
+ {
+  "key": " pulse",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:1253"
+  ]
+ },
+ {
+  "key": "dev",
+  "kind": "str",
+  "refs": [
+   "ui/version.ts:2"
+  ]
+ },
+ {
+  "key": "vline",
+  "kind": "str",
+  "refs": [
+   "ui/victory.tsx:99 attr:class"
+  ]
+ },
+ {
+  "key": " me",
+  "kind": "str",
+  "refs": [
+   "ui/victory.tsx:99"
+  ]
+ },
+ {
+  "key": "big tut-start",
+  "kind": "str",
+  "refs": [
+   "ui/welcome.tsx:70 attr:class"
+  ]
+ },
+ {
+  "key": " primary",
+  "kind": "str",
+  "refs": [
+   "ui/welcome.tsx:70"
+  ]
+ }
+]

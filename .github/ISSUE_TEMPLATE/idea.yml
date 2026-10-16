@@ -1,0 +1,21 @@
+name: Idea / Idée
+description: A feature, a rule, an improvement. / Une fonction, une règle, une amélioration.
+title: "[Idea] "
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        English or French, as you prefer. / En anglais ou en français, comme vous préférez.
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea / L'idée
+      description: What you would like, and why it would make the game better. / Ce que vous aimeriez, et pourquoi le jeu y gagnerait.
+    validations:
+      required: true
+  - type: textarea
+    id: inspiration
+    attributes:
+      label: Seen elsewhere? / Vu ailleurs ?
+      description: A game that does it well (Stars!, Stellaris, Master of Orion…), and how. / Un jeu qui le fait bien, et comment.

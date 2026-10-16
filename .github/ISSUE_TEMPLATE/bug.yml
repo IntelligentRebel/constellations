@@ -1,0 +1,50 @@
+name: Bug report / Signaler un bug
+description: Something does not work as it should. / Quelque chose ne fonctionne pas comme prévu.
+title: "[Bug] "
+labels: ["bug", "to confirm"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! English or French, as you prefer. / Merci ! En anglais ou en français, comme vous préférez.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Shown on the welcome screen and in the header (for example 0.3.9.8). / Affichée sur l'écran d'accueil et dans l'en-tête.
+      placeholder: 0.3.9.8
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Game language / Langue du jeu
+      options: [English, Français, Deutsch, Español, Português, Русский, Polski, Italiano, 简体中文, 日本語, 한국어]
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / Navigateur
+      placeholder: Chrome 140, Firefox 145, Safari 19…
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / Que s'est-il passé ?
+      description: What you did, what you expected, what you saw instead. / Ce que vous avez fait, ce que vous attendiez, ce que vous avez vu.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / Étapes pour reproduire
+      placeholder: |
+        1. …
+        2. …
+  - type: textarea
+    id: save
+    attributes:
+      label: Saved game and screenshots / Partie sauvegardée et captures
+      description: |
+        Very helpful: "Export" in the game, then drag the .json file here (zip it if GitHub refuses it), and screenshots if useful.
+        Très utile : « Exporter » dans le jeu, puis glissez le fichier .json ici (zippé si GitHub le refuse), et des captures d'écran si besoin.
