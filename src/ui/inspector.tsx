@@ -1,5 +1,5 @@
 // Right panel: everything about the selected planet or fleet, with the actions that make sense for it.
-import { bordersOn, routeEntries, automaticFleet } from '../engine/borders';
+import { bordersOn, routeEntries, automaticFleet, exitPlan } from '../engine/borders';
 import { useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { store, useStore, fmt, fmtPop, fmtGrowth, pct, MINERAL_COLORS } from './store';
@@ -90,6 +90,21 @@ function TerrainNote({ g, at }: { g: GameState; at: { x: number; y: number } }) 
   if (!ts.length && !cata) return null;
   return <>{ts.map(t => <div class={'ter-note ' + t.kind}><b>{terrainName(t)}</b> · {TERRAIN_INFO[t.kind].effect}</div>)}
     {cata && <div class="ter-note cata"><b>{cata[0]}</b> · {cata.slice(1).join(' ')}</div>}</>;
+}
+
+/** 0.3.9.11: a fleet caught inside a territory closed to its empire: the delay it has to get out. */
+function BorderExitNote({ g, f }: { g: GameState; f: Fleet }) {
+  const e = f.borderExit;
+  const plan = e && bordersOn(g) ? exitPlan(g, f) : null;
+  if (!e || !plan) return null;
+  const who = g.players[plan.closer]?.name ?? '?', d = Math.round(plan.dist);
+  if (e.auto || automaticFleet(g, f)) return <div class="alert info">{`Dans le territoire des ${who}, dont les frontières vous sont fermées : sous un ordre automatique, la flotte en sort d'elle-même (frontière la plus proche à ${d} al).`}</div>;
+  const text = e.warned !== undefined
+    ? `Délai écoulé : si la flotte est encore dans le territoire des ${who} l'an prochain, ce sera une déclaration de guerre.`
+    : plan.stranded
+      ? `Dans le territoire des ${who}, dont les frontières vous sont fermées, sans assez de carburant pour en sortir à temps (frontière la plus proche à ${d} al) : sans ravitaillement d'ici l'an ${e.by}, la flotte sera démantelée.`
+      : `Dans le territoire des ${who}, dont les frontières vous sont fermées : la flotte doit en être sortie en l'an ${e.by} (frontière la plus proche à ${d} al, Warp ${plan.warp}), sinon y rester leur déclarera la guerre.`;
+  return <div class="alert strong border-exit">⚠ {text}{plan.warp > 0 && <div><button class="small" onClick={A.leaveTerritory}>Sortir par le plus court chemin</button></div>}</div>;
 }
 
 // ------------------------------------------------------------------ own planet
@@ -394,6 +409,7 @@ function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
       nav={<><button class="icon" onClick={() => go(-1)} title="Flotte précédente">‹</button><button class="icon" onClick={() => go(1)} title="Flotte suivante">›</button><button class="icon" onClick={() => s.center(f.x, f.y)} title="Centrer (v)">◎</button><button class="icon" onClick={() => setRenaming(true)} title="Renommer">✎</button></>}>
     </Head>
     <TerrainNote g={g} at={f} />
+    <BorderExitNote g={g} f={f} />
     <Blk title="Carburant et soute" tut="cargo" right={<button class="small" onClick={() => s.open('cargo', { fleetId: f.id, planetId: planet?.id, otherId: !planet ? others[0]?.id : undefined })}>{planet ? 'Échanger' : 'Transférer'}</button>}>
       <FuelCargo g={g} f={f} onCargo={planet || others.length ? () => s.open('cargo', { fleetId: f.id, planetId: planet?.id, otherId: !planet ? others[0]?.id : undefined }) : undefined} />
       <RefuelBlock g={g} f={f} />

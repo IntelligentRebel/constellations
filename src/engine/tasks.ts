@@ -314,6 +314,8 @@ export function mergeFleets(game: GameState, into: Fleet, from: Fleet, inheritOr
     if (w.target === 'fleet' && w.targetId === into.id) { w.target = 'space'; w.targetId = undefined; }
     if (w.mergeWith === into.id) { w.task = 'none'; w.mergeWith = undefined; }
   }
+  // 0.3.9.11: caught inside closed borders, the merged fleet keeps the shorter delay
+  if (from.borderExit && (!into.borderExit || from.borderExit.by < into.borderExit.by)) into.borderExit = { ...from.borderExit };
   if (into.pursue === into.id) into.pursue = undefined;
   if (into.refuelFor === into.id) { into.refuelFor = undefined; into.refuelYear = undefined; }
   mergeExperience(game, into, from);
@@ -436,6 +438,7 @@ export function transferFleet(game: GameState, f: Fleet, to: number) {
     t.designId = copy!.id;
   }
   f.owner = to;
+  f.borderExit = undefined;
   recipient.fleetNum++;
   f.num = recipient.fleetNum;
   f.waypoints = [{ x: f.x, y: f.y, target: f.orbiting >= 0 ? 'planet' : 'space', targetId: f.orbiting >= 0 ? f.orbiting : undefined, warp: 0, task: 'none', processed: true }];

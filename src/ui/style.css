@@ -602,6 +602,7 @@ tr.special td:first-child { color: #dffbff; }
 .warn-dlg > header { background: #2a2212; }
 .warn-ico { color: var(--warn); margin-right: 4px; }
 .alert.strong { background: #3d1a12; border-color: #c2552f; color: #ffd9c9; font-weight: 500; }
+.alert.border-exit > div { margin-top: 6px; }
 .chk.locked { opacity: .7; cursor: help; }
 .mission-row + .mission-row { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
 .mission-row .opt-title { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }

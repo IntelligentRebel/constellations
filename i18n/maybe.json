@@ -884,7 +884,7 @@
   "refs": [
    "ui/command.tsx:58 attr:class",
    "ui/inspector.tsx:80 attr:class",
-   "ui/inspector.tsx:404",
+   "ui/inspector.tsx:420",
    "ui/pages.tsx:223 attr:class"
   ]
  },
@@ -1333,24 +1333,24 @@
   "key": "chk",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:326 attr:class",
-   "ui/dialogs/misc.tsx:329 attr:class"
+   "ui/dialogs/misc.tsx:327 attr:class",
+   "ui/dialogs/misc.tsx:330 attr:class"
   ]
  },
  {
   "key": " locked",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:326",
-   "ui/dialogs/misc.tsx:329",
-   "ui/dialogs/misc.tsx:332"
+   "ui/dialogs/misc.tsx:327",
+   "ui/dialogs/misc.tsx:330",
+   "ui/dialogs/misc.tsx:333"
   ]
  },
  {
   "key": "chk rule",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:332 attr:class"
+   "ui/dialogs/misc.tsx:333 attr:class"
   ]
  },
  {
@@ -1381,7 +1381,7 @@
    "ui/dialogs/production.tsx:149",
    "ui/dialogs/production.tsx:170",
    "ui/dialogs/research.tsx:62",
-   "ui/inspector.tsx:404"
+   "ui/inspector.tsx:420"
   ]
  },
  {
@@ -1747,22 +1747,22 @@
   "key": "rows",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:121 attr:cls",
-   "ui/inspector.tsx:329 attr:cls"
+   "ui/inspector.tsx:136 attr:cls",
+   "ui/inspector.tsx:344 attr:cls"
   ]
  },
  {
   "key": "rows empire-blk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:236 attr:cls"
+   "ui/inspector.tsx:251 attr:cls"
   ]
  },
  {
   "key": " ×{0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:274 jsx",
+   "ui/inspector.tsx:289 jsx",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -1770,42 +1770,42 @@
   "key": "blk prodblk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:282 attr:class"
+   "ui/inspector.tsx:297 attr:class"
   ]
  },
  {
   "key": " open",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:282"
+   "ui/inspector.tsx:297"
   ]
  },
  {
   "key": " old",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:317"
+   "ui/inspector.tsx:332"
   ]
  },
  {
   "key": "hint",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:456 attr:class"
+   "ui/inspector.tsx:472 attr:class"
   ]
  },
  {
   "key": "crew",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:519 attr:cls"
+   "ui/inspector.tsx:535 attr:cls"
   ]
  },
  {
   "key": "rank r",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:519 attr:class"
+   "ui/inspector.tsx:535 attr:class"
   ]
  },
  {

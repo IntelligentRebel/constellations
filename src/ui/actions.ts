@@ -20,6 +20,7 @@ import { autoExplore, canAutoExplore, AUTO_EXPLORE } from '../engine/automation'
 import { canUseWormholes, WORMHOLE_NAV, specialReqText, specialLevelText } from '../engine/specials';
 import { wallAt, nearestOutside, regionOf, openFor } from '../engine/walls';
 import { pocketGate } from '../engine/secrets';
+import { exitOrder } from '../engine/borders';
 import { upperFirst } from '../engine/words';
 
 export function commandedFleet(): Fleet | undefined {
@@ -31,6 +32,8 @@ export function commandedFleet(): Fleet | undefined {
 function syncRoute(f: Fleet) { if (f.repeat) f.route = f.waypoints.map(w => ({ ...w, processed: false })); }
 /** The player gives orders by hand: a standing pursuit stops. */
 function manual(f: Fleet) {
+  // 0.3.9.11: caught inside closed borders, it no longer gets out by itself: the player decides
+  if (f.borderExit?.auto) delete f.borderExit.auto;
   if (f.meetTrader !== undefined) { f.meetTrader = undefined; store.notify(`${f.name} : rendez-vous avec le Marchand nomade annulé`); }
   if (f.pursue !== undefined) { f.pursue = undefined; store.notify(f.refuelFor !== undefined ? `${f.name} : ravitaillement annulé` : `${f.name} : poursuite annulée`); f.refuelFor = undefined; f.tankerPost = undefined; }
   // 0.3.9: a reinforcement given orders by hand leaves its operation
@@ -280,6 +283,20 @@ export function deleteWaypoint(i: number) {
   syncRoute(f);
   store.bump();
   if (st === 'warp1' || st === 'dry') warnSlowLegs(f, [i]);
+}
+
+/** 0.3.9.11: caught inside closed borders: out by the shortest way, as fast as the fuel allows. */
+export function leaveTerritory() {
+  const f = commandedFleet(), g = store.game; if (!f || !g) return;
+  const wp = exitOrder(g, f); if (!wp) return;
+  store.checkpoint();
+  manual(f);
+  f.waiting = false;
+  f.waypoints = [f.waypoints[0], wp];
+  f.repeat = false; f.route = undefined;
+  store.waypointIndex = 1;
+  store.notify(`${f.name} quitte le territoire par la frontière la plus proche, à Warp ${wp.warp}.`);
+  store.bump();
 }
 
 export function clearRoute() {

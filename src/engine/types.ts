@@ -260,6 +260,26 @@ export interface Fleet {
   /** 0.3.9: an operation led by this fleet (operations.ts), or the operation this fleet goes to reinforce */
   op?: Operation;
   joinOp?: number;
+  /** 0.3.9.11: caught inside a territory whose borders are closed to its owner: the delay it has to get out */
+  borderExit?: BorderExit;
+}
+
+/** 0.3.9.11: a fleet inside a territory closed to its empire (borders.ts). */
+export interface BorderExit {
+  /** the empire whose territory it is in */
+  closer: number;
+  /** year by which the fleet must be out */
+  by: number;
+  /** the nearest way out, and the fastest warp its fuel allows to get there */
+  x: number;
+  y: number;
+  warp: number;
+  /** short of fuel (or engines) to get out in time: dismantled at the deadline */
+  stranded?: boolean;
+  /** caught under an automatic order: the game flies it out (until the player gives it orders by hand) */
+  auto?: boolean;
+  /** year it was warned, past the deadline (war, or the scrapyard, the year after) */
+  warned?: number;
 }
 
 /** 0.3.9: a game played by turn files (pbem.ts). */

@@ -16,7 +16,7 @@ import { RULES_RAW } from '../data/rules-raw';
 import { willAttack } from './battle';
 import { planetSpec } from './planet';
 import { resetPlanetPolicies } from './empire';
-import { borderObstacles, trespass } from './borders';
+import { borderObstacles, trespass, leaveNow } from './borders';
 
 const MINE_STATS: Record<string, { maxSpeed: number; chanceOfHit: number; minDamagePerFleet: number; damagePerEngine: number; minDamagePerFleetRS: number; damagePerEngineRS: number; minDecay: number; sweepFactor?: number }> = {
   standard: RULES_RAW.minefieldStats.Standard, heavy: RULES_RAW.minefieldStats.Heavy, speedBump: RULES_RAW.minefieldStats.SpeedBump,
@@ -94,6 +94,8 @@ export function moveFleets(game: GameState, rng: Rng) {
     f.outOfFuel = false;
     f.trail = undefined;
     if (f.beaconOf !== undefined || f.immobile) { if (f.waypoints.length > 1) f.waypoints = [f.waypoints[0]]; continue; } // a beacon (or a lair, the Nexus) never moves
+    // 0.3.9.11: a computer's fleet, or one under an automatic order, caught inside closed borders flies out
+    if (f.borderExit) leaveNow(game, f);
     if (f.waypoints.length < 2 || f.waiting) { f.heading = null; f.lastWarp = 0; continue; }
     moveFleet(game, rng, f);
   }

@@ -1,6 +1,6 @@
 // 0.3.9.10: closed borders. With the Culture and Diplomacy rules, an empire may close its territory (the space its
 // culture holds) to any empire it is at peace with. That empire's fleets may no longer go in: one that does declares
-// war by doing so. Fleets already inside may leave freely. A policy decides for the empires met from then on (open or
+// war by doing so. Fleets already inside are given a delay to get out (0.3.9.11, below). A policy decides for the empires met from then on (open or
 // closed, as in Stellaris); allies always keep their borders open to each other.
 //
 // What a fleet may not enter is the territory as its owner knows it (the colonies it has seen): nobody trespasses on
@@ -15,8 +15,9 @@
 import type { Fleet, GameState, Planet, Player, Waypoint } from './types';
 import { cultureOn, knownSources, territoryOwner } from './culture';
 import { diplomacyOn, statusOf, opinion, aggression, declareWar } from './diplomacy';
-import { gridCell, withDetours, type Obstacles } from './walls';
-import { distance } from './fleet';
+import { gridCell, withDetours, hasWalls, inWall, type Obstacles } from './walls';
+import { distance, fleetSpec, fuelForYear, fuelGenerated, travelYears } from './fleet';
+import { scrapFleet } from './tasks';
 
 export const bordersOn = (game: GameState) => cultureOn(game) && diplomacyOn(game);
 const isEmp = (game: GameState, id: number) => !!game.players[id] && !game.players[id].monster;
@@ -73,7 +74,7 @@ export function setBorders(game: GameState, owner: number, who: number, closed: 
   } else o.closed = (o.closed ?? []).filter(id => id !== who);
   if (quiet) return;
   if (closed) {
-    tell(game, who, `Les ${o.name} ferment leurs frontières à vos vaisseaux : entrer dans leur territoire leur déclarerait la guerre. Vos flottes qui s'y trouvent déjà peuvent en sortir librement.`, owner);
+    tell(game, who, `Les ${o.name} ferment leurs frontières à vos vaisseaux : entrer dans leur territoire leur déclarerait la guerre. Vos flottes qui s'y trouvent déjà ont un délai pour en sortir.`, owner);
     log(game, owner, who, `Les ${o.name} ferment leurs frontières aux ${nm(game, who)}.`);
   } else {
     tell(game, who, `Les ${o.name} rouvrent leurs frontières à vos vaisseaux.`, owner);
@@ -205,6 +206,151 @@ export function crossed(game: GameState, f: Fleet, closer: number) {
   declareWar(game, f.owner, closer, 'en franchissant des frontières fermées');
 }
 
+// ------------------------------------------------------------------------------------------- fleets caught inside
+//
+// 0.3.9.11. A fleet inside a territory closed to its empire (the borders closed around it, the territory grew over
+// it, or its empire just learnt of it) has a delay to get out: the years its fuel lets it take to the nearest way
+// out, flying as fast as it can, plus one to give the order. Past that delay it is warned; if it is still inside the
+// year after, its empire is at war with the closer. A fleet short of fuel to get out in reasonable time (or with no
+// engines) has the delay its engines would need, plus two years, to be refuelled; if it is still stranded inside
+// then, it is dismantled on the spot. The computers' fleets and the automatic orders get out by themselves (they
+// never go to war on their own); a fleet orbiting one of its own worlds is at home and need not leave.
+
+/** The way out of a closed territory, and what it takes. */
+export interface ExitPlan {
+  closer: number;
+  x: number;
+  y: number;
+  /** light-years to the nearest point out */
+  dist: number;
+  /** fastest warp its fuel allows (0: none), and the years at that warp */
+  warp: number;
+  years: number;
+  /** years its engines would need with enough fuel */
+  fast: number;
+  stranded: boolean;
+}
+
+/** The nearest point out of the territories closed to `who` (as it knows them), from a point inside one. */
+function wayOut(game: GameState, m: ClosedMask, at: { x: number; y: number }, who: number): { x: number; y: number; dist: number } | null {
+  const { cell, cols, rows } = m;
+  const ci = Math.min(cols - 1, Math.max(0, Math.floor(at.x / cell))), cj = Math.min(rows - 1, Math.max(0, Math.floor(at.y / cell)));
+  const walls = hasWalls(game);
+  let best: { x: number; y: number; dist: number } | null = null;
+  for (let r = 1, R = Math.max(cols, rows); r <= R; r++) {
+    if (best && (r - 1) * cell >= best.dist) break;
+    for (let j = cj - r; j <= cj + r; j++) {
+      if (j < 0 || j >= rows) continue;
+      const edge = j === cj - r || j === cj + r;
+      for (let i = ci - r; i <= ci + r; i += edge ? 1 : 2 * r) {
+        if (i < 0 || i >= cols || m.owner[j * cols + i] >= 0) continue;
+        // the point of that cell nearest to the fleet, a light-year inside it (positions are rounded)
+        const x = Math.round(Math.min((i + 1) * cell - 1, Math.max(i * cell + 1, at.x))), y = Math.round(Math.min((j + 1) * cell - 1, Math.max(j * cell + 1, at.y)));
+        if (x < 0 || y < 0 || x > game.width || y > game.height) continue;
+        const d = Math.hypot(x - at.x, y - at.y);
+        if (best && d >= best.dist) continue;
+        if (walls && inWall(game, x, y, who)) continue;
+        best = { x, y, dist: d };
+      }
+    }
+  }
+  return best;
+}
+
+/** Is the fleet at home (orbiting one of its own worlds), or one that never moves (a beacon, a fort)? */
+const atHome = (game: GameState, f: Fleet) => f.beaconOf !== undefined || !!f.immobile || (f.orbiting >= 0 && game.planets[f.orbiting]?.owner === f.owner);
+
+/** How a fleet inside a territory closed to its empire gets out (null: it is not inside one, or skims its edge). */
+export function exitPlan(game: GameState, f: Fleet, m: ClosedMask | null = closedMask(game, f.owner)): ExitPlan | null {
+  if (!m) return null;
+  const closer = closedAt(m, f.x, f.y);
+  if (closer < 0) return null;
+  const out = wayOut(game, m, f, f.owner);
+  if (out && out.dist <= SKIM) return null;
+  const spec = fleetSpec(game, f);
+  if (!out || !spec.hasEngines) return { closer, x: out?.x ?? f.x, y: out?.y ?? f.y, dist: out?.dist ?? 0, warp: 0, years: Infinity, fast: 1, stranded: true };
+  const limit = Math.min(10, spec.maxSafeSpeed || 9);
+  const fast = travelYears(out.dist, limit);
+  let warp = 0, years = Infinity;
+  for (let w = limit; w >= 1; w--) {
+    if (fuelForYear(game, f, w, out.dist) - fuelGenerated(game, f, w, out.dist) > f.fuel) continue;
+    warp = w; years = travelYears(out.dist, w); break;
+  }
+  return { closer, ...out, warp, years, fast, stranded: !(years <= Math.max(2 * fast, fast + 3)) };
+}
+
+/** A computer's fleet, or one under an automatic order, caught inside: it flies out this year (movement.ts). */
+export function leaveNow(game: GameState, f: Fleet) {
+  const e = f.borderExit;
+  if (!e || !(e.auto || automaticFleet(game, f)) || closedFor(game, f.owner, f) < 0) return;
+  f.waiting = false;
+  f.waypoints = [{ ...f.waypoints[0], x: f.x, y: f.y }, { x: e.x, y: e.y, target: 'space', warp: Math.max(1, e.warp), task: 'none' }];
+}
+
+/** The way out for a fleet of the player, as an order (the fleet panel's button). */
+export function exitOrder(game: GameState, f: Fleet): Waypoint | null {
+  const p = exitPlan(game, f);
+  return p ? { x: p.x, y: p.y, target: 'space', warp: Math.max(1, p.warp), task: 'none' } : null;
+}
+
+function fleetNote(game: GameState, f: Fleet, text: string, kind: 'diplomacy' | 'warning' | 'fleet' = 'diplomacy') {
+  const p = game.players[f.owner];
+  if (!p.ai) p.messages.push({ year: game.year, kind, text, target: { kind: 'fleet', id: f.id } });
+}
+
+/** It could not get out: dismantled where it is (its wreck drifts there, or its minerals go to the world below). */
+function dismantle(game: GameState, f: Fleet, closer: number) {
+  const p = game.players[f.owner], n = p.messages.length;
+  scrapFleet(game, f);
+  p.messages.splice(n);
+  if (!p.ai) p.messages.push({ year: game.year, kind: 'fleet', text: `${f.name} n'a pas pu sortir à temps du territoire des ${nm(game, closer)}, dont les frontières vous sont fermées : elle a été démantelée sur place.` });
+}
+
+/** The year's fleets caught inside closed borders (runBorders, after the movement and the scans). */
+function caughtInside(game: GameState) {
+  const told = new Map<string, { closer: number; who: number; n: number; by: number }>();
+  for (const f of [...game.fleets]) {
+    if (!game.fleets.includes(f)) continue;
+    const owner = game.players[f.owner];
+    const plan = isEmp(game, f.owner) && !owner.dead && !atHome(game, f) ? exitPlan(game, f) : null;
+    if (!plan) { if (f.borderExit) delete f.borderExit; continue; }
+    const c = plan.closer, d = Math.round(plan.dist);
+    let e = f.borderExit;
+    const auto = automaticFleet(game, f) || !!e?.auto;
+    if (!e) {
+      const by = game.year + (plan.stranded ? Math.min(plan.fast, 6) + 2 : plan.years + 1);
+      e = f.borderExit = { closer: c, by, x: plan.x, y: plan.y, warp: plan.warp, ...(plan.stranded ? { stranded: true } : {}), ...(auto ? { auto: true } : {}) };
+      fleetNote(game, f, auto && !plan.stranded
+        ? `${f.name} se trouve dans le territoire des ${nm(game, c)}, dont les frontières vous sont fermées : sous un ordre automatique, elle en sort par la frontière la plus proche (${d} al).`
+        : plan.stranded
+          ? `${f.name} se trouve dans le territoire des ${nm(game, c)}, dont les frontières vous sont fermées, et n'a pas assez de carburant pour en sortir à temps (la frontière la plus proche est à ${d} al). Ravitaillez-la d'ici l'an ${by}, sinon elle sera démantelée.`
+          : `${f.name} se trouve dans le territoire des ${nm(game, c)}, dont les frontières vous sont fermées : elle a jusqu'à l'an ${by} pour en sortir (la frontière la plus proche est à ${d} al, Warp ${plan.warp}). Y rester au-delà leur déclarera la guerre.`);
+      const closer = game.players[c];
+      if (!closer.ai && closer.intel.fleets.some(x => x.id === f.id)) {
+        const k = `${c}|${f.owner}`, t = told.get(k);
+        if (t) { t.n++; t.by = Math.max(t.by, by); } else told.set(k, { closer: c, who: f.owner, n: 1, by });
+      }
+      continue;
+    }
+    e.closer = c; e.x = plan.x; e.y = plan.y; e.warp = plan.warp;
+    if (plan.stranded) e.stranded = true; else delete e.stranded;
+    if (game.year < e.by) continue;
+    // the delay is over
+    if (plan.stranded || (auto && game.year > e.by)) { dismantle(game, f, c); continue; }
+    if (auto) continue; // flying out at its best (movement.ts): one more year
+    if (e.warned === undefined) {
+      e.warned = game.year;
+      fleetNote(game, f, `${f.name} est toujours dans le territoire des ${nm(game, c)}, dont les frontières vous sont fermées, et le délai pour en sortir est écoulé : si elle s'y trouve encore l'an prochain, ce sera une déclaration de guerre.`, 'warning');
+      continue;
+    }
+    if (game.year <= e.warned) continue;
+    delete f.borderExit;
+    owner.messages.push({ year: game.year, kind: 'diplomacy', text: `${f.name} est restée dans le territoire des ${nm(game, c)} malgré leurs frontières fermées : vous êtes en guerre contre eux.`, target: { kind: 'fleet', id: f.id } });
+    declareWar(game, f.owner, c, 'en restant dans leur territoire malgré leurs frontières fermées');
+  }
+  for (const t of told.values()) tell(game, t.closer, `Flottes des ${nm(game, t.who)} repérées dans votre territoire, dont les frontières leur sont fermées : ${t.n}. Elles ont jusqu'à l'an ${t.by} au plus tard pour en sortir.`, t.who);
+}
+
 // ------------------------------------------------------------------------------------------- the computers' view
 
 /** Worlds within reach of an empire: to explore (unknown) or to settle (free), not in another empire's territory. */
@@ -255,7 +401,8 @@ export const openAt = (p: Player) => closeAt(p) + 25;
 
 /**
  * The year's borders (end of the turn, after the scans): the policies apply to the empires just met, the computers
- * close or open their borders by opinion, and every empire measures how the others' borders hinder it.
+ * close or open their borders by opinion, every empire measures how the others' borders hinder it, and the fleets
+ * caught inside closed borders are given their delay (warned, at war or dismantled once it is over).
  */
 export function runBorders(game: GameState) {
   if (!bordersOn(game)) return;
@@ -279,6 +426,7 @@ export function runBorders(game: GameState) {
     const h = measureHindrance(game, p.id);
     if (Object.keys(h).length) p.hindered = h; else delete p.hindered;
   }
+  caughtInside(game);
 }
 
 /** For the opinion lines (diplomacy.ts): the weight of `about`'s borders closed to `of`. */
