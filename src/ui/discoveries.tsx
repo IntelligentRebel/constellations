@@ -44,17 +44,17 @@ function yourStrength(g: GameState, me: Player): { label: string; v: number } | 
 }
 
 /** 0.3.9.7: the last measure of a guardian's strength by one of your crews, its date, and what it means today. */
-export function GuardianReport({ g, me, guardian, brief }: { g: GameState; me: Player; guardian: Guardian; /** without the reminder of how a guardian fights */ brief?: boolean }) {
+export function GuardianReport({ g, me, guardian }: { g: GameState; me: Player; guardian: Guardian; /** kept for the callers (0.3.9.9: no reminder any more, a crew cannot know how a guardian heals) */ brief?: boolean }) {
   const r = me.intel.guardianReports?.[guardian.id];
   if (!r) return <p class="small muted guard-report">Aucun relevé de sa force. Envoyez un vaisseau sur place : son équipage la mesurera face à votre flotte de guerre.</p>;
-  return <StrengthReport g={g} me={me} r={r} note={brief ? undefined : 'Un gardien ne grandit pas, mais il répare 40 % de ses dégâts chaque année : il faut l\'abattre en une seule bataille.'} />;
+  return <StrengthReport g={g} me={me} r={r} />;
 }
 
 /** 0.3.9.7: the same for the garrison of a pirate lair (which grows with the loot: an old measure falls short). */
-export function LairReport({ g, me, planetId, brief }: { g: GameState; me: Player; planetId: number; brief?: boolean }) {
+export function LairReport({ g, me, planetId }: { g: GameState; me: Player; planetId: number; /** kept for the callers */ brief?: boolean }) {
   const r = me.intel.lairReports?.[planetId];
   if (!r) return <p class="small muted guard-report">Aucun relevé de la garnison. Envoyez un vaisseau sur place : son équipage la mesurera face à votre flotte de guerre.</p>;
-  return <StrengthReport g={g} me={me} r={r} ships={r.ships} note={brief ? 'La garnison grossit avec le butin : un relevé ancien la sous-estime.' : 'La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.'} />;
+  return <StrengthReport g={g} me={me} r={r} ships={r.ships} note="La garnison grossit avec le butin : un relevé ancien la sous-estime." />;
 }
 
 function StrengthReport({ g, me, r, note, ships }: { g: GameState; me: Player; r: Report; note?: string; ships?: number }) {
@@ -82,7 +82,7 @@ function GuardianBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   return <section class="blk guardian">
     <div class="blk-head"><h3>⚠ {kind?.name ?? 'Gardien'}</h3><span class="tag">palier {kind?.tier}</span></div>
     <p class="small">{kind?.text}</p>
-    <p class="small muted">Il attaque toute flotte qui s'arrête ici et répare 40 % de ses dégâts chaque année : il faut l'abattre en une fois. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{(kind?.tier ?? 0) >= 2 ? ' et souvent une relique' : ' et parfois une relique'}.{seenYear !== undefined && seenYear < g.year ? ` Vu pour la dernière fois en ${seenYear}.` : ''}</p>
+    <p class="small muted">Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{(kind?.tier ?? 0) >= 2 ? ' et souvent une relique' : ' et parfois une relique'}.{seenYear !== undefined && seenYear < g.year ? ` Vu pour la dernière fois en ${seenYear}.` : ''}</p>
     {mine && str > 0 && <div class={'small ' + (ratio >= 2.5 ? 'green' : ratio >= 1 ? 'yellow' : 'red')}>Rapport de force estimé avec {mine.label} : {ratio >= 10 ? '×10 et plus' : `×${ratio.toFixed(ratio < 1 ? 2 : 1)}`} {ratio < 1 ? '(perdu d\'avance)' : ratio < 2.5 ? '(risqué)' : '(favorable)'}</div>}
     {live && <GuardianReport g={g} me={me} guardian={live} brief />}
   </section>;

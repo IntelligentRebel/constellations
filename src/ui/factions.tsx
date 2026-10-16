@@ -79,7 +79,7 @@ export function LairBlock({ g, me, p }: { g: GameState; me: Player; p: Planet })
   const ratio = c && f && fi ? fleetStrength(g, c) / Math.max(1, fleetStrength(g, f)) : 0;
   return <section class="blk guardian lair">
     <div class="blk-head"><h3>☠ Repaire {deBand(l.name)}</h3>{fi?.tokens && <span class="tag">{fi.tokens.reduce((a, t) => a + t.qty, 0)} vaisseaux</span>}</div>
-    <p class="small">Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici, répare un quart de ses dégâts chaque année et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.</p>
+    <p class="small">Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.</p>
     {c && fi && <div class={'small ' + (ratio >= 2.5 ? 'green' : ratio >= 1 ? 'yellow' : 'red')}>Rapport de force estimé avec {c.name} : {ratio >= 10 ? '×10 et plus' : `×${ratio.toFixed(ratio < 1 ? 2 : 1)}`} {ratio < 1 ? '(perdu d\'avance)' : ratio < 2.5 ? '(risqué)' : '(favorable)'}</div>}
     {!fi && <p class="small muted">La garnison est hors de portée de vos scanners.</p>}
     <LairReport g={g} me={me} planetId={p.id} brief />

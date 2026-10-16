@@ -1758,5 +1758,10 @@
  "Escorte des Anciens": "Ancients' escort",
  "Porte-balise": "Beacon carrier",
  "Escorteur": "Escort",
- "{0} vaisseau(x)": "{0} ship(s)"
+ "{0} vaisseau(x)": "{0} ship(s)",
+ "D'après l'équipage de {0}, votre force de guerre totale est {1} puissante que {2} de {3}{4}.": "According to the crew of {0}, your navy as a whole is {1} {2} of {3}{4}.",
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}.": "According to the crew of {0}, the garrison of the lair {1} at {2} has {3} ships. All your warships combined: {4}; your strongest fleet, {5}: {6}.",
+ "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.": "Fearsome, immobile fleets watch over rich worlds far from the capitals (dotted purple ring on the map). They can be seen from afar and attack anything that stops at their world. Three tiers, from midgame to endgame. Victory yields research, the minerals piled up on the planet, often a relic, and frees the world for colonization.",
+ "Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{0}.{1}": "It attacks any fleet that stops here. Defeating it yields research, the minerals accumulated on the planet{0}.{1}",
+ "Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.": "The pirate lair never moves. Its garrison attacks any fleet that stops here and grows with the loot. Destroying it yields research, the band's treasure (left on the surface) and sometimes a relic."
 }

@@ -251,7 +251,7 @@ export function guardianAssessments(game: GameState) {
       if (pi) { pi.guardian = g.kind; pi.guardianYear = game.year; }
       const word = (r: number) => r <= 0 ? 'infiniment moins' : Math.abs(Math.log(r)) < 0.15 ? 'à peu près aussi' : r > 1 ? (r < 2 ? 'un peu plus' : 'beaucoup plus') : (r > 0.5 ? 'un peu moins' : 'beaucoup moins');
       const pl = game.planets[g.planetId];
-      p.messages.push({ year: game.year, kind: 'event', text: `D'après l'équipage de ${witness}, votre force de guerre totale est ${word(navy / Math.max(1, theirs))} puissante que ${theGuardian(g.kind)} de ${pl.name}${navy > 0 ? ` (l'ensemble de vos vaisseaux de guerre réunis : ${shareOf(navy / Math.max(1, theirs))} ; votre plus forte flotte, ${bestName} : ${shareOf(best / Math.max(1, theirs))})` : ' (vous n\'avez aucun vaisseau de guerre)'}. Un gardien répare 40 % de ses dégâts chaque année : il faut l'abattre en une seule bataille.`, target: { kind: 'planet', id: pl.id } });
+      p.messages.push({ year: game.year, kind: 'event', text: `D'après l'équipage de ${witness}, votre force de guerre totale est ${word(navy / Math.max(1, theirs))} puissante que ${theGuardian(g.kind)} de ${pl.name}${navy > 0 ? ` (l'ensemble de vos vaisseaux de guerre réunis : ${shareOf(navy / Math.max(1, theirs))} ; votre plus forte flotte, ${bestName} : ${shareOf(best / Math.max(1, theirs))})` : ' (vous n\'avez aucun vaisseau de guerre)'}.`, target: { kind: 'planet', id: pl.id } });
     }
   }
 }

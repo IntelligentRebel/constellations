@@ -1744,5 +1744,10 @@
  "Escorte des Anciens": "Eskorte der Uralten",
  "Porte-balise": "Bakenträger",
  "Escorteur": "Geleitschiff",
- "{0} vaisseau(x)": "{0} Schiff(e)"
+ "{0} vaisseau(x)": "{0} Schiff(e)",
+ "D'après l'équipage de {0}, votre force de guerre totale est {1} puissante que {2} de {3}{4}.": "Laut der Besatzung von {0} ist Ihre gesamte Kriegsmacht {1} {2} von {3}{4}.",
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}.": "Laut der Besatzung von {0} zählt die Garnison des Verstecks {1} bei {2} {3} Schiffe. Alle Ihre Kriegsschiffe zusammen: {4}; Ihre stärkste Flotte, {5}: {6}.",
+ "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.": "Unbewegliche, furchterregende Flotten wachen über reiche Welten, weit von den Hauptstädten entfernt (gepunkteter violetter Ring auf der Karte). Sie sind schon von Weitem zu sehen und greifen alles an, was bei ihnen anhält. Drei Stufen, von der Spielmitte bis zum Spielende. Der Sieg bringt Forschung, die auf dem Planeten angehäuften Mineralien, oft ein Relikt, und gibt die Welt für die Kolonisierung frei.",
+ "Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{0}.{1}": "Er greift jede Flotte an, die hier anhält. Ihn zu besiegen bringt Forschung, die auf dem Planeten angesammelten Mineralien{0}.{1}",
+ "Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.": "Das Piratenversteck bewegt sich nie. Seine Garnison greift jede Flotte an, die hier anhält, und wächst mit der Beute. Es zu zerstören bringt Forschung, den Schatz der Bande (an der Oberfläche zurückgelassen) und manchmal ein Relikt."
 }

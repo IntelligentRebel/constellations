@@ -453,7 +453,7 @@ export function lairAssessments(game: GameState) {
       p.intel.warned[key] = game.year;
       const s = Math.max(1, theirs);
       p.messages.push({ year: game.year, kind: 'event', text: navy > 0
-        ? `D'après l'équipage de ${witness}, la garnison du repaire ${deBand(l.name)} à ${pl.name} compte ${ships} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : ${shareOf(navy / s)} ; votre plus forte flotte, ${bestName} : ${shareOf(best / s)}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.`
+        ? `D'après l'équipage de ${witness}, la garnison du repaire ${deBand(l.name)} à ${pl.name} compte ${ships} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : ${shareOf(navy / s)} ; votre plus forte flotte, ${bestName} : ${shareOf(best / s)}.`
         : `D'après l'équipage de ${witness}, la garnison du repaire ${deBand(l.name)} à ${pl.name} compte ${ships} vaisseaux. Vous n'avez aucun vaisseau de guerre.`, target: { kind: 'planet', id: pl.id } });
     }
   }

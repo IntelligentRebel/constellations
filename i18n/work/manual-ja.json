@@ -1759,5 +1759,10 @@
  "Escorte des Anciens": "古代人の護衛艦",
  "Porte-balise": "ビーコン運搬艦",
  "Escorteur": "護衛艦",
- "{0} vaisseau(x)": "艦船{0}隻"
+ "{0} vaisseau(x)": "艦船{0}隻",
+ "D'après l'équipage de {0}, votre force de guerre totale est {1} puissante que {2} de {3}{4}.": "{0}の乗員によると、貴国の全戦力{4}は、{3}の{2}と比べて{1}。",
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}.": "{0}の乗員によると、{2}にある{1}の巣窟の守備隊は艦船{3}隻です。貴国の全戦闘艦の合計：{4}、最強の艦隊{5}：{6}。",
+ "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.": "動かない強大な艦隊が、首都から遠い豊かな世界を守っています（マップ上の紫の点線の輪）。遠くからでも見え、立ち止まるものすべてを攻撃します。ティアは3段階で、中盤から終盤にかけて登場します。勝利すると、研究、惑星に積み上がった鉱物、しばしば遺物が手に入り、その世界は入植可能になります。",
+ "Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{0}.{1}": "ここで停止した艦隊をすべて攻撃します。倒すと、研究と、惑星に蓄積された鉱物{0}が手に入ります。{1}",
+ "Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.": "海賊の巣窟は決して動きません。守備隊は、ここで停止した艦隊をすべて攻撃し、戦利品とともに増強されます。破壊すると、研究と、一団の財宝（地表に残されます）、そして時には遺物が手に入ります。"
 }

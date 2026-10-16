@@ -1740,5 +1740,10 @@
  "Escorte des Anciens": "Escolta de los Antiguos",
  "Porte-balise": "Portabalizas",
  "Escorteur": "Escolta",
- "{0} vaisseau(x)": "{0} nave(s)"
+ "{0} vaisseau(x)": "{0} nave(s)",
+ "D'après l'équipage de {0}, votre force de guerre totale est {1} puissante que {2} de {3}{4}.": "Según la tripulación de {0}, tu fuerza de guerra total es {1} {2} de {3}{4}.",
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}.": "Según la tripulación de {0}, la guarnición de la guarida {1} en {2} cuenta con {3} naves. Todas tus naves de guerra juntas: {4}; tu flota más fuerte, {5}: {6}.",
+ "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.": "Flotas inmóviles y temibles custodian mundos ricos, lejos de las capitales (anillo violeta punteado en el mapa). Se ven desde lejos y atacan todo lo que se detiene en su mundo. Tres niveles, de mediados de partida al final. La victoria aporta investigación, los minerales acumulados en el planeta, a menudo una reliquia, y libera el mundo para la colonización.",
+ "Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{0}.{1}": "Ataca a toda flota que se detenga aquí. Vencerlo aporta investigación y los minerales acumulados en el planeta{0}.{1}",
+ "Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.": "La guarida pirata no se mueve nunca. Su guarnición ataca a toda flota que se detenga aquí y crece con el botín. Destruirla aporta investigación, el tesoro de la banda (dejado en la superficie) y a veces una reliquia."
 }

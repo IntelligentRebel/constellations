@@ -1748,5 +1748,10 @@
  "Escorte des Anciens": "先民护航舰",
  "Porte-balise": "信标运载舰",
  "Escorteur": "护卫舰",
- "{0} vaisseau(x)": "{0} 艘舰船"
+ "{0} vaisseau(x)": "{0} 艘舰船",
+ "D'après l'équipage de {0}, votre force de guerre totale est {1} puissante que {2} de {3}{4}.": "据{0}的船员评估，你的总战力{1}位于{3}的{2}{4}。",
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}.": "据{0}的船员报告，位于{2}的{1}巢穴守军有 {3} 艘舰船。你全部战舰合计：{4}；你最强的舰队{5}：{6}。",
+ "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.": "静止不动的强大舰队守卫着远离首都的富饶星球（星图上的紫色虚线圆环）。它们远远就能被看到，会攻击任何在它们的星球上停留的目标。共分三阶，从游戏中期到末期。取胜可获得研究成果、堆积在行星上的矿物、常常还有一件遗物，并解放该星球供殖民。",
+ "Il attaque toute flotte qui s'arrête ici. Le vaincre rapporte de la recherche, les minerais accumulés sur la planète{0}.{1}": "它会攻击任何在此停留的舰队。击败它可获得研究成果、行星上积累的矿物{0}。{1}",
+ "Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.": "海盗巢穴从不移动。其守军会攻击任何在此停留的舰队，并随赃物增多而壮大。摧毁它可获得研究成果、团伙的宝藏（留在地表），有时还有一件遗物。"
 }
