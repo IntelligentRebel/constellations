@@ -16,7 +16,7 @@ export const scoresOpen = (g: GameState) => g.settings.publicScores || g.victor 
 export function IntelLevel({ me, pid }: { me: Player; pid: number }) {
   const d = me.intel.dossiers?.[pid];
   const v = d?.level ?? 0;
-  const tip = d?.lines.length ? `Renseignement ${v}/100 :\n${d.lines.map(l => `${l.label} +${l.value}`).join('\n')}` : 'Renseignement 0/100 : aucune source cette année';
+  const tip = d?.lines.length ? `Renseignement ${v}/100 :\n${d.lines.map(l => `${l.label} ${l.value > 0 ? '+' : ''}${l.value}`).join('\n')}` : 'Renseignement 0/100 : aucune source cette année';
   return <span class="intel-lvl" title={tip}><span class="intel-bar"><i style={{ width: `${v}%` }} /></span><b class={v >= 60 ? 'green' : v >= 30 ? 'yellow' : 'muted'}>{v}</b></span>;
 }
 
@@ -115,7 +115,7 @@ export function DossierBlock({ pid }: { pid: number }) {
   return <div class="dossier">
     <div class="dossier-head"><b>Renseignement</b> <IntelLevel me={me} pid={pid} /><span class="small muted">/100</span>
       {next ? <span class="small muted"> · prochain palier à {next.at} : {next.what}</span> : <span class="small green"> · rien ne vous échappe</span>}</div>
-    {d?.lines.length ? <div class="diplo-why">{d.lines.map(l => <span class="chip small">{l.label} <b class="green">+{l.value}</b></span>)}</div>
+    {d?.lines.length ? <div class="diplo-why">{d.lines.map(l => <span class="chip small">{l.label} <b class={l.value >= 0 ? 'green' : 'red'}>{l.value > 0 ? '+' : ''}{l.value}</b></span>)}</div>
       : <p class="small muted">Aucune source cette année.</p>}
     <div class="dossier-grid">
       <table class="report compact dossier-facts">

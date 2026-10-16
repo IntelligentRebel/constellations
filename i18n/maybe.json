@@ -345,14 +345,14 @@
   "key": "network",
   "kind": "str",
   "refs": [
-   "engine/espionage.ts:173 call:add"
+   "engine/espionage.ts:181 call:add"
   ]
  },
  {
   "key": "fresh",
   "kind": "str",
   "refs": [
-   "engine/espionage.ts:174 call:add"
+   "engine/espionage.ts:182 call:add"
   ]
  },
  {
@@ -1333,24 +1333,24 @@
   "key": "chk",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:327 attr:class",
-   "ui/dialogs/misc.tsx:330 attr:class"
+   "ui/dialogs/misc.tsx:328 attr:class",
+   "ui/dialogs/misc.tsx:331 attr:class"
   ]
  },
  {
   "key": " locked",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:327",
-   "ui/dialogs/misc.tsx:330",
-   "ui/dialogs/misc.tsx:333"
+   "ui/dialogs/misc.tsx:328",
+   "ui/dialogs/misc.tsx:331",
+   "ui/dialogs/misc.tsx:334"
   ]
  },
  {
   "key": "chk rule",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:333 attr:class"
+   "ui/dialogs/misc.tsx:334 attr:class"
   ]
  },
  {

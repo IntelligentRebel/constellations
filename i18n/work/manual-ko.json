@@ -1832,5 +1832,9 @@
  "Délai écoulé : si la flotte est encore dans le territoire des {0} l'an prochain, ce sera une déclaration de guerre.": "유예 기간 종료: 내년에도 함대가 {0} 측의 영토 안에 있으면 선전포고가 됩니다.",
  "Dans le territoire des {0}, dont les frontières vous sont fermées, sans assez de carburant pour en sortir à temps (frontière la plus proche à {1} al) : sans ravitaillement d'ici l'an {2}, la flotte sera démantelée.": "우리에게 국경을 봉쇄한 {0} 측의 영토 안이며, 제때 빠져나올 연료가 부족합니다(가장 가까운 국경까지 {1}광년): {2}년까지 급유하지 않으면 함대가 해체됩니다.",
  "Dans le territoire des {0}, dont les frontières vous sont fermées : la flotte doit en être sortie en l'an {1} (frontière la plus proche à {2} al, Warp {3}), sinon y rester leur déclarera la guerre.": "우리에게 국경을 봉쇄한 {0} 측의 영토 안: 함대는 {1}년까지 빠져나와야 하며(가장 가까운 국경까지 {2}광년, Warp {3}), 그렇지 않으면 머무르는 것이 그들에게 선전포고하는 것이 됩니다.",
- "Sortir par le plus court chemin": "최단 경로로 빠져나가기"
+ "Sortir par le plus court chemin": "최단 경로로 빠져나가기",
+ "Leurs frontières vous sont fermées": "그들이 우리에게 국경을 봉쇄함",
+ "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0}(첩보 규칙 사용 시): 국경을 봉쇄하면 양방향 교류가 끊깁니다. 우리가 봉쇄하든 그들이 봉쇄하든, 봉쇄 하나마다 두 제국이 서로에 대해 가진 첩보가 각각 15점 줄어들며(양쪽 모두 봉쇄하면 30점), 국경을 봉쇄한 제국의 방첩 기관은 봉쇄당한 제국의 첩자를 1.5배 더 자주 적발합니다. 이미 알려진 수치는 날짜와 함께 남습니다: 들어오지 않는 것은 새 소식입니다. 컴퓨터는 우리에 대해 아는 것을 바탕으로 우리 전력을 판단하므로, 그 판단이 더 부정확해집니다.",
+ "Frontières et renseignement": "국경과 첩보",
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 서로에 대해 아는 것도 줄어듭니다(양측 첩보 -{0})."
 }

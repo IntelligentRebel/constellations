@@ -1833,5 +1833,9 @@
  "Délai écoulé : si la flotte est encore dans le territoire des {0} l'an prochain, ce sera une déclaration de guerre.": "期限切れ：来年も艦隊が{0}の領土内にいれば、宣戦布告したことになります。",
  "Dans le territoire des {0}, dont les frontières vous sont fermées, sans assez de carburant pour en sortir à temps (frontière la plus proche à {1} al) : sans ravitaillement d'ici l'an {2}, la flotte sera démantelée.": "貴国に対して国境を封鎖している{0}の領土内で、期限内に退出するだけの燃料がありません（最寄りの国境まで{1}光年）：{2}年までに補給しなければ、艦隊は解体されます。",
  "Dans le territoire des {0}, dont les frontières vous sont fermées : la flotte doit en être sortie en l'an {1} (frontière la plus proche à {2} al, Warp {3}), sinon y rester leur déclarera la guerre.": "貴国に対して国境を封鎖している{0}の領土内：艦隊は{1}年までに退出する必要があります（最寄りの国境まで{2}光年、Warp {3}）。留まれば、相手に宣戦布告したことになります。",
- "Sortir par le plus court chemin": "最短経路で退出する"
+ "Sortir par le plus court chemin": "最短経路で退出する",
+ "Leurs frontières vous sont fermées": "相手が国境を封鎖中",
+ "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0}（諜報ルール使用時）：国境の封鎖は双方向の交流を断ちます。貴国が封鎖しても相手が封鎖しても、封鎖ひとつごとに両帝国が互いについて持つ諜報が15ポイントずつ下がり（双方が封鎖していれば30ポイント）、封鎖した側の防諜機関は、封鎖された側のスパイを1.5倍の頻度で摘発します。すでに判明している数値は日付付きで残ります：届かなくなるのは新しい情報です。コンピューターは貴国についての知識から貴国の戦力を判断するため、その判断が不正確になります。",
+ "Frontières et renseignement": "国境と諜報",
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 互いについて知ることも減ります（双方の諜報-{0}）。"
 }

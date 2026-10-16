@@ -5,6 +5,9 @@
 // estimates then exact figures (score, planets, resources, technology, navy), then the research in progress, the
 // victory conditions met and the secret objectives: the dossier. Computers judge the strength of the others through
 // the same lens, so an embassy also shows them what you are worth.
+// 0.3.9.12: closed borders cut the exchanges (travellers, merchants, ships) both ways: each closure, one way or the
+// other, takes points off what the two empires know of each other, and the closer's border controls catch the
+// spies of the empire it closes them to more often.
 import type { Dossier, FactKey, GameState, Planet, Player } from './types';
 import { FIELDS } from './types';
 import { Rng, seedFromString } from './rng';
@@ -13,6 +16,7 @@ import { capitalOf } from './empire';
 import { countBits, shipClass, type ShipClass } from './score';
 import { pairOf, statusOf, remember, diplomacyOn } from './diplomacy';
 import { FIELD_NAMES } from './tech';
+import { closedTo } from './borders';
 
 export const intelOn = (game: GameState) => !!game.settings.espionage;
 const isEmp = (game: GameState, id: number) => !!game.players[id] && !game.players[id].monster;
@@ -37,6 +41,10 @@ const ERR0 = 0.3;
 /** Spy networks: cost of a unit, strength it adds, yearly decay, ceiling, most it counts for. */
 export const SPY_UNIT = 150, SPY_GAIN = 8, SPY_DECAY = 0.2, SPY_MAX = 60, SPY_CAP = 45;
 export const EMBASSY = 25;
+/** 0.3.9.12: what each closed border (one way or the other) takes off the two empires' knowledge of each other. */
+export const BORDERS = 15;
+/** ...and how much more often the closer's counter-intelligence uncovers that empire's spies. */
+export const BORDER_CONTROLS = 1.5;
 export const TREATY = { trade: 10, research: 10, alliance: 20 } as const;
 const SHARE = 0.5, SHARE_CAP = 20;
 /** Fresh knowledge: per battle (at most per year), per world taken, the archives of an agency; kept from year to year. */
@@ -60,7 +68,7 @@ export function spyGain(game: GameState, p: Player): number {
 /** Yearly chance that a network is uncovered. */
 export function detectChance(game: GameState, spy: Player, target: number, network: number): number {
   if (network <= 0) return 0;
-  return Math.min(0.5, (0.03 + network / 600) * (agencyOf(game, target) ? 2 : 1) * (bornSpies(spy) ? 0.5 : 1));
+  return Math.min(0.5, (0.03 + network / 600) * (agencyOf(game, target) ? 2 : 1) * (bornSpies(spy) ? 0.5 : 1) * (closedTo(game, target, spy.id) ? BORDER_CONTROLS : 1));
 }
 
 export function spyBlocker(game: GameState, p: Player, target?: number): string | null {
@@ -174,6 +182,9 @@ function sources(game: GameState, o: Player, t: Player, d: Dossier, ctx: Ctx): D
   if ((d.fresh ?? 0) >= 1) add('fresh', 'Combats et conquêtes récents', d.fresh!);
   if (bornSpies(o)) add('race', 'Espions-nés (Furtivité)', 10);
   if (agencyOf(game, o.id)) add('agency', 'Analystes de votre Agence', 5);
+  // 0.3.9.12: closed borders, one way or the other: fewer of their people come to you, or your ships no longer go there
+  if (closedTo(game, o.id, t.id)) lines.push({ key: 'shutMine', label: 'Vos frontières leur sont fermées', value: -BORDERS });
+  if (closedTo(game, t.id, o.id)) lines.push({ key: 'shutTheirs', label: 'Leurs frontières vous sont fermées', value: -BORDERS });
   return lines;
 }
 

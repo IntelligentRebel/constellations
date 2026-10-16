@@ -6,7 +6,7 @@ import type { GameState, Player, ProposalKind } from '../engine/types';
 import { PRT_INFO } from '../engine/race';
 import * as DIP from '../engine/diplomacy';
 import { KnownColonies } from './dialogs/misc';
-import { intelOn, perception, EMBASSY } from '../engine/espionage';
+import { intelOn, perception, EMBASSY, BORDERS } from '../engine/espionage';
 import { DossierBlock, IntelLevel } from './intel';
 import { isNemesis, nemesisOn, NEMESIS_AT } from '../engine/nemesis';
 import * as BD from '../engine/borders';
@@ -81,7 +81,7 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
           ? <><button onClick={() => act(() => BD.setBorders(g, me.id, o.id, false), `Frontières rouvertes aux ${o.name}.`)}>Rouvrir vos frontières</button>
             <span class="diplo-long">Vos frontières leur sont <b class="yellow">fermées</b> : leurs vaisseaux ne peuvent pas entrer dans votre territoire sans vous déclarer la guerre.</span></>
           : <><button onClick={() => act(() => BD.setBorders(g, me.id, o.id, true), `Frontières fermées aux ${o.name}.`)}>Fermer vos frontières</button>
-            <span class="diplo-long">Vos frontières leur sont ouvertes. Fermées, leurs vaisseaux ne pourront plus entrer dans votre territoire sans vous déclarer la guerre ; ceux qui s'y trouvent pourront en sortir.{o.ai ? ' Ils vous en voudront, d\'autant plus que votre territoire leur barre la route.' : ''}</span></>}
+            <span class="diplo-long">Vos frontières leur sont ouvertes. Fermées, leurs vaisseaux ne pourront plus entrer dans votre territoire sans vous déclarer la guerre ; ceux qui s'y trouvent pourront en sortir.{(o.ai ? ' Ils vous en voudront, d\'autant plus que votre territoire leur barre la route.' : '') + (intelOn(g) ? ` Vous en saurez aussi moins les uns sur les autres (renseignement -${BORDERS} de part et d'autre).` : '')}</span></>}
     </div>}
     {BD.bordersOn(g) && st === 'peace' && BD.closedTo(g, o.id, me.id) && <div class="diplo-act">
       <button disabled={!!blocked('borders')} onClick={() => send('borders')}>Demander l'ouverture</button>
