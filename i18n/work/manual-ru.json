@@ -1822,5 +1822,9 @@
  "Leurs frontières vous sont fermées": "Их границы для вас закрыты",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0} (с правилом «Разведка»): закрытые границы прерывают обмены в обе стороны. Каждое закрытие, ваше или их, отнимает 15 очков от того, что каждая из двух империй знает о другой (30, если обе закрыли свои границы), а контрразведка империи, закрывшей границы, в полтора раза чаще разоблачает шпионов той, для кого они закрыты. Уже известные цифры остаются, с датой: перестают поступать только новости. Компьютеры, которые судят о вашей силе по тому, что знают о вас, начинают оценивать её хуже.",
  "Frontières et renseignement": "Границы и разведка",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " Вы также будете меньше знать друг о друге (разведка -{0} с каждой стороны)."
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " Вы также будете меньше знать друг о друге (разведка -{0} с каждой стороны).",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "все корабли этой модели уже переоснащаются",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Кораблей для переоснащения в этой строке: не более {0} (остальные уже на верфи или не существуют).",
+ "sur {0}{1} · ": "из {0}{1} · ",
+ " ({0} déjà en chantier)": " ({0} уже на верфи)"
 }

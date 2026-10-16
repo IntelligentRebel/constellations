@@ -884,7 +884,7 @@
   "refs": [
    "ui/command.tsx:58 attr:class",
    "ui/inspector.tsx:80 attr:class",
-   "ui/inspector.tsx:420",
+   "ui/inspector.tsx:424",
    "ui/pages.tsx:223 attr:class"
   ]
  },
@@ -1381,7 +1381,7 @@
    "ui/dialogs/production.tsx:149",
    "ui/dialogs/production.tsx:170",
    "ui/dialogs/research.tsx:62",
-   "ui/inspector.tsx:420"
+   "ui/inspector.tsx:424"
   ]
  },
  {
@@ -1748,21 +1748,21 @@
   "kind": "str",
   "refs": [
    "ui/inspector.tsx:136 attr:cls",
-   "ui/inspector.tsx:344 attr:cls"
+   "ui/inspector.tsx:348 attr:cls"
   ]
  },
  {
   "key": "rows empire-blk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:251 attr:cls"
+   "ui/inspector.tsx:255 attr:cls"
   ]
  },
  {
   "key": " ×{0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:289 jsx",
+   "ui/inspector.tsx:293 jsx",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -1770,42 +1770,42 @@
   "key": "blk prodblk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:297 attr:class"
+   "ui/inspector.tsx:301 attr:class"
   ]
  },
  {
   "key": " open",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:297"
+   "ui/inspector.tsx:301"
   ]
  },
  {
   "key": " old",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:332"
+   "ui/inspector.tsx:336"
   ]
  },
  {
   "key": "hint",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:472 attr:class"
+   "ui/inspector.tsx:476 attr:class"
   ]
  },
  {
   "key": "crew",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:535 attr:cls"
+   "ui/inspector.tsx:539 attr:cls"
   ]
  },
  {
   "key": "rank r",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:535 attr:class"
+   "ui/inspector.tsx:539 attr:class"
   ]
  },
  {
@@ -2131,22 +2131,22 @@
   "key": "null",
   "kind": "str",
   "refs": [
-   "ui/store.ts:89 call:parse"
+   "ui/store.ts:90 call:parse"
   ]
  },
  {
   "key": "gzip",
   "kind": "str",
   "refs": [
-   "ui/store.ts:416 call:pipeThrough",
-   "ui/store.ts:428 call:pipeThrough"
+   "ui/store.ts:418 call:pipeThrough",
+   "ui/store.ts:430 call:pipeThrough"
   ]
  },
  {
   "key": "downloads",
   "kind": "str",
   "refs": [
-   "ui/store.ts:474 call:use"
+   "ui/store.ts:476 call:use"
   ]
  },
  {

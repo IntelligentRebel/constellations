@@ -1837,5 +1837,9 @@
  "Leurs frontières vous sont fermées": "相手が国境を封鎖中",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0}（諜報ルール使用時）：国境の封鎖は双方向の交流を断ちます。貴国が封鎖しても相手が封鎖しても、封鎖ひとつごとに両帝国が互いについて持つ諜報が15ポイントずつ下がり（双方が封鎖していれば30ポイント）、封鎖した側の防諜機関は、封鎖された側のスパイを1.5倍の頻度で摘発します。すでに判明している数値は日付付きで残ります：届かなくなるのは新しい情報です。コンピューターは貴国についての知識から貴国の戦力を判断するため、その判断が不正確になります。",
  "Frontières et renseignement": "国境と諜報",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 互いについて知ることも減ります（双方の諜報-{0}）。"
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 互いについて知ることも減ります（双方の諜報-{0}）。",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "この設計の艦船はすべて改修待ちです",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "この行で改修できる艦船は最大{0}隻です（残りはすでに造船所にあるか、存在しません）。",
+ "sur {0}{1} · ": "/ {0}{1} · ",
+ " ({0} déjà en chantier)": "（{0}隻はすでに造船所）"
 }

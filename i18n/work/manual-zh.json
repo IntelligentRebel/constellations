@@ -1826,5 +1826,9 @@
  "Leurs frontières vous sont fermées": "他们的边界对你封闭",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0}（启用“情报”规则时）：封闭的边界会切断双向的往来。每一次封闭，无论是你封闭自己的边界还是他们封闭他们的，都会让两个帝国对彼此的情报各减少15点（双方都封闭时减少30点），而封闭边界一方的反间谍部门揭露对方间谍的频率提高到1.5倍。已知的数据会保留并标注日期：只是新的消息不再传来。电脑通过对你的了解来判断你的实力，此时会判断得更不准确。",
  "Frontières et renseignement": "边界与情报",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 你们对彼此的了解也会减少（双方情报各-{0}）。"
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " 你们对彼此的了解也会减少（双方情报各-{0}）。",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "该型号的所有舰船都已在改装中",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "此行可改装的舰船最多 {0} 艘（其余已在船坞中，或并不存在）。",
+ "sur {0}{1} · ": "共 {0}{1} · ",
+ " ({0} déjà en chantier)": "（{0} 艘已在船坞中）"
 }

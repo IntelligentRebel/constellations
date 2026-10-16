@@ -1831,5 +1831,9 @@
  "Leurs frontières vous sont fermées": "Ich granice są dla ciebie zamknięte",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0} (z zasadą Wywiad): zamknięte granice przerywają wymianę w obie strony. Każde zamknięcie, czy to ty zamykasz swoje granice, czy oni swoje, odejmuje 15 punktów od tego, co każde z dwóch imperiów wie o drugim (30, gdy oba zamknęły swoje), a kontrwywiad imperium, które zamyka granice, półtora raza częściej demaskuje szpiegów tego, przed kim je zamyka. Znane już liczby zostają, z datą: przestają docierać tylko nowe wieści. Komputery, które oceniają twoją siłę na podstawie tego, co o tobie wiedzą, oceniają ją wtedy gorzej.",
  "Frontières et renseignement": "Granice i wywiad",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " Będziecie też wiedzieć o sobie nawzajem mniej (wywiad -{0} po obu stronach)."
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " Będziecie też wiedzieć o sobie nawzajem mniej (wywiad -{0} po obu stronach).",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "wszystkie statki tego modelu są już modernizowane",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Statki do modernizacji w tym wierszu: najwyżej {0} (pozostałe są już w stoczni albo nie istnieją).",
+ "sur {0}{1} · ": "z {0}{1} · ",
+ " ({0} déjà en chantier)": " ({0} już w stoczni)"
 }

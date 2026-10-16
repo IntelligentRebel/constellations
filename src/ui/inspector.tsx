@@ -29,7 +29,7 @@ import { canServe, jobText, networkFleets, logisticsOn, colonistSurplus, colonis
 import { MEGA, megaProgress, type MegaId } from '../engine/megaprojects';
 import { missionDesigns, queueMission } from '../engine/missions';
 import { canBuildShip } from '../engine/production';
-import { fleetHasObsolete, refitTargets, pendingRefits, refitYard, refitUnitCost, refitBlocker } from '../engine/refit';
+import { fleetHasObsolete, refitTargets, pendingRefits, refitYard, refitUnitCost, refitBlocker, refitFree, refitFull } from '../engine/refit';
 import { veteransOn, rankOf, RANKS, rankBonusText } from '../engine/veterans';
 import { cataclysmTip } from './catamap';
 import { REFOUND_FACTORIES, REFOUND_MINES } from '../engine/diaspora';
@@ -202,15 +202,19 @@ function RefitBlock({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
     {!yard.planet ? <div class="hint">{obsolete ? 'Des vaisseaux de modèles retirés peuvent être modernisés vers un modèle de même coque : ' : 'Modernisation possible : '}{yard.why}.</div>
       : rows.map(r => {
         const toId = pick[r.t.designId] ?? r.targets[r.targets.length - 1].id;
-        const n = Math.max(1, Math.min(r.t.qty, qty[r.t.designId] ?? r.t.qty));
+        // 0.3.9.13: only the ships not already in the yard's queue
+        const free = refitFree(g, f, r.t.designId);
+        const n = Math.max(1, Math.min(free || 1, qty[r.t.designId] ?? free));
         const unit = refitUnitCost(g, me, r.t.designId, toId);
         const total = { ironium: unit.ironium * n, boranium: unit.boranium * n, germanium: unit.germanium * n, resources: unit.resources * n };
+        const full = refitFull(g, f, r.t.designId);
+        if (full) return null;
         const why = refitBlocker(g, f, r.t.designId, toId);
         return <div class="refit-row">
           <div class="refit-line"><b>{r.from.name}</b>{r.from.deleted && <i class="obs"> obsolète</i>} <span class="muted">→</span>
             <select value={toId} onChange={e => setPick({ ...pick, [r.t.designId]: +(e.target as HTMLSelectElement).value })}>{r.targets.map(d => <option value={d.id}>{d.name}</option>)}</select>
           </div>
-          <div class="refit-line"><Num value={n} min={1} max={r.t.qty} width={56} onChange={v => setQty({ ...qty, [r.t.designId]: v })} /><span class="small muted">sur {r.t.qty} · </span><Cost c={total} /></div>
+          <div class="refit-line"><Num value={n} min={1} max={free} width={56} onChange={v => setQty({ ...qty, [r.t.designId]: v })} /><span class="small muted">sur {free}{free < r.t.qty ? ` (${r.t.qty - free} déjà en chantier)` : ''} · </span><Cost c={total} /></div>
           {why ? <div class="hint red">{why}</div> : <button class="small primary" onClick={() => A.refit(f, r.t.designId, toId, n)}>Moderniser à {yard.planet!.name}</button>}
         </div>;
       })}

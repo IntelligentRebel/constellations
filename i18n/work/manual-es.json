@@ -1818,5 +1818,9 @@
  "Leurs frontières vous sont fermées": "Sus fronteras están cerradas para ti",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0} (con la regla Inteligencia): las fronteras cerradas cortan los intercambios en ambos sentidos. Cada cierre, ya cierres tú las tuyas o ellos las suyas, resta 15 puntos a lo que cada uno de los dos imperios sabe del otro (30 cuando cada uno ha cerrado las suyas), y el contraespionaje del imperio que cierra sus fronteras desenmascara una vez y media más a menudo a los espías de aquel al que se las cierra. Las cifras ya conocidas se conservan, fechadas: son las noticias las que dejan de pasar. Los ordenadores, que juzgan tu fuerza a través de lo que saben de ti, la juzgan entonces peor.",
  "Frontières et renseignement": "Fronteras e inteligencia",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " También sabréis menos el uno del otro (inteligencia -{0} por cada lado)."
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " También sabréis menos el uno del otro (inteligencia -{0} por cada lado).",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "todas las naves de este modelo ya están en modernización",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Naves a modernizar en esta línea: {0} como máximo (las demás ya están en el astillero o no existen).",
+ "sur {0}{1} · ": "de {0}{1} · ",
+ " ({0} déjà en chantier)": " ({0} ya en el astillero)"
 }

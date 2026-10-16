@@ -11014,7 +11014,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:23 prop:capital",
-   "ui/inspector.tsx:223"
+   "ui/inspector.tsx:227"
   ]
  },
  {
@@ -11076,7 +11076,7 @@
   "refs": [
    "engine/production.ts:26 prop:agency",
    "ui/dialogs/misc.tsx:253 jsx",
-   "ui/inspector.tsx:278 attr:k"
+   "ui/inspector.tsx:282 attr:k"
   ]
  },
  {
@@ -11829,77 +11829,84 @@
   "key": "{0} est arrivée à {1} : modernisation en tête de file ({2}). La flotte reste en orbite jusqu'à la fin des travaux.",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:60 call:say"
+   "engine/refit.ts:61 call:say"
   ]
  },
  {
   "key": "{0} : modernisation impossible pour {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:61 call:say"
+   "engine/refit.ts:62 call:say"
   ]
  },
  {
   "key": "{0} est arrivée à {1} : aucun modèle plus récent pour ses vaisseaux, rien à moderniser.",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:62 call:say"
+   "engine/refit.ts:63 call:say"
   ]
  },
  {
   "key": "la flotte doit être en orbite d'un de vos chantiers",
   "kind": "str",
   "refs": [
-   "engine/refit.ts:68 prop:why"
+   "engine/refit.ts:69 prop:why"
   ]
  },
  {
   "key": "{0} ne vous appartient pas",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:69 prop:why"
+   "engine/refit.ts:70 prop:why"
   ]
  },
  {
   "key": "{0} n'a pas de station",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:70 prop:why"
+   "engine/refit.ts:71 prop:why"
   ]
  },
  {
   "key": "modèle introuvable",
   "kind": "str",
   "refs": [
-   "engine/refit.ts:79"
+   "engine/refit.ts:80"
   ]
  },
  {
   "key": "il faut un modèle de la même coque",
   "kind": "str",
   "refs": [
-   "engine/refit.ts:80"
+   "engine/refit.ts:81"
   ]
  },
  {
   "key": "aucun vaisseau de ce modèle dans la flotte",
   "kind": "str",
   "refs": [
-   "engine/refit.ts:81"
+   "engine/refit.ts:82"
+  ]
+ },
+ {
+  "key": "tous les vaisseaux de ce modèle sont déjà en modernisation",
+  "kind": "str",
+  "refs": [
+   "engine/refit.ts:100"
   ]
  },
  {
   "key": "la flotte n'existe plus",
   "kind": "str",
   "refs": [
-   "engine/refit.ts:114 prop:why"
+   "engine/refit.ts:138 prop:why"
   ]
  },
  {
   "key": "{0} a quitté l'orbite",
   "kind": "tpl",
   "refs": [
-   "engine/refit.ts:115 prop:why"
+   "engine/refit.ts:139 prop:why"
   ]
  },
  {
@@ -15436,7 +15443,7 @@
   "kind": "tpl",
   "refs": [
    "ui/actions.ts:120 prop:label",
-   "ui/inspector.tsx:361 jsx"
+   "ui/inspector.tsx:365 jsx"
   ]
  },
  {
@@ -15744,122 +15751,129 @@
   ]
  },
  {
+  "key": "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).",
+  "kind": "tpl",
+  "refs": [
+   "ui/actions.ts:612 call:notify"
+  ]
+ },
+ {
   "key": "Séparation impossible",
   "kind": "str",
   "refs": [
-   "ui/actions.ts:648 call:notify"
+   "ui/actions.ts:650 call:notify"
   ]
  },
  {
   "key": "{0} flottes d'un vaisseau",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:668 call:notify"
+   "ui/actions.ts:670 call:notify"
   ]
  },
  {
   "key": "{0} reprend les ordres de {1}.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:679 call:notify"
+   "ui/actions.ts:681 call:notify"
   ]
  },
  {
   "key": "{0} garde ses ordres ; ceux de {1} sont abandonnés.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:680 call:notify"
+   "ui/actions.ts:682 call:notify"
   ]
  },
  {
   "key": "L'exploration automatique demande la technologie « {0} » ({1}).",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:687 call:notify"
+   "ui/actions.ts:689 call:notify"
   ]
  },
  {
   "key": "Rien à explorer",
   "kind": "str",
   "refs": [
-   "ui/actions.ts:695 call:notify"
+   "ui/actions.ts:697 call:notify"
   ]
  },
  {
   "key": "{0} explore désormais automatiquement.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:696 call:notify"
+   "ui/actions.ts:698 call:notify"
   ]
  },
  {
   "key": "Cette flotte ne peut pas servir le réseau (il faut une soute, sans module de colonisation ni robots foreurs).",
   "kind": "str",
   "refs": [
-   "ui/actions.ts:729 call:notify"
+   "ui/actions.ts:731 call:notify"
   ]
  },
  {
   "key": "{0} rejoint le réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:729 call:notify"
+   "ui/actions.ts:731 call:notify"
   ]
  },
  {
   "key": "{0} quitte le réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:730 call:notify"
+   "ui/actions.ts:732 call:notify"
   ]
  },
  {
   "key": "Aucun modèle à mettre à jour",
   "kind": "str",
   "refs": [
-   "ui/actions.ts:781 call:notify"
+   "ui/actions.ts:783 call:notify"
   ]
  },
  {
   "key": "{0} démantelée : la revendication prend fin.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:793 call:notify"
+   "ui/actions.ts:795 call:notify"
   ]
  },
  {
   "key": "{0} posera la balise à {1} au prochain tour.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:802 call:notify"
+   "ui/actions.ts:804 call:notify"
   ]
  },
  {
   "key": "{0} ne peut pas atteindre {1} avec son carburant.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:804 call:notify"
+   "ui/actions.ts:806 call:notify"
   ]
  },
  {
   "key": "{0} part poser une balise à {1}.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:805 call:notify"
+   "ui/actions.ts:807 call:notify"
   ]
  },
  {
   "key": "Modernisation impossible : {0}.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:813 call:notify"
+   "ui/actions.ts:815 call:notify"
   ]
  },
  {
   "key": "Modernisation ajoutée à la file de {0} : {1} reste en orbite jusqu'à la fin des travaux.",
   "kind": "tpl",
   "refs": [
-   "ui/actions.ts:815 call:notify"
+   "ui/actions.ts:817 call:notify"
   ]
  },
  {
@@ -16562,7 +16576,7 @@
   "refs": [
    "ui/app.tsx:179 jsx",
    "ui/dialogs/newgame.tsx:84 jsx",
-   "ui/inspector.tsx:268 jsx",
+   "ui/inspector.tsx:272 jsx",
    "ui/tutorial.tsx:113 prop:exportBtn"
   ]
  },
@@ -16578,7 +16592,7 @@
   "kind": "jsx",
   "refs": [
    "ui/app.tsx:180 jsx",
-   "ui/inspector.tsx:268 jsx"
+   "ui/inspector.tsx:272 jsx"
   ]
  },
  {
@@ -17350,7 +17364,7 @@
    "ui/command.tsx:102 prop:ironium",
    "ui/dialogs/reports.tsx:23 call:map",
    "ui/inspector.tsx:72 prop:ironium",
-   "ui/store.ts:468 prop:ironium"
+   "ui/store.ts:470 prop:ironium"
   ]
  },
  {
@@ -17360,7 +17374,7 @@
    "ui/command.tsx:102 prop:boranium",
    "ui/dialogs/reports.tsx:23 call:map",
    "ui/inspector.tsx:72 prop:boranium",
-   "ui/store.ts:468 prop:boranium"
+   "ui/store.ts:470 prop:boranium"
   ]
  },
  {
@@ -17370,7 +17384,7 @@
    "ui/command.tsx:102 prop:germanium",
    "ui/dialogs/reports.tsx:23 call:map",
    "ui/inspector.tsx:72 prop:germanium",
-   "ui/store.ts:468 prop:germanium"
+   "ui/store.ts:470 prop:germanium"
   ]
  },
  {
@@ -17378,7 +17392,7 @@
   "kind": "str",
   "refs": [
    "ui/command.tsx:102 prop:colonists",
-   "ui/store.ts:468 prop:colonists"
+   "ui/store.ts:470 prop:colonists"
   ]
  },
  {
@@ -17593,7 +17607,7 @@
   "kind": "str",
   "refs": [
    "ui/components.tsx:56 attr:aria-label",
-   "ui/inspector.tsx:445 jsx",
+   "ui/inspector.tsx:449 jsx",
    "ui/summary.tsx:88 attr:k",
    "ui/summary.tsx:163 attr:k"
   ]
@@ -18093,7 +18107,7 @@
   "kind": "jsx",
   "refs": [
    "ui/culture.tsx:125 jsx",
-   "ui/inspector.tsx:408 jsx"
+   "ui/inspector.tsx:412 jsx"
   ]
  },
  {
@@ -18144,7 +18158,7 @@
    "ui/culture.tsx:130 attr:k",
    "ui/dialogs/battle.tsx:61 attr:k",
    "ui/dialogs/designer.tsx:303 attr:k",
-   "ui/inspector.tsx:509 attr:k"
+   "ui/inspector.tsx:513 attr:k"
   ]
  },
  {
@@ -18159,7 +18173,7 @@
   "kind": "str",
   "refs": [
    "ui/culture.tsx:131 attr:k",
-   "ui/inspector.tsx:504 attr:k"
+   "ui/inspector.tsx:508 attr:k"
   ]
  },
  {
@@ -18516,7 +18530,7 @@
   "refs": [
    "ui/dialogs/backups.tsx:42 jsx",
    "ui/dialogs/backups.tsx:42 call:ask",
-   "ui/inspector.tsx:503 jsx"
+   "ui/inspector.tsx:507 jsx"
   ]
  },
  {
@@ -19103,7 +19117,7 @@
   "refs": [
    "ui/dialogs/designer.tsx:81 call:ask",
    "ui/dialogs/production.tsx:180 attr:title",
-   "ui/inspector.tsx:312 attr:title"
+   "ui/inspector.tsx:316 attr:title"
   ]
  },
  {
@@ -19418,8 +19432,8 @@
   "refs": [
    "ui/dialogs/designer.tsx:206",
    "ui/dialogs/designer.tsx:310 attr:v",
-   "ui/inspector.tsx:505 attr:v",
-   "ui/inspector.tsx:559 jsx"
+   "ui/inspector.tsx:509 attr:v",
+   "ui/inspector.tsx:563 jsx"
   ]
  },
  {
@@ -19507,7 +19521,7 @@
   "refs": [
    "ui/dialogs/designer.tsx:220 prop:k",
    "ui/dialogs/designer.tsx:310 attr:k",
-   "ui/inspector.tsx:505 attr:k"
+   "ui/inspector.tsx:509 attr:k"
   ]
  },
  {
@@ -19515,7 +19529,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/designer.tsx:226 prop:k",
-   "ui/inspector.tsx:507 attr:k"
+   "ui/inspector.tsx:511 attr:k"
   ]
  },
  {
@@ -19667,7 +19681,7 @@
    "ui/dialogs/designer.tsx:298 attr:k",
    "ui/dialogs/designer.tsx:481 jsx",
    "ui/dialogs/reports.tsx:61 prop:label",
-   "ui/inspector.tsx:506 attr:k"
+   "ui/inspector.tsx:510 attr:k"
   ]
  },
  {
@@ -20464,7 +20478,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/index.tsx:78 jsx",
-   "ui/store.ts:316"
+   "ui/store.ts:318"
   ]
  },
  {
@@ -20871,8 +20885,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:79 jsx",
    "ui/dialogs/misc.tsx:80 jsx",
-   "ui/inspector.tsx:257 jsx",
-   "ui/inspector.tsx:268 jsx"
+   "ui/inspector.tsx:261 jsx",
+   "ui/inspector.tsx:272 jsx"
   ]
  },
  {
@@ -20902,7 +20916,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/inspector.tsx:226"
+   "ui/inspector.tsx:230"
   ]
  },
  {
@@ -20911,8 +20925,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/inspector.tsx:137 attr:k",
-   "ui/inspector.tsx:255 jsx",
-   "ui/inspector.tsx:345 attr:k"
+   "ui/inspector.tsx:259 jsx",
+   "ui/inspector.tsx:349 attr:k"
   ]
  },
  {
@@ -20921,7 +20935,7 @@
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/dialogs/reports.tsx:67 prop:label",
-   "ui/inspector.tsx:348 attr:k",
+   "ui/inspector.tsx:352 attr:k",
    "ui/summary.tsx:125 attr:k"
   ]
  },
@@ -20949,7 +20963,7 @@
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/discoveries.tsx:253 call:th",
    "ui/empire.tsx:94 call:wth",
-   "ui/inspector.tsx:452 jsx"
+   "ui/inspector.tsx:456 jsx"
   ]
  },
  {
@@ -21305,8 +21319,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:194 jsx",
    "ui/dialogs/production.tsx:66 prop:label",
-   "ui/inspector.tsx:266 jsx",
-   "ui/inspector.tsx:341 attr:title"
+   "ui/inspector.tsx:270 jsx",
+   "ui/inspector.tsx:345 attr:title"
   ]
  },
  {
@@ -23744,7 +23758,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:292"
+   "ui/inspector.tsx:296"
   ]
  },
  {
@@ -23752,7 +23766,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:292"
+   "ui/inspector.tsx:296"
   ]
  },
  {
@@ -23767,7 +23781,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/production.tsx:174 attr:title",
-   "ui/inspector.tsx:293 attr:title"
+   "ui/inspector.tsx:297 attr:title"
   ]
  },
  {
@@ -23789,7 +23803,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/production.tsx:174 attr:title",
-   "ui/inspector.tsx:294 attr:title"
+   "ui/inspector.tsx:298 attr:title"
   ]
  },
  {
@@ -23806,7 +23820,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:176 attr:title",
-   "ui/inspector.tsx:308 attr:title"
+   "ui/inspector.tsx:312 attr:title"
   ]
  },
  {
@@ -23814,7 +23828,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:177 attr:title",
-   "ui/inspector.tsx:309 attr:title"
+   "ui/inspector.tsx:313 attr:title"
   ]
  },
  {
@@ -23822,7 +23836,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:178 attr:title",
-   "ui/inspector.tsx:310 attr:title"
+   "ui/inspector.tsx:314 attr:title"
   ]
  },
  {
@@ -23830,7 +23844,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:179 attr:title",
-   "ui/inspector.tsx:311 attr:title"
+   "ui/inspector.tsx:315 attr:title"
   ]
  },
  {
@@ -26795,7 +26809,7 @@
   "kind": "str",
   "refs": [
    "ui/empire.tsx:94 call:wth",
-   "ui/inspector.tsx:252 attr:k"
+   "ui/inspector.tsx:256 attr:k"
   ]
  },
  {
@@ -26944,7 +26958,7 @@
   "kind": "tpl",
   "refs": [
    "ui/empire.tsx:136 call:notify",
-   "ui/inspector.tsx:274 call:notify"
+   "ui/inspector.tsx:278 call:notify"
   ]
  },
  {
@@ -27254,7 +27268,7 @@
   "kind": "jsx",
   "refs": [
    "ui/empire.tsx:211 jsx",
-   "ui/inspector.tsx:380 jsx"
+   "ui/inspector.tsx:384 jsx"
   ]
  },
  {
@@ -27276,7 +27290,7 @@
   "kind": "jsx",
   "refs": [
    "ui/enginechart.tsx:30 jsx",
-   "ui/inspector.tsx:454 jsx"
+   "ui/inspector.tsx:458 jsx"
   ]
  },
  {
@@ -28266,7 +28280,7 @@
   "kind": "str",
   "refs": [
    "ui/inspector.tsx:124 attr:title",
-   "ui/inspector.tsx:409 attr:title"
+   "ui/inspector.tsx:413 attr:title"
   ]
  },
  {
@@ -28443,9 +28457,9 @@
   "kind": "jsx",
   "refs": [
    "ui/inspector.tsx:152 jsx",
-   "ui/inspector.tsx:210 jsx",
-   "ui/inspector.tsx:407 jsx",
-   "ui/inspector.tsx:497 jsx"
+   "ui/inspector.tsx:214 jsx",
+   "ui/inspector.tsx:411 jsx",
+   "ui/inspector.tsx:501 jsx"
   ]
  },
  {
@@ -28561,38 +28575,45 @@
   ]
  },
  {
-  "key": "sur {0} · ",
+  "key": "sur {0}{1} · ",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:213 jsx"
+   "ui/inspector.tsx:217 jsx"
+  ]
+ },
+ {
+  "key": " ({0} déjà en chantier)",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:217 jsx"
   ]
  },
  {
   "key": "Moderniser à {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:214 jsx"
+   "ui/inspector.tsx:218 jsx"
   ]
  },
  {
   "key": "Capitale",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:222"
+   "ui/inspector.tsx:226"
   ]
  },
  {
   "key": "Monde conquis",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:225"
+   "ui/inspector.tsx:229"
   ]
  },
  {
   "key": "Monde natal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:226",
+   "ui/inspector.tsx:230",
    "ui/sidebar.tsx:129 attr:title"
   ]
  },
@@ -28600,162 +28621,162 @@
   "key": "siège du gouvernement",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:240 call:push"
+   "ui/inspector.tsx:244 call:push"
   ]
  },
  {
   "key": "capitale régionale : plein rendement à {0} al autour",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:241 call:push"
+   "ui/inspector.tsx:245 call:push"
   ]
  },
  {
   "key": "à {0} al de {1}{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:242 call:push"
+   "ui/inspector.tsx:246 call:push"
   ]
  },
  {
   "key": "monde conquis : {0}, plein rendement en {1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:243 call:push"
+   "ui/inspector.tsx:247 call:push"
   ]
  },
  {
   "key": "empire désorganisé jusqu'en {0} (×{1})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:244 call:push"
+   "ui/inspector.tsx:248 call:push"
   ]
  },
  {
   "key": "Production et recherche de cette planète. Pleine efficacité à {0} al de la capitale ou d'une capitale régionale, puis −{1} % tous les {2} al (minimum {3} %).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:252 attr:title"
+   "ui/inspector.tsx:256 attr:title"
   ]
  },
  {
   "key": "Le réseau logistique déplace les colons entre vos planètes selon ces politiques, avec les cargos qui lui sont affectés.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:255 attr:title"
+   "ui/inspector.tsx:259 attr:title"
   ]
  },
  {
   "key": "Émigration",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:257 jsx"
+   "ui/inspector.tsx:261 jsx"
   ]
  },
  {
   "key": "Immigration",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:257 jsx"
+   "ui/inspector.tsx:261 jsx"
   ]
  },
  {
   "key": "Pourcentage de la capacité de la planète",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:260 attr:title"
+   "ui/inspector.tsx:264 attr:title"
   ]
  },
  {
   "key": "au-delà de",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:261 jsx"
+   "ui/inspector.tsx:265 jsx"
   ]
  },
  {
   "key": "jusqu'à",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:261 jsx"
+   "ui/inspector.tsx:265 jsx"
   ]
  },
  {
   "key": "{0} à envoyer",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:262 jsx"
+   "ui/inspector.tsx:266 jsx"
   ]
  },
  {
   "key": "Exporter : le réseau emporte les minerais au-delà de la réserve vers les planètes importatrices (ou la capitale s'il n'y en a pas).",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:266 attr:title"
+   "ui/inspector.tsx:270 attr:title"
   ]
  },
  {
   "key": "garder",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:271 jsx"
+   "ui/inspector.tsx:275 jsx"
   ]
  },
  {
   "key": "kt de chacun",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:271 jsx"
+   "ui/inspector.tsx:275 jsx"
   ]
  },
  {
   "key": "reçoit les minerais exportés par vos autres planètes",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:272 jsx"
+   "ui/inspector.tsx:276 jsx"
   ]
  },
  {
   "key": "Aucun cargo dans le réseau logistique : ces politiques restent lettre morte.{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:273 jsx"
+   "ui/inspector.tsx:277 jsx"
   ]
  },
  {
   "key": "Construire un {0} à {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:274 jsx"
+   "ui/inspector.tsx:278 jsx"
   ]
  },
  {
   "key": "Cochez « Réseau logistique » sur une flotte de cargos.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:274 jsx"
+   "ui/inspector.tsx:278 jsx"
   ]
  },
  {
   "key": "vos réseaux d'espions moitié plus forts, ceux des autres démasqués deux fois plus souvent",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:278 jsx"
+   "ui/inspector.tsx:282 jsx"
   ]
  },
  {
   "key": "vide",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:288 jsx"
+   "ui/inspector.tsx:292 jsx"
   ]
  },
  {
   "key": "bloqué",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:289 jsx",
    "ui/inspector.tsx:293 jsx",
+   "ui/inspector.tsx:297 jsx",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -28763,35 +28784,35 @@
   "key": "File de production",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:299 jsx"
+   "ui/inspector.tsx:303 jsx"
   ]
  },
  {
   "key": "La file est vide : cette planète ne produit rien cette année.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:302 jsx"
+   "ui/inspector.tsx:306 jsx"
   ]
  },
  {
   "key": "Partira seul en mission une fois construit",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:304 attr:title"
+   "ui/inspector.tsx:308 attr:title"
   ]
  },
  {
   "key": "Avancement du mégaprojet",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:304 attr:title"
+   "ui/inspector.tsx:308 attr:title"
   ]
  },
  {
   "key": "Ajouter / modifier…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:315 jsx",
+   "ui/inspector.tsx:319 jsx",
    "ui/tutorial.tsx:110 prop:edit"
   ]
  },
@@ -28799,21 +28820,21 @@
   "key": "Vider",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:315 jsx"
+   "ui/inspector.tsx:319 jsx"
   ]
  },
  {
   "key": "Système n° {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:330 jsx"
+   "ui/inspector.tsx:334 jsx"
   ]
  },
  {
   "key": " · monde natal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:331 jsx",
+   "ui/inspector.tsx:335 jsx",
    "ui/summary.tsx:114 jsx"
   ]
  },
@@ -28821,148 +28842,148 @@
   "key": "Monde libre",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:331 jsx"
+   "ui/inspector.tsx:335 jsx"
   ]
  },
  {
   "key": "Données inconnues",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:331 jsx"
+   "ui/inspector.tsx:335 jsx"
   ]
  },
  {
   "key": "Relevé de cette année ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:332 jsx"
+   "ui/inspector.tsx:336 jsx"
   ]
  },
  {
   "key": "Relevé de {0}, il y a {1} an{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:332 jsx"
+   "ui/inspector.tsx:336 jsx"
   ]
  },
  {
   "key": "Au début de la partie, il faut envoyer un vaisseau dans ce système pour mesurer son environnement et ses minerais. Un scanner pénétrant permettra plus tard de l'analyser à distance.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:339 jsx"
+   "ui/inspector.tsx:343 jsx"
   ]
  },
  {
   "key": "Minerais en sous-sol",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:341 attr:title"
+   "ui/inspector.tsx:345 attr:title"
   ]
  },
  {
   "key": "conc. {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:342 jsx"
+   "ui/inspector.tsx:346 jsx"
   ]
  },
  {
   "key": "{0} kt en surface",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:342 jsx"
+   "ui/inspector.tsx:346 jsx"
   ]
  },
  {
   "key": "≈ {0} hab.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:345 attr:v"
+   "ui/inspector.tsx:349 attr:v"
   ]
  },
  {
   "key": "Population maximale",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:346 attr:k"
+   "ui/inspector.tsx:350 attr:k"
   ]
  },
  {
   "key": "Voir ce qu'on sait de ce modèle",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:348 attr:title"
+   "ui/inspector.tsx:352 attr:title"
   ]
  },
  {
   "key": "⚠ Cette arche n'a aucun colon à bord : elle ne pourra pas fonder de colonie.{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:360 jsx"
+   "ui/inspector.tsx:364 jsx"
   ]
  },
  {
   "key": "Escale à {0} pour les embarquer",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:361 jsx"
+   "ui/inspector.tsx:365 jsx"
   ]
  },
  {
   "key": "Aucune de vos planètes ne peut fournir de colons.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:361 jsx"
+   "ui/inspector.tsx:365 jsx"
   ]
  },
  {
   "key": "⛽ {0} vient la ravitailler{1}. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:370 jsx"
+   "ui/inspector.tsx:374 jsx"
   ]
  },
  {
   "key": ", rencontre prévue en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:370 jsx"
+   "ui/inspector.tsx:374 jsx"
   ]
  },
  {
   "key": "⛽ En route pour ravitailler {0}{1}. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:371 jsx"
+   "ui/inspector.tsx:375 jsx"
   ]
  },
  {
   "key": "une flotte",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:371 jsx"
+   "ui/inspector.tsx:375 jsx"
   ]
  },
  {
   "key": ", puis retour à son poste ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:371 jsx"
+   "ui/inspector.tsx:375 jsx"
   ]
  },
  {
   "key": "Aucune de vos flottes sans ordre n'a assez de carburant à céder pour la rejoindre.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:374 jsx"
+   "ui/inspector.tsx:378 jsx"
   ]
  },
  {
   "key": "sur place",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:376",
-   "ui/inspector.tsx:484",
+   "ui/inspector.tsx:380",
+   "ui/inspector.tsx:488",
    "ui/sidebar.tsx:66"
   ]
  },
@@ -28970,310 +28991,310 @@
   "key": "rencontre en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:376"
+   "ui/inspector.tsx:380"
   ]
  },
  {
   "key": "Ravitailler la flotte{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:378 jsx"
+   "ui/inspector.tsx:382 jsx"
   ]
  },
  {
   "key": "La flotte ravitailleuse la rejoint, lui cède ce qu'elle peut (en gardant de quoi rentrer) puis retourne au chantier le plus proche",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:378 attr:title"
+   "ui/inspector.tsx:382 attr:title"
   ]
  },
  {
   "key": "{0} · +{1} mg · {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:378 jsx"
+   "ui/inspector.tsx:382 jsx"
   ]
  },
  {
   "key": "Masquer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:379 jsx"
+   "ui/inspector.tsx:383 jsx"
   ]
  },
  {
   "key": "+{0} mg · {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:380 jsx"
+   "ui/inspector.tsx:384 jsx"
   ]
  },
  {
   "key": "Flotte{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:406 jsx"
+   "ui/inspector.tsx:410 jsx"
   ]
  },
  {
   "key": "Double-clic pour renommer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:407 attr:title"
+   "ui/inspector.tsx:411 attr:title"
   ]
  },
  {
   "key": "Un modèle de cette flotte a été retiré : il ne se construit plus, mais ses vaisseaux restent en service.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:407 attr:title"
+   "ui/inspector.tsx:411 attr:title"
   ]
  },
  {
   "key": "Espace profond ({0}, {1})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:408 jsx"
+   "ui/inspector.tsx:412 jsx"
   ]
  },
  {
   "key": " · à sec",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:408 jsx"
+   "ui/inspector.tsx:412 jsx"
   ]
  },
  {
   "key": "Flotte précédente",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:409 attr:title"
+   "ui/inspector.tsx:413 attr:title"
   ]
  },
  {
   "key": "Flotte suivante",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:409 attr:title"
+   "ui/inspector.tsx:413 attr:title"
   ]
  },
  {
   "key": "Renommer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:409 attr:title"
+   "ui/inspector.tsx:413 attr:title"
   ]
  },
  {
   "key": "Carburant et soute",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 attr:title"
+   "ui/inspector.tsx:417 attr:title"
   ]
  },
  {
   "key": "Échanger",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 jsx"
+   "ui/inspector.tsx:417 jsx"
   ]
  },
  {
   "key": "Transférer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 jsx",
-   "ui/inspector.tsx:522 jsx"
+   "ui/inspector.tsx:417 jsx",
+   "ui/inspector.tsx:526 jsx"
   ]
  },
  {
   "key": "Itinéraire{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:417 jsx"
+   "ui/inspector.tsx:421 jsx"
   ]
  },
  {
   "key": " · {0} an{1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:417 jsx"
+   "ui/inspector.tsx:421 jsx"
   ]
  },
  {
   "key": "Effacer",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:417 jsx"
+   "ui/inspector.tsx:421 jsx"
   ]
  },
  {
   "key": "Supprimer toutes les étapes",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:417 attr:title"
+   "ui/inspector.tsx:421 attr:title"
   ]
  },
  {
   "key": "Franchie sans s'arrêter : la flotte garde sa vitesse",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:423 attr:title"
+   "ui/inspector.tsx:427 attr:title"
   ]
  },
  {
   "key": "Supprimer l'étape (Suppr)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:424 attr:title"
+   "ui/inspector.tsx:428 attr:title"
   ]
  },
  {
   "key": "Maj+clic sur la carte : destination (planète, flotte à intercepter ou point de l'espace). Gardez Maj enfoncée pour ajouter des étapes.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:428 jsx"
+   "ui/inspector.tsx:432 jsx"
   ]
  },
  {
   "key": "Maj+clic : nouvel itinéraire · Ctrl+Maj+clic : ajouter une étape à la fin.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:428 jsx"
+   "ui/inspector.tsx:432 jsx"
   ]
  },
  {
   "key": "Bouton « ✚ Étapes » au-dessus de la carte, puis touchez la destination ; appui long sur la carte : « Aller ici ».",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:429 jsx"
+   "ui/inspector.tsx:433 jsx"
   ]
  },
  {
   "key": "⚠ {0} Faites escale à un chantier ami ou raccourcissez le trajet.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:434 jsx"
+   "ui/inspector.tsx:438 jsx"
   ]
  },
  {
   "key": "Étape {0} à Warp 1 : {1} ans pour {2} al, faute de carburant.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:434 jsx"
+   "ui/inspector.tsx:438 jsx"
   ]
  },
  {
   "key": "Carburant insuffisant pour l'étape {0} : la flotte tombera en panne sèche et finira le trajet à Warp 1.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:434 jsx"
+   "ui/inspector.tsx:438 jsx"
   ]
  },
  {
   "key": "Le trajet entre dans le territoire des {0}, dont les frontières vous sont fermées : sous un ordre automatique, la flotte s'arrêtera à la frontière.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:441 jsx"
+   "ui/inspector.tsx:445 jsx"
   ]
  },
  {
   "key": "Le trajet entre dans le territoire des {0}, dont les frontières vous sont fermées : y entrer leur déclarera la guerre.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:441 jsx"
+   "ui/inspector.tsx:445 jsx"
   ]
  },
  {
   "key": "Au-delà de Warp {0} : chaque année, un vaisseau sur dix risque d'exploser.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:449 jsx"
+   "ui/inspector.tsx:453 jsx"
   ]
  },
  {
   "key": "Plus vite que la vitesse idéale (Warp {0}) : la consommation grimpe.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:450 jsx"
+   "ui/inspector.tsx:454 jsx"
   ]
  },
  {
   "key": "Durée",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:453 jsx"
+   "ui/inspector.tsx:457 jsx"
   ]
  },
  {
   "key": "même année",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:453 jsx"
+   "ui/inspector.tsx:457 jsx"
   ]
  },
  {
   "key": "{0} mg",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:454 jsx",
-   "ui/inspector.tsx:455 jsx"
+   "ui/inspector.tsx:458 jsx",
+   "ui/inspector.tsx:459 jsx"
   ]
  },
  {
   "key": "Réserve à l'arrivée",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:455 jsx"
+   "ui/inspector.tsx:459 jsx"
   ]
  },
  {
   "key": "Plein automatique au chantier ami à l'arrivée.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:457 jsx"
+   "ui/inspector.tsx:461 jsx"
   ]
  },
  {
   "key": "{0} S'arrêter à cette étape",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:458 jsx"
+   "ui/inspector.tsx:462 jsx"
   ]
  },
  {
   "key": "Sans arrêt, la flotte franchit ce point de l'espace en gardant le reste de son année de voyage : un virage ne coûte aucun temps. Avec un arrêt, elle s'immobilise ici jusqu'à la fin de l'année. Une planète est toujours un arrêt (mise en orbite).",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:458 attr:title"
+   "ui/inspector.tsx:462 attr:title"
   ]
  },
  {
   "key": "Étape franchie sans ralentir : le virage ne coûte aucun temps.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:459 jsx"
+   "ui/inspector.tsx:463 jsx"
   ]
  },
  {
   "key": "Traverse {0} : Warp limité à {1} sur ce passage.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:460 jsx"
+   "ui/inspector.tsx:464 jsx"
   ]
  },
  {
   "key": "Traverser un trou de ver demande la technologie « {0} » ({1}). La flotte s'arrêtera devant.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:461 jsx"
+   "ui/inspector.tsx:465 jsx"
   ]
  },
  {
   "key": "Vitesse auto",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:463 jsx",
+   "ui/inspector.tsx:467 jsx",
    "ui/tutorial.tsx:112 prop:speed"
   ]
  },
@@ -29281,470 +29302,470 @@
   "key": "Vitesse la plus rapide qui conserve du carburant, pour chaque étape ; le portail quand il est plus rapide et sans risque",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:463 attr:title"
+   "ui/inspector.tsx:467 attr:title"
   ]
  },
  {
   "key": "Cette vitesse partout",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:464 jsx"
+   "ui/inspector.tsx:468 jsx"
   ]
  },
  {
   "key": "Le carburant ne suffit pas pour tout l'itinéraire : la flotte finira à Warp 1 et risque de dériver. Réduisez la vitesse ou faites escale à un chantier ami.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:466 jsx"
+   "ui/inspector.tsx:470 jsx"
   ]
  },
  {
   "key": "Le trajet traverse {0}. {1}{2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "{0} champs de mines connus",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "un champ de mines connu",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "Au-delà de Warp {0}, chaque année-lumière parcourue dans le champ risque une explosion.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "Warp {0} reste sous la vitesse sûre ({1}).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "Deux étapes sont ajoutées à l'entrée et à la sortie du champ, franchies sans s'arrêter : la flotte ne ralentit que dans le champ",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:472 attr:title"
+   "ui/inspector.tsx:476 attr:title"
   ]
  },
  {
   "key": "Passer en Warp {0} dans les champs de mines",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "Passer en Warp {0} dans le champ de mines",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:472 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "{0} Répéter l'itinéraire",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:480 jsx"
   ]
  },
  {
   "key": "{0} Exploration automatique",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:478 jsx"
+   "ui/inspector.tsx:482 jsx"
   ]
  },
  {
   "key": "À chaque tour, la flotte part d'elle-même vers la planète inexplorée la plus proche qu'elle peut atteindre sans tomber en panne, et rentre faire le plein quand il le faut.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:478 attr:title"
+   "ui/inspector.tsx:482 attr:title"
   ]
  },
  {
   "key": "{0} Exploration automatique {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:479 jsx"
+   "ui/inspector.tsx:483 jsx"
   ]
  },
  {
   "key": "Technologie « {0} » : {1} (vous êtes au niveau {2} en Électronique).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:479 attr:title"
+   "ui/inspector.tsx:483 attr:title"
   ]
  },
  {
   "key": "· Électronique {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:479 jsx"
+   "ui/inspector.tsx:483 jsx"
   ]
  },
  {
   "key": "{0} Réseau logistique",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:480 jsx"
+   "ui/inspector.tsx:484 jsx"
   ]
  },
  {
   "key": "Le réseau donne lui-même ses ordres à la flotte : il emporte colons et minerais selon les politiques de vos planètes, et évite les routes où des navires ennemis ont été vus à moins de {0} al.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:480 attr:title"
+   "ui/inspector.tsx:484 attr:title"
   ]
  },
  {
   "key": "Tâche {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:484 attr:title"
+   "ui/inspector.tsx:488 attr:title"
   ]
  },
  {
   "key": "à l'étape {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:484"
+   "ui/inspector.tsx:488"
   ]
  },
  {
   "key": "Composition · {0} vaisseau{1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:490 attr:title"
+   "ui/inspector.tsx:494 attr:title"
   ]
  },
  {
   "key": "Modèle retiré : il ne se construit plus",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:495 attr:title"
+   "ui/inspector.tsx:499 attr:title"
   ]
  },
  {
   "key": "Voir le modèle",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:495 attr:title"
+   "ui/inspector.tsx:499 attr:title"
   ]
  },
  {
   "key": "{0} endommagé(s), {1} dp de dégâts chacun",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:498 attr:title"
+   "ui/inspector.tsx:502 attr:title"
   ]
  },
  {
   "key": "Rendez-vous",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:502 attr:k"
+   "ui/inspector.tsx:506 attr:k"
   ]
  },
  {
   "key": "Marchand nomade {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:502 jsx"
+   "ui/inspector.tsx:506 jsx"
   ]
  },
  {
   "key": "Poursuite",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:503 attr:k"
+   "ui/inspector.tsx:507 attr:k"
   ]
  },
  {
   "key": "contact perdu de vue",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:503 jsx"
+   "ui/inspector.tsx:507 jsx"
   ]
  },
  {
   "key": "Modifier les plans…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:504 jsx"
+   "ui/inspector.tsx:508 jsx"
   ]
  },
  {
   "key": "{0} al à Warp {1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:505 attr:v"
+   "ui/inspector.tsx:509 attr:v"
   ]
  },
  {
   "key": " · pénétrant {0} al",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:508"
+   "ui/inspector.tsx:512"
   ]
  },
  {
   "key": "Séparer…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:511 jsx"
+   "ui/inspector.tsx:515 jsx"
   ]
  },
  {
   "key": "Un modèle par flotte",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:512 jsx"
+   "ui/inspector.tsx:516 jsx"
   ]
  },
  {
   "key": "Fusionner…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:513 jsx"
+   "ui/inspector.tsx:517 jsx"
   ]
  },
  {
   "key": "Un vaisseau par flotte",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:514 jsx"
+   "ui/inspector.tsx:518 jsx"
   ]
  },
  {
   "key": "Une flotte par vaisseau, chacune avec les ordres actuels",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:514 attr:title"
+   "ui/inspector.tsx:518 attr:title"
   ]
  },
  {
   "key": "Votre peuple vit à bord depuis {0}. Tant qu'une arche chargée vole, l'empire vit ; la première colonie fondée deviendra votre nouvelle capitale, avec {1} usines et {2} mines. Les arches glanent chaque année un dixième de leur réservoir.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:517 jsx"
+   "ui/inspector.tsx:521 jsx"
   ]
  },
  {
   "key": "Autres flottes ici ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:521 attr:title"
+   "ui/inspector.tsx:525 attr:title"
   ]
  },
  {
   "key": "Absorber",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:522 jsx"
+   "ui/inspector.tsx:526 jsx"
   ]
  },
  {
   "key": "Équipage · {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:535 jsx"
+   "ui/inspector.tsx:539 jsx"
   ]
  },
  {
   "key": "Journal de bord",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:535 attr:title"
+   "ui/inspector.tsx:539 attr:title"
   ]
  },
  {
   "key": "{0} points d'expérience ; rang « {1} » à {2}.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:538 jsx"
+   "ui/inspector.tsx:542 jsx"
   ]
  },
  {
   "key": "{0} points d'expérience : le plus haut rang.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:538 jsx"
+   "ui/inspector.tsx:542 jsx"
   ]
  },
  {
   "key": "On en gagne 3 par bataille survécue, 4 de plus par vaisseau ennemi détruit.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:538 jsx"
+   "ui/inspector.tsx:542 jsx"
   ]
  },
  {
   "key": "En bataille",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:539 attr:k"
+   "ui/inspector.tsx:543 attr:k"
   ]
  },
  {
   "key": "États de service",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:540 attr:k"
+   "ui/inspector.tsx:544 attr:k"
   ]
  },
  {
   "key": "aucune bataille",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:540 attr:v"
+   "ui/inspector.tsx:544 attr:v"
   ]
  },
  {
   "key": "{0} bataille{1}, {2} vaisseau{3} ennemi{4} détruit{5}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:540 attr:v"
+   "ui/inspector.tsx:544 attr:v"
   ]
  },
  {
   "key": "En service depuis",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:542 attr:k"
+   "ui/inspector.tsx:546 attr:k"
   ]
  },
  {
   "key": "Réduire le journal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:544 jsx"
+   "ui/inspector.tsx:548 jsx"
   ]
  },
  {
   "key": "Tout le journal ({0} entrées)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:544 jsx"
+   "ui/inspector.tsx:548 jsx"
   ]
  },
  {
   "key": "Saut risqué : {0}. Chaque vaisseau peut y perdre jusqu'à {1} % de son blindage.{2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:554 jsx"
+   "ui/inspector.tsx:558 jsx"
   ]
  },
  {
   "key": " Certains peuvent aussi se perdre dans le vide.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:554 jsx"
+   "ui/inspector.tsx:558 jsx"
   ]
  },
  {
   "key": "Votre race ne peut pas faire passer de cargaison par une porte : elle serait déposée à {0} avant le saut.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:555 jsx"
+   "ui/inspector.tsx:559 jsx"
   ]
  },
  {
   "key": "Le saut sera refusé : {0}. La flotte partira à sa vitesse idéale.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:557 jsx"
+   "ui/inspector.tsx:561 jsx"
   ]
  },
  {
   "key": "Saut sans risque, sans carburant : masse sûre {0} par vaisseau (le plus lourd : {1} kt), portée sûre {2} (distance : {3} al).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:559 jsx"
+   "ui/inspector.tsx:563 jsx"
   ]
  },
  {
   "key": "Pas de portail pour cette étape : {0}.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:566 jsx",
-   "ui/inspector.tsx:568 jsx"
+   "ui/inspector.tsx:570 jsx",
+   "ui/inspector.tsx:572 jsx"
   ]
  },
  {
   "key": "Portes stellaires à {0} et à {1} : la dernière case de la barre de vitesse, « Portail », fait le saut en un an, sans carburant. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:570 jsx"
+   "ui/inspector.tsx:574 jsx"
   ]
  },
  {
   "key": "Ici, Warp {0} met aussi un an : le portail n'économiserait que le carburant ({1} mg).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:570 jsx"
+   "ui/inspector.tsx:574 jsx"
   ]
  },
  {
   "key": "Le portail ferait gagner {0} an{1}.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:570 jsx"
+   "ui/inspector.tsx:574 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration ni colonie habitable sous {0} % de sa capacité. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:580 jsx"
+   "ui/inspector.tsx:584 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration. Réglages : Empire, Réseau logistique.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:580 jsx"
+   "ui/inspector.tsx:584 jsx"
   ]
  },
  {
   "key": "{0} : {1} (automatique)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:582 call:map"
+   "ui/inspector.tsx:586 call:map"
   ]
  },
  {
   "key": "Vers {0} planètes qui manquent de colons ({1}…), les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:582 jsx"
+   "ui/inspector.tsx:586 jsx"
   ]
  },
  {
   "key": "Vers {0}, les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:582 jsx"
+   "ui/inspector.tsx:586 jsx"
   ]
  },
  {
   "key": "Reçoit les émigrants de vos planètes en Émigration jusqu'à {0} % de sa capacité (envoi automatique, réglable dans Empire, Réseau logistique).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:585 jsx"
+   "ui/inspector.tsx:589 jsx"
   ]
  },
  {
@@ -33210,77 +33231,77 @@
   "key": "Rien à annuler",
   "kind": "str",
   "refs": [
-   "ui/store.ts:121 call:notify"
+   "ui/store.ts:122 call:notify"
   ]
  },
  {
   "key": "Action annulée",
   "kind": "str",
   "refs": [
-   "ui/store.ts:126 call:notify"
+   "ui/store.ts:127 call:notify"
   ]
  },
  {
   "key": "Sauvegarde locale impossible (stockage plein) : exportez la partie.",
   "kind": "str",
   "refs": [
-   "ui/store.ts:203 call:notify"
+   "ui/store.ts:205 call:notify"
   ]
  },
  {
   "key": "Succès débloqués : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/store.ts:351 call:notify"
+   "ui/store.ts:353 call:notify"
   ]
  },
  {
   "key": "Succès débloqué : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/store.ts:351 call:notify"
+   "ui/store.ts:353 call:notify"
   ]
  },
  {
   "key": "Partie à plusieurs : les tours se génèrent un an à la fois.",
   "kind": "str",
   "refs": [
-   "ui/store.ts:367 call:notify"
+   "ui/store.ts:369 call:notify"
   ]
  },
  {
   "key": "Erreur pendant la génération du tour : ",
   "kind": "str",
   "refs": [
-   "ui/store.ts:385 call:notify"
+   "ui/store.ts:387 call:notify"
   ]
  },
  {
   "key": "{0} Md",
   "kind": "tpl",
   "refs": [
-   "ui/store.ts:457"
+   "ui/store.ts:459"
   ]
  },
  {
   "key": "Fichier enregistré",
   "kind": "str",
   "refs": [
-   "ui/store.ts:490 call:notify"
+   "ui/store.ts:492 call:notify"
   ]
  },
  {
   "key": "Une demande d'enregistrement est déjà ouverte",
   "kind": "str",
   "refs": [
-   "ui/store.ts:493 call:notify"
+   "ui/store.ts:495 call:notify"
   ]
  },
  {
   "key": "Enregistrement impossible ici : copiez le texte.",
   "kind": "str",
   "refs": [
-   "ui/store.ts:494 call:notify"
+   "ui/store.ts:496 call:notify"
   ]
  },
  {
@@ -38438,7 +38459,7 @@
    "ui/dialogs/designer.tsx:302 attr:v",
    "ui/dialogs/designer.tsx:308 attr:v",
    "ui/inspector.tsx:156 attr:v",
-   "ui/inspector.tsx:508 attr:v"
+   "ui/inspector.tsx:512 attr:v"
   ]
  },
  {
@@ -38558,14 +38579,14 @@
   "key": "automatique",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:289"
+   "ui/inspector.tsx:293"
   ]
  },
  {
   "key": "portail",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:423 jsx"
+   "ui/inspector.tsx:427 jsx"
   ]
  },
  {
@@ -39060,21 +39081,21 @@
   "key": "{0} attendus",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:262 jsx"
+   "ui/inspector.tsx:266 jsx"
   ]
  },
  {
   "key": "{0} autre{1} ravitailleur{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:379 jsx"
+   "ui/inspector.tsx:383 jsx"
   ]
  },
  {
   "key": "{0} an{1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:453 jsx",
+   "ui/inspector.tsx:457 jsx",
    "ui/summary.tsx:62",
    "ui/tutorial.tsx:102"
   ]
@@ -39251,7 +39272,7 @@
   "key": "{0} M",
   "kind": "tpl",
   "refs": [
-   "ui/store.ts:458"
+   "ui/store.ts:460"
   ]
  },
  {

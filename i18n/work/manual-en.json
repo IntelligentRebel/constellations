@@ -1836,5 +1836,9 @@
  "Leurs frontières vous sont fermées": "Their borders are closed to you",
  "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.": "{0} (with the Intelligence rule): closed borders cut the exchanges both ways. Each closure, whether you close yours or they close theirs, takes 15 points off what each of the two empires knows of the other (30 when each has closed its own), and the counter-intelligence of the empire that closes its borders uncovers the spies of the one it closes them to half again as often. Figures already known stay, dated: it is the news that no longer gets through. The computers, who judge your strength through what they know of you, then judge it less well.",
  "Frontières et renseignement": "Borders and intelligence",
- " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " You will also know less of each other (intelligence -{0} on each side)."
+ " Vous en saurez aussi moins les uns sur les autres (renseignement -{0} de part et d'autre).": " You will also know less of each other (intelligence -{0} on each side).",
+ "tous les vaisseaux de ce modèle sont déjà en modernisation": "all the ships of this design are already being refitted",
+ "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Ships to refit on this line: {0} at most (the others are already in the yard, or do not exist).",
+ "sur {0}{1} · ": "out of {0}{1} · ",
+ " ({0} déjà en chantier)": " ({0} already in the yard)"
 }

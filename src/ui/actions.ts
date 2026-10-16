@@ -4,7 +4,7 @@ import type { BattlePlan, Fleet, GameState, Planet, QueueKind, ShipDesign, ShipR
 import { DEFAULT_IN, DEFAULT_OUT, DEFAULT_RESERVE, joinNetwork, leaveNetwork , autoImmigration } from '../engine/logistics';
 import { chooseDoctrine } from '../engine/doctrines';
 import { setRule } from '../engine/rules';
-import { queueRefit } from '../engine/refit';
+import { queueRefit, refitRoom } from '../engine/refit';
 import { planIntercept, applyIntercept, applyTraderMeet, type TraderOffer } from '../engine/intercept';
 import { startRefuel, defaultTankerRange } from '../engine/refuel';
 import { safeGoto } from '../engine/ai';
@@ -608,6 +608,8 @@ export function queueSetQty(planetId: number, i: number, qty: number) {
   store.checkpoint();
   const it = g.planets[planetId].queue[i];
   if (it) it.qty = Math.max(0, Math.round(qty));
+  // 0.3.9.13: a refit takes at most the ships of its fleet the other refits do not already take
+  if (it?.kind === 'refit' && it.qty > 0) { const room = refitRoom(g, g.planets[planetId], it); if (it.qty > room) { it.qty = Math.max(1, room); store.notify(`Vaisseaux à moderniser sur cette ligne : ${it.qty} au plus (les autres sont déjà en chantier ou n'existent pas).`); } }
   if (it && it.qty === 0) queueRemove(planetId, i);
   store.bump();
 }

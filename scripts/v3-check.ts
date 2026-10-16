@@ -22,7 +22,7 @@ import { OBJ, OBJECTIVE_POINTS, assignObjectives, objectiveText } from '../src/e
 import { computeScore } from '../src/engine/score';
 import { setRule } from '../src/engine/rules';
 import { newFleet } from '../src/engine/newgame';
-import { refitTargets, refitBlocker, queueRefit, pendingRefits, fleetHasObsolete } from '../src/engine/refit';
+import { refitTargets, refitBlocker, queueRefit, pendingRefits, fleetHasObsolete, refitFree, tidyRefits, refitStatus } from '../src/engine/refit';
 import { refitCost } from '../src/engine/design';
 
 let bad = 0, good = 0;
@@ -675,6 +675,28 @@ if (want('refit')) {
   f.waypoints.push({ x: home.x + 50, y: home.y, target: 'space', warp: 5, task: 'none' });
   check(queueRefit(g, f, a.id, b.id, 2) === null && home.queue[0].kind === 'refit' && f.waypoints.length === 1, 'refit queued first, the fleet holds position');
   check(pendingRefits(g, f).length === 1, 'shown as pending on the fleet');
+  {
+    // 0.3.9.13: the same ships are never queued twice
+    const gx = clone(g), fx = gx.fleets.find(x => x.id === f.id)!, hx = gx.planets[home.id];
+    check(refitFree(gx, fx, a.id) === 1, 'two of the three ships in the queue: one left free');
+    check(queueRefit(gx, fx, a.id, b.id, 5) === null && hx.queue.filter(q => q.kind === 'refit').length === 1 && hx.queue[0].qty === 3, 'asked again for 5: the one free ship joins the same line (3)');
+    const why = queueRefit(gx, fx, a.id, b.id, 1);
+    check(!!why && hx.queue.filter(q => q.kind === 'refit').length === 1 && hx.queue[0].qty === 3, `once all are queued, refused: "${why}"`);
+    // a game saved with the old behaviour: the same ship queued three times
+    const gy = clone(g), fy = gy.fleets.find(x => x.id === f.id)!, hy = gy.planets[home.id];
+    hy.queue = hy.queue.filter(q => q.kind !== 'refit');
+    for (let k = 0; k < 3; k++) hy.queue.unshift({ kind: 'refit', designId: b.id, fromDesignId: a.id, fleetId: fy.id, qty: 2, allocated: { ironium: 4, boranium: 0, germanium: 0, resources: 5 } });
+    const gz = clone(gy), hz = gz.planets[home.id];
+    check(refitStatus(gz, hz, hz.queue[0]).max === 3 && refitStatus(gz, hz, hz.queue[1]).max === 1 && refitStatus(gz, hz, hz.queue[2]).max === 0, 'each line may take only the ships the lines before it leave');
+    const iron = hy.surface.ironium;
+    tidyRefits(gy);
+    const left = hy.queue.filter(q => q.kind === 'refit');
+    check(left.length === 1 && left[0].qty === 3 && left[0].allocated.ironium === 8 && hy.surface.ironium === iron + 4, `on loading, cut down to the ships there are and merged (${left.map(q => q.qty).join(', ')}), the extra minerals back`);
+    hz.surface = { ironium: 5000, boranium: 5000, germanium: 5000 };
+    generateTurn(gz);
+    const fz = gz.fleets.find(x => x.id === f.id)!;
+    check(fz.tokens.find(t => t.designId === b.id)?.qty === 3 && !hz.queue.some(q => q.kind === 'refit') && gz.players[0].messages.some(m => m.text.includes('annulée')), 'not tidied: the production refits the 3 ships and drops the extra line');
+  }
   home.surface = { ironium: 5000, boranium: 5000, germanium: 5000 };
   const g2 = clone(g);
   generateTurn(g);
