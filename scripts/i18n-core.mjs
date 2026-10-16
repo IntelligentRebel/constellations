@@ -31,6 +31,8 @@ export function looksVisible(text, englishKeys) {
   if (/^[a-z][\w-]*:[\w-]*:?/.test(text) && !/\s/.test(text.replace(/\{\d+\}/g, ''))) return false;
   // a French elided word: "l'alliance", "d'escorte"
   if (/^[ldjmnst]['’][a-zà-ÿ]+$/i.test(t)) return true;
+  // a word with a plural mark: "vaisseau(x)", "touché(s)" (always text)
+  if (/^[A-Za-zÀ-ÿ'’-]{2,}\((s|x|e|es)\)$/.test(t)) return true;
   // one token without a space: a key ("planet", "sim|3|e4") unless it is a capitalised or accented word
   if (!/\s/.test(t)) {
     // abbreviations end with a full stop: "Habit.", "Déf."

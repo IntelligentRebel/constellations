@@ -1752,5 +1752,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "The garrison grows with the loot: an old measure underestimates it.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "The garrison repairs a quarter of its damage every year and grows with the loot: an old measure underestimates it.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "According to the crew of {0}, the garrison of the lair {1} at {2} has {3} ships. All your warships combined: {4}; your strongest fleet, {5}: {6}. The garrison repairs a quarter of its damage every year and grows with the loot.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "According to the crew of {0}, the garrison of the lair {1} at {2} has {3} ships. You have no warship."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "According to the crew of {0}, the garrison of the lair {1} at {2} has {3} ships. You have no warship.",
+ "Épave restaurée": "Restored wreck",
+ "Héraut du signal": "Herald of the Signal",
+ "Escorte des Anciens": "Ancients' escort",
+ "Porte-balise": "Beacon carrier",
+ "Escorteur": "Escort",
+ "{0} vaisseau(x)": "{0} ship(s)"
 }

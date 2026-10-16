@@ -625,7 +625,8 @@ const SHIPS: Chapter = {
         goal: () => !!newDesign(),
         doIt: () => {
           const g = game(), m = me();
-          const d = (hull && (autoDesign(m, hull.name, 'beamWarship', 'Escorteur') ?? autoDesign(m, hull.name, 'startingFighter', 'Escorteur'))) ?? autoDesign(m, 'Scout', 'scout', 'Escorteur');
+          const label = 'Escorteur'; // a variable: the extractor skips autoDesign's arguments
+          const d = (hull && (autoDesign(m, hull.name, 'beamWarship', label) ?? autoDesign(m, hull.name, 'startingFighter', label))) ?? autoDesign(m, 'Scout', 'scout', label);
           if (!d) return;
           store.checkpoint();
           const nd = addDesign(g, { ...d, owner: m.id, built: 0 });

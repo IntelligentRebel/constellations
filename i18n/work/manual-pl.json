@@ -1747,5 +1747,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "Garnizon rośnie wraz z łupem: stary pomiar go zaniża.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "Garnizon co roku naprawia jedną czwartą swoich uszkodzeń i rośnie wraz z łupem: stary pomiar go zaniża.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "Załoga ({0}) donosi: garnizon leża ({1}) przy {2} liczy statków: {3}. Wszystkie twoje statki bojowe razem: {4}; twoja najsilniejsza flota, {5}: {6}. Garnizon co roku naprawia jedną czwartą swoich uszkodzeń i rośnie wraz z łupem.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Załoga ({0}) donosi: garnizon leża ({1}) przy {2} liczy statków: {3}. Nie masz żadnego statku bojowego."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Załoga ({0}) donosi: garnizon leża ({1}) przy {2} liczy statków: {3}. Nie masz żadnego statku bojowego.",
+ "Épave restaurée": "Odnowiony wrak",
+ "Héraut du signal": "Herold sygnału",
+ "Escorte des Anciens": "Eskorta Starożytnych",
+ "Porte-balise": "Nosiciel latarni",
+ "Escorteur": "Eskortowiec",
+ "{0} vaisseau(x)": "statki: {0}"
 }

@@ -1752,5 +1752,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "수비대는 약탈품이 늘수록 커집니다: 오래된 측정은 실제보다 낮게 잡습니다.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "수비대는 매년 피해의 4분의 1을 수리하고 약탈품이 늘수록 커집니다: 오래된 측정은 실제보다 낮게 잡습니다.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "{0} 승조원의 보고에 따르면, {2}에 있는 {1} 소굴의 수비대는 함선 {3}척입니다. 우리 전투함 전체 합계: {4}; 최강 함대 {5}: {6}. 수비대는 매년 피해의 4분의 1을 수리하고 약탈품이 늘수록 커집니다.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "{0} 승조원의 보고에 따르면, {2}에 있는 {1} 소굴의 수비대는 함선 {3}척입니다. 전투함이 한 척도 없습니다."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "{0} 승조원의 보고에 따르면, {2}에 있는 {1} 소굴의 수비대는 함선 {3}척입니다. 전투함이 한 척도 없습니다.",
+ "Épave restaurée": "복원된 잔해",
+ "Héraut du signal": "신호의 전령",
+ "Escorte des Anciens": "고대인의 호위함",
+ "Porte-balise": "비콘 운반선",
+ "Escorteur": "호위함",
+ "{0} vaisseau(x)": "함선 {0}척"
 }

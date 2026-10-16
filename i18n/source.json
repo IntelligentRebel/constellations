@@ -3277,844 +3277,851 @@
   ]
  },
  {
+  "key": "Épave restaurée",
+  "kind": "str",
+  "refs": [
+   "engine/anomalies.ts:113"
+  ]
+ },
+ {
   "key": "une épave, hélas irréparable",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:114"
+   "engine/anomalies.ts:115"
   ]
  },
  {
   "key": "Épave restaurée #{0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:120 prop:name"
+   "engine/anomalies.ts:121 prop:name"
   ]
  },
  {
   "key": "un vaisseau de guerre d'une technologie supérieure, à moitié détruit mais remis en état de voler ({0}, modèle impossible à reproduire)",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:126"
+   "engine/anomalies.ts:127"
   ]
  },
  {
   "key": "le climat de {0} se rapproche de votre idéal (habitabilité {1} % → {2} %)",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:138"
+   "engine/anomalies.ts:139"
   ]
  },
  {
   "key": "un fragment de la carte des Anciens ({0} sur {1})",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:146",
-   "engine/anomalies.ts:156"
+   "engine/anomalies.ts:147",
+   "engine/anomalies.ts:157"
   ]
  },
  {
   "key": "un fragment de carte stellaire, dont l'original semble perdu",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:149"
+   "engine/anomalies.ts:150"
   ]
  },
  {
   "key": "le dernier fragment manquant : la carte des Anciens est complète. Leur sanctuaire se trouve sur {0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:154"
+   "engine/anomalies.ts:155"
   ]
  },
  {
   "key": "{0} se réveille et prend la planète sous sa garde",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:163"
+   "engine/anomalies.ts:164"
   ]
  },
  {
   "key": "Sonde à la dérive",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:168 prop:name"
+   "engine/anomalies.ts:169 prop:name"
   ]
  },
  {
   "key": "Une petite sonde d'origine inconnue tourne autour de la planète, ses mémoires encore alimentées.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:169 prop:text"
+   "engine/anomalies.ts:170 prop:text"
   ]
  },
  {
   "key": "ses mémoires sont décodées, et {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:170 prop:apply"
+   "engine/anomalies.ts:171 prop:apply"
   ]
  },
  {
   "key": "Filon affleurant",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:173 prop:name"
+   "engine/anomalies.ts:174 prop:name"
   ]
  },
  {
   "key": "Des relevés gravimétriques étranges trahissent un filon exceptionnel juste sous la croûte.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:174 prop:text"
+   "engine/anomalies.ts:175 prop:text"
   ]
  },
  {
   "key": "{0}, et {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:175 prop:apply"
+   "engine/anomalies.ts:176 prop:apply"
   ]
  },
  {
   "key": "Entrepôt abandonné",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:178 prop:name"
+   "engine/anomalies.ts:179 prop:name"
   ]
  },
  {
   "key": "Des silos scellés, enfouis par une civilisation minière disparue.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:179 prop:text"
+   "engine/anomalies.ts:180 prop:text"
   ]
  },
  {
   "key": "Archives stellaires",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:183 prop:name"
+   "engine/anomalies.ts:184 prop:name"
   ]
  },
  {
   "key": "Une station-relais en ruine émet encore un catalogue d'étoiles en boucle.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:184 prop:text"
+   "engine/anomalies.ts:185 prop:text"
   ]
  },
  {
   "key": "Capsules cryogéniques",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:188 prop:name"
+   "engine/anomalies.ts:189 prop:name"
   ]
  },
  {
   "key": "Des milliers de capsules de sommeil, dont certaines fonctionnent encore.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:189 prop:text"
+   "engine/anomalies.ts:190 prop:text"
   ]
  },
  {
   "key": "Nuage d'ions",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:193 prop:name"
+   "engine/anomalies.ts:194 prop:name"
   ]
  },
  {
   "key": "Un nuage de particules chargées enveloppe la planète. Les mesures sont précieuses, l'approche dangereuse.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:194 prop:text"
+   "engine/anomalies.ts:195 prop:text"
   ]
  },
  {
   "key": "{0}, mais les mesures sont précieuses : {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:195 prop:apply"
+   "engine/anomalies.ts:196 prop:apply"
   ]
  },
  {
   "key": "Puits de deutérium",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:198 prop:name"
+   "engine/anomalies.ts:199 prop:name"
   ]
  },
  {
   "key": "Une poche de gaz lourds remonte à la surface en geysers réguliers.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:199 prop:text"
+   "engine/anomalies.ts:200 prop:text"
   ]
  },
  {
   "key": "Épave extraterrestre",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:203 prop:name"
+   "engine/anomalies.ts:204 prop:name"
   ]
  },
  {
   "key": "Un vaisseau de guerre inconnu, éventré mais presque intact, dérive en orbite basse.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:204 prop:text"
+   "engine/anomalies.ts:205 prop:text"
   ]
  },
  {
   "key": "Laboratoire abandonné",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:208 prop:name"
+   "engine/anomalies.ts:209 prop:name"
   ]
  },
  {
   "key": "Un complexe de recherche souterrain, déserté en hâte. Les serveurs répondent encore.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:209 prop:text"
+   "engine/anomalies.ts:210 prop:text"
   ]
  },
  {
   "key": "Moteur climatique",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:213 prop:name"
+   "engine/anomalies.ts:214 prop:name"
   ]
  },
  {
   "key": "Une machine colossale enfouie sous les pôles peut encore modifier l'atmosphère de la planète.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:214 prop:text"
+   "engine/anomalies.ts:215 prop:text"
   ]
  },
  {
   "key": "Le remettre en marche",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:216 prop:label"
+   "engine/anomalies.ts:217 prop:label"
   ]
  },
  {
   "key": "la planète se rapproche durablement de l'idéal de votre race",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:216 prop:hint"
+   "engine/anomalies.ts:217 prop:hint"
   ]
  },
  {
   "key": "Le démonter pour l'étudier",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:217 prop:label"
+   "engine/anomalies.ts:218 prop:label"
   ]
  },
  {
   "key": "recherche en Biotechnologie et en Construction",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:217 prop:hint"
+   "engine/anomalies.ts:218 prop:hint"
   ]
  },
  {
   "key": "Vaisseau-tombeau",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:222 prop:name"
+   "engine/anomalies.ts:223 prop:name"
   ]
  },
  {
   "key": "Un navire funéraire, couvert d'inscriptions d'avertissement dans une langue morte.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:223 prop:text"
+   "engine/anomalies.ts:224 prop:text"
   ]
  },
  {
   "key": "Fouiller les soutes",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:225 prop:label"
+   "engine/anomalies.ts:226 prop:label"
   ]
  },
  {
   "key": "beaucoup de recherche, mais un risque sur trois de perdre la flotte qui l'a étudié",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:225 prop:hint"
+   "engine/anomalies.ts:226 prop:hint"
   ]
  },
  {
   "key": "{0} : les avertissements étaient sérieux. Ses dernières transmissions sauvent l'essentiel : {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:225 prop:apply"
+   "engine/anomalies.ts:226 prop:apply"
   ]
  },
  {
   "key": "Le laisser en paix",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:226 prop:label"
+   "engine/anomalies.ts:227 prop:label"
   ]
  },
  {
   "key": "un peu de recherche, aucun risque",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:226 prop:hint"
+   "engine/anomalies.ts:227 prop:hint"
   ]
  },
  {
   "key": "Balise de détresse",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:231 prop:name"
+   "engine/anomalies.ts:232 prop:name"
   ]
  },
  {
   "key": "Un appel au secours automatique, émis en boucle depuis la surface.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:232 prop:text"
+   "engine/anomalies.ts:233 prop:text"
   ]
  },
  {
   "key": "Envoyer une équipe",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:234 prop:label"
+   "engine/anomalies.ts:235 prop:label"
   ]
  },
  {
   "key": "des survivants à recueillir, ou un piège",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:234 prop:hint"
+   "engine/anomalies.ts:235 prop:hint"
   ]
  },
  {
   "key": "C'était une embuscade : {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:234 prop:apply"
+   "engine/anomalies.ts:235 prop:apply"
   ]
  },
  {
   "key": "Ignorer l'appel",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:235 prop:label"
+   "engine/anomalies.ts:236 prop:label"
   ]
  },
  {
   "key": "rien ne se passe",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:235 prop:hint"
+   "engine/anomalies.ts:236 prop:hint"
   ]
  },
  {
   "key": "La balise s'éteint quelques mois plus tard.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:235 prop:apply"
+   "engine/anomalies.ts:236 prop:apply"
   ]
  },
  {
   "key": "Cristaux chantants",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:240 prop:name"
+   "engine/anomalies.ts:241 prop:name"
   ]
  },
  {
   "key": "Des formations cristallines géantes vibrent au rythme de l'étoile.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:241 prop:text"
+   "engine/anomalies.ts:242 prop:text"
   ]
  },
  {
   "key": "Les extraire",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:243 prop:label"
+   "engine/anomalies.ts:244 prop:label"
   ]
  },
  {
   "key": "des minerais en quantité, les cristaux disparaissent",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:243 prop:hint"
+   "engine/anomalies.ts:244 prop:hint"
   ]
  },
  {
   "key": "Les étudier sur place",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:244 prop:label"
+   "engine/anomalies.ts:245 prop:label"
   ]
  },
  {
   "key": "recherche en Énergie et en Électronique",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:244 prop:hint"
+   "engine/anomalies.ts:245 prop:hint"
   ]
  },
  {
   "key": "Sarcophage scellé",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:249 prop:name"
+   "engine/anomalies.ts:250 prop:name"
   ]
  },
  {
   "key": "Une chambre close, gardée par des mécanismes encore actifs. Quelque chose y dort.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:250 prop:text"
+   "engine/anomalies.ts:251 prop:text"
   ]
  },
  {
   "key": "Briser le sceau",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:252 prop:label"
+   "engine/anomalies.ts:253 prop:label"
   ]
  },
  {
   "key": "une chance sur deux de trouver une relique, sinon un gardien se réveille",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:252 prop:hint"
+   "engine/anomalies.ts:253 prop:hint"
   ]
  },
  {
   "key": "Le sarcophage contenait une relique : {0} ({1}).",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:254"
+   "engine/anomalies.ts:255"
   ]
  },
  {
   "key": "Laisser le sceau intact",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:257 prop:label"
+   "engine/anomalies.ts:258 prop:label"
   ]
  },
  {
   "key": "un peu de recherche",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:257 prop:hint"
+   "engine/anomalies.ts:258 prop:hint"
   ]
  },
  {
   "key": "Fragment des Anciens",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:262 prop:name"
+   "engine/anomalies.ts:263 prop:name"
   ]
  },
  {
   "key": "Une tablette de métal gravée de positions d'étoiles : un morceau d'une carte plus grande.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:263 prop:text"
+   "engine/anomalies.ts:264 prop:text"
   ]
  },
  {
   "key": "Écho dans la poussière",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:268 prop:name"
+   "engine/anomalies.ts:269 prop:name"
   ]
  },
  {
   "key": "Les antennes de la planète captent un écho régulier venu du nuage sombre voisin, d'une source qui ne devrait pas s'y trouver.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:269 prop:text"
+   "engine/anomalies.ts:270 prop:text"
   ]
  },
  {
   "key": "Horloges dérivantes",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:273 prop:name"
+   "engine/anomalies.ts:274 prop:name"
   ]
  },
  {
   "key": "Les horloges atomiques d'une station abandonnée avancent et retardent selon un rythme parfaitement régulier, comme poussées par une main invisible.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:274 prop:text"
+   "engine/anomalies.ts:275 prop:text"
   ]
  },
  {
   "key": "Horloge du pulsar",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:278 prop:name"
+   "engine/anomalies.ts:279 prop:name"
   ]
  },
  {
   "key": "Le pulsar tourne sur lui-même plus régulièrement que n'importe quelle horloge construite : une référence pour la navigation et pour la physique.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:279 prop:text"
+   "engine/anomalies.ts:280 prop:text"
   ]
  },
  {
   "key": "Enclave des Exilés",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:283 prop:name"
+   "engine/anomalies.ts:284 prop:name"
   ]
  },
  {
   "key": "Un peuple coupé du reste de la galaxie depuis des millénaires vit encore ici, dans des cités sous dôme. Ils acceptent de parlementer.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:284 prop:text"
+   "engine/anomalies.ts:285 prop:text"
   ]
  },
  {
   "key": "Échanger avec eux",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:286 prop:label"
+   "engine/anomalies.ts:287 prop:label"
   ]
  },
  {
   "key": "beaucoup de recherche, dans deux domaines",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:286 prop:hint"
+   "engine/anomalies.ts:287 prop:hint"
   ]
  },
  {
   "key": "Les accueillir dans votre empire",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:287 prop:label"
+   "engine/anomalies.ts:288 prop:label"
   ]
  },
  {
   "key": "la planète devient une de vos colonies, avec 40 000 habitants",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:287 prop:hint"
+   "engine/anomalies.ts:288 prop:hint"
   ]
  },
  {
   "key": "{0} est déjà occupée : les Exilés partagent seulement leur savoir. {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:287"
+   "engine/anomalies.ts:288"
   ]
  },
  {
   "key": "Horizon des événements",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:292 prop:name"
+   "engine/anomalies.ts:293 prop:name"
   ]
  },
  {
   "key": "Au bord du trou noir, le temps ralentit et la lumière s'enroule. Chaque mesure demande des années, et un vaisseau qui s'approche trop ne revient pas.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:293 prop:text"
+   "engine/anomalies.ts:294 prop:text"
   ]
  },
  {
   "key": "Les premières sondes atteignent le disque d'accrétion",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:294 prop:chapters_"
+   "engine/anomalies.ts:295 prop:chapters_"
   ]
  },
  {
   "key": "Le ralentissement du temps près de l'horizon est mesuré",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:294 prop:chapters_"
+   "engine/anomalies.ts:295 prop:chapters_"
   ]
  },
  {
   "key": "Une théorie complète de l'horizon",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:294 prop:chapters_"
+   "engine/anomalies.ts:295 prop:chapters_"
   ]
  },
  {
   "key": "Ruines des Bâtisseurs",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:298 prop:name"
+   "engine/anomalies.ts:299 prop:name"
   ]
  },
  {
   "key": "Les restes d'une cité-fonderie, sur des kilomètres. Les fouilles prendront des années.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:299 prop:text"
+   "engine/anomalies.ts:300 prop:text"
   ]
  },
  {
   "key": "Les ateliers de surface livrent leurs outils",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:300 prop:chapters_"
+   "engine/anomalies.ts:301 prop:chapters_"
   ]
  },
  {
   "key": "Les galeries profondes révèlent les hauts-fourneaux",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:300 prop:chapters_"
+   "engine/anomalies.ts:301 prop:chapters_"
   ]
  },
  {
   "key": "Au cœur de la fonderie, une forge encore tiède",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:300 prop:chapters_"
+   "engine/anomalies.ts:301 prop:chapters_"
   ]
  },
  {
   "key": "Observatoire des Voyants",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:303 prop:name"
+   "engine/anomalies.ts:304 prop:name"
   ]
  },
  {
   "key": "Un réseau d'antennes de pierre orientées vers des étoiles qui n'existent plus.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:304 prop:text"
+   "engine/anomalies.ts:305 prop:text"
   ]
  },
  {
   "key": "Les premières antennes sont dégagées",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:305 prop:chapters_"
+   "engine/anomalies.ts:306 prop:chapters_"
   ]
  },
  {
   "key": "Les registres d'observation sont déchiffrés",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:305 prop:chapters_"
+   "engine/anomalies.ts:306 prop:chapters_"
   ]
  },
  {
   "key": "Dans la salle centrale, l'œil du veilleur",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:305 prop:chapters_"
+   "engine/anomalies.ts:306 prop:chapters_"
   ]
  },
  {
   "key": "Jardins de Vael",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:308 prop:name"
+   "engine/anomalies.ts:309 prop:name"
   ]
  },
  {
   "key": "Des serres immenses, fossilisées, où poussent encore quelques plantes inconnues.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:309 prop:text"
+   "engine/anomalies.ts:310 prop:text"
   ]
  },
  {
   "key": "Les serres extérieures sont cartographiées",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:310 prop:chapters_"
+   "engine/anomalies.ts:311 prop:chapters_"
   ]
  },
  {
   "key": "La banque de semences est localisée",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:310 prop:chapters_"
+   "engine/anomalies.ts:311 prop:chapters_"
   ]
  },
  {
   "key": "Les semences de Vael sont intactes",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:310 prop:chapters_"
+   "engine/anomalies.ts:311 prop:chapters_"
   ]
  },
  {
   "key": "Port des Navigateurs",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:313 prop:name"
+   "engine/anomalies.ts:314 prop:name"
   ]
  },
  {
   "key": "Un spatioport en ruine, dont les quais pouvaient accueillir des milliers de vaisseaux.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:314 prop:text"
+   "engine/anomalies.ts:315 prop:text"
   ]
  },
  {
   "key": "Les quais sont déblayés",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:315 prop:chapters_"
+   "engine/anomalies.ts:316 prop:chapters_"
   ]
  },
  {
   "key": "Les journaux de bord parlent d'un instrument",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:315 prop:chapters_"
+   "engine/anomalies.ts:316 prop:chapters_"
   ]
  },
  {
   "key": "Le compas des Navigateurs est retrouvé",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:315 prop:chapters_"
+   "engine/anomalies.ts:316 prop:chapters_"
   ]
  },
  {
   "key": "Bibliothèque engloutie",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:318 prop:name"
+   "engine/anomalies.ts:319 prop:name"
   ]
  },
  {
   "key": "Sous un océan gelé, les salles d'une bibliothèque de cristal.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:319 prop:text"
+   "engine/anomalies.ts:320 prop:text"
   ]
  },
  {
   "key": "Les premières salles sont pompées",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:320 prop:chapters_"
+   "engine/anomalies.ts:321 prop:chapters_"
   ]
  },
  {
   "key": "Les index de la bibliothèque sont reconstitués",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:320 prop:chapters_"
+   "engine/anomalies.ts:321 prop:chapters_"
   ]
  },
  {
   "key": "Le codex des Bâtisseurs est déchiffré",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:320 prop:chapters_"
+   "engine/anomalies.ts:321 prop:chapters_"
   ]
  },
  {
   "key": "Catacombes de la capitale",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:323 prop:name"
+   "engine/anomalies.ts:324 prop:name"
   ]
  },
  {
   "key": "Sous votre propre capitale, les ruines de la cité qui l'a précédée.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:324 prop:text"
+   "engine/anomalies.ts:325 prop:text"
   ]
  },
  {
   "key": "Les premiers niveaux sont sécurisés",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:325 prop:chapters_"
+   "engine/anomalies.ts:326 prop:chapters_"
   ]
  },
  {
   "key": "Les archives de l'ancienne cité sont retrouvées",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:325 prop:chapters_"
+   "engine/anomalies.ts:326 prop:chapters_"
   ]
  },
  {
   "key": "La bibliothèque des fondateurs est ouverte",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:325 prop:chapters_"
+   "engine/anomalies.ts:326 prop:chapters_"
   ]
  },
  {
   "key": "Sanctuaire des Anciens",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:328 prop:name"
+   "engine/anomalies.ts:329 prop:name"
   ]
  },
  {
   "key": "Le lieu que désignait la carte des Anciens : une citadelle enfouie, presque intacte.",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:329 prop:text"
+   "engine/anomalies.ts:330 prop:text"
   ]
  },
  {
   "key": "La porte du sanctuaire cède",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:330 prop:chapters_"
+   "engine/anomalies.ts:331 prop:chapters_"
   ]
  },
  {
   "key": "Les salles des cartes livrent la galaxie telle qu'elle était",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:330 prop:chapters_"
+   "engine/anomalies.ts:331 prop:chapters_"
   ]
  },
  {
   "key": "Au centre, le Cœur des Anciens",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:330 prop:chapters_"
+   "engine/anomalies.ts:331 prop:chapters_"
   ]
  },
  {
   "key": "{0} sur {1} : {2}. {3} {4}. Un vaisseau équipé d'un scanner, laissé en orbite, peut l'étudier.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:409 prop:text"
+   "engine/anomalies.ts:410 prop:text"
   ]
  },
  {
   "key": "Site archéologique",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:409 prop:text",
+   "engine/anomalies.ts:410 prop:text",
    "ui/discoveries.tsx:35 call:push",
    "ui/discoveries.tsx:108 jsx"
   ]
@@ -4123,7 +4130,7 @@
   "key": "Anomalie",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:409 prop:text",
+   "engine/anomalies.ts:410 prop:text",
    "ui/discoveries.tsx:35 call:push",
    "ui/discoveries.tsx:108 jsx"
   ]
@@ -4132,105 +4139,105 @@
   "key": "{0} chapitres à déchiffrer",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:409 prop:text"
+   "engine/anomalies.ts:410 prop:text"
   ]
  },
  {
   "key": "Difficulté {0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:409 prop:text"
+   "engine/anomalies.ts:410 prop:text"
   ]
  },
  {
   "key": "déjà étudiée",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:420"
+   "engine/anomalies.ts:421"
   ]
  },
  {
   "key": "planète occupée par les {0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:423"
+   "engine/anomalies.ts:424"
   ]
  },
  {
   "key": "{0} veille sur la planète",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:425"
+   "engine/anomalies.ts:426"
   ]
  },
  {
   "key": "{0} ({1}), chapitre {2} sur {3} : {4}. {5}{6}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:495"
+   "engine/anomalies.ts:496"
   ]
  },
  {
   "key": " Relique trouvée : {0} ({1}).",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:500"
+   "engine/anomalies.ts:501"
   ]
  },
  {
   "key": " Dernière trouvaille : {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:501"
+   "engine/anomalies.ts:502"
   ]
  },
  {
   "key": "Les {0} ont achevé les fouilles de {1} sur {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:503 call:msg"
+   "engine/anomalies.ts:504 call:msg"
   ]
  },
  {
   "key": "Les {0} ont déchiffré avant vous le chapitre {1} de {2} ({3}). Les fouilles continuent.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:504 call:msg"
+   "engine/anomalies.ts:505 call:msg"
   ]
  },
  {
   "key": "{0} ({1}), chapitre {2}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:508 call:addClue"
+   "engine/anomalies.ts:509 call:addClue"
   ]
  },
  {
   "key": "les salles du {0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:509 call:addClue"
+   "engine/anomalies.ts:510 call:addClue"
   ]
  },
  {
   "key": "le cœur du {0}",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:509 call:addClue"
+   "engine/anomalies.ts:510 call:addClue"
   ]
  },
  {
   "key": "Les {0} ont percé avant vous le mystère de {1} sur {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:515 call:msg"
+   "engine/anomalies.ts:516 call:msg"
   ]
  },
  {
   "key": "{0} ({1}) : l'étude est terminée. Une décision vous attend : {2} ou {3} ? (onglet Empire, Découvertes)",
   "kind": "tpl",
   "refs": [
-   "engine/anomalies.ts:520 prop:text"
+   "engine/anomalies.ts:521 prop:text"
   ]
  },
  {
@@ -4792,59 +4799,66 @@
   ]
  },
  {
+  "key": "Héraut du signal",
+  "kind": "str",
+  "refs": [
+   "engine/chains.ts:171"
+  ]
+ },
+ {
   "key": "Héraut",
   "kind": "str",
   "refs": [
-   "engine/chains.ts:174 call:newFleet"
+   "engine/chains.ts:175 call:newFleet"
   ]
  },
  {
   "key": "Au-dessus de {0}, deux navires d'un dessin oublié dérivent, moteurs en veille : c'étaient eux qui appelaient. Leurs systèmes reconnaissent votre vaisseau et se rangent sous vos ordres.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:177 call:tell"
+   "engine/chains.ts:178 call:tell"
   ]
  },
  {
   "key": "Les {0} répondent au signal de {1} : deux navires d'un autre âge les rejoignent.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:178 call:addChronicle"
+   "engine/chains.ts:179 call:addChronicle"
   ]
  },
  {
   "key": "Le signal de {0} venait d'une balise enfouie, vieille de plusieurs millénaires. Ses archives font progresser votre Électronique et votre Énergie ; 300 kt de chaque minerai attendent qui voudra les prendre.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:185 call:tell"
+   "engine/chains.ts:186 call:tell"
   ]
  },
  {
   "key": "Les {0} percent le secret du signal de {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:186 call:addChronicle"
+   "engine/chains.ts:187 call:addChronicle"
   ]
  },
  {
   "key": "Le signal de {0} était un réveil : une sentinelle cristalline s'arrache des glaces et prend l'orbite. Votre vaisseau a vu ce qu'il fallait voir : fuyez.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:190 call:tell"
+   "engine/chains.ts:191 call:tell"
   ]
  },
  {
   "key": "Le signal de {0} s'éteint au moment où votre vaisseau arrive.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:190 call:tell"
+   "engine/chains.ts:191 call:tell"
   ]
  },
  {
   "key": "En répondant au signal de {0}, les {1} réveillent un gardien.",
   "kind": "tpl",
   "refs": [
-   "engine/chains.ts:191 call:addChronicle"
+   "engine/chains.ts:192 call:addChronicle"
   ]
  },
  {
@@ -5671,10 +5685,17 @@
   ]
  },
  {
+  "key": "Porte-balise",
+  "kind": "str",
+  "refs": [
+   "engine/culture.ts:436"
+  ]
+ },
+ {
   "key": "Kit de balise de souveraineté maîtrisé : un modèle « Porte-balise » est prêt. Envoyé en orbite d'un monde libre, il y pose un fort qui revendique ce monde et {0} al autour.",
   "kind": "tpl",
   "refs": [
-   "engine/culture.ts:440 prop:text"
+   "engine/culture.ts:441 prop:text"
   ]
  },
  {
@@ -9429,7 +9450,8 @@
   "key": "Colonie de départ",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:301 call:starbaseDesignFor"
+   "engine/newgame.ts:301 call:starbaseDesignFor",
+   "engine/origins.ts:130"
   ]
  },
  {
@@ -9467,8 +9489,8 @@
   "refs": [
    "engine/newgame.ts:390",
    "ui/app.tsx:162 prop:label",
-   "ui/tutorial.tsx:1229 jsx",
-   "ui/tutorial.tsx:1242 attr:aria-label"
+   "ui/tutorial.tsx:1230 jsx",
+   "ui/tutorial.tsx:1243 attr:aria-label"
   ]
  },
  {
@@ -10053,56 +10075,63 @@
   "key": "2400 : les archives de vos ancêtres",
   "kind": "str",
   "refs": [
-   "engine/origins.ts:155"
+   "engine/origins.ts:156"
+  ]
+ },
+ {
+  "key": "Escorte des Anciens",
+  "kind": "str",
+  "refs": [
+   "engine/origins.ts:162"
   ]
  },
  {
   "key": "Escorte des Anciens #{0}",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:166 prop:name"
+   "engine/origins.ts:168 prop:name"
   ]
  },
  {
   "key": "Origine : {0}. {1}",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:187 prop:text"
+   "engine/origins.ts:189 prop:text"
   ]
  },
  {
   "key": "Les Anciens ont déposé 300 kt de chaque minerai sur {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:201 prop:text"
+   "engine/origins.ts:203 prop:text"
   ]
  },
  {
   "key": "Vos astronomes sont formels : dans dix ans, le climat de {0} commencera à se dégrader, et rien ne l'arrêtera. Préparez de nouveaux foyers.",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:213 prop:text"
+   "engine/origins.ts:215 prop:text"
   ]
  },
  {
   "key": "Le climat de {0} se dégrade : habitabilité {1} %.",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:225 prop:text"
+   "engine/origins.ts:227 prop:text"
   ]
  },
  {
   "key": "{0} est devenue hostile à votre peuple : sa population va décliner chaque année.",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:225 prop:text"
+   "engine/origins.ts:227 prop:text"
   ]
  },
  {
   "key": "Le dérèglement de votre étoile a commencé : {0} perdra chaque année un peu de son habitabilité ({1} % aujourd'hui).",
   "kind": "tpl",
   "refs": [
-   "engine/origins.ts:226 prop:text"
+   "engine/origins.ts:228 prop:text"
   ]
  },
  {
@@ -17439,7 +17468,7 @@
    "ui/components.tsx:222 jsx",
    "ui/components.tsx:228 jsx",
    "ui/dialogs/misc.tsx:114 jsx",
-   "ui/discoveries.tsx:252 jsx"
+   "ui/discoveries.tsx:254 jsx"
   ]
  },
  {
@@ -18666,6 +18695,13 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/battle.tsx:152 jsx"
+  ]
+ },
+ {
+  "key": "{0} vaisseau(x)",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/battle.tsx:153 attr:v"
   ]
  },
  {
@@ -20690,7 +20726,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/discoveries.tsx:251 call:th",
+   "ui/discoveries.tsx:253 call:th",
    "ui/empire.tsx:94 call:wth",
    "ui/inspector.tsx:428 jsx"
   ]
@@ -21412,7 +21448,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:237 jsx",
-   "ui/discoveries.tsx:246 jsx"
+   "ui/discoveries.tsx:248 jsx"
   ]
  },
  {
@@ -23602,7 +23638,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/production.tsx:201 jsx",
-   "ui/discoveries.tsx:251 call:th",
+   "ui/discoveries.tsx:253 call:th",
    "ui/factions.tsx:48 jsx",
    "ui/pages.tsx:220 prop:label"
   ]
@@ -23824,7 +23860,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/race.tsx:65 jsx",
-   "ui/tutorial.tsx:1253 jsx"
+   "ui/tutorial.tsx:1254 jsx"
   ]
  },
  {
@@ -25932,7 +25968,7 @@
   "kind": "tpl",
   "refs": [
    "ui/discoveries.tsx:145 jsx",
-   "ui/discoveries.tsx:257 jsx",
+   "ui/discoveries.tsx:259 jsx",
    "ui/map.tsx:1227 call:fillText"
   ]
  },
@@ -26080,42 +26116,42 @@
   "key": "Origine : {0}.",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:241 jsx"
+   "ui/discoveries.tsx:243 jsx"
   ]
  },
  {
   "key": "Reliques",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:244 jsx"
+   "ui/discoveries.tsx:246 jsx"
   ]
  },
  {
   "key": "Carte des Anciens",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:245 jsx"
+   "ui/discoveries.tsx:247 jsx"
   ]
  },
  {
   "key": "fragments trouvés",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:245 jsx"
+   "ui/discoveries.tsx:247 jsx"
   ]
  },
  {
   "key": "trouvées",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:246 jsx"
+   "ui/discoveries.tsx:248 jsx"
   ]
  },
  {
   "key": "Découvertes",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:247 jsx",
+   "ui/discoveries.tsx:249 jsx",
    "ui/empire.tsx:39 attr:title"
   ]
  },
@@ -26123,84 +26159,84 @@
   "key": "anomalies et chapitres",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:247 jsx"
+   "ui/discoveries.tsx:249 jsx"
   ]
  },
  {
   "key": "Gardiens vaincus",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:248 jsx"
+   "ui/discoveries.tsx:250 jsx"
   ]
  },
  {
   "key": "Découverte",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "Diff.",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "Avancement",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "État",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "site {0}/{1}",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:252 jsx"
+   "ui/discoveries.tsx:254 jsx"
   ]
  },
  {
   "key": "Aucune anomalie repérée pour l'instant : elles apparaissent quand vos vaisseaux analysent une planète.",
   "kind": "jsx",
   "refs": [
-   "ui/discoveries.tsx:253 jsx"
+   "ui/discoveries.tsx:255 jsx"
   ]
  },
  {
   "key": "couloir trouvé",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:256"
+   "ui/discoveries.tsx:258"
   ]
  },
  {
   "key": "passage à trouver ({0} %)",
   "kind": "tpl",
   "refs": [
-   "ui/discoveries.tsx:256"
+   "ui/discoveries.tsx:258"
   ]
  },
  {
   "key": "{0} étoiles",
   "kind": "tpl",
   "refs": [
-   "ui/discoveries.tsx:256"
+   "ui/discoveries.tsx:258"
   ]
  },
  {
   "key": " (vaincu par les {0})",
   "kind": "tpl",
   "refs": [
-   "ui/discoveries.tsx:259 jsx"
+   "ui/discoveries.tsx:261 jsx"
   ]
  },
  {
@@ -35573,7 +35609,7 @@
   "kind": "tpl",
   "refs": [
    "ui/tutorial.tsx:384 prop:todo",
-   "ui/tutorial.tsx:716 prop:todo"
+   "ui/tutorial.tsx:717 prop:todo"
   ]
  },
  {
@@ -36145,1147 +36181,1154 @@
   ]
  },
  {
+  "key": "Escorteur",
+  "kind": "str",
+  "refs": [
+   "ui/tutorial.tsx:628"
+  ]
+ },
+ {
   "key": "Rester à jour",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:636 prop:title"
+   "ui/tutorial.tsx:637 prop:title"
   ]
  },
  {
   "key": "Quand la recherche débloque une meilleure pièce, un rapport le signale, et la page **Recherche** propose de **mettre à jour** vos modèles d'un clic.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:638 prop:body"
+   "ui/tutorial.tsx:639 prop:body"
   ]
  },
  {
   "key": "Les vaisseaux déjà construits gardent leur équipement. En orbite d'un chantier, le bloc **Modernisation** d'une flotte les remet à niveau : on ne paie que les pièces changées, et un peu de main-d'œuvre.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:639 prop:body"
+   "ui/tutorial.tsx:640 prop:body"
   ]
  },
  {
   "key": "Ordres avancés",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:647 prop:title"
+   "ui/tutorial.tsx:648 prop:title"
   ]
  },
  {
   "key": "Tâches, cargaisons, itinéraires, flottes.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:647 prop:blurb"
+   "ui/tutorial.tsx:648 prop:blurb"
   ]
  },
  {
   "key": "Une tâche à chaque étape",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:652 prop:title"
+   "ui/tutorial.tsx:653 prop:title"
   ]
  },
  {
   "key": "Voici {0}, un cargo. Chaque étape d'un itinéraire peut porter une **tâche**, exécutée à l'arrivée : transporter (charger ou décharger minerais et colons), coloniser, forer, poser des mines, patrouiller, fusionner avec une autre flotte, rester en poste, moderniser...",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:655 prop:body"
+   "ui/tutorial.tsx:656 prop:body"
   ]
  },
  {
   "key": "Cliquez sur une étape dans la liste de l'itinéraire, puis choisissez sa tâche dans ce menu.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:656 prop:body"
+   "ui/tutorial.tsx:657 prop:body"
   ]
  },
  {
   "key": "Charger et décharger",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:660 prop:title"
+   "ui/tutorial.tsx:661 prop:title"
   ]
  },
  {
   "key": "**Échanger** ouvre la cargaison : on y fait passer minerais, colons et carburant entre la flotte et la planète (ou une autre flotte au même endroit).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:663 prop:body"
+   "ui/tutorial.tsx:664 prop:body"
   ]
  },
  {
   "key": "Un cargo sert à porter des minerais d'une planète riche vers un chantier qui en manque, ou des colons vers une jeune colonie qui grandira plus vite.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:664 prop:body"
+   "ui/tutorial.tsx:665 prop:body"
   ]
  },
  {
   "key": "Itinéraires à étapes",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:668 prop:title"
+   "ui/tutorial.tsx:669 prop:title"
   ]
  },
  {
   "key": "Gardez [[Maj]] enfoncée et cliquez plusieurs destinations à la suite : chacune devient une étape. [[Ctrl]]+[[Maj]]+clic ajoute une étape à la fin d'un itinéraire existant.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:671 prop:body"
+   "ui/tutorial.tsx:672 prop:body"
   ]
  },
  {
   "key": "Sur la carte, on peut **tirer** une étape pour la déplacer, ou tirer un segment du trajet pour y insérer une étape. **Répéter l'itinéraire** fait d'un trajet une navette sans fin.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:672 prop:body"
+   "ui/tutorial.tsx:673 prop:body"
   ]
  },
  {
   "key": "Le **clic droit** sur la carte ouvre un menu : Aller ici, Ajouter une étape, ou **Intercepter** une flotte étrangère (le point de rencontre est recalculé chaque année).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:673 prop:body"
+   "ui/tutorial.tsx:674 prop:body"
   ]
  },
  {
   "key": "Réunir et séparer",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:677 prop:title"
+   "ui/tutorial.tsx:678 prop:title"
   ]
  },
  {
   "key": "Une flotte peut réunir plusieurs vaisseaux, de modèles différents : elle voyage à la vitesse du plus lent. **Séparer…**, **Fusionner…** et **Absorber** (bloc « Autres flottes ici ») réorganisent vos flottes.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:680 prop:body"
+   "ui/tutorial.tsx:681 prop:body"
   ]
  },
  {
   "key": "Le **plan de bataille** de la flotte se choisit dans ce même bloc.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:681 prop:body"
+   "ui/tutorial.tsx:682 prop:body"
   ]
  },
  {
   "key": "Toutes les flottes",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:685 prop:title"
+   "ui/tutorial.tsx:686 prop:title"
   ]
  },
  {
   "key": "L'onglet **{0}** les présente toutes dans un tableau triable : position, mission, carburant, cargaison. Un double-clic sur une ligne montre la flotte sur la carte.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:686 prop:body"
+   "ui/tutorial.tsx:687 prop:body"
   ]
  },
  {
   "key": "Minerais et minage",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:696 prop:title"
+   "ui/tutorial.tsx:697 prop:title"
   ]
  },
  {
   "key": "Concentrations, vaisseaux de minage, pénuries.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:696 prop:blurb"
+   "ui/tutorial.tsx:697 prop:blurb"
   ]
  },
  {
   "key": "Voir les minerais",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:701 prop:title"
+   "ui/tutorial.tsx:702 prop:title"
   ]
  },
  {
   "key": "Touche [[2]] : la carte montre les minerais **en surface** de chaque planète connue. Touche [[3]] : leurs **concentrations**, c'est-à-dire ce que des mines pourraient en tirer. Les barres bleue, verte et jaune suivent l'ironium, le boranium et le germanium.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:704 prop:body"
+   "ui/tutorial.tsx:705 prop:body"
   ]
  },
  {
   "key": "Touche [[1]] pour revenir à l'habitabilité.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:705 prop:body"
+   "ui/tutorial.tsx:706 prop:body"
   ]
  },
  {
   "key": "Affichez les concentrations (touche 3).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:707 prop:todo"
+   "ui/tutorial.tsx:708 prop:todo"
   ]
  },
  {
   "key": "Le planificateur de minage",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:712 prop:title"
+   "ui/tutorial.tsx:713 prop:title"
   ]
  },
  {
   "key": "Le **{0}** ([[X]]) classe les mondes libres par richesse. Un monde riche mais invivable n'est pas perdu : un **vaisseau de minage**{1} peut s'y poser et forer sans colons.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:714 prop:body"
+   "ui/tutorial.tsx:715 prop:body"
   ]
  },
  {
   "key": " (comme {0})",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:714"
+   "ui/tutorial.tsx:715"
   ]
  },
  {
   "key": "Forer, puis rapatrier",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:721 prop:title"
+   "ui/tutorial.tsx:722 prop:title"
   ]
  },
  {
   "key": "Le vaisseau de minage dépose chaque année ses minerais à la surface du monde foré. Une **navette** (un cargo en allers-retours) vient les chercher et les livre à votre capitale, ou au port de votre choix. Le planificateur organise l'un et l'autre d'un clic.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:724 prop:body"
+   "ui/tutorial.tsx:725 prop:body"
   ]
  },
  {
   "key": "Les concentrations baissent à mesure qu'on creuse : un gisement finit par s'épuiser, et il faut aller plus loin.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:725 prop:body"
+   "ui/tutorial.tsx:726 prop:body"
   ]
  },
  {
   "key": "Quand un minerai manque",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:729 prop:title"
+   "ui/tutorial.tsx:730 prop:title"
   ]
  },
  {
   "key": "Quand une ligne de production traîne, la file dit ce qui la retient : les ressources, ou un minerai précis. Un bouton ouvre alors le planificateur de minage sur ce minerai.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:731 prop:body"
+   "ui/tutorial.tsx:732 prop:body"
   ]
  },
  {
   "key": "Autres remèdes : un cargo depuis une planète riche, le **réseau logistique** (politiques Exporter et Importer), ou l'**alchimie minérale**, qui change des ressources en minerais (cher, mais rapide).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:732 prop:body"
+   "ui/tutorial.tsx:733 prop:body"
   ]
  },
  {
   "key": "Développer l'empire",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:740 prop:title"
+   "ui/tutorial.tsx:741 prop:title"
   ]
  },
  {
   "key": "Croissance, colonies, stations, logistique, rendement.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:740 prop:blurb"
+   "ui/tutorial.tsx:741 prop:blurb"
   ]
  },
  {
   "key": "La croissance",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:745 prop:title"
+   "ui/tutorial.tsx:746 prop:title"
   ]
  },
  {
   "key": "Une population croît à plein régime jusqu'au **quart de la capacité** de sa planète, puis de plus en plus lentement. Une planète presque pleine ne gagne presque plus rien : ses colons seraient plus utiles ailleurs.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:748 prop:body"
+   "ui/tutorial.tsx:749 prop:body"
   ]
  },
  {
   "key": "La ligne **Capacité** du panneau dit où en est {0}.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:749 prop:body"
+   "ui/tutorial.tsx:750 prop:body"
   ]
  },
  {
   "key": "Toutes les colonies",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:753 prop:title"
+   "ui/tutorial.tsx:754 prop:title"
   ]
  },
  {
   "key": "L'onglet **{0}** ([[F3]]) réunit vos planètes : population, ressources, file de production. Cochez-en plusieurs pour leur donner le même ordre d'un coup, ou leur appliquer un **modèle de production**.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:755 prop:body"
+   "ui/tutorial.tsx:756 prop:body"
   ]
  },
  {
   "key": "Un modèle de production est une file type. « Colonie standard » s'applique d'office aux nouvelles colonies ; le menu ⋯ (**Modèles de production…**) permet d'en créer d'autres.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:756 prop:body"
+   "ui/tutorial.tsx:757 prop:body"
   ]
  },
  {
   "key": "Une station pour chaque colonie",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:763 prop:title"
+   "ui/tutorial.tsx:764 prop:title"
   ]
  },
  {
   "key": "Une planète sans **station orbitale** ne peut ni construire de vaisseaux ni ravitailler vos flottes. Le **Fortin** coûte peu, fait le plein des flottes et défend la planète, mais n'a pas de chantier. La **Station mère** ajoute un chantier naval.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:766 prop:body"
+   "ui/tutorial.tsx:767 prop:body"
   ]
  },
  {
   "key": "Les deux se commandent depuis la file de production de la planète.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:767 prop:body"
+   "ui/tutorial.tsx:768 prop:body"
   ]
  },
  {
   "key": "Le réseau logistique",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:771 prop:title"
+   "ui/tutorial.tsx:772 prop:title"
   ]
  },
  {
   "key": "Le réseau déplace colons et minerais sans que vous ayez à piloter les cargos. Sur chaque planète (bloc Empire du panneau), choisissez une politique : **Émigration** ou **Immigration** pour la population, **Exporter** ou **Importer** pour les minerais.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:774 prop:body"
+   "ui/tutorial.tsx:775 prop:body"
   ]
  },
  {
   "key": "Cochez ensuite **Réseau logistique** sur des flottes de cargos : elles suivront ces politiques, en évitant les zones où l'ennemi a été vu.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:775 prop:body"
+   "ui/tutorial.tsx:776 prop:body"
   ]
  },
  {
   "key": "Loin de la capitale",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:779 prop:title"
+   "ui/tutorial.tsx:780 prop:title"
   ]
  },
  {
   "key": "Une planète éloignée de la capitale rend moins : plein rendement jusqu'à {0} al, puis −{1} % tous les {2} al (au pire {3} %).",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:782 prop:body"
+   "ui/tutorial.tsx:783 prop:body"
   ]
  },
  {
   "key": "Une **capitale régionale**, construite dans la file d'une grande colonie lointaine, rétablit le plein rendement autour d'elle. Cette section calcule ce que chacune vous rapporterait.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:783 prop:body"
+   "ui/tutorial.tsx:784 prop:body"
   ]
  },
  {
   "key": "La terraformation",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:787 prop:title"
+   "ui/tutorial.tsx:788 prop:title"
   ]
  },
  {
   "key": "La **terraformation** rapproche la gravité, la température ou les radiations d'une planète de l'idéal de votre espèce : sa valeur monte, et sa capacité avec. Chaque progrès de la recherche (Biotechnologie surtout) permet d'aller plus loin.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:790 prop:body"
+   "ui/tutorial.tsx:791 prop:body"
   ]
  },
  {
   "key": "Elle se construit dans la file : les éléments « Terraformation (auto) » de la Colonie standard s'en chargent. Le mode de carte [[4]] montre la valeur que chaque monde atteindrait une fois terraformé.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:791 prop:body"
+   "ui/tutorial.tsx:792 prop:body"
   ]
  },
  {
   "key": "Faire la guerre",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:799 prop:title"
+   "ui/tutorial.tsx:800 prop:title"
   ]
  },
  {
   "key": "Plans de bataille, défenses, mines, invasions.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:799 prop:blurb"
+   "ui/tutorial.tsx:800 prop:blurb"
   ]
  },
  {
   "key": "Le plan de bataille",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:805 prop:title"
+   "ui/tutorial.tsx:806 prop:title"
   ]
  },
  {
   "key": "Une bataille se joue seule, mais selon vos consignes. Chaque flotte suit un **plan de bataille** : quelles cibles viser d'abord (vaisseaux armés, stations, cargos...), avec quelle tactique, et à partir de quelles pertes battre en retraite.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:808 prop:body"
+   "ui/tutorial.tsx:809 prop:body"
   ]
  },
  {
   "key": "Les plans se modifient dans le menu ⋯ (**Plans de bataille…**, [[F6]]) et s'attribuent flotte par flotte, ici.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:809 prop:body"
+   "ui/tutorial.tsx:810 prop:body"
   ]
  },
  {
   "key": "Dans **Conception**, chaque modèle armé a aussi un **rôle** : écran (attire les tirs), ligne, ou artillerie (tire de loin, reste en retrait).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:810 prop:body"
+   "ui/tutorial.tsx:811 prop:body"
   ]
  },
  {
   "key": "Défendre ses planètes",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:814 prop:title"
+   "ui/tutorial.tsx:815 prop:title"
   ]
  },
  {
   "key": "Une planète se défend avec sa **station orbitale**, qui tire sur les assaillants, et ses **défenses** planétaires, qui arrêtent une part des bombes et des troupes. « Défenses (auto) », dans la file, en construit au rythme de la population.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:817 prop:body"
+   "ui/tutorial.tsx:818 prop:body"
   ]
  },
  {
   "key": "Une flotte armée en orbite combat aux côtés de la station.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:818 prop:body"
+   "ui/tutorial.tsx:819 prop:body"
   ]
  },
  {
   "key": "Les champs de mines",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:822 prop:title"
+   "ui/tutorial.tsx:823 prop:title"
   ]
  },
  {
   "key": "Un poseur de mines (tâche « Poser des mines ») sème un **champ de mines** autour de sa position. Une flotte qui le traverse plus vite que la vitesse sûre du champ risque d'être touchée ; le panneau d'itinéraire prévient et propose la bonne vitesse.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:825 prop:body"
+   "ui/tutorial.tsx:826 prop:body"
   ]
  },
  {
   "key": "Les armes à rayon balaient les mines ennemies au passage. Les champs connus s'affichent sur la carte (menu ⋯ de la carte).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:826 prop:body"
+   "ui/tutorial.tsx:827 prop:body"
   ]
  },
  {
   "key": "Prendre une planète",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:830 prop:title"
+   "ui/tutorial.tsx:831 prop:title"
   ]
  },
  {
   "key": "Pour conquérir une planète : détruire sa station, la **bombarder** (des bombardiers tuent sa population et ses défenses), puis **débarquer des colons** depuis un cargo (tâche Transport, décharger les colons). Il faut être en guerre, et vos troupes doivent dépasser ses défenseurs.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:832 prop:body"
+   "ui/tutorial.tsx:833 prop:body"
   ]
  },
  {
   "key": "Une planète conquise rend peu au début : il faut {0} ans pour l'assimiler pleinement.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:833 prop:body"
+   "ui/tutorial.tsx:834 prop:body"
   ]
  },
  {
   "key": "Le radar",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:837 prop:title"
+   "ui/tutorial.tsx:838 prop:title"
   ]
  },
  {
   "key": "Le mode **Radar** (touche [[8]]) n'affiche que les vaisseaux hostiles détectés ; en rouge, ceux qui sont sur votre territoire ou s'y dirigent.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:840 prop:body"
+   "ui/tutorial.tsx:841 prop:body"
   ]
  },
  {
   "key": "Le compte rendu de chaque bataille, avec sa rediffusion pas à pas, se trouve dans **Rapports**. Touche [[1]] pour revenir à la carte habituelle.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:841 prop:body"
+   "ui/tutorial.tsx:842 prop:body"
   ]
  },
  {
   "key": "Passez en mode Radar (touche 8).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:843 prop:todo"
+   "ui/tutorial.tsx:844 prop:todo"
   ]
  },
  {
   "key": "Diplomatie et renseignement",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:852 prop:title"
+   "ui/tutorial.tsx:853 prop:title"
   ]
  },
  {
   "key": "Rencontrer, négocier, espionner.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:852 prop:blurb"
+   "ui/tutorial.tsx:853 prop:blurb"
   ]
  },
  {
   "key": "Les autres empires",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:857 prop:title"
+   "ui/tutorial.tsx:858 prop:title"
   ]
  },
  {
   "key": "L'onglet **{0}** ([[F7]]) liste les empires rencontrés{1}. La rencontre se fait quand vos scanners croisent leurs vaisseaux ou leurs planètes.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:859 prop:body"
+   "ui/tutorial.tsx:860 prop:body"
   ]
  },
  {
   "key": " ({0} pour l'instant)",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:859"
+   "ui/tutorial.tsx:860"
   ]
  },
  {
   "key": " : aucun pour l'instant",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:859"
+   "ui/tutorial.tsx:860"
   ]
  },
  {
   "key": "Paix, accords, guerre",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:866 prop:title"
+   "ui/tutorial.tsx:867 prop:title"
   ]
  },
  {
   "key": "Deux empires sont en **paix** tant que l'un ne déclare pas la guerre. On peut proposer des accords (ambassades, commerce, coopération scientifique, alliance), offrir des minerais, ou exiger un tribut.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:869 prop:body"
+   "ui/tutorial.tsx:870 prop:body"
   ]
  },
  {
   "key": "Chaque empire a une **opinion** de vous, nourrie de vos actes : dons, accords tenus, trahisons, guerres. La réponse probable s'affiche à côté de chaque proposition, mais rien n'est jamais certain.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:870 prop:body"
+   "ui/tutorial.tsx:871 prop:body"
   ]
  },
  {
   "key": "Le renseignement",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:874 prop:title"
+   "ui/tutorial.tsx:875 prop:title"
   ]
  },
  {
   "key": "Ce que vous savez d'un empire dépend de vos scanners, de vos ambassades et de vos **espions** : un « Réseau d'espions », dans la file d'une planète, renforce votre réseau chez un empire précis.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:876 prop:body"
+   "ui/tutorial.tsx:877 prop:body"
   ]
  },
  {
   "key": "Le dossier de chaque empire (onglet **Rapports**, Score) montre ce que vous en savez vraiment, avec la date du dernier relevé.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:877 prop:body"
+   "ui/tutorial.tsx:878 prop:body"
   ]
  },
  {
   "key": "Les frontières",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:881 prop:title"
+   "ui/tutorial.tsx:882 prop:title"
   ]
  },
  {
   "key": "Chaque planète rayonne une **culture** qui dessine des frontières (case Frontières, au-dessus de la carte). On ne peut pas coloniser dans le territoire d'un autre empire : les meilleurs emplacements se prennent tôt.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:883 prop:body"
+   "ui/tutorial.tsx:884 prop:body"
   ]
  },
  {
   "key": "Découvertes et mystères",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:891 prop:title"
+   "ui/tutorial.tsx:892 prop:title"
   ]
  },
  {
   "key": "Anomalies, gardiens, étoiles cachées, marchand.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:891 prop:blurb"
+   "ui/tutorial.tsx:892 prop:blurb"
   ]
  },
  {
   "key": "Anomalies et sites anciens",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:894 prop:title"
+   "ui/tutorial.tsx:895 prop:title"
   ]
  },
  {
   "key": "La galaxie cache des **anomalies** et des **sites archéologiques**. Vos scanners les repèrent (un rapport, et un symbole sur la carte). Pour les étudier, garez dessus un vaisseau muni d'un scanner, sans autre destination : l'étude avance un peu chaque année. Plusieurs vaisseaux, ou une colonie sur place, l'accélèrent.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:897 prop:body"
+   "ui/tutorial.tsx:898 prop:body"
   ]
  },
  {
   "key": "Le résultat : une technologie, des minerais, une relique... ou un choix. Un bouton **Décision à prendre** apparaît alors en haut de l'écran. Cette section de l'onglet Empire fait le point.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:898 prop:body"
+   "ui/tutorial.tsx:899 prop:body"
   ]
  },
  {
   "key": "Les gardiens",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:902 prop:title"
+   "ui/tutorial.tsx:903 prop:title"
   ]
  },
  {
   "key": "Certains des mondes les plus riches sont gardés par de très anciens vaisseaux. Tout vaisseau qui s'y arrête est attaqué : il faut une vraie flotte de guerre pour en venir à bout, et le butin en vaut la peine.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:904 prop:body"
+   "ui/tutorial.tsx:905 prop:body"
   ]
  },
  {
   "key": "Le planificateur de colonies signale ces mondes par l'étiquette « gardé », et le jeu demande confirmation avant d'y envoyer un vaisseau.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:905 prop:body"
+   "ui/tutorial.tsx:906 prop:body"
   ]
  },
  {
   "key": "Les étoiles cachées",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:909 prop:title"
+   "ui/tutorial.tsx:910 prop:title"
   ]
  },
  {
   "key": "Quelques étoiles ne figurent sur aucune carte : une naine brune que seul l'infrarouge révèle, une étoile voilée dans un nuage, un amas caché derrière un trou de ver scellé... Des indices (rapports, découvertes) mettent sur leur piste.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:911 prop:body"
+   "ui/tutorial.tsx:912 prop:body"
   ]
  },
  {
   "key": "Les **trous de ver** relient deux points éloignés de la galaxie ; il faut une technologie pour les emprunter. Le **Guide** détaille tout cela.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:912 prop:body"
+   "ui/tutorial.tsx:913 prop:body"
   ]
  },
  {
   "key": "Le marchand nomade",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:916 prop:title"
+   "ui/tutorial.tsx:917 prop:title"
   ]
  },
  {
   "key": "Un **marchand nomade** traverse parfois la galaxie. Il cède des technologies introuvables autrement, contre des minerais. Sélectionnez-le sur la carte pour voir ses offres et lui donner rendez-vous avec une flotte.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:918 prop:body"
+   "ui/tutorial.tsx:919 prop:body"
   ]
  },
  {
   "key": "Gouverner",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:925 prop:title"
+   "ui/tutorial.tsx:926 prop:title"
   ]
  },
  {
   "key": "Doctrines, mégaprojets, objectifs secrets, culture.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:925 prop:blurb"
+   "ui/tutorial.tsx:926 prop:blurb"
   ]
  },
  {
   "key": "La vue d'ensemble",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:928 prop:title"
+   "ui/tutorial.tsx:929 prop:title"
   ]
  },
  {
   "key": "L'onglet **{0}** rassemble ce qui concerne tout l'empire : découvertes, administration, culture, pirates, réseau logistique, mégaprojets, objectifs secrets et doctrines.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:929 prop:body"
+   "ui/tutorial.tsx:930 prop:body"
   ]
  },
  {
   "key": "Les doctrines",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:935 prop:title"
+   "ui/tutorial.tsx:936 prop:title"
   ]
  },
  {
   "key": "À certains niveaux de recherche (5 ou 6 dans la plupart des domaines), il faut choisir entre deux **doctrines** : par exemple des boucliers plus solides, ou des rayons plus destructeurs. Le choix est définitif.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:938 prop:body"
+   "ui/tutorial.tsx:939 prop:body"
   ]
  },
  {
   "key": "Un bouton **Doctrine à choisir** apparaît en haut de l'écran le moment venu ; les choix se font dans la page Recherche.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:939 prop:body"
+   "ui/tutorial.tsx:940 prop:body"
   ]
  },
  {
   "key": "Les mégaprojets",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:943 prop:title"
+   "ui/tutorial.tsx:944 prop:title"
   ]
  },
  {
   "key": "Les **mégaprojets** sont des chantiers de plusieurs années aux effets durables. Le plus grand, le **Portail de l'Ascension**, donne la victoire à qui l'achève : tous les empires suivent sa progression, et chercheront à l'arrêter.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:946 prop:body"
+   "ui/tutorial.tsx:947 prop:body"
   ]
  },
  {
   "key": "Les objectifs secrets",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:950 prop:title"
+   "ui/tutorial.tsx:951 prop:title"
   ]
  },
  {
   "key": "Chaque empire reçoit des **objectifs secrets** ; chacun accompli rapporte {0} points de score. Ceux des rivaux ne sont révélés qu'en fin de partie.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:952 prop:body"
+   "ui/tutorial.tsx:953 prop:body"
   ]
  },
  {
   "key": "La culture",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:955 prop:title"
+   "ui/tutorial.tsx:956 prop:title"
   ]
  },
  {
   "key": "La **culture** de vos planètes vient de leur population, de leurs bâtiments culturels et du mécénat. Elle étend votre territoire et peut, à la longue, attirer à vous des planètes étrangères mal tenues.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:958 prop:body"
+   "ui/tutorial.tsx:959 prop:body"
   ]
  },
  {
   "key": "Les bâtiments culturels se construisent dans la file des colonies, quand la recherche les permet.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:959 prop:body"
+   "ui/tutorial.tsx:960 prop:body"
   ]
  },
  {
   "key": "Pirates et crise",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:966 prop:title"
+   "ui/tutorial.tsx:967 prop:title"
   ]
  },
  {
   "key": "Raids, repaires, menace de fin de partie.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:966 prop:blurb"
+   "ui/tutorial.tsx:967 prop:blurb"
   ]
  },
  {
   "key": "Les pirates",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:969 prop:title"
+   "ui/tutorial.tsx:970 prop:title"
   ]
  },
  {
   "key": "Après une dizaine d'années, des **pirates** s'installent dans des repaires. Leurs raids visent les colonies riches et mal défendues ; une alerte annonce leur cible et leur arrivée.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:972 prop:body"
+   "ui/tutorial.tsx:973 prop:body"
   ]
  },
  {
   "key": "Une flotte armée en orbite, une station armée ou des défenses limitent les dégâts. Détruire un repaire rapporte son butin. On peut aussi payer les pirates (une prime, dans la file de production) pour qu'ils visent un rival.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:973 prop:body"
+   "ui/tutorial.tsx:974 prop:body"
   ]
  },
  {
   "key": "La crise de fin de partie",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:977 prop:title"
+   "ui/tutorial.tsx:978 prop:title"
   ]
  },
  {
   "key": "Bien plus tard (pas avant {0} dans une galaxie de cette taille), des présages annoncent une **crise** : une brèche s'ouvre, et des vagues de Moissonneurs en sortent pour ravager tous les empires.",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:980 prop:body"
+   "ui/tutorial.tsx:981 prop:body"
   ]
  },
  {
   "key": "Face à elle, une trêve automatique empêche les empires de se combattre autour de la brèche, et la refermer est une victoire en soi. Mieux vaut avoir une flotte prête le moment venu.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:981 prop:body"
+   "ui/tutorial.tsx:982 prop:body"
   ]
  },
  {
   "key": "Raccourcis et confort",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:988 prop:title"
+   "ui/tutorial.tsx:989 prop:title"
   ]
  },
  {
   "key": "Clavier, souris, outils pratiques.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:988 prop:blurb"
+   "ui/tutorial.tsx:989 prop:blurb"
   ]
  },
  {
   "key": "Le clavier",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:991 prop:title"
+   "ui/tutorial.tsx:992 prop:title"
   ]
  },
  {
   "key": "• [[Entrée]] : tour suivant ; [[Maj+F9]] : dix années ;",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:993 prop:body"
+   "ui/tutorial.tsx:994 prop:body"
   ]
  },
  {
   "key": "• [[N]] / [[P]] : planète ou flotte suivante, précédente ; [[I]] : flotte sans ordre suivante ; [[V]] : centrer la carte sur la sélection ;",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:994 prop:body"
+   "ui/tutorial.tsx:995 prop:body"
   ]
  },
  {
   "key": "• [[Q]] : file de production ; [[C]] et [[X]] : planificateurs ; [[F5]] : recherche ; [[F7]] : diplomatie ;",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:995 prop:body"
+   "ui/tutorial.tsx:996 prop:body"
   ]
  },
  {
   "key": "• [[1]] à [[8]] : modes de carte ; [[9]] : scanners ; [[0]] : noms ;",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:996 prop:body"
+   "ui/tutorial.tsx:997 prop:body"
   ]
  },
  {
   "key": "• [[Ctrl+F]] : trouver un objet ; [[Ctrl+Z]] : annuler ; [[F1]] : guide ; [[F2]] : catalogue des technologies.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:997 prop:body"
+   "ui/tutorial.tsx:998 prop:body"
   ]
  },
  {
   "key": "La liste complète est dans le menu ⋯ (**Raccourcis clavier**).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:998 prop:body"
+   "ui/tutorial.tsx:999 prop:body"
   ]
  },
  {
   "key": "La souris",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1002 prop:title"
+   "ui/tutorial.tsx:1003 prop:title"
   ]
  },
  {
   "key": "Clic droit sur la carte : un menu des objets à cet endroit, et des ordres rapides. Plusieurs objets au même endroit ? Cliquez plusieurs fois pour passer de l'un à l'autre.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1005 prop:body"
+   "ui/tutorial.tsx:1006 prop:body"
   ]
  },
  {
   "key": "[[Alt]]+[[Maj]] et glisser : une règle pour mesurer une distance. Une planète sélectionnée, [[Ctrl]]+clic sur une autre : les vaisseaux neufs construits sur la première s'y rendront d'eux-mêmes.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1006 prop:body"
+   "ui/tutorial.tsx:1007 prop:body"
   ]
  },
  {
   "key": "Sur écran tactile : appui long pour le menu, bouton ✚ Étapes pour les itinéraires.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1007 prop:body"
+   "ui/tutorial.tsx:1008 prop:body"
   ]
  },
  {
   "key": "Outils pratiques",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1011 prop:title"
+   "ui/tutorial.tsx:1012 prop:title"
   ]
  },
  {
   "key": "Le menu ⋯ offre aussi : les **sauvegardes de secours** (les 5 derniers tours de chaque partie, copiés dans un dossier de votre ordinateur, avec Chrome ou Edge), les paramètres de la partie, le score ([[F10]]), et la langue.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1013 prop:body"
+   "ui/tutorial.tsx:1014 prop:body"
   ]
  },
  {
   "key": "Plusieurs joueurs peuvent partager un même écran : à la création d'une partie, déclarez plusieurs empires humains. Chacun donne ses ordres à son tour, sans voir ceux des autres.",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1014 prop:body"
+   "ui/tutorial.tsx:1015 prop:body"
   ]
  },
  {
   "key": "Faites d'abord ce que demande le tutoriel (ou « Le faire pour moi »).",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1094 call:notify"
+   "ui/tutorial.tsx:1095 call:notify"
   ]
  },
  {
   "key": "✦ Tutoriel{0} ▴",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1224 jsx"
+   "ui/tutorial.tsx:1225 jsx"
   ]
  },
  {
   "key": "Rouvrir le tutoriel",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1224 attr:title"
+   "ui/tutorial.tsx:1225 attr:title"
   ]
  },
  {
   "key": "Tirer pour déplacer · double-clic pour replacer",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1228 attr:title"
+   "ui/tutorial.tsx:1229 attr:title"
   ]
  },
  {
   "key": "Tous les chapitres",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1232 attr:title"
+   "ui/tutorial.tsx:1233 attr:title"
   ]
  },
  {
   "key": "Chapitres",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1232 attr:aria-label",
-   "ui/tutorial.tsx:1276 jsx"
+   "ui/tutorial.tsx:1233 attr:aria-label",
+   "ui/tutorial.tsx:1277 jsx"
   ]
  },
  {
   "key": "Réduire",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1233 attr:title",
-   "ui/tutorial.tsx:1233 attr:aria-label"
+   "ui/tutorial.tsx:1234 attr:title",
+   "ui/tutorial.tsx:1234 attr:aria-label"
   ]
  },
  {
   "key": "Fermer le tutoriel",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1234 attr:title"
+   "ui/tutorial.tsx:1235 attr:title"
   ]
  },
  {
   "key": "Fermer le tutoriel ? La partie continue ; le menu ⋯ permet de le reprendre où vous en étiez.",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1237 jsx"
+   "ui/tutorial.tsx:1238 jsx"
   ]
  },
  {
   "key": "Rester",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1238 jsx"
+   "ui/tutorial.tsx:1239 jsx"
   ]
  },
  {
   "key": "Essentiel : {0} %",
   "kind": "tpl",
   "refs": [
-   "ui/tutorial.tsx:1244 attr:title"
+   "ui/tutorial.tsx:1245 attr:title"
   ]
  },
  {
   "key": "Fait !",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1248 jsx"
+   "ui/tutorial.tsx:1249 jsx"
   ]
  },
  {
   "key": "Étape précédente",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1250 attr:title"
+   "ui/tutorial.tsx:1251 attr:title"
   ]
  },
  {
   "key": "Le faire pour moi",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1252 jsx"
+   "ui/tutorial.tsx:1253 jsx"
   ]
  },
  {
   "key": "Le tutoriel fait l'action à votre place",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1252 attr:title"
+   "ui/tutorial.tsx:1253 attr:title"
   ]
  },
  {
   "key": "Chapitre suivant ▶",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1253"
+   "ui/tutorial.tsx:1254"
   ]
  },
  {
   "key": "Terminer le chapitre",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1253"
+   "ui/tutorial.tsx:1254"
   ]
  },
  {
   "key": "L'essentiel est acquis",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1273 jsx"
+   "ui/tutorial.tsx:1274 jsx"
   ]
  },
  {
   "key": "Vous savez produire, rechercher, explorer, coloniser et passer les tours : assez pour jouer une partie entière.",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1274 jsx"
+   "ui/tutorial.tsx:1275 jsx"
   ]
  },
  {
   "key": "Les chapitres ci-dessous approfondissent le reste, dans l'ordre que vous voulez. Vous pouvez aussi continuer cette partie librement : le tutoriel reste dans le menu ⋯.",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1275 jsx"
+   "ui/tutorial.tsx:1276 jsx"
   ]
  },
  {
   "key": "Reprendre : {0}",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1277 jsx",
-   "ui/tutorial.tsx:1278 jsx"
+   "ui/tutorial.tsx:1278 jsx",
+   "ui/tutorial.tsx:1279 jsx"
   ]
  },
  {
   "key": "L'essentiel",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1279 jsx"
+   "ui/tutorial.tsx:1280 jsx"
   ]
  },
  {
   "key": "Pour aller plus loin",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1281 jsx"
+   "ui/tutorial.tsx:1282 jsx"
   ]
  },
  {
   "key": "Jouer librement",
   "kind": "jsx",
   "refs": [
-   "ui/tutorial.tsx:1284 jsx"
+   "ui/tutorial.tsx:1285 jsx"
   ]
  },
  {
@@ -37769,7 +37812,7 @@
   "key": "inconnue",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:421",
+   "engine/anomalies.ts:422",
    "ui/summary.tsx:42 attr:v",
    "ui/summary.tsx:195 attr:v",
    "ui/summary.tsx:207 attr:v"
@@ -38485,7 +38528,7 @@
   "key": "sanctuaire : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/discoveries.tsx:245 jsx"
+   "ui/discoveries.tsx:247 jsx"
   ]
  },
  {

@@ -1742,5 +1742,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "守军会随赃物增多而壮大：旧的测算会低估它。",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "守军每年修复四分之一的损伤，并随赃物增多而壮大：旧的测算会低估它。",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "据{0}的船员报告，位于{2}的{1}巢穴守军有 {3} 艘舰船。你全部战舰合计：{4}；你最强的舰队{5}：{6}。守军每年修复四分之一的损伤，并随赃物增多而壮大。",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "据{0}的船员报告，位于{2}的{1}巢穴守军有 {3} 艘舰船。你没有任何战舰。"
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "据{0}的船员报告，位于{2}的{1}巢穴守军有 {3} 艘舰船。你没有任何战舰。",
+ "Épave restaurée": "修复的残骸",
+ "Héraut du signal": "信号先驱",
+ "Escorte des Anciens": "先民护航舰",
+ "Porte-balise": "信标运载舰",
+ "Escorteur": "护卫舰",
+ "{0} vaisseau(x)": "{0} 艘舰船"
 }

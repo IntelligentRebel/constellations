@@ -110,7 +110,8 @@ function refit(c: Ctx): string {
 function derelict(c: Ctx): string {
   const tech = Math.max(...FIELDS.map(f => c.p.tech[f])) + 3;
   const hull = c.a.level >= 4 ? 'Battleship' : c.a.level >= 3 ? 'Cruiser' : 'Destroyer';
-  const d = designAtTech(c.p, Math.min(26, tech), hull, 'beamWarship', 'Épave restaurée');
+  const label = 'Épave restaurée'; // a variable: the extractor skips designAtTech's arguments
+  const d = designAtTech(c.p, Math.min(26, tech), hull, 'beamWarship', label);
   if (!d) return 'une épave, hélas irréparable';
   d.alien = true; d.id = c.game.nextId++;
   c.game.designs.push(d);

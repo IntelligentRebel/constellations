@@ -433,7 +433,8 @@ export function ensureBeaconCarrier(game: GameState, p: Player): ShipDesign | nu
   const kit = TECHS.get('Sovereignty Beacon');
   if (!kit || !hasTech(p, kit)) return null;
   if (game.designs.some(d => d.owner === p.id && d.purpose === 'beaconCarrier' && !d.deleted)) return null;
-  const d = autoDesign(p, 'Scout', 'beaconCarrier', 'Porte-balise');
+  const label = 'Porte-balise'; // a variable: the extractor skips autoDesign's arguments
+  const d = autoDesign(p, 'Scout', 'beaconCarrier', label);
   if (!d || !d.slots.some(x => x.part === kit.name)) return null;
   d.purpose = 'beaconCarrier';
   addDesign(game, d);

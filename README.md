@@ -5,7 +5,11 @@
 A turn-based 4X space strategy game, **freely inspired by Stars!** (Jeff Johnson & Jeff McBride, 1995). It runs
 entirely in the browser, offline, with nothing to install.
 
-**Version 0.3.9.8** (early version: the numbering restarts at 0.x until the game is considered complete).
+**[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
+
+**Version 0.3.9.9** (early version: the numbering restarts at 0.x until the game is considered complete).
+
+![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
 ## Why this game
 
@@ -20,10 +24,35 @@ All the names are its own (hulls, components, races, technologies): it is a trib
 
 It was created with the help of **Claude Opus 5.5** (Anthropic).
 
+## Screenshots
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/en/route.png" alt="A fleet's route"><br><sub>A fleet sent across the empire: speed, duration and fuel of each leg, refuelling at friendly shipyards on the way.</sub></td>
+<td width="50%"><img src="docs/screenshots/en/design.png" alt="Ship design"><br><sub>Ship design: the hull's slots, the characteristics, the combat role, a combat simulator and a comparison with an enemy design.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/en/research.png" alt="Research"><br><sub>Research: progress in each field, the budget, and the exclusive doctrines (the other path closes for good).</sub></td>
+<td><img src="docs/screenshots/en/diplomacy.png" alt="Diplomacy"><br><sub>Diplomacy with the computers: war and peace, agreements, what each empire thinks of you, the latest news.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/en/empire.png" alt="The Empire page"><br><sub>The Empire page: discoveries and relics, the cost of distance to the capital, sector governors.</sub></td>
+<td><img src="docs/screenshots/en/planner.png" alt="Colony planner"><br><sub>The colony planner: every analysed world ranked by habitability, with its minerals and a button to send an ark.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/en/battle.png" alt="Battle replay"><br><sub>A battle replayed phase by phase, with the losses of each side.</sub></td>
+<td><img src="docs/screenshots/en/act.png" alt="Act II"><br><sub>A story in three acts, each of which changes the rules of the game.</sub></td>
+</tr>
+</table>
+
 ## Play
 
-- Download the repository (green **Code** button, then **Download ZIP**), unzip it and open `index.html` in a web
-  browser. No server, no installation, no internet connection needed.
+- **Online**: [intelligentrebel.github.io/constellations](https://intelligentrebel.github.io/constellations/), nothing
+  to install.
+- **Offline**: download the repository (green **Code** button, then **Download ZIP**), unzip it and open `index.html` in
+  a web browser. No server, no installation, no internet connection needed.
+- The online and offline copies keep their saves apart (each in its own browser storage): to move a game from one to
+  the other, "Export" it, then "Import" it.
 - The game picks the language of your browser; if that language is not supported, it starts in English. You can
   change it on the welcome screen or in the "⋯" menu. Languages: English, 简体中文, Deutsch, Español, Português
   (Brasil), Русский, Français, 日本語, 한국어, Polski, Italiano.
@@ -41,6 +70,8 @@ the open-source craig-stars project, checked against the original game under Win
 
 The interface improvements stay: you play the Stars! rules with the comfort of a modern game. Each new rule can also be
 switched on or off one by one.
+
+<p align="center"><img src="docs/screenshots/en/purist.png" width="720" alt="New game: Experience close to Stars! 2.7j (2000)"></p>
 
 ## What differs from Stars!
 

@@ -20,14 +20,14 @@ export function CultureBlock({ g, me, p }: { g: GameState; me: Player; p: Planet
   const gain = cultureGain(g, p);
   const r = radius(p);
   const a = assimilation(g, p);
-  const parts = [`population ${gain.pop.toFixed(1)}`, gain.capital ? `capitale ${gain.capital}` : '', gain.station ? `station ${gain.station}` : '', gain.buildings ? `bâtiments ${gain.buildings}` : ''].filter(Boolean).join(' · ');
+  const parts = [`population ${fmt(gain.pop, 1)}`, gain.capital ? `capitale ${gain.capital}` : '', gain.station ? `station ${gain.station}` : '', gain.buildings ? `bâtiments ${gain.buildings}` : ''].filter(Boolean).join(' · ');
   const built = new Set(p.cultureBld ?? []);
   const next = CULTURE_BUILDINGS.find(b => !built.has(b.id) && hasReq(me, b.req) && !p.queue.some(q => q.kind === 'culture' && q.cultureId === b.id));
   const progress = p.assim?.progress ?? 0;
   return <section class="blk culture">
     <div class="blk-head"><h3>Culture</h3><span class="small muted">{fmt(Math.round(p.culture ?? 0))} points</span></div>
     <Row k="Rayonnement" v={<>{r.toFixed(0)} al{r >= RADIUS_MAX ? <span class="muted small"> (maximum)</span> : ''}</>} title="Rayon du territoire que la planète projette autour d'elle" />
-    <Row k="Gain annuel" v={<>+{gain.total.toFixed(1)}</>} title="Moins 0,5 % de la culture accumulée chaque année" />
+    <Row k="Gain annuel" v={<>+{fmt(gain.total, 1)}</>} title="Moins 0,5 % de la culture accumulée chaque année" />
     <div class="small muted cparts">{parts} · érosion 0,5 %/an</div>
     <Row k="Bâtiments" v={CULTURE_BUILDINGS.map(b => <span class={'cbld' + (built.has(b.id) ? ' on' : '')} title={`${b.name} : ${b.text}${built.has(b.id) ? '' : ` Il faut ${reqText(b.req)}.`}`}>{b.name}{built.has(b.id) ? ' ✓' : ''}</span>)} />
     <div class="btns">
@@ -35,9 +35,9 @@ export function CultureBlock({ g, me, p }: { g: GameState; me: Player; p: Planet
       {hasReq(me, PATRONAGE.req) && <button class="small" onClick={() => A.queueAdd(p.id, 'patronage', undefined, 5, 0)} title={`5 × ${PATRONAGE.cost.resources} ressources → ${5 * PATRONAGE.points} points de culture, en tête de file`}>Mécénat ×5</button>}
     </div>
     {a.by >= 0 && (a.rate > 0 || progress > 0) ? <div class={'alert' + (progress > ASSIM_NEEDED * 0.5 ? ' strong' : '')}>
-      La culture {ofEmpire(g, a.by)} domine ici ({a.ratio.toFixed(1)} fois la vôtre) : assimilation {Math.round(progress / ASSIM_NEEDED * 100)} %{a.rate > 0 ? `, bascule dans ≈ ${a.years} an${a.years > 1 ? 's' : ''}` : ', en recul'}{a.immune ? ` (${a.immune})` : ''}.
+      La culture {ofEmpire(g, a.by)} domine ici ({fmt(a.ratio, 1)} fois la vôtre) : assimilation {Math.round(progress / ASSIM_NEEDED * 100)} %{a.rate > 0 ? `, bascule dans ≈ ${a.years} an${a.years > 1 ? 's' : ''}` : ', en recul'}{a.immune ? ` (${a.immune})` : ''}.
       <div class="small">Pour garder ce monde : bâtiments culturels et mécénat ici, une station en orbite (divise par deux la vitesse d'assimilation), ou affaiblir les mondes voisins des {g.players[a.by].name}.</div>
-    </div> : a.by >= 0 ? <div class="small muted">Influence étrangère : {ofEmpire(g, a.by)}, {a.ratio.toFixed(2)} fois la vôtre{a.immune ? ` · ${a.immune}` : ' (sans effet sous 1,25)'}.</div> : null}
+    </div> : a.by >= 0 ? <div class="small muted">Influence étrangère : {ofEmpire(g, a.by)}, {fmt(a.ratio, 2)} fois la vôtre{a.immune ? ` · ${a.immune}` : ' (sans effet sous 1,25)'}.</div> : null}
   </section>;
 }
 
@@ -84,7 +84,7 @@ export function CultureSection({ g, me }: { g: GameState; me: Player }) {
   return <>
     <div class="emp-kpis">
       <div><small>Culture par an</small><b>+{perYear.toFixed(0)}</b><small>{own.length} colonies</small></div>
-      <div><small>Votre territoire</small><b>{(mine / t.grid.length * 100).toFixed(1)} %</b><small>de la galaxie (autres empires connus : {(foreign / t.grid.length * 100).toFixed(1)} %)</small></div>
+      <div><small>Votre territoire</small><b>{fmt(mine / t.grid.length * 100, 1)} %</b><small>de la galaxie (autres empires connus : {fmt(foreign / t.grid.length * 100, 1)} %)</small></div>
       <div><small>Bâtiments culturels</small><b>{blds}</b><small>sur {own.length * CULTURE_BUILDINGS.length} possibles</small></div>
       <div><small>Plus grand rayonnement</small><b>{best[0] ? `${radius(best[0]).toFixed(0)} al` : '—'}</b><small>{best.map(p => p.name).join(', ')}</small></div>
     </div>

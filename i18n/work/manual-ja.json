@@ -1753,5 +1753,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "守備隊は戦利品とともに増強されます。古い測定は実際より少なく見積もっています。",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "守備隊は毎年ダメージの4分の1を修復し、戦利品とともに増強されます。古い測定は実際より少なく見積もっています。",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "{0}の乗員によると、{2}にある{1}の巣窟の守備隊は艦船{3}隻です。貴国の全戦闘艦の合計：{4}、最強の艦隊{5}：{6}。守備隊は毎年ダメージの4分の1を修復し、戦利品とともに増強されます。",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "{0}の乗員によると、{2}にある{1}の巣窟の守備隊は艦船{3}隻です。貴国には戦闘艦がありません。"
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "{0}の乗員によると、{2}にある{1}の巣窟の守備隊は艦船{3}隻です。貴国には戦闘艦がありません。",
+ "Épave restaurée": "修復された残骸",
+ "Héraut du signal": "信号のヘラルド",
+ "Escorte des Anciens": "古代人の護衛艦",
+ "Porte-balise": "ビーコン運搬艦",
+ "Escorteur": "護衛艦",
+ "{0} vaisseau(x)": "艦船{0}隻"
 }

@@ -1738,5 +1738,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "Die Garnison wächst mit der Beute: Eine alte Messung unterschätzt sie.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "Die Garnison repariert jedes Jahr ein Viertel ihres Schadens und wächst mit der Beute: Eine alte Messung unterschätzt sie.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "Laut der Besatzung von {0} zählt die Garnison des Verstecks {1} bei {2} {3} Schiffe. Alle Ihre Kriegsschiffe zusammen: {4}; Ihre stärkste Flotte, {5}: {6}. Die Garnison repariert jedes Jahr ein Viertel ihres Schadens und wächst mit der Beute.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Laut der Besatzung von {0} zählt die Garnison des Verstecks {1} bei {2} {3} Schiffe. Sie haben kein Kriegsschiff."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Laut der Besatzung von {0} zählt die Garnison des Verstecks {1} bei {2} {3} Schiffe. Sie haben kein Kriegsschiff.",
+ "Épave restaurée": "Restauriertes Wrack",
+ "Héraut du signal": "Herold des Signals",
+ "Escorte des Anciens": "Eskorte der Uralten",
+ "Porte-balise": "Bakenträger",
+ "Escorteur": "Geleitschiff",
+ "{0} vaisseau(x)": "{0} Schiff(e)"
 }

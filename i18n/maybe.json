@@ -126,7 +126,7 @@
   "key": "leviathan",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:160",
+   "engine/anomalies.ts:161",
    "engine/guardians.ts:136 prop:3"
   ]
  },
@@ -134,7 +134,7 @@
   "key": "dreadnought",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:160",
+   "engine/anomalies.ts:161",
    "engine/guardians.ts:136 prop:2"
   ]
  },
@@ -142,8 +142,8 @@
   "key": "sentinel",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:160",
-   "engine/chains.ts:189 call:spawnGuardian",
+   "engine/anomalies.ts:161",
+   "engine/chains.ts:190 call:spawnGuardian",
    "engine/guardians.ts:136 prop:1"
   ]
  },
@@ -151,42 +151,42 @@
   "key": "builders",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:333"
+   "engine/anomalies.ts:334"
   ]
  },
  {
   "key": "seers",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:333"
+   "engine/anomalies.ts:334"
   ]
  },
  {
   "key": "gardens",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:333"
+   "engine/anomalies.ts:334"
   ]
  },
  {
   "key": "navigators",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:333"
+   "engine/anomalies.ts:334"
   ]
  },
  {
   "key": "library",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:333"
+   "engine/anomalies.ts:334"
   ]
  },
  {
   "key": "vault",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:365 call:add",
+   "engine/anomalies.ts:366 call:add",
    "engine/secrets.ts:234 call:anomaly"
   ]
  },
@@ -194,7 +194,7 @@
   "key": "fragment",
   "kind": "str",
   "refs": [
-   "engine/anomalies.ts:371 call:add"
+   "engine/anomalies.ts:372 call:add"
   ]
  },
  {
@@ -860,7 +860,7 @@
    "ui/command.tsx:30",
    "ui/dialogs/misc.tsx:113",
    "ui/dialogs/research.tsx:67 attr:class",
-   "ui/discoveries.tsx:252"
+   "ui/discoveries.tsx:228"
   ]
  },
  {
@@ -876,7 +876,7 @@
   "kind": "str",
   "refs": [
    "ui/command.tsx:31 attr:role",
-   "ui/tutorial.tsx:1217 call:closest"
+   "ui/tutorial.tsx:1218 call:closest"
   ]
  },
  {
@@ -1095,7 +1095,7 @@
    "ui/dialogs/backups.tsx:45 attr:class",
    "ui/dialogs/index.tsx:72 attr:class",
    "ui/dialogs/prefs.tsx:23 attr:class",
-   "ui/tutorial.tsx:1253 attr:class"
+   "ui/tutorial.tsx:1254 attr:class"
   ]
  },
  {
@@ -1294,7 +1294,7 @@
   "refs": [
    "ui/dialogs/misc.tsx:104 call:useSorted",
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/discoveries.tsx:251 call:th",
+   "ui/discoveries.tsx:253 call:th",
    "ui/empire.tsx:94 call:wth"
   ]
  },
@@ -1594,7 +1594,7 @@
    "ui/diplomacy.tsx:30 attr:class",
    "ui/diplomacy.tsx:38",
    "ui/discoveries.tsx:86",
-   "ui/discoveries.tsx:252 attr:class"
+   "ui/discoveries.tsx:228"
   ]
  },
  {
@@ -1667,7 +1667,7 @@
   "key": "natural",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:232 call:useSorted",
+   "ui/discoveries.tsx:234 call:useSorted",
    "ui/pages.tsx:440 call:useSorted"
   ]
  },
@@ -1675,21 +1675,21 @@
   "key": "level",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "pct",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
   "key": "status",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:251 call:th"
+   "ui/discoveries.tsx:253 call:th"
   ]
  },
  {
@@ -2231,52 +2231,52 @@
   "key": "menu",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1045 call:goStep",
-   "ui/tutorial.tsx:1050 call:goStep",
-   "ui/tutorial.tsx:1232 call:goStep"
+   "ui/tutorial.tsx:1046 call:goStep",
+   "ui/tutorial.tsx:1051 call:goStep",
+   "ui/tutorial.tsx:1233 call:goStep"
   ]
  },
  {
   "key": "tutorial",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1064",
-   "ui/tutorial.tsx:1079 call:readSlot"
+   "ui/tutorial.tsx:1065",
+   "ui/tutorial.tsx:1080 call:readSlot"
   ]
  },
  {
   "key": "nearest",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1173 prop:block"
+   "ui/tutorial.tsx:1174 prop:block"
   ]
  },
  {
   "key": "block",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1191"
+   "ui/tutorial.tsx:1192"
   ]
  },
  {
   "key": " menu",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1242"
+   "ui/tutorial.tsx:1243"
   ]
  },
  {
   "key": " done",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1248"
+   "ui/tutorial.tsx:1249"
   ]
  },
  {
   "key": " pulse",
   "kind": "str",
   "refs": [
-   "ui/tutorial.tsx:1253"
+   "ui/tutorial.tsx:1254"
   ]
  },
  {

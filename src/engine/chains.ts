@@ -168,7 +168,8 @@ function signalEnd(game: GameState, ch: StoryChain, p: Player, pl: Planet, rng: 
   ch.done = game.year;
   const roll = rng.random();
   if (roll < 0.4) {
-    const d = designAtTech(p, Math.min(26, maxTech(p) + 3), 'Destroyer', 'beamWarship', 'Héraut du signal');
+    const label = 'Héraut du signal'; // a variable: the extractor skips designAtTech's arguments
+    const d = designAtTech(p, Math.min(26, maxTech(p) + 3), 'Destroyer', 'beamWarship', label);
     if (d) {
       const nd = addDesign(game, { ...d, owner: p.id, alien: true });
       const f = newFleet(game, p, nd.id, 2, pl, 'Héraut');

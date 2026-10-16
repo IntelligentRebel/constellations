@@ -91,7 +91,8 @@ export function doctrineNews(game: GameState, player: Player, before: Set<string
 /** AI preference: follows its personality (race traits) with a stable per-player coin for the rest. */
 export function aiDoctrine(player: Player, f: DoctrineFork): 'a' | 'b' {
   const prt = player.race.prt;
-  const coin = ((player.id * 7 + f.id.length * 3 + player.name.length) % 2) === 0 ? 'a' : 'b';
+  // 0.3.9.9: no longer the race's name, whose length changed with the language (the same game diverged in English and in French)
+  const coin = ((player.id * 7 + f.id.length * 3 + player.race.prt.charCodeAt(0)) % 2) === 0 ? 'a' : 'b';
   switch (f.id) {
     case 'energy': return prt === 'WM' || prt === 'SD' ? 'b' : coin;
     case 'propulsion': return prt === 'WM' ? 'b' : prt === 'IS' || prt === 'HE' ? 'a' : coin;

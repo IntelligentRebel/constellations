@@ -847,7 +847,9 @@ table.report td.wrap { white-space: normal; }
 .sim-nums .good { color: var(--good); } .sim-nums .bad { color: var(--bad); }
 
 .emp-sec table.report thead th { position: static; }
-.emp-sec { overflow: hidden; }
+.emp-sec { overflow-x: auto; }
+/* 0.3.9.9: the discoveries table needs more than one column of the grid once there are two */
+@container app (min-width: 1380px) { .emp-grid > #discoveries { grid-column: span 2; } }
 .mega-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 8px; margin-top: 8px; }
 .mega-card { border: 1px solid var(--line2); border-radius: 6px; padding: 7px 9px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .mega-card.victory { border-color: #6b5a1f; background: #1b1a10; }

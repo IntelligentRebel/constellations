@@ -271,7 +271,7 @@ function InterceptBlock({ g, me, id }: { g: GameState; me: Player; id: number })
   const theirs = seenStrength(g, me, id), mine = fleetStrength(g, f);
   const hopeless = theirs !== null && fleetSpec(g, f).hasWeapons && theirs > HOPELESS * mine;
   return <div class="intercept">
-    {hopeless && <div class="small red">Déconseillé : la flotte visée est bien plus forte que votre flotte {f.name} (environ ×{(theirs! / Math.max(1, mine)).toFixed(1)}). Une patrouille refuserait de l'attaquer.</div>}
+    {hopeless && <div class="small red">Déconseillé : la flotte visée est bien plus forte que votre flotte {f.name} (environ ×{fmt(theirs! / Math.max(1, mine), 1)}). Une patrouille refuserait de l'attaquer.</div>}
     {chasers.length > 0 && <div class="small">Poursuivie par {chasers.map(c => c.name).join(', ')}.</div>}
     {plan2 ? <div class="small">{plan2.ourYears === 0 ? `${f.name} est déjà au point de rencontre.` : plan2.direct ? `${f.name} peut la rejoindre cette année (Warp ${plan2.warp}).` : <>Rencontre prévue en <b>{g.year + plan2.years}</b> en ({plan2.x}, {plan2.y}) : {f.name} y sera en {g.year + plan2.ourYears} à Warp {plan2.warp}{plan2.ourYears < plan2.years ? ' et attendra' : ''}.</>}
       {plan2.estimated && <span class="muted"> Estimation : si elle garde cap et vitesse.</span>}</div>

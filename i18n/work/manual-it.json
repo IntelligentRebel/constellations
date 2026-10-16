@@ -1735,5 +1735,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "La guarnigione cresce con il bottino: una misura vecchia la sottostima.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "La guarnigione ripara un quarto dei suoi danni ogni anno e cresce con il bottino: una misura vecchia la sottostima.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "Secondo l'equipaggio di {0}, la guarnigione del covo {1} a {2} conta {3} navi. Tutte le tue navi da guerra riunite: {4}; la tua flotta più forte, {5}: {6}. La guarnigione ripara un quarto dei suoi danni ogni anno e cresce con il bottino.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Secondo l'equipaggio di {0}, la guarnigione del covo {1} a {2} conta {3} navi. Non hai nessuna nave da guerra."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Secondo l'equipaggio di {0}, la guarnigione del covo {1} a {2} conta {3} navi. Non hai nessuna nave da guerra.",
+ "Épave restaurée": "Relitto restaurato",
+ "Héraut du signal": "Araldo del segnale",
+ "Escorte des Anciens": "Scorta degli Antichi",
+ "Porte-balise": "Portafaro",
+ "Escorteur": "Scorta",
+ "{0} vaisseau(x)": "{0} nave/i"
 }

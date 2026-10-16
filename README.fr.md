@@ -4,7 +4,11 @@
 
 Jeu de stratégie spatiale au tour par tour (4X), **librement inspiré de Stars!** (Jeff Johnson & Jeff McBride, 1995). Il tourne entièrement dans le navigateur, hors ligne, sans rien installer.
 
-**Version 0.3.9.8** (version précoce : la numérotation repart à 0.x jusqu'à ce que le jeu soit jugé complet).
+**[▶ Jouer dans le navigateur](https://intelligentrebel.github.io/constellations/)**, ou le télécharger pour jouer hors ligne (voir [Jouer](#jouer)).
+
+**Version 0.3.9.9** (version précoce : la numérotation repart à 0.x jusqu'à ce que le jeu soit jugé complet).
+
+![La carte galactique en pleine partie : un bras spiral traversé de nuages sombres, les frontières des empires rivaux, des flottes en route, et à droite la fiche de la capitale, avec son gouverneur de secteur et sa culture.](docs/screenshots/fr/map.png)
 
 ## Pourquoi ce jeu
 
@@ -14,9 +18,32 @@ Constellations garde donc les règles de Stars! comme fondation, leur donne une 
 
 Il a été créé avec l'aide de **Claude Opus 5.5** (Anthropic).
 
+## Captures d'écran
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/fr/route.png" alt="Le trajet d'une flotte"><br><sub>Une flotte envoyée à travers l'empire : vitesse, durée et carburant de chaque étape, ravitaillement aux chantiers amis en chemin.</sub></td>
+<td width="50%"><img src="docs/screenshots/fr/design.png" alt="Conception d'un vaisseau"><br><sub>Conception d'un vaisseau : les emplacements de la coque, les caractéristiques, le rôle au combat, un simulateur de combat et la comparaison avec un modèle ennemi.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/fr/research.png" alt="Recherche"><br><sub>Recherche : l'avancement de chaque domaine, le budget, et les doctrines exclusives (l'autre voie se ferme pour de bon).</sub></td>
+<td><img src="docs/screenshots/fr/diplomacy.png" alt="Diplomatie"><br><sub>Diplomatie avec les ordinateurs : guerre et paix, accords, ce que chaque empire pense de vous, les dernières nouvelles.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/fr/empire.png" alt="La page Empire"><br><sub>La page Empire : découvertes et reliques, le coût de la distance à la capitale, les gouverneurs de secteur.</sub></td>
+<td><img src="docs/screenshots/fr/planner.png" alt="Planificateur de colonies"><br><sub>Le planificateur de colonies : chaque monde analysé classé par habitabilité, avec ses minerais et un bouton pour y envoyer une arche.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/fr/battle.png" alt="Rediffusion d'une bataille"><br><sub>Une bataille rejouée phase par phase, avec les pertes de chaque camp.</sub></td>
+<td><img src="docs/screenshots/fr/act.png" alt="Acte II"><br><sub>Une histoire en trois actes, qui changent chacun les règles du jeu.</sub></td>
+</tr>
+</table>
+
 ## Jouer
 
-- Télécharger le dépôt (bouton vert **Code**, puis **Download ZIP**), le décompresser et ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation, pas besoin d'internet.
+- **En ligne** : [intelligentrebel.github.io/constellations](https://intelligentrebel.github.io/constellations/), rien à installer.
+- **Hors ligne** : télécharger le dépôt (bouton vert **Code**, puis **Download ZIP**), le décompresser et ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation, pas besoin d'internet.
+- La version en ligne et la version hors ligne gardent leurs sauvegardes séparément (chacune dans le stockage de son navigateur) : pour passer une partie de l'une à l'autre, « Exporter » puis « Importer ».
 - Le jeu prend la langue du navigateur ; si elle n'est pas prise en charge, il démarre en anglais. On la change sur l'écran d'accueil ou dans le menu « ⋯ ». Langues : English, 简体中文, Deutsch, Español, Português (Brasil), Русский, Français, 日本語, 한국어, Polski, Italiano.
 - Nouveau dans le jeu ? **✦ Tutoriel**, sur l'écran d'accueil, l'enseigne pas à pas dans une vraie partie, toujours sur la même carte : l'essentiel d'abord (une vingtaine de minutes), puis des chapitres facultatifs sur tout le reste. Une fiche explique chaque étape et entoure à l'écran ce dont elle parle ; les étapes qui demandent une action l'attendent, et « Le faire pour moi » l'exécute quand on bloque. On peut le fermer et le reprendre à tout moment (menu « ⋯ », ou écran d'accueil).
 - Les parties sont sauvegardées automatiquement dans le navigateur (huit au plus, listées sur l'écran d'accueil). « Exporter » produit un fichier `.json` réimportable. Les tableaux s'exportent en CSV. Chrome et Edge peuvent aussi garder des fichiers de secours des derniers tours dans un dossier choisi.
@@ -27,6 +54,8 @@ Il a été créé avec l'aide de **Claude Opus 5.5** (Anthropic).
 **Nouvelle partie, onglet Partie : « Expérience proche de Stars! »** désactive d'un coup toutes les règles de Constellations : galaxie carrée, aucune mécanique nouvelle, flottes identifiées dès qu'elles sont vues, trous de ver franchissables d'emblée, modèles de production qui ne s'enchaînent pas, victoire au plus tôt après 50 ans. Les formules sont celles de Stars! (tirées de son aide décompilée et du projet libre craig-stars, vérifiées contre le jeu original sous Windows 3.11).
 
 Les améliorations d'interface restent : on joue aux règles de Stars! avec le confort d'un jeu moderne. Chaque règle nouvelle peut aussi s'activer ou se désactiver une par une.
+
+<p align="center"><img src="docs/screenshots/fr/purist.png" width="720" alt="Nouvelle partie : Expérience proche de Stars! 2.7j (2000)"></p>
 
 ## Ce qui change par rapport à Stars!
 
@@ -169,6 +198,10 @@ Chacune se désactive dans « Nouvelle partie » (onglet Règles Constellations)
 - Marchand nomade (3.3.8) : plus d'annonce à tout le monde quand il apparaît au bord de la galaxie. Il s'annonce à chaque empire quand il passe à moins de 200 al de l'un de ses mondes (distance, vitesse, cap), et émet sa position tant qu'il reste à cette distance ; au-delà, seuls les scanners le voient.
 - Page Empire (3.3.8) : un clic sur une planète du tableau Administration (ou sur un emplacement proposé pour une capitale régionale, ou dans le réseau logistique) ouvre la carte centrée dessus.
 - Vaisseaux en vue (3.5.1, 3.5.2) : dans le Score et les dossiers, à côté du nombre de vaisseaux d'un autre empire (non armés, escorte, capitaux), qu'il soit inconnu, estimé ou exact, on affiche entre parenthèses ceux de chaque catégorie visibles en ce moment dans vos scanners (« + » s'il reste des contacts non identifiés) ; un chiffre de l'année ne descend jamais sous ce qu'on voit.
+- Noms traduits (0.3.9.9) : l'épave restaurée, le Héraut du signal, l'escorte des Anciens, le Porte-balise et l'escorteur du tutoriel gardaient leur nom français dans les autres langues ; ils sont traduits, comme les pertes affichées dans la rediffusion d'une bataille (« 3 vaisseau(x) »).
+- Une même partie dans toutes les langues (0.3.9.9) : la même graine donne désormais exactement la même partie, quelle que soit la langue. Le choix des doctrines des ordinateurs dépendait de la longueur du nom de leur race, qui change avec la traduction.
+- Origine « Colonie perdue » (0.3.9.9) : pour une race qui vit sur des stations, la colonie perdue recevait sa station de départ seulement en français (le modèle était cherché par son nom français). Elle la reçoit dans toutes les langues.
+- Page Empire (0.3.9.9) : sur un écran large, les Découvertes occupent deux colonnes, et leur tableau n'est plus coupé à droite ; la couleur de l'état (en cours, bloquée, perdue) s'affiche dans toutes les langues. Les pourcentages et les rapports de culture suivent la langue (12,1 % en français, 12.1 % en anglais).
 - Force des repaires pirates (0.3.9.8) : même système que pour les gardiens. Un équipage sur place (ou une bataille contre le repaire) mesure la garnison : un rapport le dit (nombre de vaisseaux, votre flotte de guerre et votre plus forte flotte face à elle), et le relevé est gardé dans la fiche du repaire (sa flotte ou son monde), avec sa date, son âge, la garnison comptée alors et votre flotte d'aujourd'hui face à la force relevée. La garnison grossit avec le butin : la fiche prévient qu'un relevé ancien la sous-estime. Le relevé fait aussi connaître le repaire.
 - Force des gardiens (0.3.9.7) : le relevé d'un équipage (un vaisseau sur place ou une bataille contre le gardien) est gardé. La fiche du gardien (en cliquant sur sa flotte ou sur son monde) le montre avec sa date et son âge (« Relevé de 2457, il y a 3 ans, par l'équipage de… ») : votre flotte de guerre de l'époque face à lui, et votre flotte d'aujourd'hui face à la même force relevée (un gardien ne grandit pas). Sans relevé, la fiche dit comment en obtenir un. Le relevé fait aussi connaître le gardien de ce monde.
 - Champs de mines sur un trajet (0.3.9.6) : le bouton de l'alerte devient « Passer en Warp 4 dans le champ de mines » (la vitesse sûre du champ). Il ne ralentit plus toute l'étape : deux étapes sont ajoutées là où le trajet entre dans le champ et en sort (avec une marge d'une année-lumière, le champ a pu grandir depuis son relevé), franchies sans s'arrêter ; la flotte va à la vitesse sûre entre les deux, et à sa vitesse d'origine avant et après. Plusieurs champs sur la même étape : une paire d'étapes par champ (ou par groupe de champs qui se touchent).

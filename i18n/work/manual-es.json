@@ -1734,5 +1734,11 @@
  "La garnison grossit avec le butin : un relevé ancien la sous-estime.": "La guarnición crece con el botín: una medición antigua la subestima.",
  "La garnison répare un quart de ses dégâts chaque année et grossit avec le butin : un relevé ancien la sous-estime.": "La guarnición repara una cuarta parte de sus daños cada año y crece con el botín: una medición antigua la subestima.",
  "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. L'ensemble de vos vaisseaux de guerre réunis : {4} ; votre plus forte flotte, {5} : {6}. La garnison répare un quart de ses dégâts chaque année et grossit avec le butin.": "Según la tripulación de {0}, la guarnición de la guarida {1} en {2} cuenta con {3} naves. Todas tus naves de guerra juntas: {4}; tu flota más fuerte, {5}: {6}. La guarnición repara una cuarta parte de sus daños cada año y crece con el botín.",
- "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Según la tripulación de {0}, la guarnición de la guarida {1} en {2} cuenta con {3} naves. No tienes ninguna nave de guerra."
+ "D'après l'équipage de {0}, la garnison du repaire {1} à {2} compte {3} vaisseaux. Vous n'avez aucun vaisseau de guerre.": "Según la tripulación de {0}, la guarnición de la guarida {1} en {2} cuenta con {3} naves. No tienes ninguna nave de guerra.",
+ "Épave restaurée": "Pecio restaurado",
+ "Héraut du signal": "Heraldo de la señal",
+ "Escorte des Anciens": "Escolta de los Antiguos",
+ "Porte-balise": "Portabalizas",
+ "Escorteur": "Escolta",
+ "{0} vaisseau(x)": "{0} nave(s)"
 }

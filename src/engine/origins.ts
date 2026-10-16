@@ -127,7 +127,8 @@ export function applyOrigins(game: GameState) {
           best.queue = [{ kind: 'autoFactories', qty: 50, allocated: { ironium: 0, boranium: 0, germanium: 0, resources: 0 } }, { kind: 'autoMines', qty: 50, allocated: { ironium: 0, boranium: 0, germanium: 0, resources: 0 } }];
           best.surface = { ironium: 200 + rng.int(300), boranium: 200 + rng.int(300), germanium: 200 + rng.int(300) };
           if (raceSpec(p.race).livesOnStarbases) {
-            const fort = game.designs.find(d => d.owner === p.id && d.starbase && d.name === 'Colonie de départ');
+            const label = 'Colonie de départ'; // translated like the design's name (a literal in a comparison is not)
+            const fort = game.designs.find(d => d.owner === p.id && d.starbase && d.name === label);
             if (fort) best.starbase = { designId: fort.id, damage: 0 };
           }
         }
@@ -158,7 +159,8 @@ export function applyOrigins(game: GameState) {
       }
       case 'proteges': {
         const tech = Math.min(26, Math.max(...Object.values(p.tech)) + 7);
-        const d = designAtTech(p, tech, 'Destroyer', 'beamWarship', 'Escorte des Anciens');
+        const label = 'Escorte des Anciens'; // a variable: the extractor skips designAtTech's arguments
+        const d = designAtTech(p, tech, 'Destroyer', 'beamWarship', label);
         if (d) {
           d.alien = true; d.id = game.nextId++; game.designs.push(d);
           p.fleetNum++;

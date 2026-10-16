@@ -224,7 +224,9 @@ export function DiscoveriesSection({ g, me }: { g: GameState; me: Player }) {
   const rows = known.map(a => {
     const d = defOf(a), pl = g.planets[a.planetId];
     const status = finished(a) ? (a.doneBy === me.id ? 'faite' : 'perdue') : studyBlocker(g, me, a) ? 'bloquée' : currentRate(g, me, a) > 0 ? 'en cours' : 'à étudier';
-    return { a, d, pl, status, pct: finished(a) ? 1 : (a.progress[me.id] ?? 0) / pointsNeeded(a), dist: near(pl) };
+    // the colour from the state itself: the status is translated, a literal compared with it is not
+    const cls = finished(a) ? (a.doneBy === me.id ? '' : 'muted') : studyBlocker(g, me, a) ? 'yellow' : currentRate(g, me, a) > 0 ? 'green' : '';
+    return { a, d, pl, status, cls, pct: finished(a) ? 1 : (a.progress[me.id] ?? 0) / pointsNeeded(a), dist: near(pl) };
   }).sort((x, y) => Number(finished(x.a)) - Number(finished(y.a)) || x.dist - y.dist);
   const { sorted, th } = useSorted(rows, [
     { key: 'name', get: r => r.d.name }, { key: 'planet', get: r => r.pl.name }, { key: 'level', get: r => r.a.level, num: true },
@@ -249,7 +251,7 @@ export function DiscoveriesSection({ g, me }: { g: GameState; me: Player }) {
     </div>
     {(me.relics ?? []).length > 0 && <div class="relics">{(me.relics as RelicId[]).map(r => <div class={'relic' + (focusR !== undefined && Object.keys(RELICS)[focusR] === r ? ' hl' : '')}><b>✦ {RELICS[r].name}</b><span class="small">{RELICS[r].effect}</span></div>)}</div>}
     {anomaliesOn(g) && (rows.length ? <div class="report-scroll"><table class="report compact"><thead><tr>{th('name', 'Découverte')}{th('planet', 'Planète')}{th('level', 'Diff.')}{th('pct', 'Avancement')}{th('status', 'État')}{th('dist', 'Distance')}</tr></thead>
-      <tbody>{sorted.map(r => <tr onClick={() => s.focus({ kind: 'planet', id: r.pl.id }, r.pl)} class={'go' + (r.a.id === focusA ? ' hl' : '')}><td>{r.d.name}{r.d.site ? <span class="tag dim">site {(r.a.chapter ?? 0)}/{r.d.site.chapters}</span> : ''}</td><td>{r.pl.name}</td><td class="num">{r.a.level}</td><td class="num">{Math.round(r.pct * 100)} %</td><td class={r.status === 'en cours' ? 'green' : r.status === 'bloquée' ? 'yellow' : r.status === 'perdue' ? 'muted' : ''}>{r.status}{finished(r.a) && r.a.doneBy !== me.id && r.a.doneBy !== undefined ? ` (${g.players[r.a.doneBy].name})` : ''}</td><td class="num">{fmt(r.dist)} al</td></tr>)}</tbody></table></div>
+      <tbody>{sorted.map(r => <tr onClick={() => s.focus({ kind: 'planet', id: r.pl.id }, r.pl)} class={'go' + (r.a.id === focusA ? ' hl' : '')}><td>{r.d.name}{r.d.site ? <span class="tag dim">site {(r.a.chapter ?? 0)}/{r.d.site.chapters}</span> : ''}</td><td>{r.pl.name}</td><td class="num">{r.a.level}</td><td class="num">{Math.round(r.pct * 100)} %</td><td class={r.cls}>{r.status}{finished(r.a) && r.a.doneBy !== me.id && r.a.doneBy !== undefined ? ` (${g.players[r.a.doneBy].name})` : ''}</td><td class="num">{fmt(r.dist)} al</td></tr>)}</tbody></table></div>
       : <p class="small muted">Aucune anomalie repérée pour l'instant : elles apparaissent quand vos vaisseaux analysent une planète.</p>)}
     {secrets.length > 0 && <div class="emp-guards">{secrets.map(x => {
       const pl = g.planets[x.ids[0]];
