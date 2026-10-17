@@ -65,6 +65,8 @@ export interface DesignSpec {
   tachyons: number;
   movement: number;
   movementFull: number;
+  /** battle movement bonus of the parts (overthrusters...), for the battle speed with a partial hold */
+  movementBonus: number;
   mineLaying: Record<MinefieldType, number>;
   miningRate: number;
   terraformRate: number;
@@ -343,7 +345,7 @@ function computeSpec(player: Owner, design: { hull: string; slots: DesignSlot[];
     engine: engine?.name ?? null, numEngines, idealSpeed, freeSpeed: eng ? eng.free : 0, maxSafeSpeed: eng ? eng.maxSafe : 0, fuelUsage,
     scoop: !!eng?.scoop, radiating: !!eng?.radiating,
     scanRange, scanRangePen, cloakUnits, cloakPercent: cloak, torpedoBonus, torpedoJamming, beamBonus, beamDefense, reduceMovement, tachyons,
-    movement, movementFull, mineLaying, miningRate, terraformRate, bombs, weapons, hasWeapons, bomber: bombs.length > 0,
+    movement, movementFull, movementBonus, mineLaying, miningRate, terraformRate, bombs, weapons, hasWeapons, bomber: bombs.length > 0,
     powerRating, colonyModule, orbitalConstruction, canStealFleet: stealFleet, canStealPlanet: stealPlanet, fuelGeneration: fuelGen,
     repairBonus: h.repairBonus ?? 0, gate, driver: bestDriver ? { speed: bestDriver, safeSpeed: bestDriver + drivers.length - 1 } : null,
     maxPop: h.maxPop ?? 0, dock: h.dock ?? 0, mineSweep, cost, estimatedRange,

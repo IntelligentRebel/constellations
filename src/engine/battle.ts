@@ -2,9 +2,10 @@
 import { people } from './words';
 import { diplomacyOn, statusOf } from './diplomacy';
 import { TRUCE_RADIUS } from './crisis';
+import { MINERALS } from './types';
 import type { BattleAction, BattlePlan, BattleRecord, BattleTokenRecord, Fleet, GameState, Planet, Player, ShipDesign, ShipRole, TargetClass } from './types';
 import { Rng, seedFromString } from './rng';
-import { specOf, autoRole, type DesignSpec, type WeaponSpec } from './design';
+import { specOf, autoRole, battleSpeed, type DesignSpec, type WeaponSpec } from './design';
 import { raceSpec } from './race';
 import { RULES_RAW } from '../data/rules-raw';
 import { learnDesign, meet } from './scan';
@@ -19,7 +20,7 @@ import { battleGrudges } from './nemesis';
 const FORMATIONS: ({ x: number; y: number }[] | null)[] = RULES_RAW.battleStart;
 const MOVES: Record<string, number[]> = RULES_RAW.movesPerRound;
 
-interface Token {
+export interface Token {
   rec: BattleTokenRecord;
   owner: number;
   fleet: Fleet | null;
@@ -30,13 +31,21 @@ interface Token {
   armor: number;
   shieldsPerShip: number;
   stackShields: number;
-  pool: number; // total armor damage on the stack
+  /**
+   * 0.3.9.16 (Stars!): armour damage of each damaged ship (dp), and how many ships of the stack are damaged. A hit kills
+   * the damaged ships first (at what armour they have left), then whole ones; what is left of it is spread over the whole
+   * stack, every ship then damaged alike.
+   */
+  damage: number;
+  qtyDamaged: number;
   x: number;
   y: number;
   movement: number;
   plan: BattlePlan;
   ranAway: boolean;
   movesMade: number;
+  /** 0.3.9.16: moves spent trying to leave the board (seven squares of movement and it is gone, as in Stars!) */
+  fleeMoves: number;
   tookDamage: boolean;
   mass: number;
   dead: boolean;
@@ -47,6 +56,40 @@ interface Token {
   retreating: boolean;
   /** 0.3.9: rank of the crews (veterans) */
   vet: number;
+  /** 0.3.9.16: the order in which tokens of the same initiative fire, drawn once for the whole battle (Stars!) */
+  prio: number;
+}
+
+/** Armour left on a stack (dp). */
+const armorLeft = (t: { armor: number; qty: number; damage: number; qtyDamaged: number }) => Math.max(0, t.armor * t.qty - t.damage * t.qtyDamaged);
+/** Armour left on its most damaged ship. */
+const weakest = (t: { armor: number; damage: number; qtyDamaged: number }) => t.qtyDamaged > 0 ? t.armor - t.damage : t.armor;
+
+/**
+ * 0.3.9.16, armour damage as in Stars! (help, "Armor, Shields and Damage"): the damage kills the damaged ships first, each
+ * at the armour it has left, then whole ships (no more than `limit`); what is left is spread equally over the whole
+ * stack. Returns the ships killed. Before, the damage of a stack was pooled and every ship's worth of it killed a ship:
+ * a stack lost its ships (and its firepower) far too early, and one already damaged lost half of them to a scratch.
+ */
+export function armorHit(t: { armor: number; qty: number; damage: number; qtyDamaged: number }, dmg: number, limit = Infinity): number {
+  let d = Math.max(0, dmg), killed = 0;
+  if (t.qtyDamaged > 0 && t.damage > 0) {
+    const left = t.armor - t.damage;
+    const k = Math.min(t.qtyDamaged, limit, Math.floor(d / left + 1e-9));
+    killed += k; t.qty -= k; t.qtyDamaged -= k; d -= k * left;
+  }
+  if (killed < limit && d >= t.armor - 1e-9) {
+    const k = Math.min(t.qty - t.qtyDamaged, limit - killed, Math.floor(d / t.armor + 1e-9));
+    killed += k; t.qty -= k; d -= k * t.armor;
+  }
+  if (t.qty <= 0) { t.qty = 0; t.qtyDamaged = 0; t.damage = 0; return killed; }
+  if (d > 1e-9) {
+    // a hit that kills nobody (or what is left once the killed ships are counted) is spread over the whole stack
+    const total = (t.qtyDamaged > 0 ? t.damage * t.qtyDamaged : 0) + Math.min(d, t.armor * t.qty);
+    t.damage = Math.min(t.armor - 1e-6, total / t.qty);
+    t.qtyDamaged = t.qty;
+  } else if (t.qtyDamaged <= 0) t.damage = 0;
+  return killed;
 }
 
 interface Slot { token: Token; weapon: WeaponSpec; initiative: number; rnd: number }
@@ -84,9 +127,11 @@ function matchesClass(t: Token, cls: TargetClass): boolean {
     case 'any': return true;
     case 'starbase': return s.starbase;
     case 'armed': return s.hasWeapons;
-    case 'bomberFreighter': return s.bomber || s.cargoCapacity > 0;
-    case 'unarmed': return !s.hasWeapons;
-    case 'fuelTransport': return s.hullType === 'FuelTransport';
+    // 0.3.9.16 (help, Battle Plans): "unarmed" means without weapons or bombs; the bomber, freighter and fuel transport
+    // classes are unarmed ships
+    case 'bomberFreighter': return !s.hasWeapons && (s.bomber || s.cargoCapacity > 0);
+    case 'unarmed': return !s.hasWeapons && !s.bomber;
+    case 'fuelTransport': return !s.hasWeapons && s.hullType === 'FuelTransport';
     case 'freighter': return s.cargoCapacity > 0 && !s.hasWeapons;
   }
 }
@@ -111,7 +156,7 @@ function threatOf(spec: DesignSpec, cost: { boranium: number; resources: number 
  */
 function threatAttractiveness(w: WeaponSpec, a: Token, t: Token): number {
   const shield = t.qty > 0 ? t.stackShields / t.qty : t.shieldsPerShip;
-  const armor = t.qty > 0 ? t.armor - t.pool / t.qty : t.armor;
+  const armor = t.qty > 0 ? armorLeft(t) / t.qty : t.armor;
   const hp = Math.max(1, armor + shield);
   let effort: number;
   if (!w.torpedo) effort = hp * (t.spec.beamDefense < 1 ? 2 - t.spec.beamDefense : 1);
@@ -125,9 +170,9 @@ function threatAttractiveness(w: WeaponSpec, a: Token, t: Token): number {
   return v;
 }
 
-function attractiveness(w: WeaponSpec, attacker: Token, t: Token, roles = false): number {
+export function attractiveness(w: WeaponSpec, attacker: Token, t: Token, roles = false): number {
   if (roles) return threatAttractiveness(w, attacker, t);
-  const armor = t.armor * t.qty - t.pool, shields = t.stackShields;
+  const armor = armorLeft(t), shields = t.stackShields;
   let defense: number;
   if (!w.torpedo) defense = (armor + shields) * (t.spec.beamDefense < 1 ? 2 - t.spec.beamDefense : 1);
   else {
@@ -135,7 +180,9 @@ function attractiveness(w: WeaponSpec, attacker: Token, t: Token, roles = false)
     defense = shields >= armor ? armor * 2 / acc : shields * 2 / acc + (armor - shields) / (acc * (w.capital ? 2 : 1));
   }
   if (defense <= 0) defense = 1;
-  return (t.cost.boranium + t.cost.resources) / defense;
+  // 0.3.9.16: the cost of the whole stack against the defence of the whole stack (the cost of one ship over the defence of
+  // the stack made a stack of ten ships ten times less worth shooting than one ship alone)
+  return (t.cost.boranium + t.cost.resources) * Math.max(1, t.qty) / defense;
 }
 
 export function resolveBattles(game: GameState, rng: Rng): BattleRecord[] {
@@ -176,14 +223,27 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   // 3.4: at the Breach of the crisis, the empires never fight each other
   const breach = game.crisis?.phase === 'active' && game.crisis.planetId !== undefined ? game.planets[game.crisis.planetId] : undefined;
   const truce = !!breach && Math.hypot(x - breach.x, y - breach.y) <= TRUCE_RADIUS;
-  const hostile = (a: number, b: number, plan: BattlePlan) => !(truce && !game.players[a].monster && !game.players[b].monster) && willAttack(game, game.players[a], plan, b);
+  // a plan whose primary target is None looks for no target at all (help, Battle Plans)
+  const hostile = (a: number, b: number, plan: BattlePlan) => plan.primary !== 'none' && !(truce && !game.players[a].monster && !game.players[b].monster) && willAttack(game, game.players[a], plan, b);
+  // 0.3.9.16 (Stars!, "Guts of the battle engine"): an empire with ships (armed or not) under orders to attack another one
+  // present makes itself a legitimate target of that one, which fires back whatever its own orders say
+  const orders = new Set<string>();
+  for (const f of fleets) {
+    const plan = planFor(game, f.owner, f.battlePlan);
+    for (const o of owners) if (o !== f.owner && hostile(f.owner, o, plan)) orders.add(`${f.owner}>${o}`);
+  }
+  if (planet?.starbase && specOf(game, planet.starbase.designId).hasWeapons) for (const o of owners) if (o !== planet.owner && hostile(planet.owner, o, game.players[planet.owner].battlePlans[0])) orders.add(`${planet.owner}>${o}`);
+  const enemyOf = (a: number, b: number, plan: BattlePlan) => hostile(a, b, plan) || (plan.primary !== 'none' && orders.has(`${b}>${a}`));
   let anyAttack = false;
   for (const f of fleets) {
     const spec = f.tokens.some(t => specOf(game, t.designId).hasWeapons);
     if (!spec) continue;
     const plan = planFor(game, f.owner, f.battlePlan);
+    // a fleet told to disengage starts no battle (it would not fire in it)
+    if (plan.tactic === 'disengage') continue;
     if (owners.some(o => hostile(f.owner, o, plan))) { anyAttack = true; break; }
   }
+  // an armed station can open fire on enemies in orbit (help, Starbases)
   if (!anyAttack && planet?.starbase) {
     const sbSpec = specOf(game, planet.starbase.designId);
     const plan = game.players[planet.owner].battlePlans[0];
@@ -215,6 +275,8 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
       const spec = specOf(game, t.designId);
       const share = totalCap > 0 ? Math.trunc(cm * spec.cargoCapacity * t.qty / totalCap / Math.max(1, t.qty)) : 0;
       const mass = spec.mass + share;
+      // 0.3.9.16: a ship moves on the board as heavy as it is (its share of the cargo), not as if its hold were full
+      const movement = share > 0 ? battleSpeed(spec.idealSpeed, spec.movementBonus ?? 0, spec.mass + share, spec.numEngines) : spec.movement;
       const d = game.designs.find(x => x.id === t.designId)!;
       const role = roleOf(d, spec.hasWeapons, spec);
       const pos = placed(f.owner, role);
@@ -224,10 +286,10 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
           shields: spec.shields, damage: t.damage, qtyDamaged: t.qtyDamaged, x: pos.x, y: pos.y, initiative: spec.initiative, movement: spec.movement, starbase: false,
         },
         owner: f.owner, fleet: f, planet: null, designId: t.designId, spec, qty: t.qty, armor: spec.armor, shieldsPerShip: spec.shields,
-        stackShields: spec.shields * t.qty, pool: t.damage * t.qtyDamaged, x: pos.x, y: pos.y,
-        movement: share > 0 ? (spec.movementFull || spec.movement) : spec.movement, plan, ranAway: false, movesMade: 0, tookDamage: false, mass, dead: false,
+        stackShields: spec.shields * t.qty, damage: t.qtyDamaged > 0 ? Math.min(t.damage, spec.armor - 1) : 0, qtyDamaged: t.damage > 0 ? Math.min(t.qty, t.qtyDamaged) : 0, x: pos.x, y: pos.y,
+        movement, plan, ranAway: false, movesMade: 0, fleeMoves: 0, tookDamage: false, mass, dead: false,
         cost: { boranium: spec.cost.boranium, resources: spec.cost.resources },
-        role, threat: threatOf(spec, spec.cost), retreating: false, vet: vets ? rankOf(f) : 0,
+        role, threat: threatOf(spec, spec.cost), retreating: false, vet: vets ? rankOf(f) : 0, prio: rng.random(),
       };
       tokens.push(tok);
     }
@@ -240,9 +302,9 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     tokens.push({
       rec: { id: nextTokenId++, owner: planet.owner, fleetId: -1, planetId: planet.id, designId: d.id, designName: d.name, hull: d.hull, qty: 1, armor: spec.armor, shields: spec.shields, damage: planet.starbase.damage, qtyDamaged: planet.starbase.damage > 0 ? 1 : 0, x: pos.x, y: pos.y, initiative: spec.initiative, movement: 0, starbase: true },
       owner: planet.owner, fleet: null, planet, designId: d.id, spec, qty: 1, armor: spec.armor, shieldsPerShip: spec.shields, stackShields: spec.shields,
-      pool: planet.starbase.damage, x: pos.x, y: pos.y, movement: 0, plan, ranAway: false, movesMade: 0, tookDamage: false, mass: 0, dead: false,
+      damage: Math.min(planet.starbase.damage, spec.armor - 1), qtyDamaged: planet.starbase.damage > 0 ? 1 : 0, x: pos.x, y: pos.y, movement: 0, plan, ranAway: false, movesMade: 0, fleeMoves: 0, tookDamage: false, mass: 0, dead: false,
       cost: { boranium: spec.cost.boranium, resources: spec.cost.resources },
-      role: 'line', threat: threatOf(spec, spec.cost), retreating: false, vet: 0,
+      role: 'line', threat: threatOf(spec, spec.cost), retreating: false, vet: 0, prio: rng.random(),
     });
   }
   // ion storm: shields at half strength
@@ -268,7 +330,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     r[b.owner] = (r[b.owner] ?? 0) + k;
   };
   const accVet = (w: WeaponSpec, a: Token, b: Token) => Math.min(1, accuracy(w, a, b) + (a.vet ? rankBonus(a.vet).accuracy : 0));
-  const attacks = (a: Token, b: Token) => a.owner !== b.owner && hostile(a.owner, b.owner, a.plan) && a.spec.hasWeapons && a.plan.tactic !== 'disengage';
+  const attacks = (a: Token, b: Token) => a.owner !== b.owner && enemyOf(a.owner, b.owner, a.plan) && a.spec.hasWeapons && a.plan.tactic !== 'disengage';
   const targetsOf = (a: Token, w: WeaponSpec): Token[] => {
     const enemies = tokens.filter(b => alive(b) && attacks(a, b));
     const prim = enemies.filter(b => matchesClass(b, a.plan.primary) && !(w.sapper && b.stackShields <= 0));
@@ -321,7 +383,10 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     }
     let best: { x: number; y: number }[] = [];
     if (tactic === 'disengage') {
-      if (t.movesMade >= 7) { t.ranAway = true; actions.push({ t: 'leave', id: t.rec.id }); return; }
+      // 0.3.9.16 (help, Battle Plans: "seven squares of movement"): every move spent trying to leave counts, even when the
+      // token is cornered and stays where it is; it is then gone from the board
+      if (t.fleeMoves >= 7) { t.ranAway = true; actions.push({ t: 'leave', id: t.rec.id }); return; }
+      t.fleeMoves++;
       let bv = Infinity;
       for (const c of cands) { const v = damageTakenAt(t, c) - (c.x === t.x && c.y === t.y ? -0.001 : 0); if (v < bv - 1e-9) { bv = v; best = [c]; } else if (Math.abs(v - bv) < 1e-9) best.push(c); }
       // prefer moving away from the centre of enemies
@@ -359,7 +424,12 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     // centre preference then random
     const cd = (c: { x: number; y: number }) => Math.hypot(c.x - 4.5, c.y - 4.5);
     best.sort((a, b) => cd(a) - cd(b));
-    const top = best.filter(b => Math.abs(cd(b) - cd(best[0])) < 1e-9);
+    let top = best.filter(b => Math.abs(cd(b) - cd(best[0])) < 1e-9);
+    // 0.3.9.16: at equal value, a straight move rather than a diagonal one (the replay of a battle of the original, a
+    // probe charging a station along its row, goes straight); then at random
+    const turns = (c: { x: number; y: number }) => (c.x !== t.x ? 1 : 0) + (c.y !== t.y ? 1 : 0);
+    const fewest = Math.min(...top.map(turns));
+    top = top.filter(c => turns(c) === fewest);
     const choice = top[rng.int(top.length)];
     if (choice.x !== t.x || choice.y !== t.y) {
       t.x = choice.x; t.y = choice.y; t.movesMade++;
@@ -367,17 +437,13 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     }
   };
 
-  const applyArmor = (target: Token, dmg: number): number => {
+  const applyArmor = (target: Token, dmg: number, limit = Infinity): number => {
     // returns ships killed; dmg is armor damage applied to the stack
-    const before = target.qty;
-    target.pool += dmg;
-    const killed = Math.min(target.qty, Math.floor(target.pool / target.armor + 1e-9));
-    target.qty -= killed;
-    target.pool -= killed * target.armor;
-    if (target.qty <= 0) { target.qty = 0; target.dead = true; target.pool = 0; target.stackShields = 0; }
+    const killed = armorHit(target, dmg, limit);
+    if (target.qty <= 0) { target.qty = 0; target.dead = true; target.stackShields = 0; }
     else target.stackShields = Math.min(target.stackShields, target.shieldsPerShip * target.qty);
-    target.tookDamage = true;
-    return before - target.qty;
+    if (dmg > 0) target.tookDamage = true;
+    return killed;
   };
 
   const fire = (s: Slot) => {
@@ -398,7 +464,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
         else if (d <= b.stackShields) { shieldDmg = d; b.stackShields -= d; d = 0; }
         else {
           shieldDmg = b.stackShields; d -= b.stackShields; b.stackShields = 0;
-          const remainingArmor = b.armor * b.qty - b.pool;
+          const remainingArmor = armorLeft(b);
           armorDmg = Math.min(d, remainingArmor);
           killed = applyArmor(b, armorDmg);
           d -= armorDmg;
@@ -427,17 +493,19 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
           let toArmor = w.power - toShield;
           b.stackShields -= toShield;
           if (w.capital && b.stackShields <= 0) toArmor *= 2;
-          // a single torpedo hits one ship: damage beyond a ship's remaining armor is lost
-          const perShipRemaining = b.armor - (b.qty > 0 ? b.pool / b.qty : 0);
-          toArmor = Math.min(toArmor, Math.max(1, Math.ceil(perShipRemaining)));
-          const k = applyArmor(b, toArmor);
+          // a single torpedo hits one ship and kills one at most (help: no more ships destroyed than torpedoes that hit):
+          // damage beyond the armour left on the most damaged ship is lost
+          toArmor = Math.min(toArmor, Math.max(1, Math.ceil(weakest(b))));
+          const k = applyArmor(b, toArmor, 1);
           e.shield += toShield; e.armor += toArmor; e.killed += k;
+          if (toShield > 0) b.tookDamage = true;
         } else {
           misses++; e.misses++;
           const sd = Math.min(b.stackShields, Math.round(w.power / 8));
           b.stackShields -= sd; e.shield += sd;
+          // 0.3.9.16: a miss that does no damage does not count as being challenged (Disengage if challenged)
+          if (sd > 0) b.tookDamage = true;
         }
-        b.tookDamage = true;
       }
       for (const [b, e] of per) {
         actions.push({ t: 'fire', id: a.rec.id, target: b.rec.id, weapon: w.part, torpedo: true, hits: e.hits, misses: e.misses, shieldDmg: e.shield, armorDmg: e.armor, killed: e.killed, fromX: a.x, fromY: a.y });
@@ -451,13 +519,15 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   let round = 0;
   const retreated = new Set<Fleet>();
   const strength0 = new Map<Fleet, number>();
-  for (const t of tokens) if (t.fleet) strength0.set(t.fleet, (strength0.get(t.fleet) ?? 0) + Math.max(0, t.armor * t.qty - t.pool));
+  for (const t of tokens) if (t.fleet) strength0.set(t.fleet, (strength0.get(t.fleet) ?? 0) + armorLeft(t));
   for (round = 1; round <= ROUNDS; round++) {
     const anyTargets = tokens.some(t => alive(t) && t.spec.weapons.some(w => targetsOf(t, w).length > 0));
     if (!anyTargets) break;
     actions.push({ t: 'round', round });
-    // movement: phases 3,2,1 (tokens with that many moves this round), heaviest first
-    const order = tokens.filter(alive).sort((a, b) => b.mass - a.mass);
+    // movement: phases 3,2,1 (tokens with that many moves this round), heaviest first; 0.3.9.16 (help, About the Battle
+    // Board): each weight is varied at random by up to 15 % every round, so that ships of about the same weight take turns
+    const weight = new Map(tokens.filter(alive).map(t => [t, t.mass * (0.85 + 0.3 * rng.random())]));
+    const order = tokens.filter(alive).sort((a, b) => weight.get(b)! - weight.get(a)!);
     const movesThisRound = new Map<Token, number>();
     for (const t of order) {
       const tbl = MOVES[String(Math.max(2, Math.min(10, t.movement)))] ?? [1, 1, 1, 1];
@@ -468,8 +538,9 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     }
     // fire in initiative order
     const slots: Slot[] = [];
-    for (const t of tokens) if (alive(t)) for (const w of t.spec.weapons) slots.push({ token: t, weapon: w, initiative: t.spec.initiative + w.initiative, rnd: rng.random() });
-    slots.sort((p, q) => q.initiative - p.initiative || p.rnd - q.rnd);
+    for (const t of tokens) if (alive(t)) for (const w of t.spec.weapons) slots.push({ token: t, weapon: w, initiative: t.spec.initiative + w.initiative, rnd: t.prio });
+    // 0.3.9.16 (Stars!): at equal initiative the shortest range fires first, then an order drawn for the whole battle
+    slots.sort((p, q) => q.initiative - p.initiative || p.weapon.range - q.weapon.range || p.rnd - q.rnd);
     for (const s of slots) fire(s);
     // regenerating shields
     for (const t of tokens) {
@@ -477,14 +548,14 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
       const regen = raceSpec(game.players[t.owner].race).shieldRegen;
       if (regen > 0 && t.stackShields > 0) t.stackShields = Math.min(t.shieldsPerShip * t.qty, t.stackShields + Math.round(t.shieldsPerShip * t.qty * regen));
     }
-    for (const t of tokens) actions.push({ t: 'state', id: t.rec.id, qty: t.qty, shields: t.stackShields, damage: t.qty > 0 ? t.pool / t.qty : 0, qtyDamaged: t.pool > 0 ? t.qty : 0 });
+    for (const t of tokens) actions.push({ t: 'state', id: t.rec.id, qty: t.qty, shields: t.stackShields, damage: t.qty > 0 && t.qtyDamaged > 0 ? Math.floor(t.damage) : 0, qtyDamaged: t.qty > 0 ? t.qtyDamaged : 0 });
     // Constellations 3: retreat threshold (share of the fleet's armour lost)
     if (roles) for (const f of fleets) {
       const plan = planFor(game, f.owner, f.battlePlan);
       if (!plan.retreatAt || retreated.has(f)) continue;
       const mine = tokens.filter(t => t.fleet === f);
       const start = strength0.get(f) ?? 0;
-      const now = mine.reduce((a, t) => a + Math.max(0, t.armor * t.qty - t.pool), 0);
+      const now = mine.reduce((a, t) => a + armorLeft(t), 0);
       if (start > 0 && 1 - now / start >= plan.retreatAt / 100 && mine.some(alive)) {
         retreated.add(f);
         for (const t of mine) t.retreating = true;
@@ -506,8 +577,9 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     if (t.fleet) {
       const tk = t.fleet.tokens.find(x => x.designId === t.designId)!;
       tk.qty = t.qty;
-      tk.qtyDamaged = t.pool > 0 ? t.qty : 0;
-      tk.damage = t.qty > 0 ? t.pool / t.qty : 0;
+      // the damage is kept in whole points (rounded down, as in Stars!)
+      const dmg = t.qty > 0 && t.qtyDamaged > 0 ? Math.floor(t.damage) : 0;
+      tk.damage = dmg; tk.qtyDamaged = dmg > 0 ? t.qtyDamaged : 0;
     } else if (t.planet && t.planet.starbase) {
       if (t.qty <= 0) {
         const owner = game.players[t.planet.owner];
@@ -516,8 +588,26 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
           owner.messages.push({ year: game.year, kind: 'battle', text: `La destruction de la station de ${t.planet.name} a tué toute sa population.`, target: { kind: 'planet', id: t.planet.id } });
           t.planet.pop = 0; t.planet.owner = -1; t.planet.queue = []; resetPlanetPolicies(t.planet);
         }
-      } else t.planet.starbase.damage = t.pool;
+      } else t.planet.starbase.damage = t.qtyDamaged > 0 ? Math.floor(t.damage) : 0;
     }
+  }
+  // 0.3.9.16 (help, Salvage from Space Battles): the ships destroyed lose their share of the fleet's cargo (by hold) and
+  // of its fuel: the minerals are dumped (on the planet in orbit, as salvage in space), their colonists die with them
+  const dumped = { ironium: 0, boranium: 0, germanium: 0 };
+  for (const f of fleets) {
+    const mine = tokens.filter(t => t.fleet === f);
+    const cap0 = mine.reduce((a, t) => a + t.spec.cargoCapacity * t.rec.qty, 0), cap1 = mine.reduce((a, t) => a + t.spec.cargoCapacity * t.qty, 0);
+    if (cap0 > 0 && cap1 < cap0) {
+      const share = (cap0 - cap1) / cap0;
+      for (const m of MINERALS) {
+        const lost = cap1 > 0 ? Math.ceil(f.cargo[m] * share - 1e-9) : f.cargo[m];
+        dumped[m] += lost;
+        if (cap1 > 0) f.cargo[m] -= lost;
+      }
+      if (cap1 > 0) f.cargo.colonists -= Math.ceil(f.cargo.colonists * share - 1e-9);
+    }
+    const fuel0 = mine.reduce((a, t) => a + t.spec.fuelCapacity * t.rec.qty, 0), fuel1 = mine.reduce((a, t) => a + t.spec.fuelCapacity * t.qty, 0);
+    if (fuel0 > 0 && fuel1 > 0 && fuel1 < fuel0) f.fuel = Math.floor(f.fuel * fuel1 / fuel0);
   }
   for (const f of fleets) {
     f.tokens = f.tokens.filter(t => t.qty > 0);
@@ -554,13 +644,13 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     }
     o.messages.push({ year: game.year, kind: 'combat', text: `${f.name} a atteint son seuil de retraite et rompt le combat${dest ? ` : repli vers ${'name' in dest ? (dest as Planet).name : 'sa position précédente'}` : ''}.`, target: { kind: 'fleet', id: f.id } });
   }
-  // salvage
-  const salv = { ironium: Math.trunc(destroyedMinerals.ironium * 0.3), boranium: Math.trunc(destroyedMinerals.boranium * 0.3), germanium: Math.trunc(destroyedMinerals.germanium * 0.3) };
-  // 3.4: a pirate raid destroyed drops half of its loot
+  // salvage: a third of the minerals of the ships destroyed (Stars!), and the cargo they carried
+  const salv = { ironium: Math.trunc(destroyedMinerals.ironium / 3) + dumped.ironium, boranium: Math.trunc(destroyedMinerals.boranium / 3) + dumped.boranium, germanium: Math.trunc(destroyedMinerals.germanium / 3) + dumped.germanium };
+  // 3.4: a pirate raid destroyed also drops half of the loot it had sold on (its cargo is dumped like any other)
   for (const f of fleets) {
     if (f.tokens.length || f.raid?.kind !== 'pirates') continue;
-    const extra = Math.trunc(f.raid.loot / 3);
-    salv.ironium += Math.trunc((f.cargo.ironium + extra) * 0.5); salv.boranium += Math.trunc((f.cargo.boranium + extra) * 0.5); salv.germanium += Math.trunc((f.cargo.germanium + extra) * 0.5);
+    const extra = Math.trunc(Math.trunc(f.raid.loot / 3) * 0.5);
+    salv.ironium += extra; salv.boranium += extra; salv.germanium += extra;
   }
   if (salv.ironium + salv.boranium + salv.germanium > 0) {
     const pl = game.planets.find(p => p.x === Math.round(x) && p.y === Math.round(y));

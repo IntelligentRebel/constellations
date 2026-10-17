@@ -634,10 +634,10 @@ export function transferPlanet(f: Fleet, planetId: number, key: TransportKey, am
   return moved;
 }
 
-export function transferFleets(from: Fleet, to: Fleet, key: TransportKey, amount: number) {
+export function transferFleets(from: Fleet, to: Fleet, key: TransportKey, amount: number, by = to.owner) {
   const g = store.game; if (!g) return;
   store.checkpoint();
-  const moved = transferBetweenFleets(g, from, to, key, amount);
+  const moved = transferBetweenFleets(g, from, to, key, amount, by);
   if (moved === 0) store.undo.pop();
   store.bump();
   return moved;

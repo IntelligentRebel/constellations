@@ -11,7 +11,7 @@ import { fleetSpec, canRefuelAt, distance } from './fleet';
 import { specOf, designSpec } from './design';
 import { resolveBattles, willAttack } from './battle';
 import { moveFleets, movePackets, launchPacket, updateWormholes, detonateMinefields, decayMinefields, sweepMines } from './movement';
-import { processWaypointTask, processMineLaying, remoteMining, mergeArrivingMiners , patrolFuel, escortWarnings, chaseChecks } from './tasks';
+import { processWaypointTask, processMineLaying, remoteMining, mergeArrivingMiners , patrolFuel, escortWarnings, chaseChecks, resolveLandings } from './tasks';
 import { updateIntel } from './scan';
 import { computeScore, checkVictory } from './score';
 import { newFleet } from './newgame';
@@ -99,7 +99,10 @@ export function generateTurn(game: GameState) {
   refuelFactions(game);
 
   // ---- waypoint 0 tasks (orders given at the current location)
+  for (const k of Object.keys(game.emptied ?? {})) if (game.emptied![+k].year < game.year) delete game.emptied![+k];
   for (const f of [...game.fleets]) if (game.fleets.includes(f)) processWaypointTask(game, f, rng);
+  // 0.3.9.16: the troops landed (by hand during the orders, or by the tasks above) fight it out together
+  resolveLandings(game);
   runTankers(game);
 
   // ---- movement
@@ -200,6 +203,7 @@ export function generateTurn(game: GameState) {
 
   // ---- waypoint 1 tasks (arrivals)
   for (const f of [...game.fleets]) if (game.fleets.includes(f)) processWaypointTask(game, f, rng);
+  resolveLandings(game);
   mergeArrivingMiners(game);
   runStudies(game, rng);
   runSecrets(game, rng);
@@ -470,6 +474,14 @@ function refuel(game: GameState) {
   }
 }
 
+/**
+ * Bombing. 0.3.9.16, as in Stars! (2.70f: "multiple fleets bombing one planet act as one fleet"): each empire bombs once a
+ * year with all its bombers in orbit together, against the defenses standing at the start of its strike (normal bombs,
+ * then smart bombs, then retro-bombs); the minimum kill counts for the whole strike, smart bombs never kill the last 100
+ * colonists ("smart bombs alone will not completely destroy a planet's population"), and the installations destroyed add
+ * up to the strength of the bombs. Before, each fleet bombed on its own against the defenses the previous one had just
+ * knocked down. A world emptied by bombs can still be taken by troops the same year (see resolveLandings).
+ */
 function bombing(game: GameState, rng: Rng) {
   for (const planet of game.planets) {
     if (planet.owner < 0 || planet.pop <= 0 || planet.starbase) continue;
@@ -477,63 +489,79 @@ function bombing(game: GameState, rng: Rng) {
     if (raceSpec(defender.race).livesOnStarbases) continue;
     const bombers = game.fleets.filter(f => f.orbiting === planet.id && f.owner !== planet.owner && fleetSpec(game, f).bomber);
     if (!bombers.length) continue;
-    for (const pass of ['normal', 'smart', 'retro'] as const) {
-      for (const f of bombers) {
-        if (!game.fleets.includes(f)) continue;
-        const owner = game.players[f.owner];
-        const plan = owner.battlePlans.find(b => b.id === f.battlePlan) ?? owner.battlePlans[0];
-        if (!willAttack(game, owner, plan, planet.owner)) continue;
-        const spec = planetSpec(game, planet, defender);
-        let killRate = 0, minKill = 0, structures = 0, survive = 1, smartMin = 0, unterra = 0;
-        for (const t of f.tokens) {
-          const s = specOf(game, t.designId);
-          for (const b of s.bombs) {
-            const q = b.qty * t.qty;
-            if (b.unterraform > 0) unterra += b.unterraform * q;
-            else if (b.smart) { survive *= Math.pow(1 - b.killRate / 100, q); smartMin += b.minKill * q; }
-            else { killRate += b.killRate * q; minKill += b.minKill * q; structures += b.structure * q; }
-          }
-        }
-        // Constellations 3: siege doctrine, planetary shield megaproject
-        const mult = (hasDoctrine(owner, 'siege') ? 1.3 : 1) * (hasMega(planet, 'shield') ? 0.25 : 1);
-        if (pass === 'normal' && (killRate > 0 || structures > 0)) {
-          const cov = spec.defenseCoverage;
-          const killed = Math.min(planet.pop, Math.max(Math.round(killRate * mult / 100 * (1 - cov) * planet.pop / 100) * 100, Math.round(minKill * mult * (1 - cov) / 100) * 100));
-          const structs = Math.trunc(structures * (1 - cov * 0.5));
-          const total = planet.mines + planet.factories + planet.defenses;
-          let destroyed = [0, 0, 0];
-          if (total > 0 && structs > 0) {
-            destroyed = [planet.mines, planet.factories, planet.defenses].map(x => Math.min(x, Math.ceil(structs * x / total)));
-            planet.mines -= destroyed[0]; planet.factories -= destroyed[1]; planet.defenses -= destroyed[2];
-          }
-          planet.pop -= killed;
-          report(game, owner, defender, planet, `${f.name} a bombardé ${planet.name} : ${people(game, killed)} colons tués, ${destroyed[0]} mines, ${destroyed[1]} usines et ${destroyed[2]} défenses détruites.`);
-        } else if (pass === 'smart' && survive < 1 && planet.pop > 0) {
-          const cov = spec.defenseCoverageSmart;
-          const killed = Math.min(planet.pop, Math.max(Math.round(planet.pop * (1 - cov) * Math.min(1, (1 - survive) * mult) / 100) * 100, Math.round(smartMin * mult * (1 - cov) / 100) * 100));
-          planet.pop -= killed;
-          report(game, owner, defender, planet, `${f.name} a largué des bombes intelligentes sur ${planet.name} : ${people(game, killed)} colons tués.`);
-        } else if (pass === 'retro' && unterra > 0) {
-          for (let k = 0; k < unterra; k++) {
-            let bi = -1, bd = 0;
-            for (let i = 0; i < 3; i++) { const d = Math.abs(planet.hab[i] - planet.baseHab[i]); if (d > bd) { bd = d; bi = i; } }
-            if (bi < 0) break;
-            const s = Math.sign(planet.baseHab[bi] - planet.hab[bi]);
-            planet.hab[bi] += s; planet.terraformed[bi] += s;
-          }
-          report(game, owner, defender, planet, `${f.name} a dé-terraformé ${planet.name}.`);
-        }
-        if (planet.pop <= 0) {
-          report(game, owner, defender, planet, `${planet.name} a été entièrement dépeuplée par les bombardements.`);
-          emptyPlanet(planet);
-          break;
+    const by = new Map<number, Fleet[]>();
+    for (const f of bombers) {
+      const owner = game.players[f.owner];
+      const plan = owner.battlePlans.find(b => b.id === f.battlePlan) ?? owner.battlePlans[0];
+      if (!willAttack(game, owner, plan, planet.owner)) continue;
+      const l = by.get(f.owner) ?? []; l.push(f); by.set(f.owner, l);
+    }
+    for (const [oid, fleets] of [...by].sort((a, b) => a[0] - b[0])) {
+      const owner = game.players[oid];
+      const spec = planetSpec(game, planet, defender);
+      let killRate = 0, minKill = 0, structures = 0, survive = 1, smartMin = 0, unterra = 0;
+      for (const f of fleets) for (const t of f.tokens) {
+        const s = specOf(game, t.designId);
+        for (const b of s.bombs) {
+          const q = b.qty * t.qty;
+          if (b.unterraform > 0) unterra += b.unterraform * q;
+          else if (b.smart) { survive *= Math.pow(1 - b.killRate / 100, q); smartMin += b.minKill * q; }
+          else { killRate += b.killRate * q; minKill += b.minKill * q; structures += b.structure * q; }
         }
       }
-      if (planet.owner < 0) break;
+      // Constellations 3: siege doctrine, planetary shield megaproject
+      const mult = (hasDoctrine(owner, 'siege') ? 1.3 : 1) * (hasMega(planet, 'shield') ? 0.25 : 1);
+      const whoThem = `Les bombardiers des ${owner.name}`;
+      const parts: string[] = [];
+      if (killRate > 0 || structures > 0) {
+        const cov = spec.defenseCoverage;
+        const killed = Math.min(planet.pop, Math.max(Math.round(killRate * mult / 100 * (1 - cov) * planet.pop / 100) * 100, Math.round(minKill * mult * (1 - cov) / 100) * 100));
+        const total = planet.mines + planet.factories + planet.defenses;
+        const structs = Math.min(total, Math.trunc(structures * (1 - cov * 0.5)));
+        const have = [planet.mines, planet.factories, planet.defenses];
+        const destroyed = have.map(x => total > 0 ? Math.floor(structs * x / total) : 0);
+        // what the rounding left goes to the largest remainders: the total destroyed is the strength of the bombs
+        let rest = structs - destroyed.reduce((a, b) => a + b, 0);
+        const order = [0, 1, 2].sort((a, b) => (structs * have[b] / Math.max(1, total) - destroyed[b]) - (structs * have[a] / Math.max(1, total) - destroyed[a]));
+        for (const i of order) if (rest > 0 && destroyed[i] < have[i]) { destroyed[i]++; rest--; }
+        planet.mines -= destroyed[0]; planet.factories -= destroyed[1]; planet.defenses -= destroyed[2];
+        planet.pop -= killed;
+        parts.push(`${people(game, killed)} colons tués, ${destroyed[0]} mines, ${destroyed[1]} usines et ${destroyed[2]} défenses détruites`);
+      }
+      if (survive < 1 && planet.pop > 100) {
+        // smart bombs, against the defenses of the start of the strike (Stars!); they never kill the last 100 colonists
+        const cov = spec.defenseCoverageSmart;
+        const killed = Math.min(planet.pop - 100, Math.max(Math.round(planet.pop * (1 - cov) * Math.min(1, (1 - survive) * mult) / 100) * 100, Math.round(smartMin * mult * (1 - cov) / 100) * 100));
+        if (killed > 0) { planet.pop -= killed; parts.push(`${people(game, killed)} colons tués par les bombes intelligentes`); }
+      }
+      if (unterra > 0) {
+        let moved = 0;
+        for (let k = 0; k < unterra; k++) {
+          let bi = -1, bd = 0;
+          for (let i = 0; i < 3; i++) { const d = Math.abs(planet.hab[i] - planet.baseHab[i]); if (d > bd) { bd = d; bi = i; } }
+          if (bi < 0) break;
+          const sg = Math.sign(planet.baseHab[bi] - planet.hab[bi]);
+          planet.hab[bi] += sg; planet.terraformed[bi] += sg; moved++;
+        }
+        if (moved) parts.push('dé-terraformée');
+      }
+      if (parts.length) {
+        owner.messages.push({ year: game.year, kind: 'combat', text: fleets.length > 1 ? `Vos ${fleets.length} flottes de bombardiers ont bombardé ${planet.name} : ${parts.join(' ; ')}.` : `${fleets[0].name} a bombardé ${planet.name} : ${parts.join(' ; ')}.`, target: { kind: 'planet', id: planet.id } });
+        defender.messages.push({ year: game.year, kind: 'combat', text: `${whoThem} ont bombardé ${planet.name} : ${parts.join(' ; ')}.`, target: { kind: 'planet', id: planet.id } });
+      }
+      if (planet.pop <= 0) {
+        report(game, owner, defender, planet, `${planet.name} a été entièrement dépeuplée par les bombardements.`);
+        (game.emptied ??= {})[planet.id] = { owner: defender.id, year: game.year };
+        emptyPlanet(planet);
+        break;
+      }
     }
   }
   void rng;
 }
+
+/** For the checks. */
+export const bombingForTests = (game: GameState, rng: Rng) => bombing(game, rng);
 
 function report(game: GameState, attacker: Player, defender: Player, planet: Planet, text: string) {
   attacker.messages.push({ year: game.year, kind: 'combat', text, target: { kind: 'planet', id: planet.id } });

@@ -4,7 +4,7 @@ import { atWar, worldTaken } from './diplomacy';
 import { seizeArchives } from './espionage';
 import { refitOnArrival } from './refit';
 import { fleetStrength } from './factions';
-import type { Cargo, CargoKey, Fleet, GameState, Planet, Player, TransportKey, Waypoint } from './types';
+import type { Cargo, CargoKey, Fleet, GameState, Landing, Planet, Player, TransportKey, Waypoint } from './types';
 import { CARGO_KEYS, MINERALS } from './types';
 import { fleetSpec, cargoMass, estimateRoute, distance, fleetCost, canRefuelAt } from './fleet';
 import { raceSpec } from './race';
@@ -57,13 +57,19 @@ export function transferWithPlanet(game: GameState, f: Fleet, planet: Planet, ke
   if (want <= 0) return 0;
   if (key === 'colonists') {
     if (planet.owner === f.owner) { planet.pop += want * 100; f.cargo.colonists -= want; return -want; }
-    if (planet.owner < 0) return 0; // must colonize
+    // 0.3.9.16 (Stars!): a world emptied by bombs this year can still be taken by troops this year (it keeps its mines and
+    // factories); an empty world otherwise has to be colonized
+    const emptied = planet.owner < 0 ? game.emptied?.[planet.id] : undefined;
+    if (planet.owner < 0 && (!emptied || emptied.year !== game.year)) return 0; // must colonize
     // invasion
     if (raceSpec(owner.race).livesOnStarbases) return 0;
     if (planet.starbase) { owner.messages.push({ year: game.year, kind: 'combat', text: `Impossible d'envahir ${planet.name} : la planète est protégée par une station orbitale.`, target: { kind: 'planet', id: planet.id } }); return 0; }
-    if (!atWar(game, owner.id, planet.owner)) { owner.messages.push({ year: game.year, kind: 'combat', text: `Impossible d'envahir ${planet.name} : vous n'êtes pas en guerre avec les ${game.players[planet.owner].name}.`, target: { kind: 'planet', id: planet.id } }); return 0; }
+    if (planet.owner >= 0 && !atWar(game, owner.id, planet.owner)) { owner.messages.push({ year: game.year, kind: 'combat', text: `Impossible d'envahir ${planet.name} : vous n'êtes pas en guerre avec les ${game.players[planet.owner].name}.`, target: { kind: 'planet', id: planet.id } }); return 0; }
+    // 0.3.9.16: the troops land now and fight with everyone else who lands there in the same phase (Stars!: "if more
+    // than one player lands ground troops on the planet during the same year, everyone fights until only one side is
+    // left"); the outcome is known once the turn is played, never while giving the order
     f.cargo.colonists -= want;
-    invade(game, owner, planet, want * 100);
+    (game.landings ??= []).push({ planetId: planet.id, owner: owner.id, kt: want, fleetId: f.id, fleetName: f.name });
     return -want;
   }
   planet.surface[key as typeof MINERALS[number]] += want;
@@ -71,9 +77,16 @@ export function transferWithPlanet(game: GameState, f: Fleet, planet: Planet, ke
   return -want;
 }
 
-export function transferBetweenFleets(game: GameState, from: Fleet, to: Fleet, key: TransportKey, amount: number): number {
-  // moves `amount` from `from` into `to` (amount >= 0)
+export function transferBetweenFleets(game: GameState, from: Fleet, to: Fleet, key: TransportKey, amount: number, by = to.owner): number {
+  // moves `amount` from `from` into `to` (amount >= 0); `by` is the empire giving the order
   if (amount <= 0) return 0;
+  if (from.owner !== to.owner) {
+    // 0.3.9.16 (Stars!): no colonists to or from another empire's fleet; taking its cargo needs a steal scanner (Pick
+    // Pocket, Robber Baron) and never takes its fuel; a fleet accepts nothing from an empire it treats as an enemy
+    if (key === 'colonists') return 0;
+    if (by === to.owner) { if (key === 'fuel' || !fleetSpec(game, to).canStealFleet) return 0; }
+    else if ((game.players[to.owner]?.relations[from.owner] ?? 'enemy') === 'enemy') return 0;
+  }
   if (key === 'fuel') {
     const cap = fleetSpec(game, to).fuelCapacity;
     const a = Math.min(amount, from.fuel, cap - to.fuel);
@@ -96,20 +109,7 @@ export function invade(game: GameState, attacker: Player, planet: Planet, coloni
   if (afterDef * atk > defenders * def) {
     let remaining = Math.round((afterDef - defenders * def / atk) / 100) * 100;
     if (remaining <= 0) remaining = 100;
-    attacker.messages.push({ year: game.year, kind: 'combat', text: `Vos troupes ont conquis ${planet.name} ! ${people(game, remaining)} de vos colons survivent et peuplent désormais la planète.`, target: { kind: 'planet', id: planet.id } });
-    defender.messages.push({ year: game.year, kind: 'combat', text: `${planet.name} a été envahie et conquise par les ${attacker.name}.`, target: { kind: 'planet', id: planet.id } });
-    if (planet.homeworld) attacker.stats.homeworldsTaken = [...(attacker.stats.homeworldsTaken ?? []), defender.id];
-    if (planet.homeworld || defender.capital === planet.id) addChronicle(game, 'conquest', planet.homeworld ? `Les ${attacker.name} prennent ${planet.name}, monde natal des ${defender.name}.` : `Les ${attacker.name} prennent ${planet.name}, capitale des ${defender.name}.`, [attacker.id, defender.id], planet);
-    seizeArchives(game, attacker.id, defender.id, planet);
-    planet.owner = attacker.id; planet.pop = remaining; planet.queue = []; planet.defenses = 0; planet.scanner = false; planet.starbase = null;
-    planet.colonizedYear = game.year; planet.conqueredYear = game.year; resetPlanetPolicies(planet);
-    attacker.stats.planetsCaptured = (attacker.stats.planetsCaptured ?? 0) + 1;
-    worldTaken(game, defender.id, attacker.id, 'conquest');
-    attacker.stats.capturedFrom = [...(attacker.stats.capturedFrom ?? []), defender.id];
-    defender.stats.planetsLost = (defender.stats.planetsLost ?? 0) + 1;
-    if (attacker.defaultTemplate >= 0) applyTemplate(game, planet, attacker.defaultTemplate);
-    if (drs.instaform) { planet.hab = [...planet.baseHab] as typeof planet.hab; planet.terraformed = [0, 0, 0]; }
-    techTrade(game, attacker, defender, new Rng(game.rng));
+    takePlanet(game, attacker, defender, planet, remaining);
   } else {
     let rem = Math.round((defenders - afterDef * atk / def) / 100) * 100;
     if (rem <= 0) rem = 100;
@@ -117,6 +117,97 @@ export function invade(game: GameState, attacker: Player, planet: Planet, coloni
     attacker.messages.push({ year: game.year, kind: 'combat', text: `L'invasion de ${planet.name} a échoué : vos ${people(game, colonists)} colons ont tous péri. Il reste ${people(game, rem)} défenseurs.`, target: { kind: 'planet', id: planet.id } });
     defender.messages.push({ year: game.year, kind: 'combat', text: `Vos colons de ${planet.name} ont repoussé une invasion des ${attacker.name}.`, target: { kind: 'planet', id: planet.id } });
   }
+}
+
+/** A world taken by troops: from `defender`, or emptied by bombs this year (its last owner given, or none). */
+function takePlanet(game: GameState, attacker: Player, defender: Player | undefined, planet: Planet, remaining: number) {
+  const before = defender ?? (game.emptied?.[planet.id] ? game.players[game.emptied[planet.id].owner] : undefined);
+  attacker.messages.push({ year: game.year, kind: 'combat', text: defender ? `Vos troupes ont conquis ${planet.name} ! ${people(game, remaining)} de vos colons survivent et peuplent désormais la planète.` : `Vos troupes ont pris pied sur ${planet.name}, vidée par les bombardements : ${people(game, remaining)} colons s'y installent, avec ses mines et ses usines.`, target: { kind: 'planet', id: planet.id } });
+  if (before && before.id !== attacker.id) before.messages.push({ year: game.year, kind: 'combat', text: defender ? `${planet.name} a été envahie et conquise par les ${attacker.name}.` : `Les ${attacker.name} ont débarqué sur ${planet.name}, vidée par les bombardements : la planète est à eux.`, target: { kind: 'planet', id: planet.id } });
+  if (before && before.id !== attacker.id) {
+    if (planet.homeworld) attacker.stats.homeworldsTaken = [...(attacker.stats.homeworldsTaken ?? []), before.id];
+    if (planet.homeworld || before.capital === planet.id) addChronicle(game, 'conquest', planet.homeworld ? `Les ${attacker.name} prennent ${planet.name}, monde natal des ${before.name}.` : `Les ${attacker.name} prennent ${planet.name}, capitale des ${before.name}.`, [attacker.id, before.id], planet);
+    if (defender) seizeArchives(game, attacker.id, defender.id, planet);
+  }
+  planet.owner = attacker.id; planet.pop = remaining; planet.queue = []; planet.defenses = 0; planet.scanner = false; planet.starbase = null;
+  planet.colonizedYear = game.year; planet.conqueredYear = before && before.id !== attacker.id ? game.year : undefined; resetPlanetPolicies(planet);
+  if (game.emptied) delete game.emptied[planet.id];
+  if (before && before.id !== attacker.id) {
+    attacker.stats.planetsCaptured = (attacker.stats.planetsCaptured ?? 0) + 1;
+    worldTaken(game, before.id, attacker.id, 'conquest');
+    attacker.stats.capturedFrom = [...(attacker.stats.capturedFrom ?? []), before.id];
+    if (defender) defender.stats.planetsLost = (defender.stats.planetsLost ?? 0) + 1;
+  }
+  if (attacker.defaultTemplate >= 0) applyTemplate(game, planet, attacker.defaultTemplate);
+  if (before && raceSpec(before.race).instaform) { planet.hab = [...planet.baseHab] as typeof planet.hab; planet.terraformed = [0, 0, 0]; }
+  if (defender) techTrade(game, attacker, defender, new Rng(game.rng));
+}
+
+/**
+ * 0.3.9.16: the ground combat of a phase (Stars!: "if more than one player lands ground troops on the planet during the
+ * same year, everyone will fight until only one side is left"). Each world's landings are settled together: one empire
+ * against the defenders is the classic invasion; several fight it out, the strongest side wins with what it has over the
+ * second (equal sides wipe each other out, and the world is left empty).
+ */
+export function resolveLandings(game: GameState) {
+  const all = game.landings ?? [];
+  game.landings = [];
+  if (!all.length) return;
+  const byPlanet = new Map<number, Landing[]>();
+  for (const l of all) { const a = byPlanet.get(l.planetId) ?? []; a.push(l); byPlanet.set(l.planetId, a); }
+  for (const [pid, list] of byPlanet) {
+    const planet = game.planets[pid];
+    // troops that can no longer land (a station built, peace signed, the world colonized meanwhile) go back aboard
+    const valid: Landing[] = [];
+    for (const l of list) {
+      const p = game.players[l.owner];
+      const emptiedNow = planet.owner < 0 && game.emptied?.[pid]?.year === game.year;
+      const ok = planet.owner === l.owner || (!planet.starbase && (emptiedNow || (planet.owner >= 0 && atWar(game, l.owner, planet.owner))));
+      if (ok) { valid.push(l); continue; }
+      const f = game.fleets.find(x => x.id === l.fleetId && x.orbiting === pid);
+      if (f) f.cargo.colonists += l.kt;
+      p.messages.push({ year: game.year, kind: 'combat', text: `Les troupes de ${l.fleetName} n'ont pas pu débarquer sur ${planet.name}${f ? ' et sont remontées à bord' : ' et ont été perdues'}.`, target: { kind: 'planet', id: pid } });
+    }
+    // reinforcements of the owner simply land
+    for (const l of valid.filter(x => x.owner === planet.owner)) planet.pop += l.kt * 100;
+    const attackers = new Map<number, number>();
+    for (const l of valid) if (l.owner !== planet.owner) attackers.set(l.owner, (attackers.get(l.owner) ?? 0) + l.kt * 100);
+    if (!attackers.size) continue;
+    const defender = planet.owner >= 0 && planet.pop > 0 ? game.players[planet.owner] : undefined;
+    if (attackers.size === 1 && defender) { const [[a, n]] = [...attackers]; invade(game, game.players[a], planet, n); continue; }
+    // several sides (or a world emptied this year): everyone fights
+    const cov = defender ? planetSpec(game, planet).defenseCoverage : 0;
+    const sides = [...attackers].map(([o, n]) => {
+      const p = game.players[o];
+      const f = raceSpec(p.race).invasionAttack * (hasDoctrine(p, 'assault') ? 1.3 : 1);
+      return { owner: o, power: Math.trunc(n * (1 - cov * 0.75)) * f, factor: f, sent: n };
+    });
+    if (defender) { const f = raceSpec(defender.race).invasionDefend * (hasMega(planet, 'shield') ? 2 : 1); sides.push({ owner: defender.id, power: planet.pop * f, factor: f, sent: planet.pop }); }
+    sides.sort((a, b) => b.power - a.power);
+    const [w, second] = sides;
+    const tie = !!second && Math.abs(w.power - second.power) < 1e-6;
+    for (const sd of sides) {
+      if (!tie && sd === w) continue;
+      if (sd.owner === defender?.id) continue;
+      const n = people(game, sd.sent);
+      game.players[sd.owner].messages.push({ year: game.year, kind: 'combat', text: sides.length > 2 ? `Vos ${n} colons débarqués sur ${planet.name} ont tous péri dans les combats au sol contre plusieurs empires.` : `Vos ${n} colons débarqués sur ${planet.name} ont tous péri dans les combats au sol.`, target: { kind: 'planet', id: pid } });
+    }
+    if (tie) {
+      // nobody is left: the world is empty
+      if (defender) { defender.messages.push({ year: game.year, kind: 'combat', text: `Les combats au sol ont anéanti toute la population de ${planet.name}.`, target: { kind: 'planet', id: pid } }); emptyWorld(planet); }
+      continue;
+    }
+    const left = Math.max(100, Math.round((w.power - (second?.power ?? 0)) / w.factor / 100) * 100);
+    if (w.owner === defender?.id) {
+      planet.pop = left;
+      defender.messages.push({ year: game.year, kind: 'combat', text: `Vos colons de ${planet.name} ont repoussé ${attackers.size > 1 ? 'les invasions de plusieurs empires' : 'une invasion'}.`, target: { kind: 'planet', id: pid } });
+    } else takePlanet(game, game.players[w.owner], defender, planet, left);
+  }
+}
+
+function emptyWorld(planet: Planet) {
+  planet.owner = -1; planet.pop = 0; planet.queue = []; planet.defenses = 0; planet.scanner = false; planet.starbase = null;
+  planet.route = undefined; planet.packetTarget = undefined; planet.conqueredYear = undefined; resetPlanetPolicies(planet);
 }
 
 export function techTrade(game: GameState, gainer: Player, other: Player, rng: Rng) {
@@ -192,7 +283,7 @@ export function processTransport(game: GameState, f: Fleet, wp: Waypoint): boole
           const lost = years === Infinity ? 'toute sa population' : `environ ${Math.round(years)} an${Math.round(years) > 1 ? 's' : ''} de croissance`;
           owner.messages.push({ year: game.year, kind: 'warning', text: `${f.name} a embarqué ${people(game, moved * 100)} colons de ${planet.name} (${share} % de sa population) : ${planet.name} perd ${lost}. En dessous d'un quart de sa capacité, un monde croît en proportion de sa population ; pour l'épargner, chargez moins de colons (onglet Échanges de la flotte) ou partez d'un monde plus peuplé.`, target: { kind: 'planet', id: planet.id } });
         }
-      } else if (other) moved = amt > 0 ? transferBetweenFleets(game, other, f, key, amt) : -transferBetweenFleets(game, f, other, key, -amt);
+      } else if (other) moved = amt > 0 ? transferBetweenFleets(game, other, f, key, amt, f.owner) : -transferBetweenFleets(game, f, other, key, -amt, f.owner);
       if ((o.action === 'waitPercent' || o.action === 'setAmount') && Math.abs(moved) < Math.abs(amt) - 1e-6 && amt > 0) {
         const space = key === 'fuel' ? fleetSpec(game, f).fuelCapacity - f.fuel : fleetCargoSpace(game, f);
         if (space > 0) wait = true;

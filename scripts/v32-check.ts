@@ -135,6 +135,8 @@ if (want('intercept')) {
   check(g2.fleets.indexOf(chaser) < g2.fleets.indexOf(prey), 'the pursuer comes first in the fleet list');
   chaser.waypoints.push({ x: prey.x, y: prey.y, target: 'fleet', targetId: prey.id, warp: 9, task: 'none' });
   for (const p of g2.players) p.battlePlans[0].attackWho = 'enemies';
+  // (0.3.9.16: a fleet sent after another one follows it while it is in the scanners: the prey is seen first)
+  updateIntel(g2);
   generateTurn(g2);
   check(g2.battles.length > 0 || (chaser.x === prey.x && chaser.y === prey.y), `steering at the fleet: caught it the same year (${chaser.x},${chaser.y} / ${prey.x},${prey.y})`);
   // a faster fleet running away cannot be caught

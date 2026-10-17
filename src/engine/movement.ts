@@ -71,9 +71,12 @@ export function minefieldSpans(game: GameState, player: Player, a: { x: number; 
   return out;
 }
 
-export function targetPosition(game: GameState, wp: Waypoint): { x: number; y: number } {
+export function targetPosition(game: GameState, wp: Waypoint, by?: number): { x: number; y: number } {
   if (wp.target === 'fleet' && wp.targetId !== undefined) {
     const f = game.fleets.find(x => x.id === wp.targetId);
+    // 0.3.9.16 (help, Waypoints): a fleet sent after another empire's fleet heads for where it was last seen when it is
+    // no longer in its scanners (it used to follow it anywhere, cloaked or out of sight)
+    if (f && by !== undefined && f.owner !== by && !game.players[by]?.intel.fleets.some(x => x.id === f.id)) return { x: wp.x, y: wp.y };
     if (f) return { x: f.x, y: f.y };
   }
   if (wp.target === 'planet' && wp.targetId !== undefined) { const p = game.planets[wp.targetId]; return { x: p.x, y: p.y }; }
@@ -137,7 +140,7 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
   if (!spec.hasEngines) return;
   // stargate (only at the start of a year)
   if (f.waypoints[1].warp >= 11) {
-    const wp = f.waypoints[1], t = targetPosition(game, wp);
+    const wp = f.waypoints[1], t = targetPosition(game, wp, f.owner);
     wp.x = t.x; wp.y = t.y;
     gateFleet(game, rng, f, wp); return;
   }
@@ -146,7 +149,7 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
   const closed = borderObstacles(game, f.owner);
   if (hasWalls(game) || closed || f.waypoints.some(w => w.detour)) {
     const kept = f.waypoints.filter((w, i) => i === 0 || !w.detour);
-    f.waypoints = withDetours(game, kept, w => targetPosition(game, w), f.owner, closed).list;
+    f.waypoints = withDetours(game, kept, w => targetPosition(game, w, f.owner), f.owner, closed).list;
   }
   let borderStop = false;
   const trail = [{ x: f.x, y: f.y }];
@@ -154,7 +157,7 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
   let budget = game.secrets ? slingshot(game, f.owner, f) : 1, first = true, overwarp = false, endedOnPass = false;
   for (let guard = 0; guard < 64; guard++) {
     const wp = f.waypoints[1];
-    const target = targetPosition(game, wp);
+    const target = targetPosition(game, wp, f.owner);
     wp.x = target.x; wp.y = target.y;
     if (wp.warp >= 11) break; // a gate jump starts a new year
     let warp = Math.max(1, wp.warp || spec.idealSpeed || 1);
@@ -231,13 +234,15 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
       borderStop = true;
     }
     // minefields along the path
+    const tank = (fl: Fleet) => fl.tokens.reduce((a, t) => a + specOf(game, t.designId).fuelCapacity * t.qty, 0);
+    const tank0 = tank(f);
     const hit = checkMinefields(game, rng, f, start, { x: nx, y: ny }, warp) ?? (wall || border ? { x: nx, y: ny } : null);
     if (hit) {
       nx = hit.x; ny = hit.y; dist = distance(start, hit);
       // stopped by a mine: only the distance actually travelled is paid for
       if (!f.outOfFuel) f.fuel = Math.max(0, fuelBefore - Math.min(fuelBefore, fuelForYear(game, f, warp, dist)));
       // ships lost to the mines took their share of the tank with them
-      if (game.fleets.includes(f)) clampFleetHold(game, f);
+      if (game.fleets.includes(f)) { const t1 = tank(f); if (tank0 > 0 && t1 < tank0) f.fuel = Math.floor(f.fuel * t1 / tank0); clampFleetHold(game, f); }
     }
     if (total > 0) f.heading = { x: dx / len, y: dy / len };
     f.lastWarp = warp;
@@ -442,10 +447,21 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   f.waypoints[0] = { ...f.waypoints[0], x: f.x, y: f.y, processed: false };
 }
 
-/** Returns the position where the fleet was stopped by a mine hit, or null. Applies damage. */
+/**
+ * Returns the position where the fleet was stopped by a mine hit, or null. Applies damage. 0.3.9.16 (Stars!, "Guts of
+ * Minefields"): fields of the same kind that overlap are rolled once for each light-year of the path, not once each
+ * (which doubled the risk where they overlap), and in the order the fleet meets them; the field struck is the one whose
+ * centre is nearest.
+ */
 function checkMinefields(game: GameState, rng: Rng, f: Fleet, a: { x: number; y: number }, b: { x: number; y: number }, warp: number): { x: number; y: number } | null {
   const owner = game.players[f.owner];
   const rs = raceSpec(owner.race);
+  const dx = b.x - a.x, dy = b.y - a.y;
+  const A = dx * dx + dy * dy;
+  if (A === 0) return null;
+  const len = Math.sqrt(A);
+  // the fields that can strike this fleet on this leg, with the stretch of the path they cover
+  const near: { m: Minefield; t1: number; t2: number; chance: number }[] = [];
   for (const m of game.minefields) {
     if (m.owner === f.owner) continue;
     const mo = game.players[m.owner];
@@ -457,31 +473,33 @@ function checkMinefields(game: GameState, rng: Rng, f: Fleet, a: { x: number; y:
     if (warp <= safe) continue;
     const radius = Math.sqrt(m.mines);
     // segment-circle intersection
-    const dx = b.x - a.x, dy = b.y - a.y;
     const fx = a.x - m.x, fy = a.y - m.y;
-    const A = dx * dx + dy * dy;
-    if (A === 0) continue;
     const B = 2 * (fx * dx + fy * dy), C = fx * fx + fy * fy - radius * radius;
     const disc = B * B - 4 * A * C;
     if (disc < 0) continue;
     const sq = Math.sqrt(disc);
-    let t1 = (-B - sq) / (2 * A), t2 = (-B + sq) / (2 * A);
+    const t1 = (-B - sq) / (2 * A), t2 = (-B + sq) / (2 * A);
     if (t2 < 0 || t1 > 1) continue;
-    t1 = Math.max(0, t1); t2 = Math.min(1, t2);
-    const len = Math.sqrt(A);
-    const lyIn = Math.ceil((t2 - t1) * len);
-    const chance = st.chanceOfHit * (warp - safe);
-    for (let ly = 0; ly < lyIn; ly++) {
-      if (rng.chance(chance)) {
-        const tHit = t1 + (ly + 1) / len;
-        const pos = { x: Math.round(a.x + dx * Math.min(1, tHit)), y: Math.round(a.y + dy * Math.min(1, tHit)) };
-        mineDamage(game, f, m, false);
-        // reduce minefield
-        reduceOnImpact(m);
-        msg(game, owner, `${f.name} a heurté un champ de mines ${m.type === 'speedBump' ? 'ralentisseur' : ''} en (${pos.x}, ${pos.y}).`, f, 'minefield');
-        game.players[m.owner].messages.push({ year: game.year, kind: 'minefield', text: `Une flotte ${owner.name} a heurté votre champ de mines en (${Math.round(m.x)}, ${Math.round(m.y)}).`, target: { kind: 'minefield', id: m.id } });
-        return pos;
-      }
+    near.push({ m, t1: Math.max(0, t1), t2: Math.min(1, t2), chance: st.chanceOfHit * (warp - safe) });
+  }
+  if (!near.length) return null;
+  const steps = Math.ceil(len - 1e-9);
+  for (let ly = 0; ly < steps; ly++) {
+    const t = Math.min(1, (ly + 1) / len);
+    const pt = { x: a.x + dx * t, y: a.y + dy * t };
+    // one roll per kind of field covering this light-year
+    const kinds = new Map<string, { m: Minefield; chance: number }[]>();
+    for (const n of near) if (t > n.t1 - 1e-9 && t - 1 / len < n.t2 + 1e-9) { const l = kinds.get(n.m.type) ?? []; l.push(n); kinds.set(n.m.type, l); }
+    for (const list of kinds.values()) {
+      if (!rng.chance(Math.max(...list.map(x => x.chance)))) continue;
+      const m = list.map(x => x.m).sort((p, q) => distance(p, pt) - distance(q, pt))[0];
+      const pos = { x: Math.round(pt.x), y: Math.round(pt.y) };
+      mineDamage(game, f, m, false, pos);
+      // reduce minefield
+      reduceOnImpact(m);
+      msg(game, owner, `${f.name} a heurté un champ de mines ${m.type === 'speedBump' ? 'ralentisseur' : ''} en (${pos.x}, ${pos.y}).`, f, 'minefield');
+      game.players[m.owner].messages.push({ year: game.year, kind: 'minefield', text: `Une flotte ${owner.name} a heurté votre champ de mines en (${Math.round(m.x)}, ${Math.round(m.y)}).`, target: { kind: 'minefield', id: m.id } });
+      return pos;
     }
   }
   return null;
@@ -496,7 +514,15 @@ export function reduceOnImpact(m: Minefield) {
   else m.mines = Math.trunc(m.mines * 0.99);
 }
 
-export function mineDamage(game: GameState, f: Fleet, m: Minefield, detonation: boolean) {
+/**
+ * Damage of a mine hit, as in Stars! ("Guts of Minefields"; 0.3.9.16): each ship takes its share, by engine, and a fleet of
+ * five ships or fewer takes at least the minimum of the field (times the engines of its ships); a stack's shields (all of
+ * them) absorb up to half of what it takes, the rest is shared equally by its ships: they all survive damaged, or all go
+ * if that is more than their armour. Before, one ship's shields counted for the whole stack and the damage killed ships
+ * one armour's worth at a time (10 destroyers hit for 1,000 lost 5; they all survive, at 100 damage each). The ships lost
+ * take their share of the cargo with them: its minerals are left at the point of impact (on the planet, in orbit).
+ */
+export function mineDamage(game: GameState, f: Fleet, m: Minefield, detonation: boolean, at?: { x: number; y: number }) {
   const st = MINE_STATS[m.type];
   if (m.type === 'speedBump') return;
   const owner = game.players[f.owner];
@@ -506,22 +532,50 @@ export function mineDamage(game: GameState, f: Fleet, m: Minefield, detonation: 
   const minDmg = scoop ? st.minDamagePerFleetRS : st.minDamagePerFleet;
   const perEngine = scoop ? st.damagePerEngineRS : st.damagePerEngine;
   const ships = f.tokens.reduce((a, t) => a + t.qty, 0);
-  for (const { t, s } of specs) {
-    let dmg = 0;
-    if (ships <= 5) dmg = Math.max(minDmg, perEngine * s.numEngines) * (t === specs[0].t ? 1 : 0) + (t !== specs[0].t ? perEngine * Math.max(0, s.numEngines - specs[0].s.numEngines) * t.qty : 0);
-    else dmg = perEngine * s.numEngines * t.qty;
-    if (dmg <= 0) continue;
-    // half absorbed by shields of one ship
-    const absorbed = Math.min(s.shields, dmg / 2);
-    const armorDmg = dmg - absorbed;
-    const pool = t.damage * t.qtyDamaged + armorDmg;
-    const killed = Math.min(t.qty, Math.floor(pool / s.armor));
-    t.qty -= killed;
-    const rest = pool - killed * s.armor;
-    t.qtyDamaged = t.qty > 0 && rest > 0 ? t.qty : 0;
-    t.damage = t.qty > 0 ? rest / t.qty : 0;
-    if (killed) { owner.stats.shipsLost += killed; owner.messages.push({ year: game.year, kind: 'minefield', text: `${killed} vaisseau(x) de ${f.name} ont été détruits par des mines.`, target: { kind: 'fleet', id: f.id } }); }
+  // a small fleet: the minimum, spread over its ships (upstream craig-stars, matching the "Guts": 500 x engines per ship)
+  const extra = ships < 5 ? Math.max(0, minDmg - perEngine * ships) : 0;
+  const before = f.tokens.map(t => ({ t, qty: t.qty }));
+  let lostShips = 0;
+  specs.forEach(({ t, s }, i) => {
+    const engines = Math.max(1, s.numEngines);
+    const dmg = (perEngine * t.qty + (i === 0 ? extra : 0)) * (s.numEngines > 0 ? engines : 1);
+    if (dmg <= 0 || t.qty <= 0) return;
+    const absorbed = Math.min(s.shields * t.qty, dmg / 2);
+    const per = (dmg - absorbed) / t.qty;
+    // the damaged ships of the stack, then all of it, go if their share is more than the armour they have left
+    const damaged = t.qtyDamaged > 0 ? t.damage : 0;
+    let killed = 0;
+    if (per >= s.armor) killed = t.qty;
+    else if (damaged > 0 && damaged + per >= s.armor) killed = t.qtyDamaged;
+    if (killed >= t.qty) { t.qty = 0; t.qtyDamaged = 0; t.damage = 0; }
+    else {
+      const keptDamaged = killed ? 0 : t.qtyDamaged;
+      t.qty -= killed;
+      const avg = per + (keptDamaged > 0 ? damaged * keptDamaged / t.qty : 0);
+      t.damage = Math.min(s.armor - 1, Math.floor(avg));
+      t.qtyDamaged = t.damage > 0 ? t.qty : 0;
+    }
+    lostShips += killed;
+  });
+  if (lostShips) { owner.stats.shipsLost += lostShips; owner.messages.push({ year: game.year, kind: 'minefield', text: `${lostShips} vaisseau(x) de ${f.name} ont été détruits par des mines.`, target: { kind: 'fleet', id: f.id } }); }
+  // the cargo of the ships lost
+  const cap0 = before.reduce((a, b) => a + specOf(game, b.t.designId).cargoCapacity * b.qty, 0);
+  const cap1 = before.reduce((a, b) => a + specOf(game, b.t.designId).cargoCapacity * b.t.qty, 0);
+  if (cap0 > 0 && cap1 < cap0) {
+    const share = (cap0 - cap1) / cap0;
+    const left = { ironium: 0, boranium: 0, germanium: 0 };
+    for (const k of ['ironium', 'boranium', 'germanium'] as const) { const n = cap1 > 0 ? Math.ceil(f.cargo[k] * share - 1e-9) : f.cargo[k]; left[k] = n; f.cargo[k] -= n; }
+    f.cargo.colonists -= cap1 > 0 ? Math.ceil(f.cargo.colonists * share - 1e-9) : f.cargo.colonists;
+    if (left.ironium + left.boranium + left.germanium > 0) {
+      const p = at ?? { x: f.x, y: f.y };
+      const pl = game.planets.find(q => q.x === Math.round(p.x) && q.y === Math.round(p.y));
+      if (pl) { pl.surface.ironium += left.ironium; pl.surface.boranium += left.boranium; pl.surface.germanium += left.germanium; }
+      else game.salvage.push({ id: game.nextId++, owner: -1, x: Math.round(p.x), y: Math.round(p.y), cargo: left, age: 0 });
+    }
   }
+  const fuel0 = before.reduce((a, b) => a + specOf(game, b.t.designId).fuelCapacity * b.qty, 0);
+  const fuel1 = before.reduce((a, b) => a + specOf(game, b.t.designId).fuelCapacity * b.t.qty, 0);
+  if (fuel0 > 0 && fuel1 < fuel0) f.fuel = Math.floor(f.fuel * fuel1 / fuel0);
   f.tokens = f.tokens.filter(t => t.qty > 0);
   if (!f.tokens.length) game.fleets.splice(game.fleets.indexOf(f), 1);
   else clampFleetHold(game, f);

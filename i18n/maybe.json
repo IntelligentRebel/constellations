@@ -230,7 +230,7 @@
   "key": "sim",
   "kind": "str",
   "refs": [
-   "engine/battle.ts:600",
+   "engine/battle.ts:690",
    "ui/dialogs/designer.tsx:69 attr:key"
   ]
  },
@@ -353,7 +353,7 @@
   "key": "design ",
   "kind": "str",
   "refs": [
-   "engine/design.ts:356"
+   "engine/design.ts:358"
   ]
  },
  {
@@ -658,14 +658,14 @@
   "key": "unload",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:170"
+   "engine/tasks.ts:261"
   ]
  },
  {
   "key": "dunnage",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:170"
+   "engine/tasks.ts:261"
   ]
  },
  {
@@ -674,14 +674,7 @@
   "refs": [
    "engine/turn.ts:67 prop:defenses",
    "engine/turn.ts:67 prop:autoDefenses",
-   "engine/turn.ts:151"
-  ]
- },
- {
-  "key": "retro",
-  "kind": "str",
-  "refs": [
-   "engine/turn.ts:480"
+   "engine/turn.ts:154"
   ]
  },
  {
@@ -1370,24 +1363,24 @@
   "key": "chk",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:328 attr:class",
-   "ui/dialogs/misc.tsx:331 attr:class"
+   "ui/dialogs/misc.tsx:332 attr:class",
+   "ui/dialogs/misc.tsx:335 attr:class"
   ]
  },
  {
   "key": " locked",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:328",
-   "ui/dialogs/misc.tsx:331",
-   "ui/dialogs/misc.tsx:334"
+   "ui/dialogs/misc.tsx:332",
+   "ui/dialogs/misc.tsx:335",
+   "ui/dialogs/misc.tsx:338"
   ]
  },
  {
   "key": "chk rule",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:334 attr:class"
+   "ui/dialogs/misc.tsx:338 attr:class"
   ]
  },
  {

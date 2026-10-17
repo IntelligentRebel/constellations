@@ -564,6 +564,8 @@ export interface Player {
   tech: TechLevels;
   researchSpent: TechLevels;
   researching: Field;
+  /** 0.3.9.17: the year of the last level gained by trading technology (one a year at most) */
+  techTradeYear?: number;
   nextField: 'same' | 'lowest' | Field;
   researchPct: number;
   /** optional technology goal: research fields are chosen automatically until obtained */
@@ -987,6 +989,8 @@ export interface BattleRecord {
   rounds: number;
 }
 
+export interface Landing { planetId: number; owner: number; kt: number; fleetId: number; fleetName: string }
+
 export interface GameState {
   format: 'constellations-1';
   /** identifies the save slot in the browser */
@@ -1004,6 +1008,13 @@ export interface GameState {
   minefields: Minefield[];
   packets: Packet[];
   salvage: Salvage[];
+  /**
+   * 0.3.9.16: troops landed on another empire's world (or on one emptied by bombs this year), waiting for the ground
+   * combat of the phase (all those of a world fight together, as in Stars!)
+   */
+  landings?: Landing[];
+  /** 0.3.9.16: worlds emptied by bombs this year, and who held them (they can still be taken by troops this year) */
+  emptied?: Record<number, { owner: number; year: number }>;
   wormholes: Wormhole[];
   traders: MysteryTrader[];
   battles: BattleRecord[];

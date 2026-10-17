@@ -29,7 +29,7 @@ export function CargoDialog({ fleetId, planetId, otherId }: { fleetId: number; p
   const move = (k: TransportKey, n: number) => {
     // n > 0: load into the fleet
     if (planet) A.transferPlanet(f, planet.id, k, n);
-    else if (other) { if (n > 0) A.transferFleets(other, f, k, n); else A.transferFleets(f, other, k, -n); }
+    else if (other) { if (n > 0) A.transferFleets(other, f, k, n, f.owner); else A.transferFleets(f, other, k, -n, f.owner); }
     else if (salvage && k !== 'fuel' && k !== 'colonists') {
       s.checkpoint();
       if (n > 0) { const space = spec.cargoCapacity - cargoMass(f.cargo); const a = Math.min(n, salvage.cargo[k], space); salvage.cargo[k] -= a; f.cargo[k] += a; }
@@ -72,7 +72,7 @@ export function CargoDialog({ fleetId, planetId, otherId }: { fleetId: number; p
         </tbody>
       </table>
       <div class="small muted">Soute : {fmt(cargoMass(f.cargo))} / {fmt(spec.cargoCapacity)} kt{ospec ? ` · autre flotte : ${fmt(cargoMass(other!.cargo))} / ${fmt(ospec.cargoCapacity)} kt` : ''}.
-        {planet && planet.owner >= 0 && planet.owner !== me.id ? ' Décharger des colons sur une planète étrangère déclenche une invasion.' : ''}
+        {planet && planet.owner >= 0 && planet.owner !== me.id ? ' Décharger des colons sur une planète étrangère les fait débarquer pour l\'envahir : le combat au sol a lieu pendant le tour, avec tous les débarquements de l\'année sur ce monde, et vous en saurez l\'issue au prochain rapport.' : ''}
         {planet && planet.owner < 0 ? ' Pour fonder une colonie, utilisez la tâche « Coloniser ».' : ''}</div>
     </Modal>
   );

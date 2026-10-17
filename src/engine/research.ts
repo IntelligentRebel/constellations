@@ -125,6 +125,17 @@ export function doResearch(game: GameState, player: Player, pool: number, rng?: 
   return events;
 }
 
+/**
+ * 0.3.9.17: a level gained in a field: when it is the field being researched, research moves on to the next field set
+ * (the same, the lowest, or the one chosen), as it does after a level researched.
+ */
+export function levelGained(player: Player, field: Field) {
+  if (field !== player.researching) return;
+  if (player.nextField === 'lowest') player.researching = lowestField(player) ?? player.researching;
+  else if (player.nextField !== 'same') { player.researching = player.nextField; player.nextField = 'same'; }
+  if (player.tech[player.researching] >= MAX_TECH) player.researching = lowestField(player) ?? player.researching;
+}
+
 /** Add research points directly to a field (artifacts, Mystery Trader, stealing). */
 export function addResearch(game: GameState, player: Player, field: Field, amount: number, rng?: Rng): ResearchEvent[] {
   const events: ResearchEvent[] = [];

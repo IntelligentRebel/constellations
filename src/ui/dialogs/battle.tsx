@@ -14,11 +14,11 @@ function weaponInitiative(g: GameState, designId: number): number {
   return w.length ? Math.max(...w.map(x => x.initiative)) : 0;
 }
 
-interface TokState { x: number; y: number; qty: number; shields: number; damage: number; gone: boolean }
+interface TokState { x: number; y: number; qty: number; shields: number; damage: number; qtyDamaged: number; gone: boolean }
 
 function stateAt(rec: BattleRecord, step: number) {
   const st = new Map<number, TokState>();
-  for (const t of rec.tokens) st.set(t.id, { x: t.x, y: t.y, qty: t.qty, shields: t.shields * t.qty, damage: t.damage, gone: false });
+  for (const t of rec.tokens) st.set(t.id, { x: t.x, y: t.y, qty: t.qty, shields: t.shields * t.qty, damage: t.damage, qtyDamaged: t.qtyDamaged, gone: false });
   let round = 0;
   let last: BattleAction | null = null;
   for (let i = 0; i <= step && i < rec.actions.length; i++) {
@@ -27,14 +27,14 @@ function stateAt(rec: BattleRecord, step: number) {
     if (a.t === 'round') round = a.round;
     else if (a.t === 'move') { const s = st.get(a.id)!; s.x = a.x; s.y = a.y; }
     else if (a.t === 'leave') { st.get(a.id)!.gone = true; }
-    else if (a.t === 'state') { const s = st.get(a.id)!; s.qty = a.qty; s.shields = a.shields; s.damage = a.damage; if (a.qty <= 0) s.gone = true; }
+    else if (a.t === 'state') { const s = st.get(a.id)!; s.qty = a.qty; s.shields = a.shields; s.damage = a.damage; s.qtyDamaged = a.qtyDamaged ?? (a.damage ? a.qty : 0); if (a.qty <= 0) s.gone = true; }
     else if (a.t === 'fire') { const s = st.get(a.target)!; s.qty = Math.max(0, s.qty - a.killed); s.shields = Math.max(0, s.shields - a.shieldDmg); if (s.qty <= 0) s.gone = true; }
   }
   return { st, round, last };
 }
 
 /** 3.6: the ship picked on the board: its design (name opens it in Conception), equipment, firepower and defence. */
-function ShipCard({ g, me, tok, st, onClose }: { g: GameState; me: Player; tok: BattleTokenRecord; st: { qty: number; shields: number; damage: number }; onClose: () => void }) {
+function ShipCard({ g, me, tok, st, onClose }: { g: GameState; me: Player; tok: BattleTokenRecord; st: { qty: number; shields: number; damage: number; qtyDamaged: number }; onClose: () => void }) {
   const s = useStore();
   const d = g.designs.find(x => x.id === tok.designId);
   const known = tok.owner === me.id || !!me.intel.designs[tok.designId]?.slots;
@@ -51,7 +51,7 @@ function ShipCard({ g, me, tok, st, onClose }: { g: GameState; me: Player; tok: 
     <Row k="Empire" v={g.players[tok.owner].name} />
     <Row k="Coque" v={tl(tok.hull)} />
     <Row k="Nombre" v={`${st.qty} / ${tok.qty}`} />
-    <Row k="Blindage" v={`${fmt(tok.armor)} dp par vaisseau${st.damage ? ` (${fmt(st.damage)} de dégâts)` : ''}`} />
+    <Row k="Blindage" v={`${fmt(tok.armor)} dp par vaisseau${!st.damage || !st.qtyDamaged ? '' : st.qtyDamaged < st.qty ? ` (${fmt(st.qtyDamaged)} endommagés, ${fmt(st.damage)} de dégâts chacun)` : ` (${fmt(st.damage)} de dégâts chacun)`}`} />
     <Row k="Boucliers" v={`${fmt(tok.shields)} par vaisseau · pile ${fmt(st.shields)}`} />
     <Row k="Initiative / mouvement" v={`${tok.initiative + weaponInitiative(g, tok.designId)} / ${tok.starbase ? '–' : (tok.movement / 4).toFixed(2).replace('.', ',')}`} />
     {known && sp ? <>
