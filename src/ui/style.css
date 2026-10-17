@@ -754,6 +754,7 @@ tr.special td:first-child { color: #dffbff; }
 @container app (max-width: 1280px) { .hstats button { padding: 2px 7px; } .hstats .hresearch { min-width: 140px; max-width: 170px; } }
 .ter-note { margin: 0 16px 8px; padding: 6px 9px; border-radius: 6px; font-size: 12px; line-height: 1.4; color: var(--text); border-left: 3px solid; background: #0f1726; }
 .ter-note.nebula { border-color: #9f7af0; } .ter-note.cluster { border-color: #e6a050; } .ter-note.storm { border-color: #50ebdc; }
+.ter-note.greenhouse { border-color: #d9773a; cursor: help; }
 
 /* ---------------------------------------------------------------- Constellations 3 */
 .halerts { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; flex-shrink: 0; }
@@ -1262,3 +1263,18 @@ ul.pbem-report { margin: 6px 0; padding-left: 18px; }
 .guard-report .stale { color: #e8c55a; }
 .sum-guard { margin: 10px 0 6px; padding-top: 8px; border-top: 1px solid var(--line); }
 .sum-guard h4 { margin: 0 0 2px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+/* 0.3.9.18: a newer version (local copy) */
+a.btn { display: inline-block; background: #142235; border: 1px solid var(--line2); border-radius: 6px; padding: 6px 12px; color: var(--text); text-decoration: none; white-space: nowrap; }
+a.btn:hover { background: #1a2c44; border-color: #3a5172; }
+a.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 650; }
+a.btn.primary:hover { background: #74e4ee; border-color: #74e4ee; }
+a.btn.ghost { background: transparent; }
+.update-get { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+.release { border-top: 1px solid var(--line2); margin-top: 12px; padding-top: 8px; }
+.release h4 { margin: 0 0 4px; }
+.release-notes h5 { margin: 10px 0 4px; font-size: 13px; }
+.release-notes ul { margin: 4px 0 8px; padding-left: 20px; }
+.release-notes li { margin: 3px 0; line-height: 1.45; }
+.release-notes p { line-height: 1.45; }
+.update-banner { margin: 12px auto 0; padding: 8px 12px; border: 1px solid var(--accent); border-radius: 8px; background: rgba(79, 214, 227, .08); font-size: 13px; text-align: center; }
+.upd-badge { margin-left: 8px; padding: 1px 7px; font-size: 11px; border-color: var(--accent); color: var(--accent); background: transparent; }

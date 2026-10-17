@@ -4,7 +4,7 @@ import { Rng, seedFromString } from './rng';
 import { SHIFT_WEIGHTS } from './research';
 
 export interface SpecialTech {
-  id: 'autoExplore' | 'wormholeNav' | 'infrared' | 'lensing';
+  id: 'autoExplore' | 'wormholeNav' | 'infrared' | 'lensing' | 'cleanEnergy' | 'carbonCapture' | 'climateControl';
   name: string;
   /** field shown in the research table */
   field: Field;
@@ -55,7 +55,29 @@ export const LENSING: SpecialTech = {
   unlocked: 'vos colonies repèrent désormais les trous noirs isolés par la lumière qu\'ils dévient.',
 };
 
-export const SPECIALS: SpecialTech[] = [AUTO_EXPLORE, WORMHOLE_NAV, INFRARED, LENSING];
+const withGreenhouse = (game: GameState) => !!game.settings.greenhouse;
+
+/** 0.3.9.18 (greenhouse.ts): the three steps that tame the greenhouse effect of industry. */
+export const CLEAN_ENERGY: SpecialTech = {
+  id: 'cleanEnergy', name: 'Énergie décarbonée', field: 'energy', req: { energy: 6 }, when: withGreenhouse,
+  what: 'usines moins polluantes',
+  explain: 'Les usines tirent leur énergie de la fusion plutôt que de la combustion : elles rejettent 40 % de gaz à effet de serre en moins.',
+  unlocked: 'vos usines rejettent désormais 40 % de gaz à effet de serre en moins.',
+};
+export const CARBON_CAPTURE: SpecialTech = {
+  id: 'carbonCapture', name: 'Captage du carbone', field: 'biotechnology', req: { biotechnology: 8, energy: 4 }, when: withGreenhouse,
+  what: 'rejets des usines divisés par deux',
+  explain: 'Des micro-organismes modifiés fixent le carbone à la sortie des usines : leurs rejets de gaz à effet de serre sont divisés par deux.',
+  unlocked: 'les rejets de gaz à effet de serre de vos usines sont désormais divisés par deux.',
+};
+export const CLIMATE_CONTROL: SpecialTech = {
+  id: 'climateControl', name: 'Régulation climatique', field: 'biotechnology', req: { biotechnology: 14, energy: 12 }, when: withGreenhouse,
+  what: 'refroidissement actif des mondes réchauffés',
+  explain: 'Des processeurs atmosphériques retirent le carbone de l\'air : les rejets des usines sont encore divisés par deux, et un monde réchauffé par son industrie se refroidit cinq fois plus vite.',
+  unlocked: 'vos processeurs atmosphériques divisent encore par deux les rejets des usines et refroidissent cinq fois plus vite les mondes réchauffés.',
+};
+
+export const SPECIALS: SpecialTech[] = [AUTO_EXPLORE, WORMHOLE_NAV, INFRARED, LENSING, CLEAN_ENERGY, CARBON_CAPTURE, CLIMATE_CONTROL];
 /** The special technologies of this game. */
 export const specialsOf = (game: GameState) => SPECIALS.filter(s => !s.when || s.when(game));
 

@@ -20,7 +20,7 @@ export type ObjRef = { kind: 'planet' | 'fleet' | 'wormhole' | 'minefield' | 'pa
 export type DialogKind =
   | 'backups' | 'production' | 'research' | 'designer' | 'battlePlans' | 'relations' | 'reports' | 'battle' | 'cargo' | 'split' | 'merge'
   | 'techBrowser' | 'raceView' | 'newGame' | 'raceWizard' | 'help' | 'score' | 'settings' | 'templates' | 'find' | 'planner' | 'about' | 'rename' | 'gameOver' | 'confirm' | 'export' | 'import' | 'warn' | 'upgrade' | 'designView'
-  | 'victory' | 'prefs' | 'chronicle' | 'achievements' | 'dilemma' | 'pbem' | 'governor';
+  | 'victory' | 'prefs' | 'chronicle' | 'achievements' | 'dilemma' | 'pbem' | 'governor' | 'update';
 
 export interface Dialog { kind: DialogKind; data?: any }
 

@@ -9,6 +9,8 @@ import { unlockedCount, ACHIEVEMENTS } from './achievements';
 import { backup, backupSupported, backupInFrame, allowFolder, chooseFolder } from './backup';
 import { useBackup } from './dialogs/backups';
 import { openTutorial } from './tutorial';
+import { useUpdate } from './update';
+import { VERSION } from './version';
 
 /** A click on the welcome screen is the moment to let the browser ask again for the backup folder (it needs one). */
 function renewFolder() { if (backup.status === 'needsPermission') void allowFolder(); }
@@ -30,6 +32,13 @@ function BackupLine() {
     {b.status === 'needsPermission' && <p>Sauvegardes de secours dans « {b.name} » : le navigateur demande votre accord. {s.saved ? <button class="link" onClick={() => void allowFolder()}>Autoriser</button> : <button class="link" onClick={() => void restore()}>Autoriser et reprendre la dernière partie</button>}</p>}
     {(b.status === 'none' || b.status === 'error') && <p>{s.saved ? 'Aucun dossier de sauvegardes de secours.' : 'Aucune partie dans ce navigateur.'} <button class="link" onClick={() => void restore()}>{s.saved ? 'Choisir un dossier…' : 'Reprendre depuis un dossier de sauvegardes…'}</button> · <button class="link" onClick={() => s.open('backups')}>En savoir plus</button></p>}
   </div>;
+}
+
+/** 0.3.9.18: a newer version is out (local copy). */
+function UpdateBanner() {
+  const list = useUpdate();
+  if (!list.length) return null;
+  return <div class="update-banner">{`Nouvelle version ${list[0].version} disponible (vous avez la ${VERSION}).`} <button class="link" onClick={() => store.open('update')}>Voir les nouveautés et la télécharger</button></div>;
 }
 
 export function Welcome() {
@@ -84,6 +93,7 @@ export function Welcome() {
             <button class="link del" title="Supprimer cette sauvegarde" onClick={() => s.ask(`Supprimer définitivement la partie « ${sl.name} » (${sl.year}) de ce navigateur ?`, () => s.deleteSlot(sl.id), 'Supprimer')}>✕</button>
           </li>)}</ul>
         </div>}
+        <UpdateBanner />
         <BackupLine />
         <p class="small muted">Tout se déroule dans votre navigateur, hors ligne. Sauvegarde automatique locale (huit parties au plus).</p>
         <LangPicker />

@@ -44,7 +44,7 @@ export function defaultSettings(): GameSettings {
     randomEvents: true, aiAlliances: false, publicScores: false, clumping: false, anonymousContacts: true, randomResearch: true, fuzzyTechTree: true,
     terrain: true, distanceCost: true, logistics: true, combatRoles: true, doctrines: true, megaprojects: true, secretObjectives: true, deception: true,
     anomalies: true, guardians: true, origins: true, culture: true, pirates: true, crisis: true, diplomacy: true, espionage: true, debris: true,
-    veterans: true, nemesis: true, acts: true, portalRelays: true, diaspora: true, cataclysms: true,
+    veterans: true, nemesis: true, acts: true, portalRelays: true, diaspora: true, cataclysms: true, greenhouse: true,
     goldenAges: true, dilemmas: true, eventChains: true, ancientSecret: true, originVictories: true, governors: true,
     victory: { ownPlanets: 60, attainTech: { level: 22, fields: 4 }, exceedScore: null, exceedSecond: 100, production: null, capitalShips: null, highestAfter: null, numCriteria: 1, minYears: 30 },
     seed: Math.random().toString(36).slice(2, 10),
@@ -52,7 +52,7 @@ export function defaultSettings(): GameSettings {
 }
 
 /** The rules Constellations adds on top of Stars! (each one can be switched off). */
-export const CONSTELLATIONS_RULES = ['randomResearch', 'fuzzyTechTree', 'terrain', 'distanceCost', 'logistics', 'combatRoles', 'doctrines', 'megaprojects', 'secretObjectives', 'deception', 'anomalies', 'guardians', 'origins', 'culture', 'pirates', 'crisis', 'diplomacy', 'espionage', 'debris', 'veterans', 'nemesis', 'acts', 'portalRelays', 'diaspora', 'cataclysms', 'goldenAges', 'dilemmas', 'eventChains', 'ancientSecret', 'originVictories', 'governors'] as const;
+export const CONSTELLATIONS_RULES = ['randomResearch', 'fuzzyTechTree', 'terrain', 'distanceCost', 'logistics', 'combatRoles', 'doctrines', 'megaprojects', 'secretObjectives', 'deception', 'anomalies', 'guardians', 'origins', 'culture', 'pirates', 'crisis', 'diplomacy', 'espionage', 'debris', 'veterans', 'nemesis', 'acts', 'portalRelays', 'diaspora', 'cataclysms', 'goldenAges', 'dilemmas', 'eventChains', 'ancientSecret', 'originVictories', 'governors', 'greenhouse'] as const;
 export type ConstellationsRule = typeof CONSTELLATIONS_RULES[number];
 
 /** 3.6: the last version of Stars! (2.60j / 2.70j RC4, December 2000), whose experience the classic preset recreates. */
@@ -352,8 +352,10 @@ export function createGame(opts: NewGameOptions): GameState {
   for (const p of game.players) { const hw = game.planets.find(pl => pl.owner === p.id && pl.homeworld); if (hw) p.capital = hw.id; }
   if (settings.secretObjectives) assignObjectives(game);
   // Constellations 3.2: discoveries, guardians, origins (own random streams)
-  // 0.3.9.17 (Stars!, random events): ancient artifacts hidden on a third of the worlds (found by the first to settle there)
-  if (settings.randomEvents) { const ar = new Rng(seedFromString(settings.seed + '|artifacts')); for (const pl of game.planets) if (pl.owner < 0 && ar.chance(1 / 3)) pl.artifact = true; }
+  // 0.3.9.17 (Stars!, random events): ancient artifacts hidden on one free world in ten (0.3.9.18; a third before), found
+  // by the first to settle there
+  if (settings.randomEvents) { const ar = new Rng(seedFromString(settings.seed + '|artifacts')); for (const pl of game.planets) if (pl.owner < 0 && ar.chance(0.1)) pl.artifact = true; }
+  game.artifactsThinned = true;
   if (settings.anomalies) generateAnomalies(game);
   if (settings.guardians) placeGuardians(game);
   // 0.3.7: the hidden stars (own random stream; the sanctuary of the Ancients moves to one of them)

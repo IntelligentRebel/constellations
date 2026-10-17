@@ -17,6 +17,7 @@ import { nextTodo } from './todo';
 import { uiPrefs, setPrefs, onPrefs } from './prefs';
 
 import { VERSION } from './version';
+import { useUpdate } from './update';
 import { researchCost, MAX_TECH, goalProgress } from '../engine/research';
 import { resolveGoal, goalReached } from '../engine/goals';
 import { TECHS, HULLS, FIELD_NAMES } from '../engine/tech';
@@ -62,6 +63,7 @@ function Header() {
       <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 1.5 L14 10 L22.5 12 L14 14 L12 22.5 L10 14 L1.5 12 L10 10 Z" fill="var(--accent)" /></svg>
       <span><b>Constellations</b><small>{me.name} · v{VERSION}</small></span>
     </button>
+    <UpdateBadge />
     <div class="hstats" data-tut="hstats">
       <button onClick={() => s.goTab('colonies')}><b>{planets.length}</b><small>colonie{planets.length > 1 ? 's' : ''}</small></button>
       <button onClick={() => s.goTab('colonies')} title={`Croissance prévue l'an prochain : ${growth >= 0 ? '+' : ''}${fmtPop(growth)} habitants (${growthPct.toFixed(1).replace('.', ',')} %)`}><b>{fmtPop(pop)}</b><small>habitants <span class={growth >= 0 ? 'hgood' : 'hbad'}>{growth >= 0 ? '+' : ''}{fmtPop(growth)}/an</span></small></button>
@@ -373,4 +375,11 @@ function Handoff() {
       <button class="primary big" onClick={() => { s.handoff = false; s.bump(); }}>Afficher mon empire</button>
     </div>
   </div>;
+}
+
+/** 0.3.9.18: a newer version is out (local copy): a small button next to the name of the game. */
+function UpdateBadge() {
+  const list = useUpdate();
+  if (!list.length) return null;
+  return <button class="upd-badge" onClick={() => store.open('update')} title={`Nouvelle version disponible : ${list[0].version}`}>{`↑ ${list[0].version}`}</button>;
 }

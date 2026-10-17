@@ -2,16 +2,17 @@
 import { people } from './words';
 import type { Fleet, GameState, Planet, Player, QueueItem } from './types';
 import { FIELDS, MINERALS } from './types';
-import { Rng } from './rng';
+import { Rng, seedFromString } from './rng';
 import { planetSpec, applyMining, terraformRemaining } from './planet';
 import { runProduction, itemLabel, advanceTemplates, stuckWarnings } from './production';
 import { doResearch, addResearch, researchCost as researchCostOf, type ResearchEvent } from './research';
-import { raceSpec, habitability, habString } from './race';
+import { raceSpec } from './race';
 import { fleetSpec, canRefuelAt, distance } from './fleet';
 import { specOf, designSpec } from './design';
 import { resolveBattles, willAttack } from './battle';
 import { moveFleets, movePackets, launchPacket, updateWormholes, detonateMinefields, decayMinefields, sweepMines } from './movement';
 import { battleTechTrades } from './techtrade';
+import { greenhouse } from './greenhouse';
 import { processWaypointTask, processMineLaying, remoteMining, mergeArrivingMiners , patrolFuel, escortWarnings, chaseChecks, resolveLandings } from './tasks';
 import { updateIntel } from './scan';
 import { computeScore, checkVictory } from './score';
@@ -87,6 +88,7 @@ export function generateTurn(game: GameState) {
   const techBefore = game.players.map(p => new Set(availableTechNames(p)));
   const levelsBefore = game.players.map(p => ({ ...p.tech }));
   ensureSpecialShift(game);
+  thinArtifacts(game);
   const specialsBefore = game.players.map(p => SPECIALS.map(sp => hasSpecial(p, sp)));
   const forksBefore = game.players.map(p => pendingIds(game, p));
 
@@ -168,6 +170,8 @@ export function generateTurn(game: GameState) {
   game.players.forEach((p, i) => { if (!p.dead) doctrineNews(game, p, forksBefore[i]); });
   megaNews(game);
   // CA permaform / instaform
+  // 0.3.9.18: the greenhouse effect of industry, before the CA instaform (who make up for it at once)
+  greenhouse(game);
   instaform(game, rng);
   originYear(game);
   // growth
@@ -401,6 +405,7 @@ function onBuild(game: GameState, planet: Planet, player: Player, item: QueueIte
     }
     case 'genesis': {
       planet.hab = randomHab(rng); planet.baseHab = [...planet.hab] as typeof planet.hab; planet.terraformed = [0, 0, 0];
+      planet.greenhouse = undefined; planet.ghShift = undefined;
       planet.conc = randomConcentrations(rng, planet.hab[2], false);
       planet.mines = 0; planet.factories = 0; planet.defenses = 0; planet.scanner = false;
       player.messages.push({ year: game.year, kind: 'production', text: `Le Créateur de mondes a remodelé ${planet.name}.`, target: { kind: 'planet', id: planet.id } });
@@ -564,7 +569,6 @@ function bombing(game: GameState, rng: Rng) {
 }
 
 /** For the checks. */
-export const climateChangeForTests = (game: GameState, rng: Rng) => climateChange(game, rng);
 export const repairForTests = (game: GameState) => repair(game);
 /** For the checks. */
 export const bombingForTests = (game: GameState, rng: Rng) => bombing(game, rng);
@@ -653,7 +657,6 @@ function idleMessages(game: GameState) {
 function randomEvents(game: GameState, rng: Rng) {
   if (!game.settings.randomEvents) return;
   const years = game.year - 2400;
-  climateChange(game, rng);
   if (years > 10 && rng.chance(0.05)) {
     const candidates = game.planets.filter(p => years > 20 || p.owner < 0);
     if (!candidates.length) return;
@@ -677,40 +680,12 @@ function randomEvents(game: GameState, rng: Rng) {
   }
 }
 
-/**
- * 0.3.9.17 (Stars! random events: "habitability shifts"): about one year in twenty, the climate of a world changes for
- * good: one of its axes moves by 4 to 8 points, up or down (craig-stars' reading of the original). Settled colonies of
- * over 5,000 colonists are spared the first 20 years. The owner is told, with what it means for its people.
- */
-function climateChange(game: GameState, rng: Rng) {
-  if (!game.planets.length || !rng.chance(0.05)) return;
-  const p = game.planets[rng.int(game.planets.length)];
-  if (p.owner >= 0 && p.pop > 5000 && game.year - 2400 < 20) return;
-  if (p.hidden) return; // a world still to be found
-  const axis = rng.int(3);
-  let amount = 3 + rng.int(3);
-  if (amount === 3) amount += 3 + rng.int(3);
-  if (rng.chance(0.5)) amount = -amount;
-  const owner = p.owner >= 0 ? game.players[p.owner] : undefined;
-  const before = owner ? habitability(owner.race, p.hab) : 0;
-  const was = p.hab[axis];
-  p.hab[axis] = Math.max(1, Math.min(99, p.hab[axis] + amount));
-  p.baseHab[axis] = Math.max(1, Math.min(99, p.baseHab[axis] + amount));
-  p.terraformed[axis] = p.hab[axis] - p.baseHab[axis];
-  if (!owner || owner.monster || p.hab[axis] === was) return;
-  const after = habitability(owner.race, p.hab);
-  const n = p.name, from = habString(axis, was), to = habString(axis, p.hab[axis]), b = Math.round(before), a = Math.round(after);
-  const up = p.hab[axis] > was;
-  // one whole sentence per case, so that every language can word it its own way
-  const text = axis === 0
-    ? (up ? `Changement de climat sur ${n} : la gravité augmente pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`
-      : `Changement de climat sur ${n} : la gravité baisse pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`)
-    : axis === 1
-      ? (up ? `Changement de climat sur ${n} : la planète se réchauffe pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`
-        : `Changement de climat sur ${n} : la planète se refroidit pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`)
-      : (up ? `Changement de climat sur ${n} : les radiations augmentent pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`
-        : `Changement de climat sur ${n} : les radiations baissent pour de bon, de ${from} à ${to}. Valeur pour votre race : ${b} % → ${a} %.`);
-  owner.messages.push({ year: game.year, kind: 'event', text, target: { kind: 'planet', id: p.id } });
+/** 0.3.9.18: a game created in 0.3.9.17 had artifacts on a third of the free worlds: one in ten is enough. */
+function thinArtifacts(game: GameState) {
+  if (game.artifactsThinned) return;
+  game.artifactsThinned = true;
+  const rng = new Rng(seedFromString(game.settings.seed + '|artifacts-thin'));
+  for (const pl of game.planets) if (pl.artifact && pl.owner < 0 && !rng.chance(0.3)) pl.artifact = false;
 }
 
 function checkDeath(game: GameState) {

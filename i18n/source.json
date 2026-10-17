@@ -251,7 +251,7 @@
   "refs": [
    "data/labels.ts:14 prop:Space Station",
    "engine/production.ts:18 prop:starbase",
-   "ui/inspector.tsx:150 attr:title"
+   "ui/inspector.tsx:169 attr:title"
   ]
  },
  {
@@ -856,7 +856,7 @@
    "data/labels.ts:49 prop:Sovereignty Beacon",
    "engine/culture.ts:394",
    "ui/culture.tsx:124 jsx",
-   "ui/dialogs/misc.tsx:248 jsx"
+   "ui/dialogs/misc.tsx:250 jsx"
   ]
  },
  {
@@ -5028,7 +5028,7 @@
   "kind": "tpl",
   "refs": [
    "engine/chronicle.ts:89 call:push",
-   "engine/turn.ts:734"
+   "engine/turn.ts:709"
   ]
  },
  {
@@ -5057,7 +5057,7 @@
   "kind": "tpl",
   "refs": [
    "engine/chronicle.ts:89",
-   "engine/turn.ts:737"
+   "engine/turn.ts:712"
   ]
  },
  {
@@ -5603,7 +5603,7 @@
   "refs": [
    "engine/culture.ts:63 prop:energy",
    "engine/megaprojects.ts:99 prop:energy",
-   "engine/specials.ts:94 prop:energy",
+   "engine/specials.ts:116 prop:energy",
    "engine/tech.ts:25 prop:energy"
   ]
  },
@@ -5612,7 +5612,7 @@
   "kind": "str",
   "refs": [
    "engine/culture.ts:63 prop:weapons",
-   "engine/specials.ts:94 prop:weapons",
+   "engine/specials.ts:116 prop:weapons",
    "engine/tech.ts:25 prop:weapons",
    "ui/dialogs/designview.tsx:40 jsx"
   ]
@@ -5623,7 +5623,7 @@
   "refs": [
    "engine/culture.ts:63 prop:propulsion",
    "engine/megaprojects.ts:99 prop:propulsion",
-   "engine/specials.ts:94 prop:propulsion",
+   "engine/specials.ts:116 prop:propulsion",
    "engine/tech.ts:25 prop:propulsion"
   ]
  },
@@ -5633,7 +5633,7 @@
   "refs": [
    "engine/culture.ts:63 prop:construction",
    "engine/megaprojects.ts:99 prop:construction",
-   "engine/specials.ts:94 prop:construction",
+   "engine/specials.ts:116 prop:construction",
    "engine/tech.ts:25 prop:construction"
   ]
  },
@@ -5643,7 +5643,7 @@
   "refs": [
    "engine/culture.ts:63 prop:electronics",
    "engine/megaprojects.ts:99 prop:electronics",
-   "engine/specials.ts:94 prop:electronics",
+   "engine/specials.ts:116 prop:electronics",
    "engine/tech.ts:25 prop:electronics"
   ]
  },
@@ -5653,7 +5653,7 @@
   "refs": [
    "engine/culture.ts:63 prop:biotechnology",
    "engine/megaprojects.ts:99 prop:biotechnology",
-   "engine/specials.ts:94 prop:biotechnology",
+   "engine/specials.ts:116 prop:biotechnology",
    "engine/tech.ts:25 prop:biotechnology"
   ]
  },
@@ -7917,8 +7917,8 @@
   "kind": "str",
   "refs": [
    "engine/espionage.ts:27 prop:label",
-   "ui/app.tsx:153 prop:label",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/app.tsx:155 prop:label",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/dialogs/reports.tsx:55 prop:label"
   ]
  },
@@ -8310,8 +8310,8 @@
   "kind": "str",
   "refs": [
    "engine/factions.ts:14 prop:name",
-   "engine/rules.ts:33 prop:name",
-   "ui/dialogs/misc.tsx:258 jsx",
+   "engine/rules.ts:34 prop:name",
+   "ui/dialogs/misc.tsx:260 jsx",
    "ui/empire.tsx:48 attr:title"
   ]
  },
@@ -8557,6 +8557,20 @@
   ]
  },
  {
+  "key": "Effet de serre sur {0} : les rejets des usines ont réchauffé la planète, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/greenhouse.ts:81"
+  ]
+ },
+ {
+  "key": "Effet de serre sur {0} : l'atmosphère se purifie et la planète se refroidit, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/greenhouse.ts:82"
+  ]
+ },
+ {
   "key": "Sentinelle cristalline",
   "kind": "str",
   "refs": [
@@ -8761,8 +8775,8 @@
   "refs": [
    "engine/guardians.ts:61 prop:pluralName",
    "engine/guardians.ts:64 prop:name",
-   "engine/rules.ts:31 prop:name",
-   "ui/dialogs/misc.tsx:243 jsx"
+   "engine/rules.ts:32 prop:name",
+   "ui/dialogs/misc.tsx:245 jsx"
   ]
  },
  {
@@ -9367,7 +9381,7 @@
   "refs": [
    "engine/movement.ts:217",
    "engine/movement.ts:225",
-   "engine/movement.ts:784",
+   "engine/movement.ts:789",
    "engine/secrets.ts:273"
   ]
  },
@@ -9493,87 +9507,101 @@
   ]
  },
  {
+  "key": "{0} a laissé sa cargaison ({1} kt) à {2} avant le saut : seules les races Maîtrise des portails (IT) font passer une cargaison par une porte.",
+  "kind": "tpl",
+  "refs": [
+   "engine/movement.ts:429 call:msg"
+  ]
+ },
+ {
+  "key": "Une flotte des {0} a laissé {1} kt de minerais sur {2} avant de franchir votre porte.",
+  "kind": "tpl",
+  "refs": [
+   "engine/movement.ts:432 prop:text"
+  ]
+ },
+ {
   "key": "{0} : destination trop lointaine pour la porte (portée {1} al).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:430 call:msg"
+   "engine/movement.ts:435 call:msg"
   ]
  },
  {
   "key": "{0} : un vaisseau est trop lourd pour la porte.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:433 call:msg"
+   "engine/movement.ts:438 call:msg"
   ]
  },
  {
   "key": "{0} vaisseau(x) de {1} se sont perdus dans le vide en franchissant la porte.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:450 call:msg"
+   "engine/movement.ts:455 call:msg"
   ]
  },
  {
   "key": "{0} vaisseau(x) de {1}, déjà endommagé(s), n'ont pas survécu au passage de la porte.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:459 call:msg"
+   "engine/movement.ts:464 call:msg"
   ]
  },
  {
   "key": "{0} a heurté un champ de mines {1} en ({2}, {3}).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:530 call:msg"
+   "engine/movement.ts:535 call:msg"
   ]
  },
  {
   "key": "Une flotte {0} a heurté votre champ de mines en ({1}, {2}).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:531 prop:text"
+   "engine/movement.ts:536 prop:text"
   ]
  },
  {
   "key": "{0} vaisseau(x) de {1} ont été détruits par des mines.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:590 prop:text"
+   "engine/movement.ts:595 prop:text"
   ]
  },
  {
   "key": "{0} a balayé {1} mines.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:738 prop:text"
+   "engine/movement.ts:743 prop:text"
   ]
  },
  {
   "key": "Un paquet de minerais lancé vers {0} s'est perdu dans {1} : les nuages sombres sont infranchissables.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:786 prop:text"
+   "engine/movement.ts:791 prop:text"
   ]
  },
  {
   "key": "Un paquet de minerais non intercepté a frappé {0} : {1} colons tués, {2} défenses détruites.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:831 prop:text"
+   "engine/movement.ts:836 prop:text"
   ]
  },
  {
   "key": "Votre paquet a frappé {0} : {1} colons tués.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:832 prop:text"
+   "engine/movement.ts:837 prop:text"
   ]
  },
  {
   "key": "Un paquet de {0} kt est arrivé sur {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:835 prop:text"
+   "engine/movement.ts:840 prop:text"
   ]
  },
  {
@@ -9742,23 +9770,23 @@
   "key": "Bienvenue, {0}. Votre monde natal {1} vous attend. Envoyez vos éclaireurs explorer la galaxie.",
   "kind": "tpl",
   "refs": [
-   "engine/newgame.ts:380 prop:text"
+   "engine/newgame.ts:382 prop:text"
   ]
  },
  {
   "key": "Partie rapide",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:398 prop:name",
-   "ui/welcome.tsx:72 jsx"
+   "engine/newgame.ts:400 prop:name",
+   "ui/welcome.tsx:81 jsx"
   ]
  },
  {
   "key": "Tutoriel",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:412",
-   "ui/app.tsx:162 prop:label",
+   "engine/newgame.ts:414",
+   "ui/app.tsx:164 prop:label",
    "ui/tutorial.tsx:1230 jsx",
    "ui/tutorial.tsx:1243 attr:aria-label"
   ]
@@ -10959,7 +10987,7 @@
    "engine/production.ts:18 prop:defenses",
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/dialogs/race.tsx:13 prop:defenses",
-   "ui/inspector.tsx:142 attr:k"
+   "ui/inspector.tsx:161 attr:k"
   ]
  },
  {
@@ -11070,7 +11098,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:23 prop:capital",
-   "ui/inspector.tsx:227"
+   "ui/inspector.tsx:246"
   ]
  },
  {
@@ -11085,7 +11113,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:23 prop:refit",
-   "ui/inspector.tsx:200 attr:title",
+   "ui/inspector.tsx:219 attr:title",
    "ui/sidebar.tsx:16",
    "ui/sidebar.tsx:58 prop:label"
   ]
@@ -11131,8 +11159,8 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:26 prop:agency",
-   "ui/dialogs/misc.tsx:257 jsx",
-   "ui/inspector.tsx:282 attr:k"
+   "ui/dialogs/misc.tsx:259 jsx",
+   "ui/inspector.tsx:301 attr:k"
   ]
  },
  {
@@ -11239,7 +11267,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:204 prop:what",
-   "engine/turn.ts:72 prop:defense"
+   "engine/turn.ts:73 prop:defense"
   ]
  },
  {
@@ -12159,35 +12187,35 @@
   "key": "Percées aléatoires",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:20 prop:name"
+   "engine/rules.ts:21 prop:name"
   ]
  },
  {
   "key": "Les temps de recherche sont estimés, pas exacts : une percée peut arriver en avance ou se faire attendre.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:20 prop:text"
+   "engine/rules.ts:21 prop:text"
   ]
  },
  {
   "key": "Arbre technologique variable",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:21 prop:name"
+   "engine/rules.ts:22 prop:name"
   ]
  },
  {
   "key": "Chaque partie décale en secret le niveau requis de chaque technologie (±2).",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:21 prop:text"
+   "engine/rules.ts:22 prop:text"
   ]
  },
  {
   "key": "Terrain",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:22 prop:name",
+   "engine/rules.ts:23 prop:name",
    "ui/dialogs/misc.tsx:211 jsx"
   ]
  },
@@ -12195,30 +12223,30 @@
   "key": "Nébuleuses (scanners divisés par deux, Warp 6 maximum), tempêtes ioniques dérivantes (boucliers divisés par deux) et amas denses (riches, Warp 5 maximum).",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:22 prop:text"
+   "engine/rules.ts:23 prop:text"
   ]
  },
  {
   "key": "Coût de la taille",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:23 prop:name",
-   "ui/dialogs/misc.tsx:216 jsx"
+   "engine/rules.ts:24 prop:name",
+   "ui/dialogs/misc.tsx:218 jsx"
   ]
  },
  {
   "key": "Le rendement baisse loin de la capitale et des capitales régionales ; un monde conquis met une génération à produire pleinement ; perdre la capitale désorganise l'empire.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:23 prop:text"
+   "engine/rules.ts:24 prop:text"
   ]
  },
  {
   "key": "Réseau logistique",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:24 prop:name",
-   "ui/dialogs/misc.tsx:218 jsx",
+   "engine/rules.ts:25 prop:name",
+   "ui/dialogs/misc.tsx:220 jsx",
    "ui/empire.tsx:127 attr:title",
    "ui/sidebar.tsx:16"
   ]
@@ -12227,29 +12255,29 @@
   "key": "Politiques migratoires et minières : des convois automatiques, réels et interceptables, déplacent colons et minerais.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:24 prop:text"
+   "engine/rules.ts:25 prop:text"
   ]
  },
  {
   "key": "Rôles de combat",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:25 prop:name"
+   "engine/rules.ts:26 prop:name"
   ]
  },
  {
   "key": "Écran, ligne, artillerie ; ciblage par la menace (fini les leurres bon marché qui absorbent les tirs) ; seuils de retraite.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:25 prop:text"
+   "engine/rules.ts:26 prop:text"
   ]
  },
  {
   "key": "Doctrines",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:26 prop:name",
-   "ui/dialogs/misc.tsx:226 jsx",
+   "engine/rules.ts:27 prop:name",
+   "ui/dialogs/misc.tsx:228 jsx",
    "ui/dialogs/research.tsx:106 jsx",
    "ui/empire.tsx:210 attr:title"
   ]
@@ -12258,15 +12286,15 @@
   "key": "À certains niveaux, chaque empire choisit entre deux doctrines exclusives et définitives.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:26 prop:text"
+   "engine/rules.ts:27 prop:text"
   ]
  },
  {
   "key": "Mégaprojets",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:27 prop:name",
-   "ui/dialogs/misc.tsx:228 jsx",
+   "engine/rules.ts:28 prop:name",
+   "ui/dialogs/misc.tsx:230 jsx",
    "ui/empire.tsx:173 attr:title"
   ]
  },
@@ -12274,15 +12302,15 @@
   "key": "Constructions de longue haleine, qui apparaissent quand la recherche s'en approche ; l'une d'elles fait gagner la partie, et toute la galaxie suit son avancement.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:27 prop:text"
+   "engine/rules.ts:28 prop:text"
   ]
  },
  {
   "key": "Objectifs secrets",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:28 prop:name",
-   "ui/dialogs/misc.tsx:230 jsx",
+   "engine/rules.ts:29 prop:name",
+   "ui/dialogs/misc.tsx:232 jsx",
    "ui/empire.tsx:195 attr:title"
   ]
  },
@@ -12290,74 +12318,74 @@
   "key": "Deux objectifs cachés par empire, révélés à la fin ; chacun accompli rapporte des points de score.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:28 prop:text"
+   "engine/rules.ts:29 prop:text"
   ]
  },
  {
   "key": "Leurres et incertitude",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:29 prop:name",
-   "ui/dialogs/misc.tsx:232 jsx"
+   "engine/rules.ts:30 prop:name",
+   "ui/dialogs/misc.tsx:234 jsx"
   ]
  },
  {
   "key": "Sans scanner pénétrant, la masse et le nombre des flottes repérées sont des estimations (±30 %) ; les leurres holographiques gonflent les flottes.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:29 prop:text"
+   "engine/rules.ts:30 prop:text"
   ]
  },
  {
   "key": "Anomalies et archéologie",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:30 prop:name",
-   "ui/dialogs/misc.tsx:239 jsx"
+   "engine/rules.ts:31 prop:name",
+   "ui/dialogs/misc.tsx:241 jsx"
   ]
  },
  {
   "key": "Des anomalies à étudier avec un vaisseau doté d'un scanner, des sites archéologiques à fouiller chapitre par chapitre, des reliques, la carte dispersée des Anciens, et des étoiles cachées à découvrir.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:30 prop:text"
+   "engine/rules.ts:31 prop:text"
   ]
  },
  {
   "key": "Des flottes immobiles et redoutables veillent sur des mondes riches loin des capitales. Les vaincre rapporte recherche, minerais et parfois une relique.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:31 prop:text"
+   "engine/rules.ts:32 prop:text"
   ]
  },
  {
   "key": "Origines",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:32 prop:name",
-   "ui/dialogs/misc.tsx:262 jsx"
+   "engine/rules.ts:33 prop:name",
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "Chaque empire choisit une origine (monde condamné, monde-relique, colonie perdue...) qui change son départ.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:32 prop:text"
+   "engine/rules.ts:33 prop:text"
   ]
  },
  {
   "key": "Vers 2415, des bandes de pirates s'installent dans des repaires loin des capitales. Tous les quelques années, un raid pille une colonie riche et mal défendue. On peut les payer pour viser un rival (une prime anonyme) ; détruire un repaire rapporte de la recherche et son butin.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:33 prop:text"
+   "engine/rules.ts:34 prop:text"
   ]
  },
  {
   "key": "Crise de fin de partie",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:34 prop:name",
-   "ui/dialogs/misc.tsx:260 jsx",
+   "engine/rules.ts:35 prop:name",
+   "ui/dialogs/misc.tsx:262 jsx",
    "ui/empire.tsx:46 attr:title"
   ]
  },
@@ -12365,31 +12393,31 @@
   "key": "Vers 2490-2520 selon la taille de la galaxie, une Brèche s'ouvre loin des empires (annoncée dix ans avant). Son gardien, le Nexus, est plus fort que n'importe quelle flotte de la galaxie, et des vagues de Moissonneurs en sortent pour ravager les mondes des plus puissants. À la Brèche, les empires ne se combattent pas entre eux ; celui qui abat le Nexus gagne la partie.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:34 prop:text"
+   "engine/rules.ts:35 prop:text"
   ]
  },
  {
   "key": "Diplomatie négociée",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:35 prop:name",
-   "ui/dialogs/misc.tsx:252 jsx"
+   "engine/rules.ts:36 prop:name",
+   "ui/dialogs/misc.tsx:254 jsx"
   ]
  },
  {
   "key": "Guerre, paix ou alliance entre chaque paire d'empires, accords commerciaux et scientifiques, tributs et cadeaux. Les ordinateurs ont une opinion de chaque empire, avec ses raisons, et répondent aux propositions selon des règles affichées à l'avance. On ne combat, n'envahit et ne bombarde que les empires avec qui l'on est en guerre.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:35 prop:text"
+   "engine/rules.ts:36 prop:text"
   ]
  },
  {
   "key": "Renseignement",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:36 prop:name",
+   "engine/rules.ts:37 prop:name",
    "ui/dialogs/misc.tsx:69 jsx",
-   "ui/dialogs/misc.tsx:255 jsx",
+   "ui/dialogs/misc.tsx:257 jsx",
    "ui/diplomacy.tsx:135 jsx"
   ]
  },
@@ -12397,28 +12425,28 @@
   "key": "Ce que l'on sait des autres empires se construit : leurs mondes sous vos scanners pénétrants ou vos vaisseaux en orbite, leurs vaisseaux identifiés, les accords et alliances, des ambassades (réciproques), des réseaux d'espions, les combats et les conquêtes. Le niveau de renseignement (0 à 100) révèle d'abord des estimations, puis les chiffres exacts de leur score, de leur technologie et de leur flotte, enfin leurs recherches et leurs objectifs secrets. Les ordinateurs jugent votre force à travers ce qu'ils savent de vous.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:36 prop:text"
+   "engine/rules.ts:37 prop:text"
   ]
  },
  {
   "key": "Débris technologiques",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:37 prop:name"
+   "engine/rules.ts:38 prop:name"
   ]
  },
  {
   "key": "Qui tient le terrain après une bataille étudie les épaves ennemies : si elles portaient des composants inconnus, ses scientifiques progressent vers eux (un tiers du niveau suivant dans le domaine du plus avancé), avec d'autant plus de chances que les épaves sont nombreuses.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:37 prop:text"
+   "engine/rules.ts:38 prop:text"
   ]
  },
  {
   "key": "Vétérans",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:38 prop:name",
+   "engine/rules.ts:39 prop:name",
    "engine/veterans.ts:13 prop:name"
   ]
  },
@@ -12426,126 +12454,126 @@
   "key": "Les équipages qui survivent aux batailles gagnent de l'expérience, surtout en détruisant des vaisseaux ennemis : cinq rangs, de Recrues à Légende, chacun avec un peu plus de dégâts et de précision. Fusionner des recrues dans une flotte aguerrie dilue son expérience. Chaque flotte tient un journal de bord.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:38 prop:text"
+   "engine/rules.ts:39 prop:text"
   ]
  },
  {
   "key": "Némésis",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:39 prop:name"
+   "engine/rules.ts:40 prop:name"
   ]
  },
  {
   "key": "Un empire ordinateur se souvient des vaisseaux et des mondes que vous lui avez pris. Au-delà d'un seuil, il jure votre perte : guerre dès qu'il le peut, vos mondes les plus faibles pour cible, aucune paix tant qu'il n'est pas brisé (60 % des mondes qu'il tenait, ou sa capitale). Une seule némésis à la fois.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:39 prop:text"
+   "engine/rules.ts:40 prop:text"
   ]
  },
  {
   "key": "Trois actes",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:40 prop:name"
+   "engine/rules.ts:41 prop:name"
   ]
  },
  {
   "key": "La partie se joue en trois actes, chacun annoncé par un carton titre : l'Éveil (les ordinateurs ne font pas la guerre, pas de mégaprojet), les Rivalités (guerres, mégaprojets sauf le Portail, cataclysmes), l'Apothéose (le Portail, une recherche 15 % moins chère, la Brèche). L'acte suivant vient avec le temps, ou plus tôt quand la galaxie change (colonisation, première guerre, course au Portail).",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:40 prop:text"
+   "engine/rules.ts:41 prop:text"
   ]
  },
  {
   "key": "Relais du Portail",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:41 prop:name"
+   "engine/rules.ts:42 prop:name"
   ]
  },
  {
   "key": "Le Portail de l'Ascension demande trois relais de l'Ascension, sur trois mondes différents de l'empire qui le bâtit. Toute la galaxie apprend où ils s'élèvent ; perdre un relais met le chantier du Portail en pause.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:41 prop:text"
+   "engine/rules.ts:42 prop:text"
   ]
  },
  {
   "key": "Diaspora",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:42 prop:name"
+   "engine/rules.ts:43 prop:name"
   ]
  },
  {
   "key": "Un empire qui perd son dernier monde survit tant qu'une de ses arches transporte des colons. Les arches glanent un peu de carburant chaque année ; la première colonie fondée en exil devient la nouvelle capitale, avec des usines et des mines apportées dans les soutes.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:42 prop:text"
+   "engine/rules.ts:43 prop:text"
   ]
  },
  {
   "key": "Cataclysmes annoncés",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:43 prop:name"
+   "engine/rules.ts:44 prop:name"
   ]
  },
  {
   "key": "À partir du deuxième acte (vers 2445 sans les actes), de temps en temps, une supernova annoncée quinze ans à l'avance (tout est balayé à moins de 35 al, irradié jusqu'à 70 al) ou un trou noir errant qui traverse la galaxie en ligne droite. Les ruines regorgent d'éléments lourds.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:43 prop:text"
+   "engine/rules.ts:44 prop:text"
   ]
  },
  {
   "key": "Âges d'or",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:44 prop:name"
+   "engine/rules.ts:45 prop:name"
   ]
  },
  {
   "key": "La culture que rayonnent vos mondes (population, capitale, stations, bâtiments culturels, mécénat) devient de l'inspiration ; assez d'inspiration ouvre un âge d'or de dix ans : 15 % de ressources et de recherche en plus. Le suivant en demande davantage. Demande la règle Culture et territoires.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:44 prop:text"
+   "engine/rules.ts:45 prop:text"
   ]
  },
  {
   "key": "Dilemmes",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:45 prop:name"
+   "engine/rules.ts:46 prop:name"
   ]
  },
  {
   "key": "Tous les dix à quinze ans environ, un choix difficile : réfugiés, filon, savant renégat, grève, culte, épave, mutations, triomphe. Deux réponses, leur prix annoncé, cinq ans pour trancher (sinon la seconde s'applique). Les ordinateurs en ont aussi.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:45 prop:text"
+   "engine/rules.ts:46 prop:text"
   ]
  },
  {
   "key": "Histoires au long cours",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:46 prop:name"
+   "engine/rules.ts:47 prop:name"
   ]
  },
  {
   "key": "Tous les trente ou quarante ans, chaque empire vit une histoire en plusieurs étapes, sur une ou deux décennies : un signal venu d'un monde lointain, une peste à confiner ou non, un prophète à embrasser ou exiler.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:46 prop:text"
+   "engine/rules.ts:47 prop:text"
   ]
  },
  {
   "key": "Le secret des Anciens",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:47 prop:name",
+   "engine/rules.ts:48 prop:name",
    "ui/destiny.tsx:43 attr:title"
   ]
  },
@@ -12553,50 +12581,65 @@
   "key": "Ce qu'est la Brèche change à chaque partie. Fouilles, anomalies, observation de la Brèche et épaves des Moissonneurs donnent des indices ; six révèlent la vérité et le moyen de la sceller : le Sceau des Anciens, un mégaprojet dont le lieu dépend du secret, qui referme la Brèche et donne la victoire. Demande la crise de fin de partie et les mégaprojets.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:47 prop:text"
+   "engine/rules.ts:48 prop:text"
   ]
  },
  {
   "key": "Gouverneurs de secteur",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:48 prop:name"
+   "engine/rules.ts:49 prop:name"
   ]
  },
  {
   "key": "Chaque siège (la capitale, une capitale régionale, ou, sans la règle « Coût de la taille », un siège désigné) forme un secteur avec les mondes dont il est le plus proche. Un gouverneur nommé à sa tête apporte un talent qui grandit avec les années (ressources, usines et mines moins chères, défenses et stations moins chères, extraction, culture) et peut gérer les files de production du secteur selon une consigne : développement, industrie, fortification ou rayonnement. Il renforce les défenses quand une flotte hostile approche.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:48 prop:text"
+   "engine/rules.ts:49 prop:text"
   ]
  },
  {
   "key": "Victoires d'origine",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:49 prop:name"
+   "engine/rules.ts:50 prop:name"
   ]
  },
  {
   "key": "Chaque origine a sa propre victoire, que seul son empire peut atteindre, à partir de 2430 : rester en tête vingt-cinq ans, refaire un berceau, réunir quatre reliques, faire grandir la colonie perdue, cartographier la galaxie, dépasser les Anciens…",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:49 prop:text"
+   "engine/rules.ts:50 prop:text"
+  ]
+ },
+ {
+  "key": "Effet de serre",
+  "kind": "str",
+  "refs": [
+   "engine/rules.ts:51 prop:name",
+   "ui/dialogs/misc.tsx:213 jsx"
+  ]
+ },
+ {
+  "key": "Les usines au travail rejettent des gaz à effet de serre : leur monde se réchauffe peu à peu, d'autant plus que son industrie est grande (environ +11 °C pour 400 ressources d'usines par an, +20 °C pour 1 000), et ne se refroidit que lentement. Trois technologies réduisent les rejets (Énergie décarbonée, Captage du carbone, Régulation climatique) ; la terraformation de température compense le reste, dans ses limites. Un monde trop froid pour votre race peut y gagner.",
+  "kind": "str",
+  "refs": [
+   "engine/rules.ts:51 prop:text"
   ]
  },
  {
   "key": "Culture et territoires",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:50 prop:name",
-   "ui/dialogs/misc.tsx:245 jsx"
+   "engine/rules.ts:52 prop:name",
+   "ui/dialogs/misc.tsx:247 jsx"
   ]
  },
  {
   "key": "Chaque colonie rayonne autour d'elle, de plus en plus loin avec sa population, son ancienneté et ses bâtiments culturels. On ne peut pas coloniser dans le territoire d'un autre empire, et un monde dominé par une culture étrangère finit, après quelques décennies, par la rejoindre.",
   "kind": "str",
   "refs": [
-   "engine/rules.ts:50 prop:text"
+   "engine/rules.ts:52 prop:text"
   ]
  },
  {
@@ -13447,17 +13490,101 @@
   ]
  },
  {
+  "key": "Énergie décarbonée",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:62 prop:name"
+  ]
+ },
+ {
+  "key": "usines moins polluantes",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:63 prop:what"
+  ]
+ },
+ {
+  "key": "Les usines tirent leur énergie de la fusion plutôt que de la combustion : elles rejettent 40 % de gaz à effet de serre en moins.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:64 prop:explain"
+  ]
+ },
+ {
+  "key": "vos usines rejettent désormais 40 % de gaz à effet de serre en moins.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:65 prop:unlocked"
+  ]
+ },
+ {
+  "key": "Captage du carbone",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:68 prop:name"
+  ]
+ },
+ {
+  "key": "rejets des usines divisés par deux",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:69 prop:what"
+  ]
+ },
+ {
+  "key": "Des micro-organismes modifiés fixent le carbone à la sortie des usines : leurs rejets de gaz à effet de serre sont divisés par deux.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:70 prop:explain"
+  ]
+ },
+ {
+  "key": "les rejets de gaz à effet de serre de vos usines sont désormais divisés par deux.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:71 prop:unlocked"
+  ]
+ },
+ {
+  "key": "Régulation climatique",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:74 prop:name"
+  ]
+ },
+ {
+  "key": "refroidissement actif des mondes réchauffés",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:75 prop:what"
+  ]
+ },
+ {
+  "key": "Des processeurs atmosphériques retirent le carbone de l'air : les rejets des usines sont encore divisés par deux, et un monde réchauffé par son industrie se refroidit cinq fois plus vite.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:76 prop:explain"
+  ]
+ },
+ {
+  "key": "vos processeurs atmosphériques divisent encore par deux les rejets des usines et refroidissent cinq fois plus vite les mondes réchauffés.",
+  "kind": "str",
+  "refs": [
+   "engine/specials.ts:77 prop:unlocked"
+  ]
+ },
+ {
   "key": ", avec {0} {1}",
   "kind": "tpl",
   "refs": [
-   "engine/specials.ts:103 call:map"
+   "engine/specials.ts:125 call:map"
   ]
  },
  {
   "key": "{0} {1} à {2} selon la partie ({3} le plus souvent){4}",
   "kind": "tpl",
   "refs": [
-   "engine/specials.ts:104"
+   "engine/specials.ts:126"
   ]
  },
  {
@@ -14131,7 +14258,7 @@
   "refs": [
    "engine/tech.ts:114 prop:SpaceDock",
    "ui/dialogs/designer.tsx:319 attr:k",
-   "ui/inspector.tsx:156 attr:k"
+   "ui/inspector.tsx:175 attr:k"
   ]
  },
  {
@@ -14412,554 +14539,498 @@
   "key": "Genesis",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:14"
+   "engine/trader.ts:13"
   ]
  },
  {
-  "key": "Un {0} s'annonce à {1} al de {2}, Warp {3}{4} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense (il garde la flotte en paiement). Tant qu'il passe à moins de {5} al de vos mondes, il émet sa position.",
+  "key": "Un {0} s'annonce à {1} al de {2}, Warp {3}{4} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense. Tant qu'il passe à moins de {5} al de vos mondes, il émet sa position.",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:58 prop:text"
+   "engine/trader.ts:57 prop:text"
   ]
  },
  {
   "key": "cap à l'est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au sud-est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au sud",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au sud-ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap à l'ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au nord-ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au nord",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
   "key": "cap au nord-est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:65"
+   "engine/trader.ts:64"
   ]
  },
  {
-  "key": "vos {0} kt de minerais et {1} ({2} vaisseaux)",
+  "key": "Le {0} a accepté vos {1} kt de minerais et vous a transmis {2} niveaux de technologie ({3}).",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:133"
+   "engine/trader.ts:141 prop:text"
   ]
  },
  {
-  "key": "vos {0} kt de minerais et {1} (un vaisseau)",
+  "key": "Le {0} a accepté vos {1} kt de minerais et vous a cédé une technologie extraterrestre : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:133"
-  ]
- },
- {
-  "key": "Le {0} a pris en paiement {1}, et vous a transmis {2} niveaux de technologie ({3}).",
-  "kind": "tpl",
-  "refs": [
-   "engine/trader.ts:144 prop:text"
-  ]
- },
- {
-  "key": "Le {0} a pris en paiement {1}, et vous a cédé une technologie extraterrestre : {2}.",
-  "kind": "tpl",
-  "refs": [
-   "engine/trader.ts:154 prop:text"
+   "engine/trader.ts:151 prop:text"
   ]
  },
  {
   "key": "défense",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:defense"
+   "engine/turn.ts:73 prop:defense"
   ]
  },
  {
   "key": "{0} devient capitale régionale : les planètes à moins de {1} al retrouvent leur plein rendement.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:136 prop:text"
+   "engine/turn.ts:138 prop:text"
   ]
  },
  {
   "key": "{0} : {1} × {2} construit{3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:146 prop:text"
+   "engine/turn.ts:148 prop:text"
   ]
  },
  {
   "key": "La file de production de {0} est vide.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:150 prop:text"
+   "engine/turn.ts:152 prop:text"
   ]
  },
  {
   "key": "Constructions de l'année : {0} sur {1} planète{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:158 prop:text"
+   "engine/turn.ts:160 prop:text"
   ]
  },
  {
   "key": "La colonie de {0} s'est éteinte.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:180 prop:text"
+   "engine/turn.ts:184 prop:text"
   ]
  },
  {
   "key": "Victoire ! Les {0} ont atteint les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:261 prop:text"
+   "engine/turn.ts:265 prop:text"
   ]
  },
  {
   "key": "Les {0} ont atteint les conditions de victoire. La partie peut continuer.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:261 prop:text"
+   "engine/turn.ts:265 prop:text"
   ]
  },
  {
   "key": " {0} (Recherche, Technologies déjà trouvées).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:279"
+   "engine/turn.ts:283"
   ]
  },
  {
   "key": "{0} peut améliorer {1} de vos modèles",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:279 call:map"
+   "engine/turn.ts:283 call:map"
   ]
  },
  {
   "key": "Nouvelles technologies disponibles{0} : {1}.{2}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:283 prop:text"
+   "engine/turn.ts:287 prop:text"
   ]
  },
  {
   "key": "Vous avez reçu {0} enregistrement{1} de bataille cette année.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:290 prop:text"
+   "engine/turn.ts:294 prop:text"
   ]
  },
  {
   "key": "Objectif atteint : le grand projet « {0} » peut être lancé.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:305 prop:text"
+   "engine/turn.ts:309 prop:text"
   ]
  },
  {
   "key": "Objectif atteint : {0} est disponible.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:305 prop:text"
+   "engine/turn.ts:309 prop:text"
   ]
  },
  {
   "key": " Percée en avance sur les prévisions !",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:328"
+   "engine/turn.ts:332"
   ]
  },
  {
   "key": " La percée s'est fait attendre.",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:328"
+   "engine/turn.ts:332"
   ]
  },
  {
   "key": "Vos scientifiques ont atteint le niveau {0} en {1}.{2}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:329 prop:text"
+   "engine/turn.ts:333 prop:text"
   ]
  },
  {
   "key": "{0} : {1} vaisseau{2} de {3} modernisé{4} ({5}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:352 prop:text"
+   "engine/turn.ts:356 prop:text"
   ]
  },
  {
   "key": "Modernisation ",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:352 call:replace"
+   "engine/turn.ts:356 call:replace"
   ]
  },
  {
   "key": "{0} a construit {1}, qui rejoint le réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:363 prop:text"
+   "engine/turn.ts:367 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, qui commence ses allers-retours entre {2} et {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:364 prop:text"
+   "engine/turn.ts:368 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, qui part {2} {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:364 prop:text"
+   "engine/turn.ts:368 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, mais {2} est hors de portée avec son carburant : donnez-lui ses ordres.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:364 prop:text"
+   "engine/turn.ts:368 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1} × {2}, en renfort de {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:370 prop:text"
+   "engine/turn.ts:374 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1} × {2} ({3}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:374 prop:text"
+   "engine/turn.ts:378 prop:text"
   ]
  },
  {
   "key": "La base {0} est opérationnelle en orbite de {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:392 prop:text"
+   "engine/turn.ts:396 prop:text"
   ]
  },
  {
   "key": "Le Créateur de mondes a remodelé {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:406 prop:text"
+   "engine/turn.ts:411 prop:text"
   ]
  },
  {
   "key": "L'environnement de {0} s'est amélioré de façon permanente.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:460 prop:text"
+   "engine/turn.ts:465 prop:text"
   ]
  },
  {
   "key": "Les bombardiers des {0}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:517"
+   "engine/turn.ts:522"
   ]
  },
  {
   "key": "{0} colons tués, {1} mines, {2} usines et {3} défenses détruites",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:532 call:push"
+   "engine/turn.ts:537 call:push"
   ]
  },
  {
   "key": "{0} colons tués par les bombes intelligentes",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:538 call:push"
+   "engine/turn.ts:543 call:push"
   ]
  },
  {
   "key": "dé-terraformée",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:549 call:push"
+   "engine/turn.ts:554 call:push"
   ]
  },
  {
   "key": "Vos {0} flottes de bombardiers ont bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:552 prop:text"
+   "engine/turn.ts:557 prop:text"
   ]
  },
  {
   "key": "{0} a bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:552 prop:text"
+   "engine/turn.ts:557 prop:text"
   ]
  },
  {
   "key": "{0} ont bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:553 prop:text"
+   "engine/turn.ts:558 prop:text"
   ]
  },
  {
   "key": "{0} a été entièrement dépeuplée par les bombardements.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:556 call:report"
+   "engine/turn.ts:561 call:report"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et commence à forer (premiers minerais l'an prochain).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:638"
+   "engine/turn.ts:642"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et pose ses mines.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:639"
+   "engine/turn.ts:643"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et patrouille.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:640"
+   "engine/turn.ts:644"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et reste en poste.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:641"
+   "engine/turn.ts:645"
   ]
  },
  {
   "key": "{0} est à son poste à {1} : elle ravitaillera les flottes à court de carburant dans un rayon de {2} al.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:642"
+   "engine/turn.ts:646"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et commence l'étude de l'anomalie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:643"
+   "engine/turn.ts:647"
   ]
  },
  {
   "key": "{0} est arrivée dans la zone de sondage et cherche un passage dans le nuage.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:644"
+   "engine/turn.ts:648"
   ]
  },
  {
   "key": "{0} est arrivée au trou de ver scellé et commence à l'étudier.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:645"
+   "engine/turn.ts:649"
   ]
  },
  {
   "key": "{0} est arrivée à {1} : modernisation en chantier ({2}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:646"
+   "engine/turn.ts:650"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et attend des ordres.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:647"
+   "engine/turn.ts:651"
   ]
  },
  {
   "key": "énorme",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:671"
+   "engine/turn.ts:674"
   ]
  },
  {
   "key": "d'ironium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:672 prop:ironium"
+   "engine/turn.ts:675 prop:ironium"
   ]
  },
  {
   "key": "de boranium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:672 prop:boranium"
+   "engine/turn.ts:675 prop:boranium"
   ]
  },
  {
   "key": "de germanium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:672 prop:germanium"
+   "engine/turn.ts:675 prop:germanium"
   ]
  },
  {
   "key": "Une comète {0} a frappé {1} : {2} colons tués et {3} kt {4} déposés en surface.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:674"
+   "engine/turn.ts:677"
   ]
  },
  {
   "key": "Une comète {0} a frappé {1} : {2} kt {3} déposés en surface.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:675"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : la gravité augmente pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:706"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : la gravité baisse pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:707"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : la planète se réchauffe pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:709"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : la planète se refroidit pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:710"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : les radiations augmentent pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:711"
-  ]
- },
- {
-  "key": "Changement de climat sur {0} : les radiations baissent pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
-  "kind": "tpl",
-  "refs": [
-   "engine/turn.ts:712"
+   "engine/turn.ts:678"
   ]
  },
  {
   "key": "Votre empire a été anéanti.",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:724 prop:text",
-   "ui/dialogs/misc.tsx:315 jsx"
+   "engine/turn.ts:699 prop:text",
+   "ui/dialogs/misc.tsx:317 jsx"
   ]
  },
  {
   "key": "L'empire des {0} a été anéanti.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:724 prop:text"
+   "engine/turn.ts:699 prop:text"
   ]
  },
  {
   "key": "L'empire des {0} disparaît.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:725 call:addChronicle"
+   "engine/turn.ts:700 call:addChronicle"
   ]
  },
  {
   "key": "Les {0} abattent le Nexus et remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:735"
+   "engine/turn.ts:710"
   ]
  },
  {
   "key": "Les {0} scellent la Brèche et remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:736"
+   "engine/turn.ts:711"
   ]
  },
  {
   "key": "Les {0}, derniers debout, remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:738"
+   "engine/turn.ts:713"
   ]
  },
  {
   "key": "Les {0} atteignent les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:739"
+   "engine/turn.ts:714"
   ]
  },
  {
@@ -15681,7 +15752,7 @@
   "kind": "tpl",
   "refs": [
    "ui/actions.ts:120 prop:label",
-   "ui/inspector.tsx:365 jsx"
+   "ui/inspector.tsx:384 jsx"
   ]
  },
  {
@@ -16118,7 +16189,7 @@
   "key": "Carte",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/tutorial.tsx:110 prop:map"
   ]
  },
@@ -16126,7 +16197,7 @@
   "key": "Carte galactique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/pages.tsx:114 jsx"
   ]
  },
@@ -16134,8 +16205,8 @@
   "key": "Colonies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/app.tsx:34",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/dialogs/reports.tsx:161 prop:label",
    "ui/sidebar.tsx:124 attr:title"
   ]
@@ -16144,14 +16215,14 @@
   "key": "Vos colonies (F3)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33"
+   "ui/app.tsx:34"
   ]
  },
  {
   "key": "Planificateur de colonies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/pages.tsx:286 attr:title",
    "ui/tutorial.tsx:110 prop:planner"
   ]
@@ -16160,14 +16231,14 @@
   "key": "Mondes analysés classés par habitabilité, envoi d'arches (C)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33"
+   "ui/app.tsx:34"
   ]
  },
  {
   "key": "Planificateur de minage",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/pages.tsx:365 attr:title",
    "ui/tutorial.tsx:113 prop:mining"
   ]
@@ -16176,14 +16247,14 @@
   "key": "Mondes libres classés par richesse minérale, envoi de vaisseaux de minage (X)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33"
+   "ui/app.tsx:34"
   ]
  },
  {
   "key": "Flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/dialogs/reports.tsx:162 prop:label",
    "ui/sidebar.tsx:135 jsx",
    "ui/tutorial.tsx:113 prop:fleets"
@@ -16193,7 +16264,7 @@
   "key": "Vos flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/pages.tsx:517 attr:title"
   ]
  },
@@ -16201,7 +16272,7 @@
   "key": "Empire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33",
+   "ui/app.tsx:34",
    "ui/dialogs/battle.tsx:51 attr:k",
    "ui/dialogs/misc.tsx:69 jsx",
    "ui/dialogs/misc.tsx:210 jsx"
@@ -16211,16 +16282,16 @@
   "key": "Administration, réseau logistique, mégaprojets, objectifs secrets, doctrines",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:33"
+   "ui/app.tsx:34"
   ]
  },
  {
   "key": "Conception",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34",
+   "ui/app.tsx:35",
    "ui/dialogs/designer.tsx:50 attr:title",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/tutorial.tsx:111 prop:design"
   ]
  },
@@ -16228,15 +16299,15 @@
   "key": "Conception de vaisseaux et de stations (F4)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34"
+   "ui/app.tsx:35"
   ]
  },
  {
   "key": "Recherche",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/app.tsx:35",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/dialogs/race.tsx:68 jsx",
    "ui/dialogs/race.tsx:163 jsx"
   ]
@@ -16245,16 +16316,16 @@
   "key": "Recherche (F5)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34"
+   "ui/app.tsx:35"
   ]
  },
  {
   "key": "Diplomatie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34",
+   "ui/app.tsx:35",
    "ui/dialogs/misc.tsx:66 attr:title",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/diplomacy.tsx:125 attr:title"
   ]
  },
@@ -16262,14 +16333,14 @@
   "key": "Relations avec les empires rencontrés (F7)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:34"
+   "ui/app.tsx:35"
   ]
  },
  {
   "key": "Rapports",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/dialogs/reports.tsx:54 attr:title",
    "ui/tutorial.tsx:111 prop:reports"
   ]
@@ -16278,15 +16349,15 @@
   "key": "Rapports de l'année, batailles, score",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Guide",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/app.tsx:36",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/tutorial.tsx:111 prop:guide"
   ]
  },
@@ -16294,29 +16365,29 @@
   "key": "Guide du joueur (F1)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Exporter la partie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:44 prop:title"
+   "ui/app.tsx:45 prop:title"
   ]
  },
  {
   "key": "{0}, année {1}.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:44 prop:note"
+   "ui/app.tsx:45 prop:note"
   ]
  },
  {
   "key": "À propos",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:61 attr:title",
-   "ui/app.tsx:163 prop:label",
+   "ui/app.tsx:62 attr:title",
+   "ui/app.tsx:165 prop:label",
    "ui/dialogs/misc.tsx:176 prop:label"
   ]
  },
@@ -16324,133 +16395,133 @@
   "key": "Constellations",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:63 jsx"
+   "ui/app.tsx:64 jsx"
   ]
  },
  {
   "key": "colonie{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:66 jsx"
+   "ui/app.tsx:68 jsx"
   ]
  },
  {
   "key": "Croissance prévue l'an prochain : {0}{1} habitants ({2} %)",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:67 attr:title"
+   "ui/app.tsx:69 attr:title"
   ]
  },
  {
   "key": "habitants {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:67 jsx"
+   "ui/app.tsx:69 jsx"
   ]
  },
  {
   "key": "{0}{1}/an",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:67 jsx"
+   "ui/app.tsx:69 jsx"
   ]
  },
  {
   "key": "{0} % des ressources vont à la recherche (réglable dans l'onglet Recherche)",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:68 attr:title"
+   "ui/app.tsx:70 attr:title"
   ]
  },
  {
   "key": "ressources/an · {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:68 jsx"
+   "ui/app.tsx:70 jsx"
   ]
  },
  {
   "key": "{0} % recherche",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:68 jsx"
+   "ui/app.tsx:70 jsx"
   ]
  },
  {
   "key": "vaisseaux",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:69 jsx"
+   "ui/app.tsx:71 jsx"
   ]
  },
  {
   "key": "Année",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:75 jsx"
+   "ui/app.tsx:77 jsx"
   ]
  },
  {
   "key": "Ordres modifiés depuis la dernière sauvegarde automatique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:75 attr:title"
+   "ui/app.tsx:77 attr:title"
   ]
  },
  {
   "key": "Enregistrer le fichier de vos ordres pour l'hôte",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:76 attr:title"
+   "ui/app.tsx:78 attr:title"
   ]
  },
  {
   "key": "Ordres envoyés",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:76 jsx"
+   "ui/app.tsx:78 jsx"
   ]
  },
  {
   "key": "Envoyer mes ordres",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:76 jsx"
+   "ui/app.tsx:78 jsx"
   ]
  },
  {
   "key": "Fichiers de tour, ordres reçus, génération de l'année",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:77 attr:title"
+   "ui/app.tsx:79 attr:title"
   ]
  },
  {
   "key": "Hôte · ordres {0}/{1}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:77 jsx"
+   "ui/app.tsx:79 jsx"
   ]
  },
  {
   "key": "Générer l'année suivante (Entrée ou F9)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:78 attr:title"
+   "ui/app.tsx:80 attr:title"
   ]
  },
  {
   "key": "Tour suivant {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:78 jsx"
+   "ui/app.tsx:80 jsx"
   ]
  },
  {
   "key": "Entrée",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:78 jsx",
+   "ui/app.tsx:80 jsx",
    "ui/dialogs/misc.tsx:180 jsx"
   ]
  },
@@ -16458,234 +16529,234 @@
   "key": "Couper le son (réglages : menu ⋯, Affichage et son)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:87 attr:title"
+   "ui/app.tsx:89 attr:title"
   ]
  },
  {
   "key": "Activer le son",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:87 attr:title"
+   "ui/app.tsx:89 attr:title"
   ]
  },
  {
   "key": "Dilemme{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:108 jsx"
+   "ui/app.tsx:110 jsx"
   ]
  },
  {
   "key": "À trancher avant {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:108 attr:title"
+   "ui/app.tsx:110 attr:title"
   ]
  },
  {
   "key": "Décision à prendre{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:109 jsx"
+   "ui/app.tsx:111 jsx"
   ]
  },
  {
   "key": "Une découverte attend votre décision",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:109 attr:title"
+   "ui/app.tsx:111 attr:title"
   ]
  },
  {
   "key": "Doctrine à choisir{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:110 jsx"
+   "ui/app.tsx:112 jsx"
   ]
  },
  {
   "key": "{0} : {1} ou {2}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:110 call:map"
+   "ui/app.tsx:112 call:map"
   ]
  },
  {
   "key": "Portail des {0} : {1} %",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:111 jsx"
+   "ui/app.tsx:113 jsx"
   ]
  },
  {
   "key": "Les {0} construisent le Portail de l'Ascension sur {1}. Achevé, il leur donne la victoire.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:111 attr:title"
+   "ui/app.tsx:113 attr:title"
   ]
  },
  {
   "key": "En exil depuis {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:112 jsx"
+   "ui/app.tsx:114 jsx"
   ]
  },
  {
   "key": "Votre peuple vit à bord de ses arches : fondez une colonie pour refonder l'empire.",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:112 attr:title"
+   "ui/app.tsx:114 attr:title"
   ]
  },
  {
   "key": "Némésis : {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:113 jsx"
+   "ui/app.tsx:115 jsx"
   ]
  },
  {
   "key": "Les {0} ont juré votre perte en {1} : pas de paix tant que leur empire n'est pas brisé.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:113 attr:title"
+   "ui/app.tsx:115 attr:title"
   ]
  },
  {
   "key": "Âge d'or jusqu'en {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:114 jsx"
+   "ui/app.tsx:116 jsx"
   ]
  },
  {
   "key": "+15 % de ressources et de recherche sur tout l'empire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:114 attr:title"
+   "ui/app.tsx:116 attr:title"
   ]
  },
  {
   "key": "Désorganisé jusqu'en {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:115 jsx"
+   "ui/app.tsx:117 jsx"
   ]
  },
  {
   "key": "Capitale perdue : rendement de tout l'empire réduit",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:115 attr:title"
+   "ui/app.tsx:117 attr:title"
   ]
  },
  {
   "key": "Recherche en cours : {0}, vers le niveau {1}{2}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:131 attr:title"
+   "ui/app.tsx:133 attr:title"
   ]
  },
  {
   "key": ". Technologie ciblée : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:131"
+   "ui/app.tsx:133"
   ]
  },
  {
   "key": "vers niv. {0} · {1} %",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:132 jsx"
+   "ui/app.tsx:134 jsx"
   ]
  },
  {
   "key": "Cible : {0} · ≈ {1} %",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:134 jsx"
+   "ui/app.tsx:136 jsx"
   ]
  },
  {
   "key": "Recherche · aucune technologie ciblée",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:134 jsx"
+   "ui/app.tsx:136 jsx"
   ]
  },
  {
   "key": "Générer 5 années",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:142 prop:label"
+   "ui/app.tsx:144 prop:label"
   ]
  },
  {
   "key": "Générer 10 années",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:143 prop:label"
+   "ui/app.tsx:145 prop:label"
   ]
  },
  {
   "key": "Sauvegarder maintenant",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:144 prop:label"
+   "ui/app.tsx:146 prop:label"
   ]
  },
  {
   "key": "Partie sauvegardée dans ce navigateur",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:144 call:notify"
+   "ui/app.tsx:146 call:notify"
   ]
  },
  {
   "key": "Sauvegardes de secours…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:145 prop:label"
+   "ui/app.tsx:147 prop:label"
   ]
  },
  {
   "key": "Nouvelle partie…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:146 prop:label",
-   "ui/welcome.tsx:71 jsx"
+   "ui/app.tsx:148 prop:label",
+   "ui/welcome.tsx:80 jsx"
   ]
  },
  {
   "key": "Retour à l'accueil",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:147 prop:label"
+   "ui/app.tsx:149 prop:label"
   ]
  },
  {
   "key": "Ma race",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:148 prop:label",
-   "ui/dialogs/misc.tsx:267 call:map"
+   "ui/app.tsx:150 prop:label",
+   "ui/dialogs/misc.tsx:269 call:map"
   ]
  },
  {
   "key": "Assistant de race…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:149 prop:label",
-   "ui/welcome.tsx:74 jsx"
+   "ui/app.tsx:151 prop:label",
+   "ui/welcome.tsx:83 jsx"
   ]
  },
  {
   "key": "Plans de bataille…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:150 prop:label",
+   "ui/app.tsx:152 prop:label",
    "ui/dialogs/misc.tsx:66 jsx",
    "ui/diplomacy.tsx:125 jsx"
   ]
@@ -16694,7 +16765,7 @@
   "key": "Modèles de production…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:151 prop:label",
+   "ui/app.tsx:153 prop:label",
    "ui/pages.tsx:218 jsx"
   ]
  },
@@ -16702,16 +16773,16 @@
   "key": "Catalogue des technologies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:152 prop:label",
-   "ui/dialogs/misc.tsx:267 call:map"
+   "ui/app.tsx:154 prop:label",
+   "ui/dialogs/misc.tsx:269 call:map"
   ]
  },
  {
   "key": "Course à la victoire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:154 prop:label",
-   "ui/dialogs/misc.tsx:270 call:map",
+   "ui/app.tsx:156 prop:label",
+   "ui/dialogs/misc.tsx:272 call:map",
    "ui/victory.tsx:136 attr:title"
   ]
  },
@@ -16719,7 +16790,7 @@
   "key": "Chronique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:155 prop:label",
+   "ui/app.tsx:157 prop:label",
    "ui/chronicle.tsx:141 attr:title",
    "ui/chronicle.tsx:170 call:esc"
   ]
@@ -16728,22 +16799,22 @@
   "key": "Partie par fichiers…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:157 prop:label"
+   "ui/app.tsx:159 prop:label"
   ]
  },
  {
   "key": "Rechercher un objet…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:158 prop:label"
+   "ui/app.tsx:160 prop:label"
   ]
  },
  {
   "key": "Paramètres de la partie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:159 prop:label",
-   "ui/dialogs/misc.tsx:327 attr:title",
+   "ui/app.tsx:161 prop:label",
+   "ui/dialogs/misc.tsx:329 attr:title",
    "ui/dialogs/race.tsx:167 jsx"
   ]
  },
@@ -16751,22 +16822,22 @@
   "key": "Affichage et son…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:160 prop:label",
-   "ui/welcome.tsx:76 jsx"
+   "ui/app.tsx:162 prop:label",
+   "ui/welcome.tsx:85 jsx"
   ]
  },
  {
   "key": "Raccourcis clavier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:161 prop:label"
+   "ui/app.tsx:163 prop:label"
   ]
  },
  {
   "key": "Ouvrir le tutoriel ? Il se joue dans une partie à part ; celle-ci reste enregistrée dans ce navigateur.",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:162 call:ask",
+   "ui/app.tsx:164 call:ask",
    "ui/dialogs/misc.tsx:179 call:ask"
   ]
  },
@@ -16774,7 +16845,7 @@
   "key": "Ouvrir le tutoriel",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:162 call:ask",
+   "ui/app.tsx:164 call:ask",
    "ui/dialogs/misc.tsx:179 call:ask",
    "ui/dialogs/misc.tsx:179 jsx"
   ]
@@ -16783,21 +16854,21 @@
   "key": "Colonies et flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:173 attr:title"
+   "ui/app.tsx:175 attr:title"
   ]
  },
  {
   "key": "propositions en attente de votre réponse",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:175 attr:title"
+   "ui/app.tsx:177 attr:title"
   ]
  },
  {
   "key": "↶ Annuler",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:178 jsx",
+   "ui/app.tsx:180 jsx",
    "ui/tutorial.tsx:113 prop:undo"
   ]
  },
@@ -16805,16 +16876,16 @@
   "key": "Annuler le dernier ordre (Ctrl+Z)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:178 attr:title"
+   "ui/app.tsx:180 attr:title"
   ]
  },
  {
   "key": "Exporter",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:179 jsx",
+   "ui/app.tsx:181 jsx",
    "ui/dialogs/newgame.tsx:93 jsx",
-   "ui/inspector.tsx:272 jsx",
+   "ui/inspector.tsx:291 jsx",
    "ui/tutorial.tsx:113 prop:exportBtn"
   ]
  },
@@ -16822,137 +16893,137 @@
   "key": "Enregistrer la partie dans un fichier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:179 attr:title"
+   "ui/app.tsx:181 attr:title"
   ]
  },
  {
   "key": "Importer",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:180 jsx",
-   "ui/inspector.tsx:272 jsx"
+   "ui/app.tsx:182 jsx",
+   "ui/inspector.tsx:291 jsx"
   ]
  },
  {
   "key": "Charger une partie depuis un fichier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:180 attr:title"
+   "ui/app.tsx:182 attr:title"
   ]
  },
  {
   "key": "Plus",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:182 attr:title"
+   "ui/app.tsx:184 attr:title"
   ]
  },
  {
   "key": "Exporter la partie…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:184 jsx"
+   "ui/app.tsx:186 jsx"
   ]
  },
  {
   "key": "Importer une partie…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:185 jsx",
-   "ui/welcome.tsx:73 jsx"
+   "ui/app.tsx:187 jsx",
+   "ui/welcome.tsx:82 jsx"
   ]
  },
  {
   "key": "Partie sauvegardée",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:221 call:notify"
+   "ui/app.tsx:223 call:notify"
   ]
  },
  {
   "key": "Aucune flotte sans ordre",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:272 call:notify"
+   "ui/app.tsx:274 call:notify"
   ]
  },
  {
   "key": "Génération de l'année {0}…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:324 jsx"
+   "ui/app.tsx:326 jsx"
   ]
  },
  {
   "key": "Acte {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:338 attr:aria-label",
-   "ui/app.tsx:340 jsx"
+   "ui/app.tsx:340 attr:aria-label",
+   "ui/app.tsx:342 jsx"
   ]
  },
  {
   "key": "Continuer",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:346 jsx",
-   "ui/dialogs/misc.tsx:314 jsx"
+   "ui/app.tsx:348 jsx",
+   "ui/dialogs/misc.tsx:316 jsx"
   ]
  },
  {
   "key": "Acte {0} : {1}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:357 call:filter"
+   "ui/app.tsx:359 call:filter"
   ]
  },
  {
   "key": "Année · acte {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:358 jsx"
+   "ui/app.tsx:360 jsx"
   ]
  },
  {
   "key": "Année {0} · partie à {1} joueurs",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:369 jsx"
+   "ui/app.tsx:371 jsx"
   ]
  },
  {
   "key": "Au tour des {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:370 jsx"
+   "ui/app.tsx:372 jsx"
   ]
  },
  {
   "key": "Les autres joueurs ne doivent pas regarder l'écran.",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:371 jsx"
+   "ui/app.tsx:373 jsx"
   ]
  },
  {
   "key": "à vous de jouer",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:372 jsx"
+   "ui/app.tsx:374 jsx"
   ]
  },
  {
   "key": "ordres donnés",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:372 jsx"
+   "ui/app.tsx:374 jsx"
   ]
  },
  {
   "key": "en attente",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:372 jsx",
+   "ui/app.tsx:374 jsx",
    "ui/pbemui.tsx:88 jsx"
   ]
  },
@@ -16960,7 +17031,14 @@
   "key": "Afficher mon empire",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:373 jsx"
+   "ui/app.tsx:375 jsx"
+  ]
+ },
+ {
+  "key": "Nouvelle version disponible : {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/app.tsx:384 attr:title"
   ]
  },
  {
@@ -17154,7 +17232,7 @@
   "kind": "jsx",
   "refs": [
    "ui/chronicle.tsx:141 jsx",
-   "ui/dialogs/misc.tsx:314 jsx"
+   "ui/dialogs/misc.tsx:316 jsx"
   ]
  },
  {
@@ -17601,7 +17679,7 @@
   "refs": [
    "ui/command.tsx:102 prop:ironium",
    "ui/dialogs/reports.tsx:23 call:map",
-   "ui/inspector.tsx:72 prop:ironium",
+   "ui/inspector.tsx:73 prop:ironium",
    "ui/store.ts:472 prop:ironium"
   ]
  },
@@ -17611,7 +17689,7 @@
   "refs": [
    "ui/command.tsx:102 prop:boranium",
    "ui/dialogs/reports.tsx:23 call:map",
-   "ui/inspector.tsx:72 prop:boranium",
+   "ui/inspector.tsx:73 prop:boranium",
    "ui/store.ts:472 prop:boranium"
   ]
  },
@@ -17621,7 +17699,7 @@
   "refs": [
    "ui/command.tsx:102 prop:germanium",
    "ui/dialogs/reports.tsx:23 call:map",
-   "ui/inspector.tsx:72 prop:germanium",
+   "ui/inspector.tsx:73 prop:germanium",
    "ui/store.ts:472 prop:germanium"
   ]
  },
@@ -17827,7 +17905,7 @@
   "kind": "str",
   "refs": [
    "ui/components.tsx:55",
-   "ui/inspector.tsx:157 attr:k"
+   "ui/inspector.tsx:176 attr:k"
   ]
  },
  {
@@ -17845,7 +17923,7 @@
   "kind": "str",
   "refs": [
    "ui/components.tsx:56 attr:aria-label",
-   "ui/inspector.tsx:449 jsx",
+   "ui/inspector.tsx:468 jsx",
    "ui/summary.tsx:88 attr:k",
    "ui/summary.tsx:163 attr:k"
   ]
@@ -17950,7 +18028,7 @@
   "refs": [
    "ui/components.tsx:222 attr:placeholder",
    "ui/dialogs/designer.tsx:319 attr:v",
-   "ui/inspector.tsx:156 attr:v"
+   "ui/inspector.tsx:175 attr:v"
   ]
  },
  {
@@ -18345,7 +18423,7 @@
   "kind": "jsx",
   "refs": [
    "ui/culture.tsx:125 jsx",
-   "ui/inspector.tsx:412 jsx"
+   "ui/inspector.tsx:431 jsx"
   ]
  },
  {
@@ -18360,7 +18438,7 @@
   "kind": "str",
   "refs": [
    "ui/culture.tsx:128 attr:k",
-   "ui/inspector.tsx:153 attr:k"
+   "ui/inspector.tsx:172 attr:k"
   ]
  },
  {
@@ -18368,7 +18446,7 @@
   "kind": "tpl",
   "refs": [
    "ui/culture.tsx:128 attr:v",
-   "ui/inspector.tsx:153 attr:v"
+   "ui/inspector.tsx:172 attr:v"
   ]
  },
  {
@@ -18377,7 +18455,7 @@
   "refs": [
    "ui/culture.tsx:129 attr:k",
    "ui/dialogs/designview.tsx:62 jsx",
-   "ui/inspector.tsx:155 attr:k",
+   "ui/inspector.tsx:174 attr:k",
    "ui/techinfo.tsx:69 call:push"
   ]
  },
@@ -18386,7 +18464,7 @@
   "kind": "jsx",
   "refs": [
    "ui/culture.tsx:129 jsx",
-   "ui/inspector.tsx:155 jsx"
+   "ui/inspector.tsx:174 jsx"
   ]
  },
  {
@@ -18396,7 +18474,7 @@
    "ui/culture.tsx:130 attr:k",
    "ui/dialogs/battle.tsx:61 attr:k",
    "ui/dialogs/designer.tsx:303 attr:k",
-   "ui/inspector.tsx:513 attr:k"
+   "ui/inspector.tsx:532 attr:k"
   ]
  },
  {
@@ -18411,7 +18489,7 @@
   "kind": "str",
   "refs": [
    "ui/culture.tsx:131 attr:k",
-   "ui/inspector.tsx:508 attr:k"
+   "ui/inspector.tsx:527 attr:k"
   ]
  },
  {
@@ -18701,7 +18779,8 @@
   "kind": "jsx",
   "refs": [
    "ui/destiny.tsx:118 jsx",
-   "ui/dialogs/backups.tsx:41 jsx"
+   "ui/dialogs/backups.tsx:41 jsx",
+   "ui/dialogs/update.tsx:51 jsx"
   ]
  },
  {
@@ -18768,7 +18847,7 @@
   "refs": [
    "ui/dialogs/backups.tsx:42 jsx",
    "ui/dialogs/backups.tsx:42 call:ask",
-   "ui/inspector.tsx:507 jsx"
+   "ui/inspector.tsx:526 jsx"
   ]
  },
  {
@@ -19362,7 +19441,7 @@
   "refs": [
    "ui/dialogs/designer.tsx:81 call:ask",
    "ui/dialogs/production.tsx:180 attr:title",
-   "ui/inspector.tsx:316 attr:title"
+   "ui/inspector.tsx:335 attr:title"
   ]
  },
  {
@@ -19677,8 +19756,8 @@
   "refs": [
    "ui/dialogs/designer.tsx:206",
    "ui/dialogs/designer.tsx:310 attr:v",
-   "ui/inspector.tsx:509 attr:v",
-   "ui/inspector.tsx:566 jsx"
+   "ui/inspector.tsx:528 attr:v",
+   "ui/inspector.tsx:585 jsx"
   ]
  },
  {
@@ -19766,7 +19845,7 @@
   "refs": [
    "ui/dialogs/designer.tsx:220 prop:k",
    "ui/dialogs/designer.tsx:310 attr:k",
-   "ui/inspector.tsx:509 attr:k"
+   "ui/inspector.tsx:528 attr:k"
   ]
  },
  {
@@ -19774,7 +19853,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/designer.tsx:226 prop:k",
-   "ui/inspector.tsx:511 attr:k"
+   "ui/inspector.tsx:530 attr:k"
   ]
  },
  {
@@ -19926,7 +20005,7 @@
    "ui/dialogs/designer.tsx:298 attr:k",
    "ui/dialogs/designer.tsx:481 jsx",
    "ui/dialogs/reports.tsx:61 prop:label",
-   "ui/inspector.tsx:510 attr:k"
+   "ui/inspector.tsx:529 attr:k"
   ]
  },
  {
@@ -20058,7 +20137,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/designer.tsx:321 attr:k",
-   "ui/inspector.tsx:159 attr:k"
+   "ui/inspector.tsx:178 attr:k"
   ]
  },
  {
@@ -20066,7 +20145,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/designer.tsx:321 jsx",
-   "ui/inspector.tsx:159 attr:v"
+   "ui/inspector.tsx:178 attr:v"
   ]
  },
  {
@@ -20182,7 +20261,7 @@
    "ui/dialogs/designer.tsx:430 jsx",
    "ui/dialogs/fleetops.tsx:91 jsx",
    "ui/dialogs/fleetops.tsx:117 jsx",
-   "ui/dialogs/index.tsx:78 jsx"
+   "ui/dialogs/index.tsx:80 jsx"
   ]
  },
  {
@@ -20494,7 +20573,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/fleetops.tsx:15 attr:title",
-   "ui/inspector.tsx:148 jsx",
+   "ui/inspector.tsx:167 jsx",
    "ui/summary.tsx:161 attr:k"
   ]
  },
@@ -20701,28 +20780,28 @@
   "key": "Race enregistrée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:47 prop:title"
+   "ui/dialogs/index.tsx:49 prop:title"
   ]
  },
  {
   "key": "La race est aussi mémorisée dans ce navigateur (liste des races de « Nouvelle partie »). Conservez ce texte pour la réutiliser ailleurs : « Nouvelle partie » puis « Importer une race ».",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:47 prop:note"
+   "ui/dialogs/index.tsx:49 prop:note"
   ]
  },
  {
   "key": "Confirmation",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:78 attr:title"
+   "ui/dialogs/index.tsx:80 attr:title"
   ]
  },
  {
   "key": "Confirmer",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:78 jsx",
+   "ui/dialogs/index.tsx:80 jsx",
    "ui/store.ts:320"
   ]
  },
@@ -20730,63 +20809,63 @@
   "key": "Télécharger le fichier",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:87 jsx"
+   "ui/dialogs/index.tsx:89 jsx"
   ]
  },
  {
   "key": "Copié",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:89 jsx"
+   "ui/dialogs/index.tsx:91 jsx"
   ]
  },
  {
   "key": "Copier le texte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:89 jsx"
+   "ui/dialogs/index.tsx:91 jsx"
   ]
  },
  {
   "key": "Vous pouvez aussi copier ce texte dans un fichier .json : il se réimporte par « Importer » ou en le collant.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:93 jsx"
+   "ui/dialogs/index.tsx:95 jsx"
   ]
  },
  {
   "key": "ce n'est pas une race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:103"
+   "ui/dialogs/index.tsx:105"
   ]
  },
  {
   "key": "Race importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:103 call:notify"
+   "ui/dialogs/index.tsx:105 call:notify"
   ]
  },
  {
   "key": "Tour {0} des {1} : donnez vos ordres, puis envoyez-les.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:107 call:notify"
+   "ui/dialogs/index.tsx:109 call:notify"
   ]
  },
  {
   "key": "ouvrez d'abord la partie hébergée (écran d'accueil, sauvegardes), puis importez ces ordres",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:109"
+   "ui/dialogs/index.tsx:111"
   ]
  },
  {
   "key": "Ordres des {0} reçus.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:113 call:notify",
+   "ui/dialogs/index.tsx:115 call:notify",
    "ui/pbemui.tsx:19 call:push"
   ]
  },
@@ -20794,56 +20873,56 @@
   "key": "Partie importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:118 call:notify"
+   "ui/dialogs/index.tsx:120 call:notify"
   ]
  },
  {
   "key": "Contenu invalide : ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:119 call:setErr"
+   "ui/dialogs/index.tsx:121 call:setErr"
   ]
  },
  {
   "key": "Importer une race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:121 attr:title"
+   "ui/dialogs/index.tsx:123 attr:title"
   ]
  },
  {
   "key": "Importer une partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:121 attr:title"
+   "ui/dialogs/index.tsx:123 attr:title"
   ]
  },
  {
   "key": "Choisir un fichier…{0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:122 jsx"
+   "ui/dialogs/index.tsx:124 jsx"
   ]
  },
  {
   "key": "Importer le texte collé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:123 jsx"
+   "ui/dialogs/index.tsx:125 jsx"
   ]
  },
  {
   "key": "Choisissez un fichier exporté, ou collez son contenu ci-dessous.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:125 jsx"
+   "ui/dialogs/index.tsx:127 jsx"
   ]
  },
  {
   "key": "Collez ici le texte de la sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:126 attr:placeholder"
+   "ui/dialogs/index.tsx:128 attr:placeholder"
   ]
  },
  {
@@ -20964,7 +21043,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:34 attr:title",
-   "ui/dialogs/misc.tsx:267 call:map"
+   "ui/dialogs/misc.tsx:269 call:map"
   ]
  },
  {
@@ -21130,8 +21209,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:79 jsx",
    "ui/dialogs/misc.tsx:80 jsx",
-   "ui/inspector.tsx:261 jsx",
-   "ui/inspector.tsx:272 jsx"
+   "ui/inspector.tsx:280 jsx",
+   "ui/inspector.tsx:291 jsx"
   ]
  },
  {
@@ -21161,7 +21240,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/inspector.tsx:230"
+   "ui/inspector.tsx:249"
   ]
  },
  {
@@ -21169,9 +21248,9 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/inspector.tsx:137 attr:k",
-   "ui/inspector.tsx:259 jsx",
-   "ui/inspector.tsx:349 attr:k"
+   "ui/inspector.tsx:156 attr:k",
+   "ui/inspector.tsx:278 jsx",
+   "ui/inspector.tsx:368 attr:k"
   ]
  },
  {
@@ -21180,7 +21259,7 @@
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/dialogs/reports.tsx:67 prop:label",
-   "ui/inspector.tsx:352 attr:k",
+   "ui/inspector.tsx:371 attr:k",
    "ui/summary.tsx:125 attr:k"
   ]
  },
@@ -21208,7 +21287,7 @@
    "ui/dialogs/misc.tsx:107 call:th",
    "ui/discoveries.tsx:253 call:th",
    "ui/empire.tsx:94 call:wth",
-   "ui/inspector.tsx:456 jsx"
+   "ui/inspector.tsx:475 jsx"
   ]
  },
  {
@@ -21248,7 +21327,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:128 attr:title",
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
@@ -21347,7 +21426,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:175 attr:title",
-   "ui/welcome.tsx:75 jsx"
+   "ui/welcome.tsx:84 jsx"
   ]
  },
  {
@@ -21377,7 +21456,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:176 prop:label",
-   "ui/dialogs/misc.tsx:336 jsx"
+   "ui/dialogs/misc.tsx:338 jsx"
   ]
  },
  {
@@ -21564,8 +21643,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:194 jsx",
    "ui/dialogs/production.tsx:66 prop:label",
-   "ui/inspector.tsx:270 jsx",
-   "ui/inspector.tsx:345 attr:title"
+   "ui/inspector.tsx:289 jsx",
+   "ui/inspector.tsx:364 attr:title"
   ]
  },
  {
@@ -21684,10 +21763,17 @@
   ]
  },
  {
+  "key": "Les usines au travail rejettent des gaz à effet de serre, et leur monde se réchauffe lentement vers un niveau fixé par son industrie : chaque doublement de la production ajoute à peu près le même réchauffement (environ +11 °C pour 400 ressources d'usines par an, +20 °C pour 1 000). Il se refroidit plus lentement encore quand ses usines deviennent plus propres, s'arrêtent ou disparaissent. Trois technologies réduisent les rejets : Énergie décarbonée (Énergie 6, −40 %), Captage du carbone (Biotechnologie 8, la moitié du reste) et Régulation climatique (Biotechnologie 14 et Énergie 12, encore la moitié, et un refroidissement cinq fois plus rapide). La terraformation de température compense le reste, dans ses limites ; un monde trop froid pour votre race peut même y gagner. Le panneau de la planète indique le réchauffement atteint et celui vers lequel elle va.",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/misc.tsx:214 jsx"
+  ]
+ },
+ {
   "key": "Région de la galaxie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:213 jsx",
+   "ui/dialogs/misc.tsx:215 jsx",
    "ui/dialogs/newgame.tsx:109 jsx"
   ]
  },
@@ -21695,56 +21781,56 @@
   "key": "Stars! répartit ses planètes uniformément dans un carré. Une carte de Constellations couvre de 400 à 2 000 années-lumière : bien trop peu pour voir une galaxie entière (la Voie lactée en fait cent mille). Une nouvelle partie se déroule donc dans une région d'une galaxie, comme le voisinage du Soleil : un {0} (des milliers d'années-lumière de large : la carte en montre un bord, dense d'un côté, plus clairsemé vers le vide entre les bras, avec sa bande de poussière coupée de quelques passages), une {1} (des amas jeunes entre des nuages sombres : des couloirs à tenir) ou une {2} (une cavité soufflée par des supernovae, entourée d'un anneau d'étoiles). La forme carrée reste au choix. Même nombre de planètes, mêmes écarts minimaux ; les mondes de départ ont des voisins et un peu de place avant le premier nuage. Pour retrouver le jeu d'origine d'un coup, cochez « Expérience proche de Stars! » à la création : galaxie carrée, aucune règle Constellations, flottes identifiées dès qu'elles sont vues, trous de ver franchissables sans recherche, victoire au plus tôt après 50 ans.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:214 jsx"
+   "ui/dialogs/misc.tsx:216 jsx"
   ]
  },
  {
   "key": "bras spiral",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:214 jsx"
+   "ui/dialogs/misc.tsx:216 jsx"
   ]
  },
  {
   "key": "pouponnière d'étoiles",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:214 jsx"
+   "ui/dialogs/misc.tsx:216 jsx"
   ]
  },
  {
   "key": "superbulle",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:214 jsx"
+   "ui/dialogs/misc.tsx:216 jsx"
   ]
  },
  {
   "key": "{0} Des nuages moléculaires aux noms peu engageants (le Linceul, la Gueule de Charbon, la Tombe des Pilotes...). Comme autour du Soleil, ils couvrent quelques pour cent d'une carte : la bande de poussière d'un bras et un ou deux grands nuages, ou des arcs sur la coquille d'une superbulle ; seule une pouponnière d'étoiles en est pleine, fermée et découpée par eux. Ils sont infranchissables : à vitesse Warp, chaque grain de leur poussière frappe comme un obus. Les flottes les contournent d'elles-mêmes : la route passe par des points de l'espace (« Contournement »), comptés dans la distance, le carburant et la durée affichés. Une étape posée dans un nuage glisse à son bord ; un paquet de minerais lancé à travers est perdu. Aucun trou de ver ne s'y trouve, et aucun monde n'est enfermé derrière ; une seule étoile peut s'y cacher (voir Étoiles cachées). Les passages entre deux nuages sont les points à tenir d'une carte.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:215 jsx"
+   "ui/dialogs/misc.tsx:217 jsx"
   ]
  },
  {
   "key": "Nuages sombres.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:215 jsx"
+   "ui/dialogs/misc.tsx:217 jsx"
   ]
  },
  {
   "key": "Un empire se gouverne depuis sa capitale. Au-delà de {0} années-lumière d'une capitale, une planète perd {1} % de sa production et de sa recherche tous les {2} al (sans descendre sous {3} % de rendement). Une {4} (élément de production, une par tranche de {5} planètes) rend le plein rendement autour d'elle. Un monde conquis démarre à {6} % et met {7} ans à produire pleinement. Perdre sa capitale désorganise tout l'empire pendant {8} ans (×{9}).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:217 jsx"
+   "ui/dialogs/misc.tsx:219 jsx"
   ]
  },
  {
   "key": "capitale régionale",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:217 jsx",
+   "ui/dialogs/misc.tsx:219 jsx",
    "ui/govui.tsx:28"
   ]
  },
@@ -21752,147 +21838,147 @@
   "key": "Plus besoin de pomper la population à la main. Dans le panneau d'une planète, réglez sa {0} (émigration au-delà d'un pourcentage de sa capacité, immigration jusqu'à un pourcentage) et sa {1} (exporter au-delà d'une réserve, importer). Les émigrants vont aux planètes en Immigration et, par défaut, à vos colonies habitables sans politique encore peu peuplées, les plus vides d'abord (réglage dans Empire, Réseau logistique). Cochez « Réseau logistique » sur des cargos : ils font les convois tout seuls. Ce sont de vrais vaisseaux : un raid peut les intercepter, et le réseau évite les routes où des navires ennemis viennent d'être vus.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:219 jsx"
+   "ui/dialogs/misc.tsx:221 jsx"
   ]
  },
  {
   "key": "politique migratoire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:219 jsx"
+   "ui/dialogs/misc.tsx:221 jsx"
   ]
  },
  {
   "key": "politique minière",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:219 jsx"
+   "ui/dialogs/misc.tsx:221 jsx"
   ]
  },
  {
   "key": "Rôles et ciblage",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:220 jsx"
+   "ui/dialogs/misc.tsx:222 jsx"
   ]
  },
  {
   "key": "Chaque modèle armé a un {0} : écran (en avant, il attire les tirs), ligne, ou artillerie (en retrait, visée en dernier). Sans choix de votre part, le rôle suit les armes : torpilles et missiles en artillerie, rayons en ligne. Les tirs vont d'abord aux piles qui infligent le plus de dégâts : les coques bon marché qui servaient de leurres ne protègent plus rien. Un plan de bataille peut fixer un {1} : passé ce pourcentage de blindage perdu, la flotte rompt le combat et se replie. Le {2} de l'onglet Conception joue 40 combats avec le vrai moteur, et la {3} place deux modèles côte à côte, caractéristique par caractéristique. Dans le replay d'une bataille, un clic sur une pile montre son équipement, sa puissance de feu et sa défense ; son nom ouvre le modèle dans Conception.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:221 jsx"
+   "ui/dialogs/misc.tsx:223 jsx"
   ]
  },
  {
   "key": "rôle",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:221 jsx"
+   "ui/dialogs/misc.tsx:223 jsx"
   ]
  },
  {
   "key": "seuil de retraite",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:221 jsx"
+   "ui/dialogs/misc.tsx:223 jsx"
   ]
  },
  {
   "key": "simulateur",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:221 jsx"
+   "ui/dialogs/misc.tsx:223 jsx"
   ]
  },
  {
   "key": "comparaison",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:221 jsx"
+   "ui/dialogs/misc.tsx:223 jsx"
   ]
  },
  {
   "key": "Débris",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:222 jsx"
+   "ui/dialogs/misc.tsx:224 jsx"
   ]
  },
  {
   "key": "Qui tient le terrain après une bataille étudie les épaves ennemies : quand elles portaient des composants que vous ne connaissez pas, vos scientifiques progressent vers le plus avancé (environ un tiers du niveau suivant dans son domaine). Plus il y a d'épaves, plus les chances sont bonnes (12 % par vaisseau détruit, 60 % au plus).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:223 jsx"
+   "ui/dialogs/misc.tsx:225 jsx"
   ]
  },
  {
   "key": "Interceptions et patrouilles",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:224 jsx"
+   "ui/dialogs/misc.tsx:226 jsx"
   ]
  },
  {
   "key": "Une patrouille ne se jette pas dans un massacre : si une flotte identifiée est plus de deux fois et demie plus forte qu'elle, elle ne la poursuit pas (rapport), et une poursuite qui découvre en route un adversaire trop fort revient à son poste. Un contact inconnu est approché : c'est ainsi qu'on apprend ce qu'il vaut. Un ordre d'interception donné à la main est toujours exécuté. Une flotte qui croise un gardien rapporte ce que vaut votre marine face à lui.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:225 jsx"
+   "ui/dialogs/misc.tsx:227 jsx"
   ]
  },
  {
   "key": "À certains niveaux de recherche, il faut choisir entre deux doctrines exclusives (boucliers ou armes, endurance ou vitesse, blindage ou coût…). Le choix est définitif : deux empires au même niveau ne se battent plus de la même façon.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:227 jsx"
+   "ui/dialogs/misc.tsx:229 jsx"
   ]
  },
  {
   "key": "Des années de travaux pour un effet durable. Comme les technologies, un grand projet n'apparaît (onglets Recherche et Empire) que lorsque vos sciences sont à moins de 5 niveaux de ce qu'il demande. L'un d'eux donne la victoire une fois achevé, mais toute la galaxie est prévenue de son avancement et les ordinateurs se liguent contre son constructeur. Un projet en cours est perdu si sa planète est prise.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:229 jsx"
+   "ui/dialogs/misc.tsx:231 jsx"
   ]
  },
  {
   "key": "Chaque empire, ordinateurs compris, reçoit deux objectifs cachés (explorer, conquérir, livrer des colons, prendre des planètes à un rival désigné…). Chacun accompli vaut {0} points de score. Vous savez seulement qu'un rival a réussi l'un des siens ; tout est révélé en fin de partie.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:231 jsx"
+   "ui/dialogs/misc.tsx:233 jsx"
   ]
  },
  {
   "key": "Sans scanner pénétrant, la masse et le nombre de vaisseaux d'une flotte repérée ne sont qu'une estimation (±30 %). Le {0} (Électronique 4) ajoute à vos vaisseaux une masse et des vaisseaux fantômes : de quoi faire hésiter un adversaire, ordinateurs compris.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:233 jsx"
+   "ui/dialogs/misc.tsx:235 jsx"
   ]
  },
  {
   "key": "leurre holographique",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:233 jsx"
+   "ui/dialogs/misc.tsx:235 jsx"
   ]
  },
  {
   "key": "{0} Une flotte identifiée (scanner pénétrant, rencontre) reste identifiée tant que vos scanners ordinaires la suivent sans interruption : sa position est à jour, sa composition date de l'identification (l'âge de l'information est indiqué). Perdue de vue un an, elle redevient un contact inconnu.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:234 jsx"
+   "ui/dialogs/misc.tsx:236 jsx"
   ]
  },
  {
   "key": "Brouillard de guerre.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:234 jsx"
+   "ui/dialogs/misc.tsx:236 jsx"
   ]
  },
  {
   "key": "Interception",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:235 jsx",
+   "ui/dialogs/misc.tsx:237 jsx",
    "ui/sidebar.tsx:16",
    "ui/sidebar.tsx:31 prop:label",
    "ui/sidebar.tsx:34 prop:label"
@@ -21902,63 +21988,63 @@
   "key": "Sélectionnez une de vos flottes, cliquez sur une flotte étrangère, puis « Intercepter ». La destination adverse n'étant jamais connue, le point de rencontre est calculé d'après la trajectoire observée : c'est la première position de fin d'année que votre flotte peut atteindre à temps. Elle s'y arrête et attend. L'ordre est permanent : le point est recalculé chaque année tant que la cible reste visible, et quand elle est à moins d'un an, votre flotte fonce droit sur elle. Un combat n'a lieu que si l'un des camps attaque l'autre.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:236 jsx"
+   "ui/dialogs/misc.tsx:238 jsx"
   ]
  },
  {
   "key": "Ravitaillement en vol",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:237 jsx"
+   "ui/dialogs/misc.tsx:239 jsx"
   ]
  },
  {
   "key": "Une flotte presque à sec, qui rampe à Warp 1 ou 2, affiche « Ravitailler la flotte » quand une de vos flottes sans ordre a du carburant à céder. Celle-ci calcule le rendez-vous sur l'itinéraire de la flotte à sec, lui donne ce qu'elle peut en gardant de quoi rentrer, puis retourne au chantier le plus proche ; la flotte ravitaillée repart à sa meilleure vitesse.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:238 jsx"
+   "ui/dialogs/misc.tsx:240 jsx"
   ]
  },
  {
   "key": "Analyser une planète peut révéler une {0} (marquée « ? » sur la carte). Un vaisseau équipé d'un scanner, laissé en orbite sans autre destination, l'étudie ; votre colonie aussi, si la planète est à vous. Le premier empire qui termine obtient le résultat : recherche, minerais, colons, un vaisseau d'une technologie supérieure, une carte des environs... ou des ennuis. Certaines se concluent par un choix. Les {1} (« ✦ ») se fouillent en trois chapitres et livrent une {2}, un bonus permanent de 10 à 15 %. Des {3} d'une carte des Anciens sont dispersés dans la galaxie : réunissez-en assez pour découvrir leur sanctuaire, gardé, et sa relique majeure.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:240 jsx"
+   "ui/dialogs/misc.tsx:242 jsx"
   ]
  },
  {
   "key": "anomalie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:240 jsx"
+   "ui/dialogs/misc.tsx:242 jsx"
   ]
  },
  {
   "key": "sites archéologiques",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:240 jsx"
+   "ui/dialogs/misc.tsx:242 jsx"
   ]
  },
  {
   "key": "relique",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:240 jsx"
+   "ui/dialogs/misc.tsx:242 jsx"
   ]
  },
  {
   "key": "fragments",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:240 jsx"
+   "ui/dialogs/misc.tsx:242 jsx"
   ]
  },
  {
   "key": "Étoiles cachées",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:241 jsx",
+   "ui/dialogs/misc.tsx:243 jsx",
    "ui/discoveries.tsx:248 jsx"
   ]
  },
@@ -21966,126 +22052,126 @@
   "key": "Avec les anomalies, certaines étoiles ne figurent sur aucune carte au début de la partie. Elles apparaissent (marquées ★ dans les découvertes) quand vous les trouvez, et restent invisibles pour les empires qui ne les ont pas trouvées eux-mêmes. Une {0}, trop froide pour briller, se voit en infrarouge (« Relevé infrarouge profond », Électronique 6, à moins de 450 al de vos colonies) ; on fait le plein de carburant dans son atmosphère. Un {1} enferme son étoile mais rayonne fort en infrarouge (700 al) ; son Esprit le garde, et une colonie installée là reçoit 200 ressources de plus par an. Un {2} ne se voit qu'à la lumière qu'il dévie (« Interférométrie gravitationnelle », Électronique 14 et Énergie 8, 600 al ; le Grand Observatoire, 1 000 al) : une de vos flottes qui part de moins de 40 al de lui gagne une demi-année de route, et l'étude de son horizon livre une relique. Un {3} se trahit par les horloges d'une station voisine (une anomalie) ou par ses éruptions ; près de lui les boucliers ne tiennent qu'à moitié. L'{4} apparaît quand leur carte est complète : leur sanctuaire s'y trouve. Une {5}, au cœur d'un nuage sombre, se signale par un écho (une anomalie voisine) ; pour l'atteindre, un vaisseau équipé d'un scanner doit stationner dans la zone indiquée et chercher le couloir de poussière raréfiée qui y mène (Warp 3 au plus, connu de vous seul) ; un Berger de poussière la garde. Enfin un {6}, qui ne bouge jamais, mène à un {7} hors de la galaxie : un vaisseau avec scanner, resté à son embouchure, l'ouvre en quelques années (il faut « Navigation des anomalies ») ; ce qui attend de l'autre côté change d'une partie à l'autre. Toutes, enfin, se découvrent en passant à moins de 20 à 30 al.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "naine brune",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "essaim de Dyson",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "trou noir isolé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "pulsar muet",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "étoile des Anciens",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "étoile voilée",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "trou de ver scellé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "amas caché",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:242 jsx"
+   "ui/dialogs/misc.tsx:244 jsx"
   ]
  },
  {
   "key": "Des flottes immobiles et redoutables veillent sur des mondes riches, loin des capitales (anneau violet en pointillé sur la carte). Elles sont visibles de loin et attaquent tout ce qui s'arrête chez elles. Trois paliers, du milieu de partie à la fin. La victoire rapporte de la recherche, les minerais entassés sur la planète, souvent une relique, et libère le monde pour la colonisation.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:244 jsx"
+   "ui/dialogs/misc.tsx:246 jsx"
   ]
  },
  {
   "key": "Chaque colonie {0} autour d'elle. Sa culture vient de sa population (racine carrée : un monde surpeuplé n'écrase pas tout), de son rôle de capitale, d'une station en orbite et de ses {1} (Centre culturel, Université planétaire, Réseau holographique, débloqués par la recherche), et s'érode de 0,5 % par an. Le rayon part d'une vingtaine d'années-lumière et croît de plus en plus lentement : une soixantaine d'al pour une capitale au bout de dix ans, environ 120 à cinquante ans, 180 au plus. En chaque point, l'empire à la plus forte influence possède le territoire (frontières sur la carte, case « Frontières »), et chaque monde colonisé garde toujours son noyau de 2 al.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:246 jsx"
+   "ui/dialogs/misc.tsx:248 jsx"
   ]
  },
  {
   "key": "rayonne",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:246 jsx"
+   "ui/dialogs/misc.tsx:248 jsx"
   ]
  },
  {
   "key": "bâtiments culturels",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:246 jsx"
+   "ui/dialogs/misc.tsx:248 jsx"
   ]
  },
  {
   "key": "{0} : pour s'y installer, il faut conquérir, ou affaiblir l'influence adverse. Un monde dont la culture étrangère pèse plus de 1,25 fois la sienne s'en rapproche peu à peu, et après quelques décennies (25 ans au moins, une cinquantaine quand elle pèse le double) il rejoint cet empire avec sa population. Jamais une capitale ; une station en orbite ralentit ce basculement de moitié ; un monde fondé, conquis ou basculé a des années de répit. Pour le retenir : bâtiments culturels, {1} (des ressources changées en points de culture, aussi en automatique en fin de file, l'emploi idéal des planètes qui ont tout construit), ou la guerre.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:247 jsx"
+   "ui/dialogs/misc.tsx:249 jsx"
   ]
  },
  {
   "key": "Personne ne peut fonder de colonie dans le territoire d'un autre empire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:247 jsx"
+   "ui/dialogs/misc.tsx:249 jsx"
   ]
  },
  {
   "key": "mécénat",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:247 jsx"
+   "ui/dialogs/misc.tsx:249 jsx"
   ]
  },
  {
   "key": "{0} dans le territoire d'un autre empire : permis si vous êtes neutre ou en guerre avec lui, interdit si vous l'avez déclaré ami. {1} : un vaisseau qui porte le kit (modèle « Porte-balise »), envoyé sur un monde libre (bouton « Revendiquer » de la planète), devient un fort armé et immobile qui revendique ce monde et 50 al autour. Un autre empire doit le détruire avant de pouvoir y coloniser ; quand vous colonisez vous-même, il devient la station du monde. Vous pouvez avoir autant de balises que de colonies, et au moins deux dans tous les cas.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:248 jsx"
+   "ui/dialogs/misc.tsx:250 jsx"
   ]
  },
  {
   "key": "Forage",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:248 jsx",
+   "ui/dialogs/misc.tsx:250 jsx",
    "ui/sidebar.tsx:16",
    "ui/sidebar.tsx:66 prop:label"
   ]
@@ -22094,232 +22180,232 @@
   "key": "{0} (avec la Diplomatie négociée) : dans l'onglet Diplomatie, on peut fermer ses frontières à chaque empire avec qui l'on est en paix. Ses vaisseaux ne peuvent plus entrer dans votre territoire sans vous déclarer la guerre ; ceux qui s'y trouvent déjà peuvent en sortir. Les trajets contournent les territoires qui vous sont fermés, comme les nuages sombres (hachurés en rouge sur la carte) ; quand il n'y a pas d'autre chemin, ou que la destination est dedans, l'itinéraire prévient qu'y entrer sera une déclaration de guerre. Les ordres automatiques (exploration, missions, réseau logistique, poursuites) s'arrêtent à la frontière. Une politique décide pour les empires rencontrés ensuite. Les ordinateurs mesurent ce que des frontières fermées leur barrent : plus elles les enferment, plus ils en veulent à qui les ferme, plus ils demandent qu'on les rouvre, et plus ils sont prêts à la guerre. Entre alliés, les frontières restent ouvertes.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:249 jsx"
+   "ui/dialogs/misc.tsx:251 jsx"
   ]
  },
  {
   "key": "Frontières fermées",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:249 jsx"
+   "ui/dialogs/misc.tsx:251 jsx"
   ]
  },
  {
   "key": "{0} : une flotte qui se trouve dans un territoire fermé à son empire (les frontières se ferment autour d'elle, le territoire grandit jusqu'à elle) a un délai pour en sortir, calculé d'après la distance de la frontière la plus proche, sa vitesse et son carburant ; son panneau l'indique, avec un bouton pour sortir par le plus court chemin. Passé ce délai, un avertissement ; si elle y est encore l'année suivante, c'est la guerre. Une flotte qui n'a pas assez de carburant pour sortir à temps doit être ravitaillée (par un ravitailleur) avant la fin du délai, sinon elle est démantelée sur place. Les ordinateurs et les ordres automatiques font sortir leurs flottes d'eux-mêmes. Une flotte en orbite de l'une de vos planètes est chez elle : elle n'a pas à partir.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:250 jsx"
+   "ui/dialogs/misc.tsx:252 jsx"
   ]
  },
  {
   "key": "Flottes prises à l'intérieur",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:250 jsx"
+   "ui/dialogs/misc.tsx:252 jsx"
   ]
  },
  {
   "key": "{0} (avec la règle Renseignement) : des frontières fermées coupent les échanges dans les deux sens. Chaque fermeture, que ce soit vous qui fermiez les vôtres ou eux les leurs, retire 15 points au renseignement de chacun des deux empires sur l'autre (30 quand chacun a fermé les siennes), et le contre-espionnage de l'empire qui ferme ses frontières démasque une fois et demie plus souvent les espions de celui à qui il les ferme. Les chiffres déjà connus restent, datés : ce sont les nouvelles qui ne passent plus. Les ordinateurs, qui jugent votre force à travers ce qu'ils savent de vous, la jugent alors plus mal.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:251 jsx"
+   "ui/dialogs/misc.tsx:253 jsx"
   ]
  },
  {
   "key": "Frontières et renseignement",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:251 jsx"
+   "ui/dialogs/misc.tsx:253 jsx"
   ]
  },
  {
   "key": "Entre deux empires : {0}, {1} ou {2}. Tout le monde commence en paix ; on ne combat, n'envahit et ne bombarde que ceux avec qui l'on est en guerre, et les champs de mines épargnent les autres. En paix, deux accords : {3} (+4 % de ressources chacun) et {4} (+5 % de recherche chacun), trois partenaires au plus pour chacun. L'alliance ajoute le ravitaillement aux stations, les portes, la vision des flottes et la défense mutuelle : déclarer la guerre à l'allié d'un ordinateur fait entrer cet ordinateur en guerre contre vous.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:253 jsx"
+   "ui/dialogs/misc.tsx:255 jsx"
   ]
  },
  {
   "key": "guerre",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:253 jsx"
+   "ui/dialogs/misc.tsx:255 jsx"
   ]
  },
  {
   "key": "paix",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:253 jsx"
+   "ui/dialogs/misc.tsx:255 jsx"
   ]
  },
  {
   "key": "commercial",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:253 jsx"
+   "ui/dialogs/misc.tsx:255 jsx"
   ]
  },
  {
   "key": "scientifique",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:253 jsx"
+   "ui/dialogs/misc.tsx:255 jsx"
   ]
  },
  {
   "key": "Chaque ordinateur a une {0} de vous, de −100 à +100, détaillée ligne par ligne dans l'onglet Diplomatie : tempérament (selon sa race), frontières communes, guerres passées, mondes pris, accords, ennemi commun, cadeaux, exigences, trahisons. À côté de chaque proposition s'affiche sa réponse probable, avec ses raisons : « très probablement », « probablement », « peut-être »... Elle garde une part d'incertitude, mais redemander la même chose dans l'année ne change rien, sauf une meilleure offre. Exiger un tribut fait nettement baisser leur opinion, qu'ils paient ou non, et ne se fait qu'une fois tous les trois ans auprès d'un même empire ; le rapport dit ce qui a été versé, minerai par minerai, et où. La paix s'obtient avec la lassitude (années de guerre, pertes, mondes perdus), le rapport de forces et quelques minerais. Déclarer la guerre malgré un accord est une {1} : la victime et tous ceux qui vous connaissent s'en souviennent. Les ordinateurs proposent, exigent des tributs, s'allient, déclarent la guerre aux voisins qu'ils détestent et font la paix entre eux.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:254 jsx"
+   "ui/dialogs/misc.tsx:256 jsx"
   ]
  },
  {
   "key": "opinion",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:254 jsx"
+   "ui/dialogs/misc.tsx:256 jsx"
   ]
  },
  {
   "key": "trahison",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:254 jsx"
+   "ui/dialogs/misc.tsx:256 jsx"
   ]
  },
  {
   "key": "Ce que vous savez d'un autre empire tient en un {0} de 0 à 100, recalculé chaque année et détaillé source par source dans son dossier (onglet Diplomatie, ou un clic sur sa ligne dans le Score). Sources : ses mondes analysés cette année par vos scanners pénétrants ou vos vaisseaux en orbite (jusqu'à 35, +5 pour sa capitale), ses vaisseaux identifiés (10), des {1} (25, réciproques : il en apprend autant sur vous), un accord commercial ou scientifique (10 chacun), une alliance (20), un {2} (jusqu'à 45), les combats et les mondes pris récemment, et ce que vos alliés savent de lui (jusqu'à 20). Une race Furtivité naît espionne (+10, réseaux plus forts et plus discrets).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:256 jsx"
+   "ui/dialogs/misc.tsx:258 jsx"
   ]
  },
  {
   "key": "niveau de renseignement",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:256 jsx"
+   "ui/dialogs/misc.tsx:258 jsx"
   ]
  },
  {
   "key": "ambassades",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:256 jsx"
+   "ui/dialogs/misc.tsx:258 jsx"
   ]
  },
  {
   "key": "réseau d'espions",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:256 jsx",
-   "ui/dialogs/misc.tsx:257 jsx"
+   "ui/dialogs/misc.tsx:258 jsx",
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "Le niveau révèle d'abord des {0} (« ≈ », à ±30 % au premier palier), puis les chiffres exacts : planètes (estimées à 10, exactes à 40), score et niveaux de technologie (20), ressources et stations (30), flotte (40, exacte à 80), technologie domaine par domaine (55), score exact (60), recherches en cours (65), conditions de victoire remplies (75), objectifs secrets (90). Ce qui a été appris reste dans le dossier, daté. Le {1} s'achète en production (150 R l'unité, chez l'empire visé), s'use de 20 % par an et peut être démasqué, ce qui le ruine en partie et fâche la victime. L'{2} (une par empire, Électronique 5) renforce vos réseaux, démasque deux fois plus souvent ceux des autres et ajoute 5 partout ; ses archives sont une aubaine pour qui prend la planète. Les ordinateurs jugent votre flotte à travers ce qu'ils savent de vous (à ±35 % s'ils ne savent rien) : leurs réponses annoncent « votre force estimée ».",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:257 jsx"
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "estimations",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:257 jsx"
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "Une quinzaine d'années après le début, des bandes de pirates s'installent dans des {0} loin des capitales (anneau orange, ☠). Tous les quelques années, un repaire lance un {1} sur une colonie riche et mal défendue : vos informateurs vous préviennent de la cible et de la date d'arrivée. Une flotte armée en orbite ou une station armée les arrête ; les défenses planétaires réduisent le pillage (minerais emportés, usines et mines détruites, quelques colons tués, jamais un monde vidé). Une {2} (élément de production, anonyme) les pousse à viser un rival. Un repaire détruit rapporte de la recherche, le trésor de la bande et parfois une relique ; sans repaire, les pirates disparaissent.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:261 jsx"
   ]
  },
  {
   "key": "repaires",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:261 jsx"
   ]
  },
  {
   "key": "raid",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:261 jsx"
   ]
  },
  {
   "key": "prime",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:261 jsx"
   ]
  },
  {
   "key": "Vers 2480 (2490 dans une galaxie moyenne, 2500 à 2510 dans une grande), un signal annonce qu'une {0} s'ouvrira dix ans plus tard sur un monde éloigné (✹ magenta). Son gardien, le {1} (vaisseaux de guerre et Remparts blindés, d'une technologie d'avance), tient tête à la plus grande marine de la galaxie et répare 30 % de ses dégâts par an. Tous les quatre ou cinq ans, une {2} en sort, vise surtout l'empire en tête et moissonne ses mondes un à un. À moins de 80 al de la Brèche, les empires ne se combattent pas entre eux ; les ordinateurs font la paix, s'y rassemblent et frappent ensemble. {3} (celui qui a le plus de vaisseaux sur place) {4}. Un empire qui écrase tous les autres attire la crise plus tôt.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "Brèche",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "Nexus",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "vague de Moissonneurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "L'empire qui abat le Nexus",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "remporte la partie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:263 jsx"
   ]
  },
  {
   "key": "Chaque empire choisit une origine à la création de la partie : monde condamné (le climat natal se dégrade à partir de 2430, il faut déménager), monde-relique, colonie perdue, lignée d'explorateurs, protégés des Anciens. Chacune a un avantage et un prix. Les ordinateurs tirent la leur au sort.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:265 jsx"
   ]
  },
  {
   "key": "Entrée ou F9",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:267 call:map"
+   "ui/dialogs/misc.tsx:269 call:map"
   ]
  },
  {
   "key": "Tour suivant",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:267 call:map",
+   "ui/dialogs/misc.tsx:269 call:map",
    "ui/tutorial.tsx:110 prop:next",
    "ui/tutorial.tsx:425 prop:title"
   ]
@@ -22328,245 +22414,245 @@
   "key": "Générer 10 ans",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:267 call:map"
+   "ui/dialogs/misc.tsx:269 call:map"
   ]
  },
  {
   "key": "Carte / Planificateur de colonies / Planificateur de minage",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Glisser une étape",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Déplacer l'étape (la flotte doit être sélectionnée)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Glisser un chevron",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Insérer une étape à cet endroit du trajet",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Étape sur un chevron orange",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Point d'interception aimanté sur la trajectoire estimée d'une flotte étrangère",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Clic droit sur une flotte étrangère",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Intercepter avec la flotte sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Affichage de la carte : habitabilité, minerais, concentrations, valeur, population, épuré, statut des empires, radar",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "9 / Maj+9",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Scanners / trajets",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "0 / Maj+0",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Noms / nombre de vaisseaux",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:268 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Nouvelle destination de la flotte sélectionnée (Maj maintenue : étapes suivantes)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Ajouter une étape à la fin de l'itinéraire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Choisir où iront les vaisseaux construits sur la planète sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Clic droit",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Objets à cet endroit, « Aller ici »",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Molette",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Zoom",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Glisser",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Déplacer la carte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Mesurer une distance en années-lumière (d'une planète ou d'une flotte à une autre, ou n'importe quel point) ; Maj+Alt+glisser marche aussi",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Planète ou flotte suivante / précédente",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Flotte sans ordre suivante",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "t / Maj+t",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Chose suivante / précédente à traiter (décisions, propositions, flottes, colonies)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Chronique de la partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Basculer entre planètes et flottes",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Production de la planète",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Centrer sur la sélection",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Début",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Toute la galaxie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map",
+   "ui/dialogs/misc.tsx:272 call:map",
    "ui/pages.tsx:120 attr:title"
   ]
  },
@@ -22574,239 +22660,239 @@
   "key": "Warp de l'étape sélectionnée −1 / +1",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Suppr",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Supprimer l'étape sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Rapport précédent / suivant",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Aller à l'objet du rapport",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Sauvegarder",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Échap",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Fermer, puis revenir à la carte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Constellations s'inspire de {0} (1995), dont il reprend l'essentiel des mécaniques : races personnalisables, six domaines de recherche, coques et composants, carburant, scanners, champs de mines, paquets de minerais, portails, combats sur plateau. Le vocabulaire, les noms des vaisseaux et des technologies, l'interface et une partie des règles sont propres à Constellations.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:275 jsx"
+   "ui/dialogs/misc.tsx:277 jsx"
   ]
  },
  {
   "key": "Stars!",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:275 jsx",
-   "ui/dialogs/misc.tsx:291 jsx"
+   "ui/dialogs/misc.tsx:277 jsx",
+   "ui/dialogs/misc.tsx:293 jsx"
   ]
  },
  {
   "key": "Contacts anonymes : un scanner ordinaire ne révèle qu'une présence ; l'identité et la composition d'une flotte demandent un scanner pénétrant (option de partie).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:277 jsx"
+   "ui/dialogs/misc.tsx:279 jsx"
   ]
  },
  {
   "key": "Trajectoires estimées des flottes étrangères d'après deux observations, alertes quand l'une semble viser vos planètes.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:278 jsx"
+   "ui/dialogs/misc.tsx:280 jsx"
   ]
  },
  {
   "key": "Missions en un clic (éclaireur, arche, construction puis départ automatique), exploration automatique, vitesse calculée selon le carburant.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:279 jsx"
+   "ui/dialogs/misc.tsx:281 jsx"
   ]
  },
  {
   "key": "Planificateur de colonies, modèles de production, objectifs de recherche, rapports cliquables, liste « à faire », annulation.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:280 jsx"
+   "ui/dialogs/misc.tsx:282 jsx"
   ]
  },
  {
   "key": "Multijoueur sur le même appareil uniquement ; l'IA est originale.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:281 jsx"
+   "ui/dialogs/misc.tsx:283 jsx"
   ]
  },
  {
   "key": "À propos de Constellations",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:290 attr:title"
+   "ui/dialogs/misc.tsx:292 attr:title"
   ]
  },
  {
   "key": "{0} : stratégie spatiale au tour par tour, inspirée de {1} de Jeff Johnson et Jeff McBride (1995).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:291 jsx"
+   "ui/dialogs/misc.tsx:293 jsx"
   ]
  },
  {
   "key": "Constellations {0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:291 jsx"
+   "ui/dialogs/misc.tsx:293 jsx"
   ]
  },
  {
   "key": "Moteur, interface et graphismes originaux, entièrement générés dans le navigateur. Les formules de jeu ont été recoupées avec l'aide d'origine, le clone libre craig-stars (licence MIT) et une partie réelle sous Windows 3.11.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:292 jsx"
+   "ui/dialogs/misc.tsx:294 jsx"
   ]
  },
  {
   "key": "Aucun fichier, image ou texte de Stars! n'est inclus.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:293 jsx"
+   "ui/dialogs/misc.tsx:295 jsx"
   ]
  },
  {
   "key": "Les {0} ont gagné en achevant le Portail de l'Ascension.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:301"
+   "ui/dialogs/misc.tsx:303"
   ]
  },
  {
   "key": "Les {0} ont gagné en abattant le Nexus des Moissonneurs.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:302"
+   "ui/dialogs/misc.tsx:304"
   ]
  },
  {
   "key": "Les {0} ont gagné en scellant la Brèche avec le Sceau des Anciens.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:303"
+   "ui/dialogs/misc.tsx:305"
   ]
  },
  {
   "key": "Les {0} ont gagné par la victoire de leur origine, {1}. {2}",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:304"
+   "ui/dialogs/misc.tsx:306"
   ]
  },
  {
   "key": "Les {0} ont gagné par la victoire de leur origine.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:304"
+   "ui/dialogs/misc.tsx:306"
   ]
  },
  {
   "key": "Les {0} ont gagné en restant les derniers debout.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:305"
+   "ui/dialogs/misc.tsx:307"
   ]
  },
  {
   "key": "Les {0} ont gagné en atteignant les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:306"
+   "ui/dialogs/misc.tsx:308"
   ]
  },
  {
   "key": "Défaite",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:314 attr:title"
+   "ui/dialogs/misc.tsx:316 attr:title"
   ]
  },
  {
   "key": "Victoire !",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:314 attr:title"
+   "ui/dialogs/misc.tsx:316 attr:title"
   ]
  },
  {
   "key": "Un empire a gagné",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:314 attr:title"
+   "ui/dialogs/misc.tsx:316 attr:title"
   ]
  },
  {
   "key": "Voir les scores",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:314 jsx"
+   "ui/dialogs/misc.tsx:316 jsx"
   ]
  },
  {
   "key": "Objectifs secrets révélés",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:316 jsx"
+   "ui/dialogs/misc.tsx:318 jsx"
   ]
  },
  {
   "key": "Vous pouvez continuer à jouer cette partie ; la chronique reste dans le menu ⋯.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:319 jsx"
+   "ui/dialogs/misc.tsx:321 jsx"
   ]
  },
  {
   "key": "Univers",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:329 attr:k",
+   "ui/dialogs/misc.tsx:331 attr:k",
    "ui/dialogs/race.tsx:169 attr:k"
   ]
  },
@@ -22814,14 +22900,14 @@
   "key": "{0} · {1} planètes · {2} al",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:329 attr:v"
+   "ui/dialogs/misc.tsx:331 attr:v"
   ]
  },
  {
   "key": "Graine",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:330 attr:k",
+   "ui/dialogs/misc.tsx:332 attr:k",
    "ui/dialogs/race.tsx:171 attr:k"
   ]
  },
@@ -22829,28 +22915,28 @@
   "key": "{0} Contacts anonymes hors scanner pénétrant (effet au prochain tour)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:332 jsx"
+   "ui/dialogs/misc.tsx:334 jsx"
   ]
  },
  {
   "key": "{0} Populations en millions {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:334 jsx"
+   "ui/dialogs/misc.tsx:336 jsx"
   ]
  },
  {
   "key": "(un colon des règles = mille habitants ; affichage seulement, les nouveaux rapports suivent)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:334 jsx"
+   "ui/dialogs/misc.tsx:336 jsx"
   ]
  },
  {
   "key": "{0} Scores publics",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:335 jsx",
+   "ui/dialogs/misc.tsx:337 jsx",
    "ui/dialogs/newgame.tsx:138 jsx"
   ]
  },
@@ -22858,14 +22944,14 @@
   "key": "Décochées, la partie suit les règles de Stars! d'origine. En cours de partie, on peut en ajouter (effet immédiat : une règle activée en route prépare ce qu'il faut, terrain, objectifs, capitales), mais plus en retirer.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:337 jsx"
+   "ui/dialogs/misc.tsx:339 jsx"
   ]
  },
  {
   "key": " (ne se choisit qu'à la création de la partie)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:338 jsx"
+   "ui/dialogs/misc.tsx:340 jsx"
   ]
  },
  {
@@ -23451,126 +23537,170 @@
   "key": "Couleurs standard",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:9 prop:label"
+   "ui/dialogs/prefs.tsx:11 prop:label"
   ]
  },
  {
   "key": "Vert pour ce qui va bien, rouge pour les ennemis et les dangers.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:9 prop:note"
+   "ui/dialogs/prefs.tsx:11 prop:note"
   ]
  },
  {
   "key": "Daltonisme rouge-vert",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:10 prop:label"
+   "ui/dialogs/prefs.tsx:12 prop:label"
   ]
  },
  {
   "key": "Deutéranopie, protanopie : le bleu remplace le vert, l'orange remplace le rouge. Les couleurs des empires suivent une palette distinguable.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:10 prop:note"
+   "ui/dialogs/prefs.tsx:12 prop:note"
   ]
  },
  {
   "key": "Daltonisme bleu-jaune",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:11 prop:label"
+   "ui/dialogs/prefs.tsx:13 prop:label"
   ]
  },
  {
   "key": "Tritanopie : vert d'eau contre rose et rouge, les empires dans une palette adaptée.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:11 prop:note"
+   "ui/dialogs/prefs.tsx:13 prop:note"
   ]
  },
  {
   "key": "Affichage et son",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:19 attr:title"
+   "ui/dialogs/prefs.tsx:21 attr:title"
   ]
  },
  {
   "key": "Réglages de ce navigateur, valables pour toutes les parties.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:20 jsx"
+   "ui/dialogs/prefs.tsx:22 jsx"
   ]
  },
  {
   "key": "Taille du texte",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:21 jsx"
+   "ui/dialogs/prefs.tsx:23 jsx"
   ]
  },
  {
   "key": "Agrandit toute l'interface, carte comprise.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:25 jsx"
+   "ui/dialogs/prefs.tsx:27 jsx"
   ]
  },
  {
   "key": "Couleurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:26 jsx"
+   "ui/dialogs/prefs.tsx:28 jsx"
   ]
  },
  {
   "key": "Son",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:28 jsx"
+   "ui/dialogs/prefs.tsx:30 jsx"
   ]
  },
  {
   "key": "{0} Son activé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:29 jsx"
+   "ui/dialogs/prefs.tsx:31 jsx"
   ]
  },
  {
   "key": "Musique",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:30 jsx"
+   "ui/dialogs/prefs.tsx:32 jsx"
   ]
  },
  {
   "key": "Signaux",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:31 jsx"
+   "ui/dialogs/prefs.tsx:33 jsx"
   ]
  },
  {
   "key": "Essayer",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:32 jsx"
+   "ui/dialogs/prefs.tsx:34 jsx"
   ]
  },
  {
   "key": "Une musique d'ambiance composée en direct, qui s'assombrit quand la guerre menace et se tend en pleine crise, et quelques signaux brefs : découverte, colonie, bataille, alerte. {0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/prefs.tsx:33 jsx"
+   "ui/dialogs/prefs.tsx:35 jsx"
   ]
  },
  {
   "key": "Le son démarre au premier clic (règle des navigateurs).",
   "kind": "str",
   "refs": [
-   "ui/dialogs/prefs.tsx:33 jsx"
+   "ui/dialogs/prefs.tsx:35 jsx"
+  ]
+ },
+ {
+  "key": "GitHub est injoignable pour le moment : réessayez plus tard.",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/prefs.tsx:47 call:notify"
+  ]
+ },
+ {
+  "key": "Vous avez la dernière version ({0}).",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/prefs.tsx:48 call:notify",
+   "ui/dialogs/update.tsx:47 jsx"
+  ]
+ },
+ {
+  "key": "Mises à jour",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/prefs.tsx:52 jsx",
+   "ui/dialogs/update.tsx:47 attr:title"
+  ]
+ },
+ {
+  "key": "{0} Chercher les nouvelles versions sur GitHub",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/prefs.tsx:53 jsx"
+  ]
+ },
+ {
+  "key": "Chercher maintenant",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/prefs.tsx:54 jsx"
+  ]
+ },
+ {
+  "key": "Cette copie du jeu, ouverte depuis votre disque, consulte au plus deux fois par jour la liste publique des versions sur GitHub, et ne transmet rien. Quand une version plus récente existe, l'écran d'accueil la propose avec ses nouveautés.",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/prefs.tsx:55 jsx"
   ]
  },
  {
@@ -24040,7 +24170,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:172 jsx",
-   "ui/inspector.tsx:184"
+   "ui/inspector.tsx:203"
   ]
  },
  {
@@ -24069,7 +24199,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:296"
+   "ui/inspector.tsx:315"
   ]
  },
  {
@@ -24077,7 +24207,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:296"
+   "ui/inspector.tsx:315"
   ]
  },
  {
@@ -24092,7 +24222,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/production.tsx:174 attr:title",
-   "ui/inspector.tsx:297 attr:title"
+   "ui/inspector.tsx:316 attr:title"
   ]
  },
  {
@@ -24114,7 +24244,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/production.tsx:174 attr:title",
-   "ui/inspector.tsx:298 attr:title"
+   "ui/inspector.tsx:317 attr:title"
   ]
  },
  {
@@ -24122,7 +24252,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:176",
+   "ui/inspector.tsx:195",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -24131,7 +24261,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:176 attr:title",
-   "ui/inspector.tsx:312 attr:title"
+   "ui/inspector.tsx:331 attr:title"
   ]
  },
  {
@@ -24139,7 +24269,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:177 attr:title",
-   "ui/inspector.tsx:313 attr:title"
+   "ui/inspector.tsx:332 attr:title"
   ]
  },
  {
@@ -24147,7 +24277,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:178 attr:title",
-   "ui/inspector.tsx:314 attr:title"
+   "ui/inspector.tsx:333 attr:title"
   ]
  },
  {
@@ -24155,7 +24285,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:179 attr:title",
-   "ui/inspector.tsx:315 attr:title"
+   "ui/inspector.tsx:334 attr:title"
   ]
  },
  {
@@ -24236,7 +24366,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/production.tsx:202 attr:k",
-   "ui/inspector.tsx:140 attr:k"
+   "ui/inspector.tsx:159 attr:k"
   ]
  },
  {
@@ -25616,6 +25746,83 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/research.tsx:292 jsx"
+  ]
+ },
+ {
+  "key": "Nouvelle version : {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/update.tsx:50 attr:title"
+  ]
+ },
+ {
+  "key": "Vous jouez la version {0} : {1} versions sont parues depuis.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/update.tsx:52 jsx"
+  ]
+ },
+ {
+  "key": "Vous jouez la version {0}.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/update.tsx:52 jsx"
+  ]
+ },
+ {
+  "key": "Télécharger le jeu (index.html, {0} Mo)",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/update.tsx:54"
+  ]
+ },
+ {
+  "key": "Télécharger le jeu (index.html)",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/update.tsx:54"
+  ]
+ },
+ {
+  "key": "Télécharger le jeu (.zip)",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/update.tsx:54 jsx"
+  ]
+ },
+ {
+  "key": "Archive complète (.zip, avec les sources)",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/update.tsx:55 jsx"
+  ]
+ },
+ {
+  "key": "Jouer en ligne",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/update.tsx:56 jsx"
+  ]
+ },
+ {
+  "key": "Remplacez votre ancien fichier par le nouveau, dans le même dossier et sous le même nom (index.html) : vos parties restent dans ce navigateur. Par précaution, exportez celles qui comptent avant de remplacer le fichier.",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/update.tsx:58 jsx"
+  ]
+ },
+ {
+  "key": "Version {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/update.tsx:60 jsx"
+  ]
+ },
+ {
+  "key": "Toutes les versions sur GitHub",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/update.tsx:63 jsx"
   ]
  },
  {
@@ -27111,7 +27318,7 @@
   "kind": "str",
   "refs": [
    "ui/empire.tsx:94 call:wth",
-   "ui/inspector.tsx:256 attr:k"
+   "ui/inspector.tsx:275 attr:k"
   ]
  },
  {
@@ -27260,7 +27467,7 @@
   "kind": "tpl",
   "refs": [
    "ui/empire.tsx:136 call:notify",
-   "ui/inspector.tsx:278 call:notify"
+   "ui/inspector.tsx:297 call:notify"
   ]
  },
  {
@@ -27570,7 +27777,7 @@
   "kind": "jsx",
   "refs": [
    "ui/empire.tsx:211 jsx",
-   "ui/inspector.tsx:384 jsx"
+   "ui/inspector.tsx:403 jsx"
   ]
  },
  {
@@ -27592,7 +27799,7 @@
   "kind": "jsx",
   "refs": [
    "ui/enginechart.tsx:30 jsx",
-   "ui/inspector.tsx:458 jsx"
+   "ui/inspector.tsx:477 jsx"
   ]
  },
  {
@@ -28504,418 +28711,453 @@
   "key": "Cliquez sur une planète ou une flotte de la carte.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:44 jsx"
+   "ui/inspector.tsx:45 jsx"
   ]
  },
  {
   "key": "Habitabilité pour votre race",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:80 jsx"
+   "ui/inspector.tsx:81 jsx"
   ]
  },
  {
   "key": "{0} % après terraformation",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:80 jsx"
+   "ui/inspector.tsx:81 jsx"
+  ]
+ },
+ {
+  "key": "Les usines au travail réchauffent leur monde, d'autant plus que leur production est grande ; la planète suit lentement. Vos usines rejettent aujourd'hui {0} % de ce qu'elles rejetaient au départ (Énergie décarbonée, Captage du carbone et Régulation climatique les réduisent) ; la terraformation de température compense le reste, dans ses limites.",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:92"
+  ]
+ },
+ {
+  "key": "Effet de serre : l'industrie de ce monde le pousse peu à peu vers +{0} °C.",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:94"
+  ]
+ },
+ {
+  "key": "Effet de serre : +{0} °C, et l'industrie de ce monde le pousse vers +{1} °C.",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:96"
+  ]
+ },
+ {
+  "key": "Effet de serre : +{0} °C, en baisse (vers +{1} °C avec son industrie actuelle).",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:98"
+  ]
+ },
+ {
+  "key": "Effet de serre : +{0} °C, stable avec son industrie actuelle.",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:99"
   ]
  },
  {
   "key": "Dans le territoire des {0}, dont les frontières vous sont fermées : sous un ordre automatique, la flotte en sort d'elle-même (frontière la plus proche à {1} al).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:101 jsx"
+   "ui/inspector.tsx:119 jsx"
   ]
  },
  {
   "key": "Délai écoulé : si la flotte est encore dans le territoire des {0} l'an prochain, ce sera une déclaration de guerre.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:103"
+   "ui/inspector.tsx:121"
   ]
  },
  {
   "key": "Dans le territoire des {0}, dont les frontières vous sont fermées, sans assez de carburant pour en sortir à temps (frontière la plus proche à {1} al) : sans ravitaillement d'ici l'an {2}, la flotte sera démantelée.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:105"
+   "ui/inspector.tsx:123"
   ]
  },
  {
   "key": "Dans le territoire des {0}, dont les frontières vous sont fermées : la flotte doit en être sortie en l'an {1} (frontière la plus proche à {2} al, Warp {3}), sinon y rester leur déclarera la guerre.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:106"
+   "ui/inspector.tsx:124"
   ]
  },
  {
   "key": "Sortir par le plus court chemin",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:107 jsx"
+   "ui/inspector.tsx:125 jsx"
   ]
  },
  {
   "key": "{0} · {1}, {2} · fondée en {3}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:123 jsx"
+   "ui/inspector.tsx:141 jsx"
   ]
  },
  {
   "key": "Planète précédente (p)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:124 attr:title"
+   "ui/inspector.tsx:142 attr:title"
   ]
  },
  {
   "key": "Planète suivante (n)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:124 attr:title"
+   "ui/inspector.tsx:142 attr:title"
   ]
  },
  {
   "key": "Centrer (v)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:124 attr:title",
-   "ui/inspector.tsx:413 attr:title"
+   "ui/inspector.tsx:142 attr:title",
+   "ui/inspector.tsx:432 attr:title"
   ]
  },
  {
   "key": "Minerais en réserve",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:133 attr:title"
+   "ui/inspector.tsx:152 attr:title"
   ]
  },
  {
   "key": "+{0}/an · conc. {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:134 jsx"
+   "ui/inspector.tsx:153 jsx"
   ]
  },
  {
   "key": "{0} hab. {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:137 jsx",
-   "ui/inspector.tsx:138 jsx"
+   "ui/inspector.tsx:156 jsx",
+   "ui/inspector.tsx:157 jsx"
   ]
  },
  {
   "key": "{0}/an",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:137 jsx"
+   "ui/inspector.tsx:156 jsx"
   ]
  },
  {
   "key": "Capacité",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:138 attr:k"
+   "ui/inspector.tsx:157 attr:k"
   ]
  },
  {
   "key": "La croissance ralentit nettement à ce niveau de peuplement. Une émigration automatique pourrait être utile.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:139 jsx"
+   "ui/inspector.tsx:158 jsx"
   ]
  },
  {
   "key": "sur {0}{1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:140 jsx"
+   "ui/inspector.tsx:159 jsx"
   ]
  },
  {
   "key": " ({0} à plein rendement)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:140 jsx"
+   "ui/inspector.tsx:159 jsx"
   ]
  },
  {
   "key": "Ressources disponibles pour la production ; le reste va à la recherche",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:140 attr:title"
+   "ui/inspector.tsx:159 attr:title"
   ]
  },
  {
   "key": "Mines / usines",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:141 attr:k"
+   "ui/inspector.tsx:160 attr:k"
   ]
  },
  {
   "key": "(max {0} / {1})",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:141 jsx"
+   "ui/inspector.tsx:160 jsx"
   ]
  },
  {
   "key": "Exploitables par la population actuelle entre parenthèses",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:141 attr:title"
+   "ui/inspector.tsx:160 attr:title"
   ]
  },
  {
   "key": "· couverture {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:142 jsx"
+   "ui/inspector.tsx:161 jsx"
   ]
  },
  {
   "key": "Détection flottes",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:143 attr:k"
+   "ui/inspector.tsx:162 attr:k"
   ]
  },
  {
   "key": "Analyse planétaire",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:144 attr:k"
+   "ui/inspector.tsx:163 attr:k"
   ]
  },
  {
   "key": "en orbite seulement",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:144 attr:v"
+   "ui/inspector.tsx:163 attr:v"
   ]
  },
  {
   "key": "{0} Ne donner à la recherche que les ressources inutilisées",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:145 jsx"
+   "ui/inspector.tsx:164 jsx"
   ]
  },
  {
   "key": "En orbite ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:147 attr:title"
+   "ui/inspector.tsx:166 attr:title"
   ]
  },
  {
   "key": "Aucune flotte.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:148 jsx"
+   "ui/inspector.tsx:167 jsx"
   ]
  },
  {
   "key": " · {0}/{1} kt",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:148 jsx"
+   "ui/inspector.tsx:167 jsx"
   ]
  },
  {
   "key": "Échanger cargaison et carburant avec la planète",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:148 attr:title"
+   "ui/inspector.tsx:167 attr:title"
   ]
  },
  {
   "key": "Aucune station : impossible de construire des vaisseaux ici. {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:151 jsx"
+   "ui/inspector.tsx:170 jsx"
   ]
  },
  {
   "key": "En construire une",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:151 jsx"
+   "ui/inspector.tsx:170 jsx"
   ]
  },
  {
   "key": "Voir le modèle : plan, armes, équipement",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:152 attr:title"
+   "ui/inspector.tsx:171 attr:title"
   ]
  },
  {
   "key": " obsolète",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:152 jsx",
-   "ui/inspector.tsx:214 jsx",
-   "ui/inspector.tsx:411 jsx",
-   "ui/inspector.tsx:501 jsx"
+   "ui/inspector.tsx:171 jsx",
+   "ui/inspector.tsx:233 jsx",
+   "ui/inspector.tsx:430 jsx",
+   "ui/inspector.tsx:520 jsx"
   ]
  },
  {
   "key": "{0} · voir le modèle",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:152 jsx"
+   "ui/inspector.tsx:171 jsx"
   ]
  },
  {
   "key": "aucune arme",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:154 jsx"
+   "ui/inspector.tsx:173 jsx"
   ]
  },
  {
   "key": "Armes de la station : nombre × arme, dégâts par tir, portée (en cases)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:154 attr:title"
+   "ui/inspector.tsx:173 attr:title"
   ]
  },
  {
   "key": "{0} kt · {1} al",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:157 attr:v"
+   "ui/inspector.tsx:176 attr:v"
   ]
  },
  {
   "key": " ({0} × Warp {1})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:159"
+   "ui/inspector.tsx:178"
   ]
  },
  {
   "key": "Cible des paquets",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:160 attr:k"
+   "ui/inspector.tsx:179 attr:k"
   ]
  },
  {
   "key": "définir",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:160 jsx"
+   "ui/inspector.tsx:179 jsx"
   ]
  },
  {
   "key": "Ctrl+clic sur la planète cible des paquets",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:160 call:notify"
+   "ui/inspector.tsx:179 call:notify"
   ]
  },
  {
   "key": "Vitesse des paquets",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:161 attr:k"
+   "ui/inspector.tsx:180 attr:k"
   ]
  },
  {
   "key": "Route des vaisseaux neufs",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:164 attr:k"
+   "ui/inspector.tsx:183 attr:k"
   ]
  },
  {
   "key": "retirer",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:164 jsx"
+   "ui/inspector.tsx:183 jsx"
   ]
  },
  {
   "key": "(Ctrl+clic sur la carte)",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:164 jsx"
+   "ui/inspector.tsx:183 jsx"
   ]
  },
  {
   "key": "{0} × {1} ({2} dp, portée {3})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:173 call:map"
+   "ui/inspector.tsx:192 call:map"
   ]
  },
  {
   "key": "En chantier à {0} : {1} × {2} → {3}. La flotte doit rester en orbite.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:201 jsx"
+   "ui/inspector.tsx:220 jsx"
   ]
  },
  {
   "key": "Des vaisseaux de modèles retirés peuvent être modernisés vers un modèle de même coque : ",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:202 jsx"
+   "ui/inspector.tsx:221 jsx"
   ]
  },
  {
   "key": "Modernisation possible : ",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:202 jsx"
+   "ui/inspector.tsx:221 jsx"
   ]
  },
  {
   "key": "sur {0}{1} · ",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:217 jsx"
+   "ui/inspector.tsx:236 jsx"
   ]
  },
  {
   "key": " ({0} déjà en chantier)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:217 jsx"
+   "ui/inspector.tsx:236 jsx"
   ]
  },
  {
   "key": "Moderniser à {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:218 jsx"
+   "ui/inspector.tsx:237 jsx"
   ]
  },
  {
   "key": "Capitale",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:226"
+   "ui/inspector.tsx:245"
   ]
  },
  {
   "key": "Monde conquis",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:229"
+   "ui/inspector.tsx:248"
   ]
  },
  {
   "key": "Monde natal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:230",
+   "ui/inspector.tsx:249",
    "ui/sidebar.tsx:129 attr:title"
   ]
  },
@@ -28923,162 +29165,162 @@
   "key": "siège du gouvernement",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:244 call:push"
+   "ui/inspector.tsx:263 call:push"
   ]
  },
  {
   "key": "capitale régionale : plein rendement à {0} al autour",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:245 call:push"
+   "ui/inspector.tsx:264 call:push"
   ]
  },
  {
   "key": "à {0} al de {1}{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:246 call:push"
+   "ui/inspector.tsx:265 call:push"
   ]
  },
  {
   "key": "monde conquis : {0}, plein rendement en {1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:247 call:push"
+   "ui/inspector.tsx:266 call:push"
   ]
  },
  {
   "key": "empire désorganisé jusqu'en {0} (×{1})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:248 call:push"
+   "ui/inspector.tsx:267 call:push"
   ]
  },
  {
   "key": "Production et recherche de cette planète. Pleine efficacité à {0} al de la capitale ou d'une capitale régionale, puis −{1} % tous les {2} al (minimum {3} %).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:256 attr:title"
+   "ui/inspector.tsx:275 attr:title"
   ]
  },
  {
   "key": "Le réseau logistique déplace les colons entre vos planètes selon ces politiques, avec les cargos qui lui sont affectés.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:259 attr:title"
+   "ui/inspector.tsx:278 attr:title"
   ]
  },
  {
   "key": "Émigration",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:261 jsx"
+   "ui/inspector.tsx:280 jsx"
   ]
  },
  {
   "key": "Immigration",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:261 jsx"
+   "ui/inspector.tsx:280 jsx"
   ]
  },
  {
   "key": "Pourcentage de la capacité de la planète",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:264 attr:title"
+   "ui/inspector.tsx:283 attr:title"
   ]
  },
  {
   "key": "au-delà de",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:265 jsx"
+   "ui/inspector.tsx:284 jsx"
   ]
  },
  {
   "key": "jusqu'à",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:265 jsx"
+   "ui/inspector.tsx:284 jsx"
   ]
  },
  {
   "key": "{0} à envoyer",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:266 jsx"
+   "ui/inspector.tsx:285 jsx"
   ]
  },
  {
   "key": "Exporter : le réseau emporte les minerais au-delà de la réserve vers les planètes importatrices (ou la capitale s'il n'y en a pas).",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:270 attr:title"
+   "ui/inspector.tsx:289 attr:title"
   ]
  },
  {
   "key": "garder",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:275 jsx"
+   "ui/inspector.tsx:294 jsx"
   ]
  },
  {
   "key": "kt de chacun",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:275 jsx"
+   "ui/inspector.tsx:294 jsx"
   ]
  },
  {
   "key": "reçoit les minerais exportés par vos autres planètes",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:276 jsx"
+   "ui/inspector.tsx:295 jsx"
   ]
  },
  {
   "key": "Aucun cargo dans le réseau logistique : ces politiques restent lettre morte.{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:277 jsx"
+   "ui/inspector.tsx:296 jsx"
   ]
  },
  {
   "key": "Construire un {0} à {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:278 jsx"
+   "ui/inspector.tsx:297 jsx"
   ]
  },
  {
   "key": "Cochez « Réseau logistique » sur une flotte de cargos.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:278 jsx"
+   "ui/inspector.tsx:297 jsx"
   ]
  },
  {
   "key": "vos réseaux d'espions moitié plus forts, ceux des autres démasqués deux fois plus souvent",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:282 jsx"
+   "ui/inspector.tsx:301 jsx"
   ]
  },
  {
   "key": "vide",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:292 jsx"
+   "ui/inspector.tsx:311 jsx"
   ]
  },
  {
   "key": "bloqué",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:293 jsx",
-   "ui/inspector.tsx:297 jsx",
+   "ui/inspector.tsx:312 jsx",
+   "ui/inspector.tsx:316 jsx",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -29086,35 +29328,35 @@
   "key": "File de production",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:303 jsx"
+   "ui/inspector.tsx:322 jsx"
   ]
  },
  {
   "key": "La file est vide : cette planète ne produit rien cette année.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:306 jsx"
+   "ui/inspector.tsx:325 jsx"
   ]
  },
  {
   "key": "Partira seul en mission une fois construit",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:308 attr:title"
+   "ui/inspector.tsx:327 attr:title"
   ]
  },
  {
   "key": "Avancement du mégaprojet",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:308 attr:title"
+   "ui/inspector.tsx:327 attr:title"
   ]
  },
  {
   "key": "Ajouter / modifier…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:319 jsx",
+   "ui/inspector.tsx:338 jsx",
    "ui/tutorial.tsx:110 prop:edit"
   ]
  },
@@ -29122,21 +29364,21 @@
   "key": "Vider",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:319 jsx"
+   "ui/inspector.tsx:338 jsx"
   ]
  },
  {
   "key": "Système n° {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:334 jsx"
+   "ui/inspector.tsx:353 jsx"
   ]
  },
  {
   "key": " · monde natal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:335 jsx",
+   "ui/inspector.tsx:354 jsx",
    "ui/summary.tsx:114 jsx"
   ]
  },
@@ -29144,148 +29386,148 @@
   "key": "Monde libre",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:335 jsx"
+   "ui/inspector.tsx:354 jsx"
   ]
  },
  {
   "key": "Données inconnues",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:335 jsx"
+   "ui/inspector.tsx:354 jsx"
   ]
  },
  {
   "key": "Relevé de cette année ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:336 jsx"
+   "ui/inspector.tsx:355 jsx"
   ]
  },
  {
   "key": "Relevé de {0}, il y a {1} an{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:336 jsx"
+   "ui/inspector.tsx:355 jsx"
   ]
  },
  {
   "key": "Au début de la partie, il faut envoyer un vaisseau dans ce système pour mesurer son environnement et ses minerais. Un scanner pénétrant permettra plus tard de l'analyser à distance.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:343 jsx"
+   "ui/inspector.tsx:362 jsx"
   ]
  },
  {
   "key": "Minerais en sous-sol",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:345 attr:title"
+   "ui/inspector.tsx:364 attr:title"
   ]
  },
  {
   "key": "conc. {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:346 jsx"
+   "ui/inspector.tsx:365 jsx"
   ]
  },
  {
   "key": "{0} kt en surface",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:346 jsx"
+   "ui/inspector.tsx:365 jsx"
   ]
  },
  {
   "key": "≈ {0} hab.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:349 attr:v"
+   "ui/inspector.tsx:368 attr:v"
   ]
  },
  {
   "key": "Population maximale",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:350 attr:k"
+   "ui/inspector.tsx:369 attr:k"
   ]
  },
  {
   "key": "Voir ce qu'on sait de ce modèle",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:352 attr:title"
+   "ui/inspector.tsx:371 attr:title"
   ]
  },
  {
   "key": "⚠ Cette arche n'a aucun colon à bord : elle ne pourra pas fonder de colonie.{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:364 jsx"
+   "ui/inspector.tsx:383 jsx"
   ]
  },
  {
   "key": "Escale à {0} pour les embarquer",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:365 jsx"
+   "ui/inspector.tsx:384 jsx"
   ]
  },
  {
   "key": "Aucune de vos planètes ne peut fournir de colons.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:365 jsx"
+   "ui/inspector.tsx:384 jsx"
   ]
  },
  {
   "key": "⛽ {0} vient la ravitailler{1}. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:374 jsx"
+   "ui/inspector.tsx:393 jsx"
   ]
  },
  {
   "key": ", rencontre prévue en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:374 jsx"
+   "ui/inspector.tsx:393 jsx"
   ]
  },
  {
   "key": "⛽ En route pour ravitailler {0}{1}. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:375 jsx"
+   "ui/inspector.tsx:394 jsx"
   ]
  },
  {
   "key": "une flotte",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:375 jsx"
+   "ui/inspector.tsx:394 jsx"
   ]
  },
  {
   "key": ", puis retour à son poste ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:375 jsx"
+   "ui/inspector.tsx:394 jsx"
   ]
  },
  {
   "key": "Aucune de vos flottes sans ordre n'a assez de carburant à céder pour la rejoindre.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:378 jsx"
+   "ui/inspector.tsx:397 jsx"
   ]
  },
  {
   "key": "sur place",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:380",
-   "ui/inspector.tsx:488",
+   "ui/inspector.tsx:399",
+   "ui/inspector.tsx:507",
    "ui/sidebar.tsx:66"
   ]
  },
@@ -29293,310 +29535,310 @@
   "key": "rencontre en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:380"
+   "ui/inspector.tsx:399"
   ]
  },
  {
   "key": "Ravitailler la flotte{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:382 jsx"
+   "ui/inspector.tsx:401 jsx"
   ]
  },
  {
   "key": "La flotte ravitailleuse la rejoint, lui cède ce qu'elle peut (en gardant de quoi rentrer) puis retourne au chantier le plus proche",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:382 attr:title"
+   "ui/inspector.tsx:401 attr:title"
   ]
  },
  {
   "key": "{0} · +{1} mg · {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:382 jsx"
+   "ui/inspector.tsx:401 jsx"
   ]
  },
  {
   "key": "Masquer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:383 jsx"
+   "ui/inspector.tsx:402 jsx"
   ]
  },
  {
   "key": "+{0} mg · {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:384 jsx"
+   "ui/inspector.tsx:403 jsx"
   ]
  },
  {
   "key": "Flotte{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:410 jsx"
+   "ui/inspector.tsx:429 jsx"
   ]
  },
  {
   "key": "Double-clic pour renommer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:411 attr:title"
+   "ui/inspector.tsx:430 attr:title"
   ]
  },
  {
   "key": "Un modèle de cette flotte a été retiré : il ne se construit plus, mais ses vaisseaux restent en service.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:411 attr:title"
+   "ui/inspector.tsx:430 attr:title"
   ]
  },
  {
   "key": "Espace profond ({0}, {1})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:412 jsx"
+   "ui/inspector.tsx:431 jsx"
   ]
  },
  {
   "key": " · à sec",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:412 jsx"
+   "ui/inspector.tsx:431 jsx"
   ]
  },
  {
   "key": "Flotte précédente",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 attr:title"
+   "ui/inspector.tsx:432 attr:title"
   ]
  },
  {
   "key": "Flotte suivante",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 attr:title"
+   "ui/inspector.tsx:432 attr:title"
   ]
  },
  {
   "key": "Renommer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:413 attr:title"
+   "ui/inspector.tsx:432 attr:title"
   ]
  },
  {
   "key": "Carburant et soute",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:417 attr:title"
+   "ui/inspector.tsx:436 attr:title"
   ]
  },
  {
   "key": "Échanger",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:417 jsx"
+   "ui/inspector.tsx:436 jsx"
   ]
  },
  {
   "key": "Transférer",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:417 jsx",
-   "ui/inspector.tsx:526 jsx"
+   "ui/inspector.tsx:436 jsx",
+   "ui/inspector.tsx:545 jsx"
   ]
  },
  {
   "key": "Itinéraire{0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:421 jsx"
+   "ui/inspector.tsx:440 jsx"
   ]
  },
  {
   "key": " · {0} an{1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:421 jsx"
+   "ui/inspector.tsx:440 jsx"
   ]
  },
  {
   "key": "Effacer",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:421 jsx"
+   "ui/inspector.tsx:440 jsx"
   ]
  },
  {
   "key": "Supprimer toutes les étapes",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:421 attr:title"
+   "ui/inspector.tsx:440 attr:title"
   ]
  },
  {
   "key": "Franchie sans s'arrêter : la flotte garde sa vitesse",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:427 attr:title"
+   "ui/inspector.tsx:446 attr:title"
   ]
  },
  {
   "key": "Supprimer l'étape (Suppr)",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:428 attr:title"
+   "ui/inspector.tsx:447 attr:title"
   ]
  },
  {
   "key": "Maj+clic sur la carte : destination (planète, flotte à intercepter ou point de l'espace). Gardez Maj enfoncée pour ajouter des étapes.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:432 jsx"
+   "ui/inspector.tsx:451 jsx"
   ]
  },
  {
   "key": "Maj+clic : nouvel itinéraire · Ctrl+Maj+clic : ajouter une étape à la fin.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:432 jsx"
+   "ui/inspector.tsx:451 jsx"
   ]
  },
  {
   "key": "Bouton « ✚ Étapes » au-dessus de la carte, puis touchez la destination ; appui long sur la carte : « Aller ici ».",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:433 jsx"
+   "ui/inspector.tsx:452 jsx"
   ]
  },
  {
   "key": "⚠ {0} Faites escale à un chantier ami ou raccourcissez le trajet.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:438 jsx"
+   "ui/inspector.tsx:457 jsx"
   ]
  },
  {
   "key": "Étape {0} à Warp 1 : {1} ans pour {2} al, faute de carburant.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:438 jsx"
+   "ui/inspector.tsx:457 jsx"
   ]
  },
  {
   "key": "Carburant insuffisant pour l'étape {0} : la flotte tombera en panne sèche et finira le trajet à Warp 1.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:438 jsx"
+   "ui/inspector.tsx:457 jsx"
   ]
  },
  {
   "key": "Le trajet entre dans le territoire des {0}, dont les frontières vous sont fermées : sous un ordre automatique, la flotte s'arrêtera à la frontière.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:445 jsx"
+   "ui/inspector.tsx:464 jsx"
   ]
  },
  {
   "key": "Le trajet entre dans le territoire des {0}, dont les frontières vous sont fermées : y entrer leur déclarera la guerre.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:445 jsx"
+   "ui/inspector.tsx:464 jsx"
   ]
  },
  {
   "key": "Au-delà de Warp {0} : chaque année, un vaisseau sur dix risque d'exploser.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:453 jsx"
+   "ui/inspector.tsx:472 jsx"
   ]
  },
  {
   "key": "Plus vite que la vitesse idéale (Warp {0}) : la consommation grimpe.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:454 jsx"
+   "ui/inspector.tsx:473 jsx"
   ]
  },
  {
   "key": "Durée",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:457 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "même année",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:457 jsx"
+   "ui/inspector.tsx:476 jsx"
   ]
  },
  {
   "key": "{0} mg",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:458 jsx",
-   "ui/inspector.tsx:459 jsx"
+   "ui/inspector.tsx:477 jsx",
+   "ui/inspector.tsx:478 jsx"
   ]
  },
  {
   "key": "Réserve à l'arrivée",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:459 jsx"
+   "ui/inspector.tsx:478 jsx"
   ]
  },
  {
   "key": "Plein automatique au chantier ami à l'arrivée.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:461 jsx"
+   "ui/inspector.tsx:480 jsx"
   ]
  },
  {
   "key": "{0} S'arrêter à cette étape",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:462 jsx"
+   "ui/inspector.tsx:481 jsx"
   ]
  },
  {
   "key": "Sans arrêt, la flotte franchit ce point de l'espace en gardant le reste de son année de voyage : un virage ne coûte aucun temps. Avec un arrêt, elle s'immobilise ici jusqu'à la fin de l'année. Une planète est toujours un arrêt (mise en orbite).",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:462 attr:title"
+   "ui/inspector.tsx:481 attr:title"
   ]
  },
  {
   "key": "Étape franchie sans ralentir : le virage ne coûte aucun temps.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:463 jsx"
+   "ui/inspector.tsx:482 jsx"
   ]
  },
  {
   "key": "Traverse {0} : Warp limité à {1} sur ce passage.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:464 jsx"
+   "ui/inspector.tsx:483 jsx"
   ]
  },
  {
   "key": "Traverser un trou de ver demande la technologie « {0} » ({1}). La flotte s'arrêtera devant.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:465 jsx"
+   "ui/inspector.tsx:484 jsx"
   ]
  },
  {
   "key": "Vitesse auto",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:467 jsx",
+   "ui/inspector.tsx:486 jsx",
    "ui/tutorial.tsx:112 prop:speed"
   ]
  },
@@ -29604,491 +29846,491 @@
   "key": "Vitesse la plus rapide qui conserve du carburant, pour chaque étape ; le portail quand il est plus rapide et sans risque",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:467 attr:title"
+   "ui/inspector.tsx:486 attr:title"
   ]
  },
  {
   "key": "Cette vitesse partout",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:468 jsx"
+   "ui/inspector.tsx:487 jsx"
   ]
  },
  {
   "key": "Le carburant ne suffit pas pour tout l'itinéraire : la flotte finira à Warp 1 et risque de dériver. Réduisez la vitesse ou faites escale à un chantier ami.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:470 jsx"
+   "ui/inspector.tsx:489 jsx"
   ]
  },
  {
   "key": "Le trajet traverse {0}. {1}{2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "{0} champs de mines connus",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "un champ de mines connu",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "Au-delà de Warp {0}, chaque année-lumière parcourue dans le champ risque une explosion.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "Warp {0} reste sous la vitesse sûre ({1}).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "Deux étapes sont ajoutées à l'entrée et à la sortie du champ, franchies sans s'arrêter : la flotte ne ralentit que dans le champ",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:476 attr:title"
+   "ui/inspector.tsx:495 attr:title"
   ]
  },
  {
   "key": "Passer en Warp {0} dans les champs de mines",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "Passer en Warp {0} dans le champ de mines",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:476 jsx"
+   "ui/inspector.tsx:495 jsx"
   ]
  },
  {
   "key": "{0} Répéter l'itinéraire",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:480 jsx"
+   "ui/inspector.tsx:499 jsx"
   ]
  },
  {
   "key": "{0} Exploration automatique",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:482 jsx"
+   "ui/inspector.tsx:501 jsx"
   ]
  },
  {
   "key": "À chaque tour, la flotte part d'elle-même vers la planète inexplorée la plus proche qu'elle peut atteindre sans tomber en panne, et rentre faire le plein quand il le faut.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:482 attr:title"
+   "ui/inspector.tsx:501 attr:title"
   ]
  },
  {
   "key": "{0} Exploration automatique {1}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:483 jsx"
+   "ui/inspector.tsx:502 jsx"
   ]
  },
  {
   "key": "Technologie « {0} » : {1} (vous êtes au niveau {2} en Électronique).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:483 attr:title"
+   "ui/inspector.tsx:502 attr:title"
   ]
  },
  {
   "key": "· Électronique {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:483 jsx"
+   "ui/inspector.tsx:502 jsx"
   ]
  },
  {
   "key": "{0} Réseau logistique",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:484 jsx"
+   "ui/inspector.tsx:503 jsx"
   ]
  },
  {
   "key": "Le réseau donne lui-même ses ordres à la flotte : il emporte colons et minerais selon les politiques de vos planètes, et évite les routes où des navires ennemis ont été vus à moins de {0} al.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:484 attr:title"
+   "ui/inspector.tsx:503 attr:title"
   ]
  },
  {
   "key": "Tâche {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:488 attr:title"
+   "ui/inspector.tsx:507 attr:title"
   ]
  },
  {
   "key": "à l'étape {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:488"
+   "ui/inspector.tsx:507"
   ]
  },
  {
   "key": "Composition · {0} vaisseau{1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:494 attr:title"
+   "ui/inspector.tsx:513 attr:title"
   ]
  },
  {
   "key": "Modèle retiré : il ne se construit plus",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:499 attr:title"
+   "ui/inspector.tsx:518 attr:title"
   ]
  },
  {
   "key": "Voir le modèle",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:499 attr:title"
+   "ui/inspector.tsx:518 attr:title"
   ]
  },
  {
   "key": "{0} endommagé(s), {1} dp de dégâts chacun",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:502 attr:title"
+   "ui/inspector.tsx:521 attr:title"
   ]
  },
  {
   "key": "Rendez-vous",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:506 attr:k"
+   "ui/inspector.tsx:525 attr:k"
   ]
  },
  {
   "key": "Marchand nomade {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:506 jsx"
+   "ui/inspector.tsx:525 jsx"
   ]
  },
  {
   "key": "Poursuite",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:507 attr:k"
+   "ui/inspector.tsx:526 attr:k"
   ]
  },
  {
   "key": "contact perdu de vue",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:507 jsx"
+   "ui/inspector.tsx:526 jsx"
   ]
  },
  {
   "key": "Modifier les plans…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:508 jsx"
+   "ui/inspector.tsx:527 jsx"
   ]
  },
  {
   "key": "{0} al à Warp {1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:509 attr:v"
+   "ui/inspector.tsx:528 attr:v"
   ]
  },
  {
   "key": " · pénétrant {0} al",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:512"
+   "ui/inspector.tsx:531"
   ]
  },
  {
   "key": "Séparer…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:515 jsx"
+   "ui/inspector.tsx:534 jsx"
   ]
  },
  {
   "key": "Un modèle par flotte",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:516 jsx"
+   "ui/inspector.tsx:535 jsx"
   ]
  },
  {
   "key": "Fusionner…",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:517 jsx"
+   "ui/inspector.tsx:536 jsx"
   ]
  },
  {
   "key": "Un vaisseau par flotte",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:518 jsx"
+   "ui/inspector.tsx:537 jsx"
   ]
  },
  {
   "key": "Une flotte par vaisseau, chacune avec les ordres actuels",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:518 attr:title"
+   "ui/inspector.tsx:537 attr:title"
   ]
  },
  {
   "key": "Votre peuple vit à bord depuis {0}. Tant qu'une arche chargée vole, l'empire vit ; la première colonie fondée deviendra votre nouvelle capitale, avec {1} usines et {2} mines. Les arches glanent chaque année un dixième de leur réservoir.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:521 jsx"
+   "ui/inspector.tsx:540 jsx"
   ]
  },
  {
   "key": "Autres flottes ici ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:525 attr:title"
+   "ui/inspector.tsx:544 attr:title"
   ]
  },
  {
   "key": "Absorber",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:526 jsx"
+   "ui/inspector.tsx:545 jsx"
   ]
  },
  {
   "key": "Équipage · {0}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:539 jsx"
+   "ui/inspector.tsx:558 jsx"
   ]
  },
  {
   "key": "Journal de bord",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:539 attr:title"
+   "ui/inspector.tsx:558 attr:title"
   ]
  },
  {
   "key": "{0} points d'expérience ; rang « {1} » à {2}.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:542 jsx"
+   "ui/inspector.tsx:561 jsx"
   ]
  },
  {
   "key": "{0} points d'expérience : le plus haut rang.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:542 jsx"
+   "ui/inspector.tsx:561 jsx"
   ]
  },
  {
   "key": "On en gagne 3 par bataille survécue, 4 de plus par vaisseau ennemi détruit.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:542 jsx"
+   "ui/inspector.tsx:561 jsx"
   ]
  },
  {
   "key": "En bataille",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:543 attr:k"
+   "ui/inspector.tsx:562 attr:k"
   ]
  },
  {
   "key": "États de service",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:544 attr:k"
+   "ui/inspector.tsx:563 attr:k"
   ]
  },
  {
   "key": "aucune bataille",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:544 attr:v"
+   "ui/inspector.tsx:563 attr:v"
   ]
  },
  {
   "key": "{0} bataille{1}, {2} vaisseau{3} ennemi{4} détruit{5}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:544 attr:v"
+   "ui/inspector.tsx:563 attr:v"
   ]
  },
  {
   "key": "En service depuis",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:546 attr:k"
+   "ui/inspector.tsx:565 attr:k"
   ]
  },
  {
   "key": "Réduire le journal",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:548 jsx"
+   "ui/inspector.tsx:567 jsx"
   ]
  },
  {
   "key": "Tout le journal ({0} entrées)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:548 jsx"
+   "ui/inspector.tsx:567 jsx"
   ]
  },
  {
   "key": "Les {0} vaisseaux déjà endommagés n'y survivraient pas.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:559"
+   "ui/inspector.tsx:578"
   ]
  },
  {
   "key": "Le vaisseau déjà endommagé n'y survivrait pas.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:559"
+   "ui/inspector.tsx:578"
   ]
  },
  {
   "key": "Saut risqué : {0}. Chaque vaisseau peut y perdre jusqu'à {1} % de son blindage, en plus des dégâts qu'il a déjà.{2} {3}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:560 jsx"
+   "ui/inspector.tsx:579 jsx"
   ]
  },
  {
   "key": " Certains peuvent aussi se perdre dans le vide.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:560 jsx"
+   "ui/inspector.tsx:579 jsx"
   ]
  },
  {
   "key": "Une flotte ne se répare pas l'année où elle franchit une porte.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:561 jsx"
+   "ui/inspector.tsx:580 jsx"
   ]
  },
  {
   "key": "Votre race ne peut pas faire passer de cargaison par une porte : elle serait déposée à {0} avant le saut.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:562 jsx"
+   "ui/inspector.tsx:581 jsx"
   ]
  },
  {
   "key": "Le saut sera refusé : {0}. La flotte partira à sa vitesse idéale.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:564 jsx"
+   "ui/inspector.tsx:583 jsx"
   ]
  },
  {
   "key": "Saut sans risque, sans carburant : masse sûre {0} par vaisseau (le plus lourd : {1} kt), portée sûre {2} (distance : {3} al).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:566 jsx"
+   "ui/inspector.tsx:585 jsx"
   ]
  },
  {
   "key": "Pas de portail pour cette étape : {0}.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:573 jsx",
-   "ui/inspector.tsx:575 jsx"
+   "ui/inspector.tsx:592 jsx",
+   "ui/inspector.tsx:594 jsx"
   ]
  },
  {
   "key": "Portes stellaires à {0} et à {1} : la dernière case de la barre de vitesse, « Portail », fait le saut en un an, sans carburant. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:577 jsx"
+   "ui/inspector.tsx:596 jsx"
   ]
  },
  {
   "key": "Ici, Warp {0} met aussi un an : le portail n'économiserait que le carburant ({1} mg).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:577 jsx"
+   "ui/inspector.tsx:596 jsx"
   ]
  },
  {
   "key": "Le portail ferait gagner {0} an{1}.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:577 jsx"
+   "ui/inspector.tsx:596 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration ni colonie habitable sous {0} % de sa capacité. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:587 jsx"
+   "ui/inspector.tsx:606 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration. Réglages : Empire, Réseau logistique.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:587 jsx"
+   "ui/inspector.tsx:606 jsx"
   ]
  },
  {
   "key": "{0} : {1} (automatique)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:589 call:map"
+   "ui/inspector.tsx:608 call:map"
   ]
  },
  {
   "key": "Vers {0} planètes qui manquent de colons ({1}…), les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:589 jsx"
+   "ui/inspector.tsx:608 jsx"
   ]
  },
  {
   "key": "Vers {0}, les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:589 jsx"
+   "ui/inspector.tsx:608 jsx"
   ]
  },
  {
   "key": "Reçoit les émigrants de vos planètes en Émigration jusqu'à {0} % de sa capacité (envoi automatique, réglable dans Empire, Réseau logistique).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:592 jsx"
+   "ui/inspector.tsx:611 jsx"
   ]
  },
  {
@@ -34246,7 +34488,7 @@
   ]
  },
  {
-  "key": "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense) : il prend la flotte entière en paiement, escorte comprise. Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.",
+  "key": "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.",
   "kind": "jsx",
   "refs": [
    "ui/summary.tsx:250 jsx"
@@ -38426,218 +38668,232 @@
   "key": "Aucune sauvegarde de secours dans ce dossier",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:23 call:notify"
+   "ui/welcome.tsx:25 call:notify"
   ]
  },
  {
   "key": "Pas de sauvegardes de secours dans cette page intégrée à un autre site : ouvrez index.html directement pour en avoir, ou exportez vos parties.",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:25 jsx"
+   "ui/welcome.tsx:27 jsx"
   ]
  },
  {
   "key": "Pas de sauvegardes de secours dans ce navigateur (seuls Chrome et Edge peuvent écrire dans un dossier) : exportez vos parties.",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:26 jsx"
+   "ui/welcome.tsx:28 jsx"
   ]
  },
  {
   "key": "Partie retrouvée dans la sauvegarde de secours « {0} ».",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:28 jsx"
+   "ui/welcome.tsx:30 jsx"
   ]
  },
  {
   "key": "Sauvegardes de secours : les 5 derniers tours de chaque partie dans « {0} ». {1}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:29 jsx"
+   "ui/welcome.tsx:31 jsx"
   ]
  },
  {
   "key": "Voir les sauvegardes",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:29 jsx"
+   "ui/welcome.tsx:31 jsx"
   ]
  },
  {
   "key": "Sauvegardes de secours dans « {0} » : le navigateur demande votre accord. {1}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:30 jsx"
+   "ui/welcome.tsx:32 jsx"
   ]
  },
  {
   "key": "Autoriser",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:30 jsx"
+   "ui/welcome.tsx:32 jsx"
   ]
  },
  {
   "key": "Autoriser et reprendre la dernière partie",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:30 jsx"
+   "ui/welcome.tsx:32 jsx"
   ]
  },
  {
   "key": "Aucun dossier de sauvegardes de secours.",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Aucune partie dans ce navigateur.",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Choisir un dossier…",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Reprendre depuis un dossier de sauvegardes…",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "En savoir plus",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:33 jsx"
+  ]
+ },
+ {
+  "key": "Nouvelle version {0} disponible (vous avez la {1}).",
+  "kind": "tpl",
+  "refs": [
+   "ui/welcome.tsx:41 jsx"
+  ]
+ },
+ {
+  "key": "Voir les nouveautés et la télécharger",
+  "kind": "jsx",
+  "refs": [
+   "ui/welcome.tsx:41 jsx"
   ]
  },
  {
   "key": "✦ Constellations",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:63 jsx"
+   "ui/welcome.tsx:72 jsx"
   ]
  },
  {
   "key": "Stratégie spatiale au tour par tour",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:64 jsx"
+   "ui/welcome.tsx:73 jsx"
   ]
  },
  {
   "key": "Continuer · {0} ({1})",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:66 jsx"
+   "ui/welcome.tsx:75 jsx"
   ]
  },
  {
   "key": "✦ Tutoriel{0}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:68 jsx",
-   "ui/welcome.tsx:70 jsx"
+   "ui/welcome.tsx:77 jsx",
+   "ui/welcome.tsx:79 jsx"
   ]
  },
  {
   "key": "Reprendre le tutoriel là où vous l'aviez laissé",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:68 attr:title"
+   "ui/welcome.tsx:77 attr:title"
   ]
  },
  {
   "key": "reprendre où vous en étiez",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:68 jsx"
+   "ui/welcome.tsx:77 jsx"
   ]
  },
  {
   "key": "Recommencer le tutoriel",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:69 jsx"
+   "ui/welcome.tsx:78 jsx"
   ]
  },
  {
   "key": "Apprendre à jouer, pas à pas, dans une vraie partie",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:70 attr:title"
+   "ui/welcome.tsx:79 attr:title"
   ]
  },
  {
   "key": "apprendre à jouer pas à pas",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:70 jsx"
+   "ui/welcome.tsx:79 jsx"
   ]
  },
  {
   "key": "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:72 call:notify"
+   "ui/welcome.tsx:81 call:notify"
   ]
  },
  {
   "key": "Succès ({0} sur {1})",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:77 jsx"
+   "ui/welcome.tsx:86 jsx"
   ]
  },
  {
   "key": "Autres parties de ce navigateur",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:80 jsx"
+   "ui/welcome.tsx:89 jsx"
   ]
  },
  {
   "key": "Partie illisible",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:82 call:notify"
+   "ui/welcome.tsx:91 call:notify"
   ]
  },
  {
   "key": " · {0} joueurs",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:83 jsx"
+   "ui/welcome.tsx:92 jsx"
   ]
  },
  {
   "key": "Supprimer cette sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:84 attr:title"
+   "ui/welcome.tsx:93 attr:title"
   ]
  },
  {
   "key": "Supprimer définitivement la partie « {0} » ({1}) de ce navigateur ?",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:84 call:ask"
+   "ui/welcome.tsx:93 call:ask"
   ]
  },
  {
   "key": "Tout se déroule dans votre navigateur, hors ligne. Sauvegarde automatique locale (huit parties au plus).",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:88 jsx"
+   "ui/welcome.tsx:98 jsx"
   ]
  },
  {
@@ -38691,7 +38947,7 @@
   "key": "ralentisseur",
   "kind": "str",
   "refs": [
-   "engine/movement.ts:530 call:msg",
+   "engine/movement.ts:535 call:msg",
    "ui/map.tsx:346 call:fillText"
   ]
  },
@@ -38722,7 +38978,7 @@
   "refs": [
    "engine/production.ts:204 prop:what",
    "engine/production.ts:207",
-   "engine/turn.ts:72 prop:factory",
+   "engine/turn.ts:73 prop:factory",
    "ui/dialogs/race.tsx:102 attr:unit"
   ]
  },
@@ -38737,28 +38993,28 @@
   "key": "petite",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:671"
+   "engine/turn.ts:674"
   ]
  },
  {
   "key": "moyenne",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:671"
+   "engine/turn.ts:674"
   ]
  },
  {
   "key": "grande",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:671"
+   "engine/turn.ts:674"
   ]
  },
  {
   "key": "niveau max",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:132 jsx"
+   "ui/app.tsx:134 jsx"
   ]
  },
  {
@@ -38781,8 +39037,8 @@
   "refs": [
    "ui/dialogs/designer.tsx:302 attr:v",
    "ui/dialogs/designer.tsx:308 attr:v",
-   "ui/inspector.tsx:156 attr:v",
-   "ui/inspector.tsx:512 attr:v"
+   "ui/inspector.tsx:175 attr:v",
+   "ui/inspector.tsx:531 attr:v"
   ]
  },
  {
@@ -38816,7 +39072,7 @@
   "key": "format inconnu",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:116"
+   "ui/dialogs/index.tsx:118"
   ]
  },
  {
@@ -38902,14 +39158,14 @@
   "key": "automatique",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:293"
+   "ui/inspector.tsx:312"
   ]
  },
  {
   "key": "portail",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:427 jsx"
+   "ui/inspector.tsx:446 jsx"
   ]
  },
  {
@@ -39085,7 +39341,7 @@
   "key": "coloniser",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:364",
+   "engine/turn.ts:368",
    "ui/missionui.tsx:25 prop:verb"
   ]
  },
@@ -39093,7 +39349,7 @@
   "key": "forer",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:364",
+   "engine/turn.ts:368",
    "ui/missionui.tsx:27 prop:verb"
   ]
  },
@@ -39101,7 +39357,7 @@
   "key": "explorer",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:364",
+   "engine/turn.ts:368",
    "ui/missionui.tsx:26 prop:verb"
   ]
  },
@@ -39109,28 +39365,28 @@
   "key": "usine",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:factory"
+   "engine/turn.ts:73 prop:factory"
   ]
  },
  {
   "key": "terraformation",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:terraform"
+   "engine/turn.ts:73 prop:terraform"
   ]
  },
  {
   "key": "conversion alchimique",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:alchemy"
+   "engine/turn.ts:73 prop:alchemy"
   ]
  },
  {
   "key": "paquet",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:packet"
+   "engine/turn.ts:73 prop:packet"
   ]
  },
  {
@@ -39147,21 +39403,21 @@
   "key": "paquets",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:packet"
+   "engine/turn.ts:73 prop:packet"
   ]
  },
  {
   "key": "terraformations",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:terraform"
+   "engine/turn.ts:73 prop:terraform"
   ]
  },
  {
   "key": "conversions alchimiques",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:72 prop:alchemy"
+   "engine/turn.ts:73 prop:alchemy"
   ]
  },
  {
@@ -39225,7 +39481,7 @@
   "key": "{0} a construit {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:363 prop:text"
+   "engine/turn.ts:367 prop:text"
   ]
  },
  {
@@ -39333,7 +39589,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/production.tsx:174",
-   "ui/inspector.tsx:176",
+   "ui/inspector.tsx:195",
    "ui/pages.tsx:227 jsx"
   ]
  },
@@ -39374,14 +39630,14 @@
   "key": "colonise {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:181"
+   "ui/inspector.tsx:200"
   ]
  },
  {
   "key": "fore {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:182",
+   "ui/inspector.tsx:201",
    "ui/sidebar.tsx:66 prop:detail"
   ]
  },
@@ -39389,7 +39645,7 @@
   "key": "navette {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:183",
+   "ui/inspector.tsx:202",
    "ui/sidebar.tsx:53 prop:detail"
   ]
  },
@@ -39397,28 +39653,28 @@
   "key": "explore {0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:185"
+   "ui/inspector.tsx:204"
   ]
  },
  {
   "key": "{0} attendus",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:266 jsx"
+   "ui/inspector.tsx:285 jsx"
   ]
  },
  {
   "key": "{0} autre{1} ravitailleur{2}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:383 jsx"
+   "ui/inspector.tsx:402 jsx"
   ]
  },
  {
   "key": "{0} an{1}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:457 jsx",
+   "ui/inspector.tsx:476 jsx",
    "ui/summary.tsx:62",
    "ui/tutorial.tsx:102"
   ]

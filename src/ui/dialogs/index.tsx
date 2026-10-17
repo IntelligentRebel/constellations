@@ -10,6 +10,7 @@ import { DesignerDialog, TechBrowserDialog } from './designer';
 import { ReportsDialog, ScoreDialog } from './reports';
 import { VictoryDialog } from '../victory';
 import { PrefsDialog } from './prefs';
+import { UpdateDialog } from './update';
 import { ChronicleDialog, AchievementsDialog } from '../chronicle';
 import { PbemDialog } from '../pbemui';
 import * as PB from '../../engine/pbem';
@@ -26,7 +27,7 @@ import { BattlePlansDialog, RelationsDialog, FindDialog, TemplatesDialog, HelpDi
 export function Dialogs() {
   const s = useStore();
   return <>{s.dialogs.map(d => {
-    if (!s.game && !['newGame', 'raceWizard', 'about', 'help', 'import', 'export', 'confirm', 'backups', 'prefs', 'achievements'].includes(d.kind)) return null;
+    if (!s.game && !['newGame', 'raceWizard', 'about', 'help', 'import', 'export', 'confirm', 'backups', 'prefs', 'achievements', 'update'].includes(d.kind)) return null;
     switch (d.kind) {
       case 'production': return <ProductionDialog planetId={d.data?.planetId} />;
       case 'research': return <ResearchDialog />;
@@ -36,6 +37,7 @@ export function Dialogs() {
       case 'score': return <ScoreDialog />;
       case 'victory': return <VictoryDialog />;
       case 'prefs': return <PrefsDialog />;
+      case 'update': return <UpdateDialog />;
       case 'chronicle': return <ChronicleDialog tab={d.data?.tab} />;
       case 'achievements': return <AchievementsDialog />;
       case 'dilemma': return <DilemmaDialog id={d.data?.id} />;

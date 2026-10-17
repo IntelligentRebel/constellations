@@ -423,8 +423,13 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
       wp.warp = fleetSpec(game, f).idealSpeed || 5;
       return;
     }
+    const kt = cargoMass(f.cargo);
     for (const m of MINERALS) { src.surface[m] += f.cargo[m]; f.cargo[m] = 0; }
     if (src.owner === owner.id) { src.pop += f.cargo.colonists * 100; f.cargo.colonists = 0; }
+    msg(game, owner, `${f.name} a laissé sa cargaison (${kt} kt) à ${src.name} avant le saut : seules les races Maîtrise des portails (IT) font passer une cargaison par une porte.`, f);
+    // 0.3.9.18: the ally is told what was left on its world (craig-stars)
+    const host = src.owner !== owner.id && src.owner >= 0 ? game.players[src.owner] : undefined;
+    if (host && !host.monster) host.messages.push({ year: game.year, kind: 'fleet', text: `Une flotte des ${owner.name} a laissé ${kt} kt de minerais sur ${src.name} avant de franchir votre porte.`, target: { kind: 'planet', id: src.id } });
   }
   const safeRange = sg.safeRange, safeMass = Math.min(sg.safeMass, dg.safeMass);
   if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al).`, f); return; }

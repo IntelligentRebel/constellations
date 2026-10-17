@@ -1,4 +1,6 @@
 // 0.3.9: display and sound, for this browser (every game): text size, colours for colour blindness, music and signals.
+import { isLocalCopy, checkForUpdate } from '../update';
+import { VERSION } from '../version';
 import { useEffect, useState } from 'preact/hooks';
 import { store } from '../store';
 import { Modal } from '../components';
@@ -31,5 +33,25 @@ export function PrefsDialog() {
     <div class="prefs-row"><span class="k">Signaux</span><input type="range" min={0} max={1} step={0.05} value={p.sfx} disabled={!p.sound} onInput={e => setPrefs({ sfx: +(e.target as HTMLInputElement).value })} onChange={() => play('tech')} /><span class="small">{pct(p.sfx)}</span>
       <button class="ghost" disabled={!p.sound} onClick={() => { play('colony'); play('tech', 0.7); }}>Essayer</button></div>
     <p class="small muted">Une musique d'ambiance composée en direct, qui s'assombrit quand la guerre menace et se tend en pleine crise, et quelques signaux brefs : découverte, colonie, bataille, alerte. {!audioStarted() && 'Le son démarre au premier clic (règle des navigateurs).'}</p>
+    {isLocalCopy() && <UpdatePrefs />}
   </Modal>;
+}
+
+/** 0.3.9.18: the local copy asks GitHub for newer versions. */
+function UpdatePrefs() {
+  const [busy, setBusy] = useState(false);
+  const now = async () => {
+    setBusy(true);
+    const r = await checkForUpdate(true);
+    setBusy(false);
+    if (r === null) store.notify('GitHub est injoignable pour le moment : réessayez plus tard.');
+    else if (!r.length) store.notify(`Vous avez la dernière version (${VERSION}).`);
+    else store.open('update');
+  };
+  return <>
+    <h4>Mises à jour</h4>
+    <label class="chk"><input type="checkbox" checked={uiPrefs.checkUpdates !== false} onChange={e => setPrefs({ checkUpdates: (e.target as HTMLInputElement).checked })} /> Chercher les nouvelles versions sur GitHub</label>
+    <div class="prefs-row"><button disabled={busy} onClick={() => void now()}>{busy ? 'Recherche…' : 'Chercher maintenant'}</button></div>
+    <p class="small muted">Cette copie du jeu, ouverte depuis votre disque, consulte au plus deux fois par jour la liste publique des versions sur GitHub, et ne transmet rien. Quand une version plus récente existe, l'écran d'accueil la propose avec ses nouveautés.</p>
+  </>;
 }

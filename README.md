@@ -7,7 +7,7 @@ entirely in the browser, offline, with nothing to install.
 
 **[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
 
-**Version 0.3.9.17** (early version: the numbering restarts at 0.x until the game is considered complete).
+**Version 0.3.9.18** (early version: the numbering restarts at 0.x until the game is considered complete).
 
 ![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
@@ -49,8 +49,10 @@ It was created with the help of **Claude Opus 5.5** (Anthropic).
 
 - **Online**: [intelligentrebel.github.io/constellations](https://intelligentrebel.github.io/constellations/), nothing
   to install.
-- **Offline**: download the zip of the latest version from [Releases](https://github.com/IntelligentRebel/constellations/releases/latest),
-  unzip it and open `index.html` in a web browser. No server, no installation, no internet connection needed.
+- **Offline**: download `index.html` (the whole game in one file) or the zip of the latest version from
+  [Releases](https://github.com/IntelligentRebel/constellations/releases/latest), and open `index.html` in a web browser.
+  No server, no installation, no internet connection needed. From 0.3.9.18 on, the offline copy checks GitHub for a
+  newer version (twice a day at most; it can be turned off in "Display and sound") and offers it with its release notes.
 - The online and offline copies keep their saves apart (each in its own browser storage): to move a game from one to
   the other, "Export" it, then "Import" it.
 - The game picks the language of your browser; if that language is not supported, it starts in English. You can

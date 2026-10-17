@@ -8,7 +8,6 @@ import { hasWalls, detourPoints } from './walls';
 import { addResearch, MAX_TECH, lowestField } from './research';
 import { FIELD_NAMES, TECHS, HULLS } from './tech';
 import { gainLevel } from './techtrade';
-import { totalShips } from './fleet';
 import { tl, TRADER_NAME } from '../data/labels';
 
 const REWARDS = ['research', 'Engine', 'Bomb', 'Armor', 'Shield', 'Electrical', 'Mechanical', 'Torpedo', 'BeamWeapon', 'MineRobot', 'ShipHull', 'Genesis'];
@@ -55,7 +54,7 @@ export function traderHails(game: GameState) {
       if (!w) continue;
       (t.hailed ??= []).push(p.id);
       const dir = t.heading ? compass(t.heading) : '';
-      p.messages.push({ year: game.year, kind: 'trader', text: `Un ${TRADER_NAME} s'annonce à ${Math.round(w.d)} al de ${w.name}, Warp ${t.warp}${dir ? `, ${dir}` : ''} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense (il garde la flotte en paiement). Tant qu'il passe à moins de ${TRADER_HAIL} al de vos mondes, il émet sa position.`, target: { kind: 'trader', id: t.id, x: Math.round(Math.max(0, Math.min(game.width, t.x))), y: Math.round(Math.max(0, Math.min(game.height, t.y))) } });
+      p.messages.push({ year: game.year, kind: 'trader', text: `Un ${TRADER_NAME} s'annonce à ${Math.round(w.d)} al de ${w.name}, Warp ${t.warp}${dir ? `, ${dir}` : ''} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense. Tant qu'il passe à moins de ${TRADER_HAIL} al de vos mondes, il émet sa position.`, target: { kind: 'trader', id: t.id, x: Math.round(Math.max(0, Math.min(game.width, t.x))), y: Math.round(Math.max(0, Math.min(game.height, t.y))) } });
     }
   }
 }
@@ -125,12 +124,10 @@ export function meetTraders(game: GameState, rng: Rng) {
       if (t.rewarded.includes(player.id)) continue;
       const minerals = f.cargo.ironium + f.cargo.boranium + f.cargo.germanium;
       if (minerals < 5000) continue;
-      // 0.3.9.17 (Stars!): the trader takes the whole fleet in payment, escorts included
+      // 0.3.9.18: he takes the minerals, and only them (in Stars!, he kept the whole fleet, escorts and crews included:
+      // a ship worth little next to 5,000 kt of minerals, and no crew would sail to its own loss)
       for (const m of MINERALS) f.cargo[m] = 0;
-      const ships = totalShips(f);
-      game.fleets.splice(game.fleets.indexOf(f), 1);
       t.rewarded.push(player.id);
-      const paid = ships > 1 ? `vos ${minerals} kt de minerais et ${f.name} (${ships} vaisseaux)` : `vos ${minerals} kt de minerais et ${f.name} (un vaisseau)`;
       if (t.reward === 'research') {
         const levels = boonLevels(player, minerals);
         const gained: string[] = [];
@@ -141,7 +138,7 @@ export function meetTraders(game: GameState, rng: Rng) {
           const fld = rng.int(4) === 0 ? lowestField(player) ?? rng.pick(fields) : rng.pick(fields);
           gainLevel(game, player, fld); gained.push(FIELD_NAMES[fld]);
         }
-        player.messages.push({ year: game.year, kind: 'trader', text: `Le ${TRADER_NAME} a pris en paiement ${paid}, et vous a transmis ${gained.length} niveaux de technologie (${gained.join(', ')}).`, target: { kind: 'research', id: 0 } });
+        player.messages.push({ year: game.year, kind: 'trader', text: `Le ${TRADER_NAME} a accepté vos ${minerals} kt de minerais et vous a transmis ${gained.length} niveaux de technologie (${gained.join(', ')}).`, target: { kind: 'research', id: 0 } });
       } else {
         const techs: string[] = RULES_RAW.mtTechs ?? [];
         const owned = (n: string) => player.acquiredTechs.includes(n);
@@ -151,7 +148,7 @@ export function meetTraders(game: GameState, rng: Rng) {
         const name = candidates.length ? rng.pick(candidates) : null;
         if (name) {
           player.acquiredTechs.push(name);
-          player.messages.push({ year: game.year, kind: 'trader', text: `Le ${TRADER_NAME} a pris en paiement ${paid}, et vous a cédé une technologie extraterrestre : ${tl(name)}.`, target: { kind: 'research', id: 0 } });
+          player.messages.push({ year: game.year, kind: 'trader', text: `Le ${TRADER_NAME} a accepté vos ${minerals} kt de minerais et vous a cédé une technologie extraterrestre : ${tl(name)}.`, target: { kind: 'research', id: 0 } });
         } else addResearch(game, player, rng.pick(FIELDS), 2000);
       }
     }

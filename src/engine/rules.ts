@@ -15,6 +15,7 @@ import { initDiplomacy, removeDiplomacy, pairOf } from './diplomacy';
 import { updateDossiers } from './espionage';
 import { initActs } from './acts';
 import { initGovernors } from './governors';
+import { clearGreenhouse } from './greenhouse';
 
 export const RULE_INFO: Record<ConstellationsRule, { name: string; text: string; /** only at the creation of a game */ creationOnly?: boolean }> = {
   randomResearch: { name: 'Percées aléatoires', text: 'Les temps de recherche sont estimés, pas exacts : une percée peut arriver en avance ou se faire attendre.' },
@@ -47,6 +48,7 @@ export const RULE_INFO: Record<ConstellationsRule, { name: string; text: string;
   ancientSecret: { name: 'Le secret des Anciens', text: 'Ce qu\'est la Brèche change à chaque partie. Fouilles, anomalies, observation de la Brèche et épaves des Moissonneurs donnent des indices ; six révèlent la vérité et le moyen de la sceller : le Sceau des Anciens, un mégaprojet dont le lieu dépend du secret, qui referme la Brèche et donne la victoire. Demande la crise de fin de partie et les mégaprojets.' },
   governors: { name: 'Gouverneurs de secteur', text: 'Chaque siège (la capitale, une capitale régionale, ou, sans la règle « Coût de la taille », un siège désigné) forme un secteur avec les mondes dont il est le plus proche. Un gouverneur nommé à sa tête apporte un talent qui grandit avec les années (ressources, usines et mines moins chères, défenses et stations moins chères, extraction, culture) et peut gérer les files de production du secteur selon une consigne : développement, industrie, fortification ou rayonnement. Il renforce les défenses quand une flotte hostile approche.' },
   originVictories: { name: 'Victoires d\'origine', text: 'Chaque origine a sa propre victoire, que seul son empire peut atteindre, à partir de 2430 : rester en tête vingt-cinq ans, refaire un berceau, réunir quatre reliques, faire grandir la colonie perdue, cartographier la galaxie, dépasser les Anciens…' },
+  greenhouse: { name: 'Effet de serre', text: 'Les usines au travail rejettent des gaz à effet de serre : leur monde se réchauffe peu à peu, d\'autant plus que son industrie est grande (environ +11 °C pour 400 ressources d\'usines par an, +20 °C pour 1 000), et ne se refroidit que lentement. Trois technologies réduisent les rejets (Énergie décarbonée, Captage du carbone, Régulation climatique) ; la terraformation de température compense le reste, dans ses limites. Un monde trop froid pour votre race peut y gagner.' },
   culture: { name: 'Culture et territoires', text: 'Chaque colonie rayonne autour d\'elle, de plus en plus loin avec sa population, son ancienneté et ses bâtiments culturels. On ne peut pas coloniser dans le territoire d\'un autre empire, et un monde dominé par une culture étrangère finit, après quelques décennies, par la rejoindre.' },
 };
 
@@ -65,6 +67,7 @@ export function setRule(game: GameState, rule: ConstellationsRule, on: boolean) 
   if (rule === 'crisis' && on) initCrisis(game);
   if (rule === 'acts' && on) initActs(game);
   if (rule === 'governors' && on) initGovernors(game);
+  if (rule === 'greenhouse' && !on) clearGreenhouse(game);
   if (rule === 'crisis' && !on) removeCrisis(game);
   if (rule === 'diplomacy' && on && !game.diplomacy) {
     // the relations of the moment become the statuses: hostile on either side = war, friends on both = alliance

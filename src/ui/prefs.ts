@@ -5,13 +5,13 @@ import type { GameState } from '../engine/types';
 import { PLAYER_COLORS } from '../engine/newgame';
 
 export type ColorMode = 'normal' | 'rg' | 'by';
-export interface UiPrefs { textScale: number; colors: ColorMode; sound: boolean; music: number; sfx: number }
+export interface UiPrefs { textScale: number; colors: ColorMode; sound: boolean; music: number; sfx: number; /** 0.3.9.18: the local copy asks GitHub for newer versions */ checkUpdates: boolean }
 const KEY = 'constellations.ui';
 export const TEXT_SCALES = [0.9, 1, 1.15, 1.3, 1.5];
 /** The interface's zoom (text size): screen pixels per interface pixel. */
 export const uiZoom = () => uiPrefs.textScale || 1;
 
-export const uiPrefs: UiPrefs = { textScale: 1, colors: 'normal', sound: true, music: 0.35, sfx: 0.6 };
+export const uiPrefs: UiPrefs = { textScale: 1, colors: 'normal', sound: true, music: 0.35, sfx: 0.6, checkUpdates: true };
 try { Object.assign(uiPrefs, JSON.parse(localStorage.getItem(KEY) ?? '{}')); } catch { /* private mode: defaults */ }
 
 const listeners = new Set<() => void>();

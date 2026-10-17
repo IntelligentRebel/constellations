@@ -1,4 +1,5 @@
-// Constellations 0.3.9.17 checks: tech trading, the Mystery Trader, ancient artifacts, stargates, climate changes
+// Constellations 0.3.9.17 checks: tech trading, the Mystery Trader, ancient artifacts, stargates (the climate changes
+// gave way to the greenhouse effect in 0.3.9.18: v39n)
 // (run: npx tsx scripts/v39m-check.ts).
 let bad = 0, good = 0;
 const check = (c: boolean, m: string) => { if (!c) { bad++; console.log('FAIL', m); } else { good++; console.log('ok  ', m); } };
@@ -6,7 +7,7 @@ const check = (c: boolean, m: string) => { if (!c) { bad++; console.log('FAIL', 
 async function main() {
   const { quickGame, newFleet, addDesign } = await import('../src/engine/newgame');
   const { PREDEFINED_RACES } = await import('../src/engine/race');
-  const { generateTurn, climateChangeForTests, repairForTests } = await import('../src/engine/turn');
+  const { generateTurn, repairForTests } = await import('../src/engine/turn');
   const TT = await import('../src/engine/techtrade');
   const TR = await import('../src/engine/trader');
   const TK = await import('../src/engine/tasks');
@@ -79,7 +80,7 @@ async function main() {
     const want = TR.boonLevels(g.players[0], 6000);
     TR.meetTraders(g, new Rng(seedFromString('mt')));
     const after = FIELDS.reduce((a, x) => a + g.players[0].tech[x], 0);
-    check(!g.fleets.includes(f), 'the trader takes the whole fleet in payment');
+    check(g.fleets.includes(f) && f.cargo.ironium === 0, 'the trader takes the minerals, and only them (0.3.9.18: the fleet goes home)');
     check(after - before === want && want >= 6, `and gives ${after - before} levels for 6,000 kt to an empire of ${before} levels`);
     // he changes course or speed now and then
     const h = fresh();
@@ -95,7 +96,7 @@ async function main() {
     const free = g.planets.filter(p => p.owner < 0);
     const withArt = free.filter(p => p.artifact).length + g.planets.filter(p => p.owner >= 0 && p.artifact).length;
     const share = withArt / g.planets.length;
-    check(share > 0.2 && share < 0.45, `about a third of the worlds hide an artifact (${withArt} of ${g.planets.length})`);
+    check(share > 0.04 && share < 0.14, `about one world in ten hides an artifact (${withArt} of ${g.planets.length}; a third in 0.3.9.17)`);
     const t = free.find(p => p.artifact)!;
     t.owner = 0; t.pop = 5000;
     const msgs = g.players[0].messages.length;
@@ -150,26 +151,6 @@ async function main() {
       repairForTests(g);
       check(f.tokens[0].damage === d0, 'and is not repaired that year');
     }
-  }
-
-  console.log('--- climate changes');
-  {
-    const g = fresh();
-    let changed = 0;
-    g.year = 2430; // (settled colonies are spared the first 20 years)
-    for (let i = 0; i < 400; i++) {
-      const before = JSON.stringify(g.planets.map(p => p.baseHab));
-      climateChangeForTests(g, new Rng(seedFromString('cl' + i)));
-      if (JSON.stringify(g.planets.map(p => p.baseHab)) !== before) changed++;
-    }
-    check(changed > 8 && changed < 35, `about one year in twenty a world's climate changes for good (${changed} in 400 years)`);
-    // on an owned world, the owner is told
-    const h = fresh(); h.year = 2430;
-    const all = h.planets; h.planets = all.filter(p => p.owner === 0);
-    for (let i = 0; i < 400 && !h.players[0].messages.some(m => m.text.startsWith('Changement de climat')); i++) climateChangeForTests(h, new Rng(seedFromString('own' + i)));
-    h.planets = all;
-    const msg = h.players[0].messages.find(m => m.text.startsWith('Changement de climat'));
-    check(!!msg, `the owner is told: « ${msg?.text.slice(0, 110)}… »`);
   }
 
   console.log(`\n${good} ok, ${bad} failed`);

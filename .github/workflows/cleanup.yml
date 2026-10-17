@@ -1,0 +1,21 @@
+# Deletes the work-in-progress branches (wip-*) once the work is on main: they only keep unfinished work safe between
+# two sessions, and nobody should have to remove them by hand.
+name: Cleanup
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete wip-* branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for b in $(gh api "repos/$GITHUB_REPOSITORY/branches?per_page=100" -q '.[].name' | grep '^wip-' || true); do
+            echo "deleting $b"
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$b"
+          done

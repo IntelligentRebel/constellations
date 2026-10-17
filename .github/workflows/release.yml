@@ -1,6 +1,8 @@
 # Publishes a GitHub release for each version: when package.json (the version) or docs/releases/ changes on main,
-# and that version has no release yet, it zips the repository (index.html is the whole game) and creates the release
-# v<version>, with docs/releases/<version>.md as its notes.
+# and that version has no release yet, it creates the release v<version> with the game itself (index.html, the whole
+# game in one file: the local copies offer it when they find a newer version) and a zip of the repository. Its notes
+# are docs/releases/<version>.md (English), followed by docs/releases/<version>.fr.md in a « En français » block when
+# there is one (the game shows the French part to French players).
 name: Release
 on:
   push:
@@ -30,6 +32,11 @@ jobs:
         run: |
           V="${{ steps.v.outputs.version }}"
           zip -qr "Constellations_v$V.zip" . -x '.git/*' '.github/*' 'node_modules/*' 'dist/*'
-          NOTES="docs/releases/$V.md"
-          if [ ! -f "$NOTES" ]; then echo "The history of versions is in README.fr.md (in French)." > /tmp/notes.md; NOTES=/tmp/notes.md; fi
-          gh release create "v$V" "Constellations_v$V.zip" --title "Constellations $V" --notes-file "$NOTES" --target "$GITHUB_SHA" --latest
+          mkdir -p /tmp/game && cp index.html /tmp/game/index.html
+          if [ -f "docs/releases/$V.md" ]; then cp "docs/releases/$V.md" /tmp/notes.md; else echo "The history of versions is in README.fr.md (in French)." > /tmp/notes.md; fi
+          if [ -f "docs/releases/$V.fr.md" ]; then
+            printf '\n\n<details><summary>En français</summary>\n\n' >> /tmp/notes.md
+            cat "docs/releases/$V.fr.md" >> /tmp/notes.md
+            printf '\n\n</details>\n' >> /tmp/notes.md
+          fi
+          gh release create "v$V" "/tmp/game/index.html" "Constellations_v$V.zip" --title "Constellations $V" --notes-file /tmp/notes.md --target "$GITHUB_SHA" --latest

@@ -111,6 +111,9 @@ export interface Planet {
   scanner: boolean;
   homeworld: boolean;
   artifact?: boolean;
+  /** 0.3.9.18 (greenhouse.ts): warming left by industry, in steps of temperature (4 °C), and the steps applied so far */
+  greenhouse?: number;
+  ghShift?: number;
   queue: QueueItem[];
   leftoverOnly: boolean;
   route?: number; // planet id where new ships go
@@ -620,7 +623,7 @@ export interface Player {
   /** Constellations 3.6: colonies move on from template 1 to 2 to 3 by themselves (undefined = yes) */
   tplChain?: boolean;
   /** 3.6: abilities that need no research in this game (the "close to Stars!" preset: wormholes as in Stars!) */
-  freeSpecials?: ('autoExplore' | 'wormholeNav' | 'infrared' | 'lensing')[];
+  freeSpecials?: ('autoExplore' | 'wormholeNav' | 'infrared' | 'lensing' | 'cleanEnergy' | 'carbonCapture' | 'climateControl')[];
   acquiredTechs: string[];
   fleetNum: number;
   intel: Intel;
@@ -941,6 +944,8 @@ export interface GameSettings {
   originVictories?: boolean;
   /** 0.3.9: sector governors */
   governors?: boolean;
+  /** 0.3.9.18: factories warm their world (greenhouse.ts) */
+  greenhouse?: boolean;
   /** Constellations 3.6: the shape of the galaxy (absent: the square of Stars!) */
   shape?: GalaxyShape;
   /** Constellations 3.6: created with the "close to the original Stars!" preset */
@@ -1057,6 +1062,8 @@ export interface GameState {
   chronicle?: Chronicle;
   /** 0.3.9: the current act (rule acts) */
   act?: { n: 1 | 2 | 3; since: number; why?: string };
+  /** 0.3.9.18: the artifacts of a game created in 0.3.9.17 (a third of the worlds) were thinned to one in ten */
+  artifactsThinned?: boolean;
   /** 0.3.9: cataclysms announced or past, and the year the next one may come */
   cataclysms?: Cataclysm[];
   cataNext?: number;

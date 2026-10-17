@@ -9,6 +9,7 @@ import { habitability, habString, HAB_NAMES, raceSpec } from '../engine/race';
 import { planetSpec, terraformRemaining, maxPopulation } from '../engine/planet';
 import { fleetSpec, estimateRoute, canPassThrough } from '../engine/fleet';
 import { canUseWormholes, WORMHOLE_NAV, specialReqText, specialLevelText } from '../engine/specials';
+import { greenhouseOn, greenhouseTarget, emissionFactor } from '../engine/greenhouse';
 import { terrainAt, terrainName, terrainOnLeg, TERRAIN_INFO } from '../engine/terrain';
 import { specOf, type DesignSpec } from '../engine/design';
 import { itemLabel, isAuto, estimateQueue, maxBuildable , queueBottleneck } from '../engine/production';
@@ -82,6 +83,23 @@ function HabBlock({ me, hab, baseHab, pl }: { me: Player; hab: [number, number, 
   </Blk>;
 }
 
+/** 0.3.9.18: the warming industry has left on one of your worlds, and where it is heading. */
+function GreenhouseNote({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
+  if (!greenhouseOn(g)) return null;
+  const now = Math.round((p.greenhouse ?? 0) * 4), goal = Math.round(greenhouseTarget(g, p) * 4);
+  if (now <= 0 && goal <= 0) return null;
+  const share = Math.round(emissionFactor(me) * 100);
+  const tip = `Les usines au travail réchauffent leur monde, d'autant plus que leur production est grande ; la planète suit lentement. Vos usines rejettent aujourd'hui ${share} % de ce qu'elles rejetaient au départ (Énergie décarbonée, Captage du carbone et Régulation climatique les réduisent) ; la terraformation de température compense le reste, dans ses limites.`;
+  const text = now <= 0
+    ? `Effet de serre : l'industrie de ce monde le pousse peu à peu vers +${goal} °C.`
+    : goal > now
+      ? `Effet de serre : +${now} °C, et l'industrie de ce monde le pousse vers +${goal} °C.`
+      : goal < now
+        ? `Effet de serre : +${now} °C, en baisse (vers +${goal} °C avec son industrie actuelle).`
+        : `Effet de serre : +${now} °C, stable avec son industrie actuelle.`;
+  return <div class="ter-note greenhouse" title={tip}>{text}</div>;
+}
+
 /** "Inside the Opale nebula: ..." for the selected object. */
 function TerrainNote({ g, at }: { g: GameState; at: { x: number; y: number } }) {
   const ts = terrainAt(g, at);
@@ -130,6 +148,7 @@ function OwnPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
     <CultureBlock g={g} me={me} p={p} />
     {rs.canRemoteMineOwn && <MissionBlock g={g} me={me} p={p} known val={null} />}
     <HabBlock me={me} hab={p.hab} baseHab={p.baseHab} pl={p} />
+    <GreenhouseNote g={g} me={me} p={p} />
     <Blk title="Minerais en réserve" tut="minerals">
       {(['ironium', 'boranium', 'germanium'] as const).map(m => <div class="minrow"><span><i class="mdot" style={{ background: MINERAL_COLORS[m] }} />{MIN_LABELS[m]}</span><b>{fmt(p.surface[m])} kt</b><small>+{fmt(spec.mining[m])}/an · conc. {p.conc[m]}</small></div>)}
     </Blk>
