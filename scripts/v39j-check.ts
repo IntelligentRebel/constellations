@@ -255,14 +255,14 @@ async function main() {
     check(DIP.runaway(g, 0) > 0 && DIP.runaway(g, 1) === 0, `the human far ahead runs away with the game (${DIP.runaway(g, 0).toFixed(2)})`);
     const op = DIP.opinion(g, 1, 0);
     check(op.lines.some(l => l.label.includes('s\'unir contre vous') && l.value < 0), `an expert computer resents it (${op.lines.find(l => l.label.includes('unir'))?.value})`);
-    check(DIP.opinion(g, 1, 2).lines.some(l => l.label === 'Un rival commun' && l.value > 0), 'and draws closer to the others');
+    check(DIP.opinion(g, 1, 2).lines.some(l => l.label.startsWith('Rival commun') && l.value > 0), 'and draws closer to the others');
     const w = DIP.warDesire(g, 1, 0);
     (globalThis as any).__aiOff = new Set(['coalition']);
     const w0 = DIP.warDesire(g, 1, 0);
     (globalThis as any).__aiOff = undefined;
     check(w > w0, `readier for war against it (${w0} → ${w})`);
-    g.players[1].ai = 'standard';
-    check(!DIP.opinion(g, 1, 0).lines.some(l => l.label.includes('unir')), 'a standard computer does not band together');
+    g.players[1].ai = 'easy';
+    check(!DIP.opinion(g, 1, 0).lines.some(l => l.label.includes('unir')), 'an easy computer does not band together against a human (0.3.9.19: standard does)');
     for (const pl of g.players) if (!pl.monster) last(pl.id).score = 600 + pl.id;
     check(DIP.runaway(g, 0) === 0 && DIP.runaway(g, 3) === 0, 'scores close together: nobody runs away');
   }

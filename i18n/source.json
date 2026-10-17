@@ -4438,7 +4438,7 @@
   "kind": "str",
   "refs": [
    "engine/borders.ts:46",
-   "engine/diplomacy.ts:565"
+   "engine/diplomacy.ts:603"
   ]
  },
  {
@@ -6425,7 +6425,7 @@
   "kind": "str",
   "refs": [
    "engine/dilemmas.ts:104 prop:label",
-   "ui/diplomacy.tsx:130 jsx"
+   "ui/diplomacy.tsx:144 jsx"
   ]
  },
  {
@@ -6482,7 +6482,7 @@
   "kind": "str",
   "refs": [
    "engine/diplomacy.ts:34 prop:alliance",
-   "engine/diplomacy.ts:225 call:add",
+   "engine/diplomacy.ts:251 call:add",
    "engine/espionage.ts:177 call:add"
   ]
  },
@@ -6680,51 +6680,51 @@
   "key": " estimée",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:206"
+   "engine/diplomacy.ts:232"
   ]
  },
  {
   "key": "Tempérament",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:213 call:add"
+   "engine/diplomacy.ts:239 call:add"
   ]
  },
  {
   "key": "Frontières communes",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:219 call:add"
+   "engine/diplomacy.ts:245 call:add"
   ]
  },
  {
   "key": "En guerre",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:222 call:add"
+   "engine/diplomacy.ts:248 call:add"
   ]
  },
  {
   "key": "Paix durable",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:224 call:add"
+   "engine/diplomacy.ts:250 call:add"
   ]
  },
  {
   "key": "Ambassades",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:227 call:add",
-   "engine/diplomacy.ts:489",
-   "ui/diplomacy.tsx:152 call:filter"
+   "engine/diplomacy.ts:253 call:add",
+   "engine/diplomacy.ts:527",
+   "ui/diplomacy.tsx:166 call:filter"
   ]
  },
  {
   "key": "Accord commercial",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:228 call:add",
+   "engine/diplomacy.ts:254 call:add",
    "engine/espionage.ts:178 call:add"
   ]
  },
@@ -6732,7 +6732,7 @@
   "key": "Coopération scientifique",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:229 call:add",
+   "engine/diplomacy.ts:255 call:add",
    "engine/espionage.ts:179 call:add"
   ]
  },
@@ -6740,63 +6740,63 @@
   "key": "Ennemi commun",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:233 call:add"
+   "engine/diplomacy.ts:259 call:add"
   ]
  },
  {
   "key": "Les Moissonneurs",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:234 call:add"
+   "engine/diplomacy.ts:260 call:add"
   ]
  },
  {
   "key": "Votre puissance les inquiète",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:235 call:add"
+   "engine/diplomacy.ts:261 call:add"
   ]
  },
  {
   "key": "Votre avance les pousse à s'unir contre vous",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:239 call:add"
+   "engine/diplomacy.ts:267 call:add"
   ]
  },
  {
-  "key": "Un rival commun",
-  "kind": "str",
+  "key": "Rival commun : les {0}",
+  "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:242 call:add"
+   "engine/diplomacy.ts:268 call:add"
   ]
  },
  {
   "key": "Vous construisez le Portail",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:246 call:add"
+   "engine/diplomacy.ts:271 call:add"
   ]
  },
  {
   "key": "Ils ont juré votre perte",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:247 call:add"
+   "engine/diplomacy.ts:272 call:add"
   ]
  },
  {
   "key": "Vos frontières fermées étouffent leur expansion",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:249 call:add"
+   "engine/diplomacy.ts:274 call:add"
   ]
  },
  {
   "key": "Vos frontières leur sont fermées",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:249 call:add",
+   "engine/diplomacy.ts:274 call:add",
    "engine/espionage.ts:186 prop:label"
   ]
  },
@@ -6804,586 +6804,614 @@
   "key": "accepterait très probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:285"
+   "engine/diplomacy.ts:310"
   ]
  },
  {
   "key": "accepterait peut-être",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:285"
+   "engine/diplomacy.ts:310"
   ]
  },
  {
   "key": "refuserait très probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:285"
+   "engine/diplomacy.ts:310"
   ]
  },
  {
   "key": "pas de diplomatie",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:319 call:firm"
+   "engine/diplomacy.ts:344 call:firm"
   ]
  },
  {
   "key": "vous n'êtes pas en guerre",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:325 call:firm"
+   "engine/diplomacy.ts:350 call:firm"
   ]
  },
  {
   "key": "pas de paix avec qui construit le Portail",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:327 call:firm"
+   "engine/diplomacy.ts:352 call:firm"
   ]
  },
  {
   "key": "ils ont juré votre perte : pas de paix tant que leur empire n'est pas brisé",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:328 call:firm"
+   "engine/diplomacy.ts:353 call:firm"
   ]
  },
  {
   "key": "la guerre vient de commencer (pas de paix avant 3 ans de guerre)",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:330 call:firm"
+   "engine/diplomacy.ts:355 call:firm"
   ]
  },
  {
   "key": "lassitude +{0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:336"
+   "engine/diplomacy.ts:361"
   ]
  },
  {
   "key": "votre force{0} +{1}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:336"
+   "engine/diplomacy.ts:361"
   ]
  },
  {
   "key": "leur force {0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:336"
+   "engine/diplomacy.ts:361"
   ]
  },
  {
   "key": "les Moissonneurs +40",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:337 call:push"
+   "engine/diplomacy.ts:362 call:push"
   ]
  },
  {
   "key": "en guerre",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:342 call:firm",
-   "engine/diplomacy.ts:348 call:firm",
-   "engine/diplomacy.ts:355 call:firm",
-   "engine/diplomacy.ts:364 call:firm"
+   "engine/diplomacy.ts:367 call:firm",
+   "engine/diplomacy.ts:373 call:firm",
+   "engine/diplomacy.ts:380 call:firm",
+   "engine/diplomacy.ts:392 call:firm"
   ]
  },
  {
   "key": "ambassades déjà ouvertes",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:343 call:firm",
-   "engine/diplomacy.ts:563"
+   "engine/diplomacy.ts:368 call:firm",
+   "engine/diplomacy.ts:601"
   ]
  },
  {
   "key": "{0}, il faudrait une opinion d'au moins {1}{2}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:345 call:weighed",
-   "engine/diplomacy.ts:352 call:weighed",
-   "engine/diplomacy.ts:360 call:weighed",
-   "engine/diplomacy.ts:368 call:weighed"
+   "engine/diplomacy.ts:370 call:weighed",
+   "engine/diplomacy.ts:377 call:weighed",
+   "engine/diplomacy.ts:388 call:weighed",
+   "engine/diplomacy.ts:396 call:weighed"
   ]
  },
  {
   "key": ", minerais +{0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:345 call:weighed",
-   "engine/diplomacy.ts:352 call:weighed",
-   "engine/diplomacy.ts:368 call:weighed"
+   "engine/diplomacy.ts:370 call:weighed",
+   "engine/diplomacy.ts:377 call:weighed",
+   "engine/diplomacy.ts:396 call:weighed"
   ]
  },
  {
   "key": "déjà signé",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:350 call:firm",
-   "engine/diplomacy.ts:561"
+   "engine/diplomacy.ts:375 call:firm",
+   "engine/diplomacy.ts:599"
   ]
  },
  {
   "key": "déjà alliés",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:356 call:firm",
-   "engine/diplomacy.ts:564"
+   "engine/diplomacy.ts:381 call:firm",
+   "engine/diplomacy.ts:602"
+  ]
+ },
+ {
+  "key": ", contre les {0}",
+  "kind": "tpl",
+  "refs": [
+   "engine/diplomacy.ts:387"
   ]
  },
  {
   "key": ", ennemi commun",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:360 call:weighed"
+   "engine/diplomacy.ts:388 call:weighed"
   ]
  },
  {
   "key": "leurs frontières vous sont déjà ouvertes",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:365 call:firm"
+   "engine/diplomacy.ts:393 call:firm"
   ]
  },
  {
   "key": "ils n'ont pas {0} kt en réserve",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:375 call:firm"
+   "engine/diplomacy.ts:403 call:firm"
   ]
  },
  {
   "key": "ils ne savent presque rien de votre flotte : aucune raison de vous craindre",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:377 call:firm"
+   "engine/diplomacy.ts:405 call:firm"
   ]
  },
  {
   "key": "à leurs yeux, votre flotte pèse {0} ce qui défend leurs mondes{1}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:382"
+   "engine/diplomacy.ts:410"
   ]
  },
  {
   "key": " : il faudrait qu'elle pèse au moins deux fois ce qui les défend",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:382"
+   "engine/diplomacy.ts:410"
   ]
  },
  {
   "key": "ils connaissent mal votre flotte",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:383 call:push"
+   "engine/diplomacy.ts:411 call:push"
   ]
  },
  {
   "key": "ils vous haïssent ({0})",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:384 call:push"
+   "engine/diplomacy.ts:412 call:push"
   ]
  },
  {
   "key": "c'est beaucoup demander (plus de 30 % de leur réserve)",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:385 call:push"
+   "engine/diplomacy.ts:413 call:push"
   ]
  },
  {
   "key": "paierait très probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:387"
+   "engine/diplomacy.ts:415"
   ]
  },
  {
   "key": "paierait peut-être",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:387"
+   "engine/diplomacy.ts:415"
   ]
  },
  {
   "key": "refuserait probablement de payer",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:387"
+   "engine/diplomacy.ts:415"
   ]
  },
  {
   "key": "refuserait très probablement de payer",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:387"
+   "engine/diplomacy.ts:415"
   ]
  },
  {
   "key": "{0} kt (ironium {1}, boranium {2}, germanium {3})",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:428"
+   "engine/diplomacy.ts:456"
   ]
  },
  {
   "key": "{0} {1}, déposés à la surface de {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:433 prop:text"
+   "engine/diplomacy.ts:461 prop:text"
   ]
  },
  {
   "key": "{0} {1}, pris sur {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:434 prop:text"
+   "engine/diplomacy.ts:462 prop:text"
   ]
  },
  {
   "key": "Les {0} déclarent la guerre aux {1}{2}{3}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:451 call:log"
+   "engine/diplomacy.ts:479 call:log"
   ]
  },
  {
   "key": ", au mépris de leurs accords",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:451 call:log"
+   "engine/diplomacy.ts:479 call:log"
   ]
  },
  {
   "key": "Les {0} déclarent la guerre aux {1}, au mépris de leurs accords.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:452 call:addChronicle"
+   "engine/diplomacy.ts:480 call:addChronicle"
   ]
  },
  {
   "key": "Les {0} déclarent la guerre aux {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:452 call:addChronicle"
+   "engine/diplomacy.ts:480 call:addChronicle"
   ]
  },
  {
   "key": "Les {0} vous déclarent la guerre{1}{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:454 call:tell"
+   "engine/diplomacy.ts:482 call:tell"
   ]
  },
  {
   "key": ", au mépris de vos accords",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:454 call:tell"
+   "engine/diplomacy.ts:482 call:tell"
   ]
  },
  {
   "key": "Vous êtes désormais en guerre contre les {0}.{1}{2}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:455 call:tell"
+   "engine/diplomacy.ts:483 call:tell"
   ]
  },
  {
   "key": " Rompre vos accords vous vaut une réputation de traître.",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:455 call:tell"
+   "engine/diplomacy.ts:483 call:tell"
   ]
  },
  {
   "key": " Les ambassades entre vos deux empires sont fermées.",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:455 call:tell"
+   "engine/diplomacy.ts:483 call:tell"
   ]
  },
  {
   "key": "Les ambassades entre vous et les {0} sont fermées.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:456 call:tell"
+   "engine/diplomacy.ts:484 call:tell"
   ]
  },
  {
   "key": "Les {0} ont déclaré la guerre aux {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:457 call:tell"
+   "engine/diplomacy.ts:485 call:tell"
   ]
  },
  {
   "key": "pour défendre leurs alliés, les {0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:462 call:declareWar"
+   "engine/diplomacy.ts:490 call:declareWar"
   ]
  },
  {
   "key": "Vos alliés les {0} sont attaqués par les {1}. Rien ne vous oblige à entrer en guerre, mais vos alliés s'en souviendront.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:463 call:tell"
+   "engine/diplomacy.ts:491 call:tell"
+  ]
+ },
+ {
+  "key": "pour contenir leur avance, aux côtés des {0}",
+  "kind": "tpl",
+  "refs": [
+   "engine/diplomacy.ts:496 call:declareWar"
+  ]
+ },
+ {
+  "key": "Vos alliés les {0} entrent en guerre contre les {1} pour contenir leur avance. Rien ne vous oblige à les suivre.",
+  "kind": "tpl",
+  "refs": [
+   "engine/diplomacy.ts:497 call:tell"
   ]
  },
  {
   "key": " ; les {0} versent {1} kt de minerais",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:474"
+   "engine/diplomacy.ts:508"
   ]
  },
  {
   "key": "Paix entre les {0} et les {1}{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:475 call:log"
+   "engine/diplomacy.ts:509 call:log"
   ]
  },
  {
   "key": "Paix entre les {0} et les {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:476 call:addChronicle"
+   "engine/diplomacy.ts:510 call:addChronicle"
   ]
  },
  {
   "key": "La paix est signée avec les {0}{1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:477 call:tell"
+   "engine/diplomacy.ts:511 call:tell"
   ]
  },
  {
   "key": "Prix de la paix : les {0} vous versent",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:478 call:tellTransfer"
+   "engine/diplomacy.ts:512 call:tellTransfer"
   ]
  },
  {
   "key": "Prix de la paix : vous versez aux {0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:478 call:tellTransfer"
+   "engine/diplomacy.ts:512 call:tellTransfer"
+  ]
+ },
+ {
+  "key": "Alliance entre les {0} et les {1} contre la domination des {2}.",
+  "kind": "tpl",
+  "refs": [
+   "engine/diplomacy.ts:521 call:addChronicle"
   ]
  },
  {
   "key": "Alliance entre les {0} et les {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:485 call:addChronicle"
+   "engine/diplomacy.ts:521 call:addChronicle"
   ]
  },
  {
   "key": "Pour cet accord, les {0} vous versent",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:488 call:tellTransfer"
+   "engine/diplomacy.ts:526 call:tellTransfer"
   ]
  },
  {
   "key": "Pour cet accord, vous versez aux {0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:488 call:tellTransfer"
+   "engine/diplomacy.ts:526 call:tellTransfer"
   ]
  },
  {
   "key": "Accord commercial (+{0} % de ressources chacun)",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:489"
+   "engine/diplomacy.ts:527"
   ]
  },
  {
   "key": "Coopération scientifique (+{0} % de recherche chacun)",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:489"
+   "engine/diplomacy.ts:527"
   ]
  },
  {
   "key": "Alliance (ravitaillement aux stations, portes, vision des flottes, défense mutuelle)",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:489"
+   "engine/diplomacy.ts:527"
   ]
  },
  {
   "key": "{0} entre les {1} et les {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:490 call:log"
+   "engine/diplomacy.ts:528 call:log"
   ]
  },
  {
   "key": "Ambassades ouvertes avec les {0}{1} : chacun en apprendra davantage sur l'autre (renseignement +25 des deux côtés).",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:496 call:tell"
+   "engine/diplomacy.ts:534 call:tell"
   ]
  },
  {
   "key": " ({0} kt de minerais versés)",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:496 call:tell",
-   "engine/diplomacy.ts:497 call:tell"
+   "engine/diplomacy.ts:534 call:tell",
+   "engine/diplomacy.ts:535 call:tell"
   ]
  },
  {
   "key": "{0} signé avec les {1}{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:497 call:tell"
+   "engine/diplomacy.ts:535 call:tell"
   ]
  },
  {
   "key": "Les {0} ferment les ambassades qui les liaient aux {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:508 call:log"
+   "engine/diplomacy.ts:546 call:log"
   ]
  },
  {
   "key": "Les {0} ferment les ambassades entre vos deux empires.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:509 call:tell"
+   "engine/diplomacy.ts:547 call:tell"
   ]
  },
  {
   "key": "Vous avez fermé les ambassades avec les {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:510 call:tell"
+   "engine/diplomacy.ts:548 call:tell"
   ]
  },
  {
   "key": "l'accord commercial",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:514"
+   "engine/diplomacy.ts:552"
   ]
  },
  {
   "key": "la coopération scientifique",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:514"
+   "engine/diplomacy.ts:552"
   ]
  },
  {
   "key": "l'alliance",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:514"
+   "engine/diplomacy.ts:552"
   ]
  },
  {
   "key": "Les {0} rompent {1} avec les {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:515 call:log"
+   "engine/diplomacy.ts:553 call:log"
   ]
  },
  {
   "key": "Les {0} rompent {1} qui vous liait.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:516 call:tell"
+   "engine/diplomacy.ts:554 call:tell"
   ]
  },
  {
   "key": "Vous avez rompu {0} avec les {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:517 call:tell"
+   "engine/diplomacy.ts:555 call:tell"
   ]
  },
  {
   "key": "Les {0} offrent {1} kt de minerais aux {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:525 call:log"
+   "engine/diplomacy.ts:563 call:log"
   ]
  },
  {
   "key": "Cadeau des {0} :",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:526 call:tellTransfer"
+   "engine/diplomacy.ts:564 call:tellTransfer"
   ]
  },
  {
   "key": "Cadeau aux {0} :",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:526 call:tellTransfer"
+   "engine/diplomacy.ts:564 call:tellTransfer"
   ]
  },
  {
   "key": "Pour l'ouverture des frontières, les {0} vous versent",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:539 call:tellTransfer"
+   "engine/diplomacy.ts:577 call:tellTransfer"
   ]
  },
  {
   "key": "Pour l'ouverture des frontières, vous versez aux {0}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:539 call:tellTransfer"
+   "engine/diplomacy.ts:577 call:tellTransfer"
   ]
  },
  {
   "key": "Les {0} versent un tribut de {1} kt aux {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:545 call:log"
+   "engine/diplomacy.ts:583 call:log"
   ]
  },
  {
   "key": "Les {0} cèdent et paient le tribut :",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:547 call:tellTransfer"
+   "engine/diplomacy.ts:585 call:tellTransfer"
   ]
  },
  {
   "key": "Vous versez un tribut aux {0} :",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:547 call:tellTransfer"
+   "engine/diplomacy.ts:585 call:tellTransfer"
   ]
  },
  {
   "key": "Les {0} acceptent de vous payer le tribut, mais n'ont plus rien à verser.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:548 call:tell"
+   "engine/diplomacy.ts:586 call:tell"
   ]
  },
  {
   "key": "empire anéanti",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:558",
+   "engine/diplomacy.ts:596",
    "engine/espionage.ts:79"
   ]
  },
@@ -7391,14 +7419,14 @@
   "key": "pas en guerre",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:559"
+   "engine/diplomacy.ts:597"
   ]
  },
  {
   "key": "règle Renseignement désactivée",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:562",
+   "engine/diplomacy.ts:600",
    "engine/espionage.ts:75",
    "engine/espionage.ts:95"
   ]
@@ -7407,43 +7435,43 @@
   "key": "leurs frontières vous sont ouvertes",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:566"
+   "engine/diplomacy.ts:604"
   ]
  },
  {
   "key": "un tribut tous les {0} ans au plus (prochain en {1})",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:567"
+   "engine/diplomacy.ts:605"
   ]
  },
  {
   "key": "proposition déjà en attente",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:568"
+   "engine/diplomacy.ts:606"
   ]
  },
  {
   "key": "Les {0} refusent de vous payer le tribut de {1} kt.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:586 call:tell"
+   "engine/diplomacy.ts:624 call:tell"
   ]
  },
  {
   "key": "Les {0} refusent {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:587 call:tell"
+   "engine/diplomacy.ts:625 call:tell"
   ]
  },
  {
   "key": "Les {0} refusent {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:587 call:tell",
-   "engine/diplomacy.ts:610 call:tell",
+   "engine/diplomacy.ts:625 call:tell",
+   "engine/diplomacy.ts:650 call:tell",
    "ui/diplomacy.tsx:52 call:notify"
   ]
  },
@@ -7451,84 +7479,98 @@
   "key": " (ils offrent {0} kt de minerais)",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:593"
+   "engine/diplomacy.ts:631"
   ]
  },
  {
   "key": " (ils demandent {0} kt de minerais)",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:593"
+   "engine/diplomacy.ts:631"
+  ]
+ },
+ {
+  "key": "Les {0} vous proposent une alliance contre les {1}, dont l'avance menace toute la galaxie. Répondez dans la page Diplomatie.",
+  "kind": "tpl",
+  "refs": [
+   "engine/diplomacy.ts:633 call:tell"
   ]
  },
  {
   "key": "Les {0} exigent de vous un tribut de {1} kt de minerais. Refuser les mettra en colère.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:594 call:tell"
+   "engine/diplomacy.ts:634 call:tell"
   ]
  },
  {
   "key": "Les {0} vous demandent d'ouvrir vos frontières à leurs vaisseaux{1}. Répondez dans la page Diplomatie.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:594 call:tell"
+   "engine/diplomacy.ts:634 call:tell"
   ]
  },
  {
   "key": "Les {0} vous proposent {1}{2}. Répondez dans la page Diplomatie.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:594 call:tell"
+   "engine/diplomacy.ts:634 call:tell"
   ]
  },
  {
   "key": "Les {0} exigeaient de vous un tribut : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:686 call:tell"
+   "engine/diplomacy.ts:727 call:tell"
   ]
  },
  {
   "key": "Les {0} vous demandaient d'ouvrir vos frontières à leurs vaisseaux : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:686 call:tell"
+   "engine/diplomacy.ts:727 call:tell"
   ]
  },
  {
   "key": "Les {0} vous proposaient {1} : faute de réponse de votre part, la proposition a expiré.",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:686 call:tell"
+   "engine/diplomacy.ts:727 call:tell"
   ]
  },
  {
   "key": "ils ont juré votre perte",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:730 call:declareWar"
+   "engine/diplomacy.ts:778 call:declareWar"
+  ]
+ },
+ {
+  "key": "pour contenir leur avance",
+  "kind": "str",
+  "refs": [
+   "engine/diplomacy.ts:788 call:declareWar"
   ]
  },
  {
   "key": "leur expansion était étouffée par des frontières fermées",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:744 call:declareWar"
+   "engine/diplomacy.ts:798 call:declareWar"
   ]
  },
  {
   "key": "leur demande de tribut a été refusée",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:754 call:declareWar"
+   "engine/diplomacy.ts:808 call:declareWar"
   ]
  },
  {
   "key": "pour empêcher l'achèvement du Portail",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:770 call:declareWar"
+   "engine/diplomacy.ts:824 call:declareWar"
   ]
  },
  {
@@ -7918,7 +7960,7 @@
   "refs": [
    "engine/espionage.ts:27 prop:label",
    "ui/app.tsx:155 prop:label",
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/reports.tsx:55 prop:label"
   ]
  },
@@ -8311,7 +8353,7 @@
   "refs": [
    "engine/factions.ts:14 prop:name",
    "engine/rules.ts:34 prop:name",
-   "ui/dialogs/misc.tsx:260 jsx",
+   "ui/dialogs/misc.tsx:261 jsx",
    "ui/empire.tsx:48 attr:title"
   ]
  },
@@ -11159,7 +11201,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:26 prop:agency",
-   "ui/dialogs/misc.tsx:259 jsx",
+   "ui/dialogs/misc.tsx:260 jsx",
    "ui/inspector.tsx:301 attr:k"
   ]
  },
@@ -12363,7 +12405,7 @@
   "kind": "str",
   "refs": [
    "engine/rules.ts:33 prop:name",
-   "ui/dialogs/misc.tsx:264 jsx"
+   "ui/dialogs/misc.tsx:265 jsx"
   ]
  },
  {
@@ -12385,7 +12427,7 @@
   "kind": "str",
   "refs": [
    "engine/rules.ts:35 prop:name",
-   "ui/dialogs/misc.tsx:262 jsx",
+   "ui/dialogs/misc.tsx:263 jsx",
    "ui/empire.tsx:46 attr:title"
   ]
  },
@@ -12417,8 +12459,8 @@
   "refs": [
    "engine/rules.ts:37 prop:name",
    "ui/dialogs/misc.tsx:69 jsx",
-   "ui/dialogs/misc.tsx:257 jsx",
-   "ui/diplomacy.tsx:135 jsx"
+   "ui/dialogs/misc.tsx:258 jsx",
+   "ui/diplomacy.tsx:149 jsx"
   ]
  },
  {
@@ -13839,7 +13881,7 @@
    "engine/tasks.ts:463",
    "engine/tasks.ts:469 prop:other",
    "ui/dialogs/reports.tsx:57 prop:label",
-   "ui/diplomacy.tsx:135 jsx"
+   "ui/diplomacy.tsx:149 jsx"
   ]
  },
  {
@@ -14988,7 +15030,7 @@
   "kind": "str",
   "refs": [
    "engine/turn.ts:699 prop:text",
-   "ui/dialogs/misc.tsx:317 jsx"
+   "ui/dialogs/misc.tsx:318 jsx"
   ]
  },
  {
@@ -16206,7 +16248,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:34",
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/reports.tsx:161 prop:label",
    "ui/sidebar.tsx:124 attr:title"
   ]
@@ -16291,7 +16333,7 @@
   "refs": [
    "ui/app.tsx:35",
    "ui/dialogs/designer.tsx:50 attr:title",
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/tutorial.tsx:111 prop:design"
   ]
  },
@@ -16307,7 +16349,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:35",
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/race.tsx:68 jsx",
    "ui/dialogs/race.tsx:163 jsx"
   ]
@@ -16325,8 +16367,8 @@
   "refs": [
    "ui/app.tsx:35",
    "ui/dialogs/misc.tsx:66 attr:title",
-   "ui/dialogs/misc.tsx:269 call:map",
-   "ui/diplomacy.tsx:125 attr:title"
+   "ui/dialogs/misc.tsx:270 call:map",
+   "ui/diplomacy.tsx:137 attr:title"
   ]
  },
  {
@@ -16357,7 +16399,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:36",
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/tutorial.tsx:111 prop:guide"
   ]
  },
@@ -16741,7 +16783,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:150 prop:label",
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
@@ -16758,7 +16800,7 @@
   "refs": [
    "ui/app.tsx:152 prop:label",
    "ui/dialogs/misc.tsx:66 jsx",
-   "ui/diplomacy.tsx:125 jsx"
+   "ui/diplomacy.tsx:137 jsx"
   ]
  },
  {
@@ -16774,7 +16816,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:154 prop:label",
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
@@ -16782,7 +16824,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:156 prop:label",
-   "ui/dialogs/misc.tsx:272 call:map",
+   "ui/dialogs/misc.tsx:273 call:map",
    "ui/victory.tsx:136 attr:title"
   ]
  },
@@ -16814,7 +16856,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:161 prop:label",
-   "ui/dialogs/misc.tsx:329 attr:title",
+   "ui/dialogs/misc.tsx:330 attr:title",
    "ui/dialogs/race.tsx:167 jsx"
   ]
  },
@@ -16967,7 +17009,7 @@
   "kind": "jsx",
   "refs": [
    "ui/app.tsx:348 jsx",
-   "ui/dialogs/misc.tsx:316 jsx"
+   "ui/dialogs/misc.tsx:317 jsx"
   ]
  },
  {
@@ -17232,7 +17274,7 @@
   "kind": "jsx",
   "refs": [
    "ui/chronicle.tsx:141 jsx",
-   "ui/dialogs/misc.tsx:316 jsx"
+   "ui/dialogs/misc.tsx:317 jsx"
   ]
  },
  {
@@ -21043,7 +21085,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:34 attr:title",
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
@@ -21327,7 +21369,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:128 attr:title",
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
@@ -21456,7 +21498,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:176 prop:label",
-   "ui/dialogs/misc.tsx:338 jsx"
+   "ui/dialogs/misc.tsx:339 jsx"
   ]
  },
  {
@@ -22275,137 +22317,151 @@
   ]
  },
  {
+  "key": "{0} Quand un empire écrase la partie (ordinateur ou joueur, d'après les scores que chacun connaît), les autres se rapprochent contre lui, d'autant plus que son avance est grande : leur opinion les uns des autres monte, même entre empires qui se détestent (pas envers celui qui a juré votre perte), une alliance contre lui leur demande moins d'opinion qu'en temps normal, et ils la proposent en priorité, aux joueurs aussi. Ils lui déclarent plus volontiers la guerre, même déjà engagés ailleurs ; quand l'un l'attaque, ses alliés qui le craignent autant le suivent. L'opinion de l'empire qui domine baisse d'autant. L'onglet Diplomatie signale cette domination quand elle commence. Les ordinateurs faciles ne se liguent jamais contre un joueur, mais s'allient à lui contre un ordinateur qui domine.",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/misc.tsx:257 jsx"
+  ]
+ },
+ {
+  "key": "Ennemi commun.",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/misc.tsx:257 jsx"
+  ]
+ },
+ {
   "key": "Ce que vous savez d'un autre empire tient en un {0} de 0 à 100, recalculé chaque année et détaillé source par source dans son dossier (onglet Diplomatie, ou un clic sur sa ligne dans le Score). Sources : ses mondes analysés cette année par vos scanners pénétrants ou vos vaisseaux en orbite (jusqu'à 35, +5 pour sa capitale), ses vaisseaux identifiés (10), des {1} (25, réciproques : il en apprend autant sur vous), un accord commercial ou scientifique (10 chacun), une alliance (20), un {2} (jusqu'à 45), les combats et les mondes pris récemment, et ce que vos alliés savent de lui (jusqu'à 20). Une race Furtivité naît espionne (+10, réseaux plus forts et plus discrets).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:258 jsx"
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "niveau de renseignement",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:258 jsx"
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "ambassades",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:258 jsx"
+   "ui/dialogs/misc.tsx:259 jsx"
   ]
  },
  {
   "key": "réseau d'espions",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:258 jsx",
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:259 jsx",
+   "ui/dialogs/misc.tsx:260 jsx"
   ]
  },
  {
   "key": "Le niveau révèle d'abord des {0} (« ≈ », à ±30 % au premier palier), puis les chiffres exacts : planètes (estimées à 10, exactes à 40), score et niveaux de technologie (20), ressources et stations (30), flotte (40, exacte à 80), technologie domaine par domaine (55), score exact (60), recherches en cours (65), conditions de victoire remplies (75), objectifs secrets (90). Ce qui a été appris reste dans le dossier, daté. Le {1} s'achète en production (150 R l'unité, chez l'empire visé), s'use de 20 % par an et peut être démasqué, ce qui le ruine en partie et fâche la victime. L'{2} (une par empire, Électronique 5) renforce vos réseaux, démasque deux fois plus souvent ceux des autres et ajoute 5 partout ; ses archives sont une aubaine pour qui prend la planète. Les ordinateurs jugent votre flotte à travers ce qu'ils savent de vous (à ±35 % s'ils ne savent rien) : leurs réponses annoncent « votre force estimée ».",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:260 jsx"
   ]
  },
  {
   "key": "estimations",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:259 jsx"
+   "ui/dialogs/misc.tsx:260 jsx"
   ]
  },
  {
   "key": "Une quinzaine d'années après le début, des bandes de pirates s'installent dans des {0} loin des capitales (anneau orange, ☠). Tous les quelques années, un repaire lance un {1} sur une colonie riche et mal défendue : vos informateurs vous préviennent de la cible et de la date d'arrivée. Une flotte armée en orbite ou une station armée les arrête ; les défenses planétaires réduisent le pillage (minerais emportés, usines et mines détruites, quelques colons tués, jamais un monde vidé). Une {2} (élément de production, anonyme) les pousse à viser un rival. Un repaire détruit rapporte de la recherche, le trésor de la bande et parfois une relique ; sans repaire, les pirates disparaissent.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:262 jsx"
   ]
  },
  {
   "key": "repaires",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:262 jsx"
   ]
  },
  {
   "key": "raid",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:262 jsx"
   ]
  },
  {
   "key": "prime",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:261 jsx"
+   "ui/dialogs/misc.tsx:262 jsx"
   ]
  },
  {
   "key": "Vers 2480 (2490 dans une galaxie moyenne, 2500 à 2510 dans une grande), un signal annonce qu'une {0} s'ouvrira dix ans plus tard sur un monde éloigné (✹ magenta). Son gardien, le {1} (vaisseaux de guerre et Remparts blindés, d'une technologie d'avance), tient tête à la plus grande marine de la galaxie et répare 30 % de ses dégâts par an. Tous les quatre ou cinq ans, une {2} en sort, vise surtout l'empire en tête et moissonne ses mondes un à un. À moins de 80 al de la Brèche, les empires ne se combattent pas entre eux ; les ordinateurs font la paix, s'y rassemblent et frappent ensemble. {3} (celui qui a le plus de vaisseaux sur place) {4}. Un empire qui écrase tous les autres attire la crise plus tôt.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "Brèche",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "Nexus",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "vague de Moissonneurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "L'empire qui abat le Nexus",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "remporte la partie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:263 jsx"
+   "ui/dialogs/misc.tsx:264 jsx"
   ]
  },
  {
   "key": "Chaque empire choisit une origine à la création de la partie : monde condamné (le climat natal se dégrade à partir de 2430, il faut déménager), monde-relique, colonie perdue, lignée d'explorateurs, protégés des Anciens. Chacune a un avantage et un prix. Les ordinateurs tirent la leur au sort.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:265 jsx"
+   "ui/dialogs/misc.tsx:266 jsx"
   ]
  },
  {
   "key": "Entrée ou F9",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Tour suivant",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map",
+   "ui/dialogs/misc.tsx:270 call:map",
    "ui/tutorial.tsx:110 prop:next",
    "ui/tutorial.tsx:425 prop:title"
   ]
@@ -22414,245 +22470,245 @@
   "key": "Générer 10 ans",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:269 call:map"
+   "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
  {
   "key": "Carte / Planificateur de colonies / Planificateur de minage",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Glisser une étape",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Déplacer l'étape (la flotte doit être sélectionnée)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Glisser un chevron",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Insérer une étape à cet endroit du trajet",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Étape sur un chevron orange",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Point d'interception aimanté sur la trajectoire estimée d'une flotte étrangère",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Clic droit sur une flotte étrangère",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Intercepter avec la flotte sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Affichage de la carte : habitabilité, minerais, concentrations, valeur, population, épuré, statut des empires, radar",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "9 / Maj+9",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Scanners / trajets",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "0 / Maj+0",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Noms / nombre de vaisseaux",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:270 call:map"
+   "ui/dialogs/misc.tsx:271 call:map"
   ]
  },
  {
   "key": "Nouvelle destination de la flotte sélectionnée (Maj maintenue : étapes suivantes)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Ajouter une étape à la fin de l'itinéraire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Choisir où iront les vaisseaux construits sur la planète sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Clic droit",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Objets à cet endroit, « Aller ici »",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Molette",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Zoom",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Glisser",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Déplacer la carte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Mesurer une distance en années-lumière (d'une planète ou d'une flotte à une autre, ou n'importe quel point) ; Maj+Alt+glisser marche aussi",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:271 call:map"
+   "ui/dialogs/misc.tsx:272 call:map"
   ]
  },
  {
   "key": "Planète ou flotte suivante / précédente",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Flotte sans ordre suivante",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "t / Maj+t",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Chose suivante / précédente à traiter (décisions, propositions, flottes, colonies)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Chronique de la partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Basculer entre planètes et flottes",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Production de la planète",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Centrer sur la sélection",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Début",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map"
+   "ui/dialogs/misc.tsx:273 call:map"
   ]
  },
  {
   "key": "Toute la galaxie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:272 call:map",
+   "ui/dialogs/misc.tsx:273 call:map",
    "ui/pages.tsx:120 attr:title"
   ]
  },
@@ -22660,239 +22716,239 @@
   "key": "Warp de l'étape sélectionnée −1 / +1",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Suppr",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Supprimer l'étape sélectionnée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Rapport précédent / suivant",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Aller à l'objet du rapport",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Sauvegarder",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Échap",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Fermer, puis revenir à la carte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:273 call:map"
+   "ui/dialogs/misc.tsx:274 call:map"
   ]
  },
  {
   "key": "Constellations s'inspire de {0} (1995), dont il reprend l'essentiel des mécaniques : races personnalisables, six domaines de recherche, coques et composants, carburant, scanners, champs de mines, paquets de minerais, portails, combats sur plateau. Le vocabulaire, les noms des vaisseaux et des technologies, l'interface et une partie des règles sont propres à Constellations.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:277 jsx"
+   "ui/dialogs/misc.tsx:278 jsx"
   ]
  },
  {
   "key": "Stars!",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:277 jsx",
-   "ui/dialogs/misc.tsx:293 jsx"
+   "ui/dialogs/misc.tsx:278 jsx",
+   "ui/dialogs/misc.tsx:294 jsx"
   ]
  },
  {
   "key": "Contacts anonymes : un scanner ordinaire ne révèle qu'une présence ; l'identité et la composition d'une flotte demandent un scanner pénétrant (option de partie).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:279 jsx"
+   "ui/dialogs/misc.tsx:280 jsx"
   ]
  },
  {
   "key": "Trajectoires estimées des flottes étrangères d'après deux observations, alertes quand l'une semble viser vos planètes.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:280 jsx"
+   "ui/dialogs/misc.tsx:281 jsx"
   ]
  },
  {
   "key": "Missions en un clic (éclaireur, arche, construction puis départ automatique), exploration automatique, vitesse calculée selon le carburant.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:281 jsx"
+   "ui/dialogs/misc.tsx:282 jsx"
   ]
  },
  {
   "key": "Planificateur de colonies, modèles de production, objectifs de recherche, rapports cliquables, liste « à faire », annulation.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:282 jsx"
+   "ui/dialogs/misc.tsx:283 jsx"
   ]
  },
  {
   "key": "Multijoueur sur le même appareil uniquement ; l'IA est originale.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:283 jsx"
+   "ui/dialogs/misc.tsx:284 jsx"
   ]
  },
  {
   "key": "À propos de Constellations",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:292 attr:title"
+   "ui/dialogs/misc.tsx:293 attr:title"
   ]
  },
  {
   "key": "{0} : stratégie spatiale au tour par tour, inspirée de {1} de Jeff Johnson et Jeff McBride (1995).",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:293 jsx"
+   "ui/dialogs/misc.tsx:294 jsx"
   ]
  },
  {
   "key": "Constellations {0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:293 jsx"
+   "ui/dialogs/misc.tsx:294 jsx"
   ]
  },
  {
   "key": "Moteur, interface et graphismes originaux, entièrement générés dans le navigateur. Les formules de jeu ont été recoupées avec l'aide d'origine, le clone libre craig-stars (licence MIT) et une partie réelle sous Windows 3.11.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:294 jsx"
+   "ui/dialogs/misc.tsx:295 jsx"
   ]
  },
  {
   "key": "Aucun fichier, image ou texte de Stars! n'est inclus.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:295 jsx"
+   "ui/dialogs/misc.tsx:296 jsx"
   ]
  },
  {
   "key": "Les {0} ont gagné en achevant le Portail de l'Ascension.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:303"
+   "ui/dialogs/misc.tsx:304"
   ]
  },
  {
   "key": "Les {0} ont gagné en abattant le Nexus des Moissonneurs.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:304"
+   "ui/dialogs/misc.tsx:305"
   ]
  },
  {
   "key": "Les {0} ont gagné en scellant la Brèche avec le Sceau des Anciens.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:305"
+   "ui/dialogs/misc.tsx:306"
   ]
  },
  {
   "key": "Les {0} ont gagné par la victoire de leur origine, {1}. {2}",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:306"
+   "ui/dialogs/misc.tsx:307"
   ]
  },
  {
   "key": "Les {0} ont gagné par la victoire de leur origine.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:306"
+   "ui/dialogs/misc.tsx:307"
   ]
  },
  {
   "key": "Les {0} ont gagné en restant les derniers debout.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:307"
+   "ui/dialogs/misc.tsx:308"
   ]
  },
  {
   "key": "Les {0} ont gagné en atteignant les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:308"
+   "ui/dialogs/misc.tsx:309"
   ]
  },
  {
   "key": "Défaite",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:316 attr:title"
+   "ui/dialogs/misc.tsx:317 attr:title"
   ]
  },
  {
   "key": "Victoire !",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:316 attr:title"
+   "ui/dialogs/misc.tsx:317 attr:title"
   ]
  },
  {
   "key": "Un empire a gagné",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:316 attr:title"
+   "ui/dialogs/misc.tsx:317 attr:title"
   ]
  },
  {
   "key": "Voir les scores",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:316 jsx"
+   "ui/dialogs/misc.tsx:317 jsx"
   ]
  },
  {
   "key": "Objectifs secrets révélés",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:318 jsx"
+   "ui/dialogs/misc.tsx:319 jsx"
   ]
  },
  {
   "key": "Vous pouvez continuer à jouer cette partie ; la chronique reste dans le menu ⋯.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:321 jsx"
+   "ui/dialogs/misc.tsx:322 jsx"
   ]
  },
  {
   "key": "Univers",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:331 attr:k",
+   "ui/dialogs/misc.tsx:332 attr:k",
    "ui/dialogs/race.tsx:169 attr:k"
   ]
  },
@@ -22900,14 +22956,14 @@
   "key": "{0} · {1} planètes · {2} al",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/misc.tsx:331 attr:v"
+   "ui/dialogs/misc.tsx:332 attr:v"
   ]
  },
  {
   "key": "Graine",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:332 attr:k",
+   "ui/dialogs/misc.tsx:333 attr:k",
    "ui/dialogs/race.tsx:171 attr:k"
   ]
  },
@@ -22915,28 +22971,28 @@
   "key": "{0} Contacts anonymes hors scanner pénétrant (effet au prochain tour)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:334 jsx"
+   "ui/dialogs/misc.tsx:335 jsx"
   ]
  },
  {
   "key": "{0} Populations en millions {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:336 jsx"
+   "ui/dialogs/misc.tsx:337 jsx"
   ]
  },
  {
   "key": "(un colon des règles = mille habitants ; affichage seulement, les nouveaux rapports suivent)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:336 jsx"
+   "ui/dialogs/misc.tsx:337 jsx"
   ]
  },
  {
   "key": "{0} Scores publics",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:337 jsx",
+   "ui/dialogs/misc.tsx:338 jsx",
    "ui/dialogs/newgame.tsx:138 jsx"
   ]
  },
@@ -22944,14 +23000,14 @@
   "key": "Décochées, la partie suit les règles de Stars! d'origine. En cours de partie, on peut en ajouter (effet immédiat : une règle activée en route prépare ce qu'il faut, terrain, objectifs, capitales), mais plus en retirer.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/misc.tsx:339 jsx"
+   "ui/dialogs/misc.tsx:340 jsx"
   ]
  },
  {
   "key": " (ne se choisit qu'à la création de la partie)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:340 jsx"
+   "ui/dialogs/misc.tsx:341 jsx"
   ]
  },
  {
@@ -22976,21 +23032,21 @@
   ]
  },
  {
-  "key": "Économie et guerre simples, peu de recherche, des guerres tardives.",
+  "key": "Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s'allie à vous contre un ordinateur qui écrase la partie.",
   "kind": "str",
   "refs": [
    "ui/dialogs/newgame.tsx:23 prop:easy"
   ]
  },
  {
-  "key": "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.",
+  "key": "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais. S'allie aux autres contre l'empire qui écrase la partie, vous compris.",
   "kind": "str",
   "refs": [
    "ui/dialogs/newgame.tsx:24 prop:standard"
   ]
  },
  {
-  "key": "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.",
+  "key": "Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l'ennemi. Recherche plus rapide, guerres plus précoces.",
   "kind": "str",
   "refs": [
    "ui/dialogs/newgame.tsx:25 prop:harder"
@@ -26236,304 +26292,339 @@
   ]
  },
  {
+  "key": "Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.",
+  "kind": "str",
+  "refs": [
+   "ui/diplomacy.tsx:120 jsx"
+  ]
+ },
+ {
+  "key": "Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.",
+  "kind": "str",
+  "refs": [
+   "ui/diplomacy.tsx:120 jsx"
+  ]
+ },
+ {
+  "key": "Les {0} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.",
+  "kind": "tpl",
+  "refs": [
+   "ui/diplomacy.tsx:122 jsx"
+  ]
+ },
+ {
+  "key": "L'avance des {0} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.",
+  "kind": "tpl",
+  "refs": [
+   "ui/diplomacy.tsx:122 jsx"
+  ]
+ },
+ {
   "key": "Guerre, paix et alliances ; accords et ambassades ; ce que chaque empire pense de vous, et ce que vous savez de lui.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:125 attr:sub"
+   "ui/diplomacy.tsx:137 attr:sub"
   ]
  },
  {
   "key": "Guerre, paix et alliances ; accords ; ce que chaque empire pense de vous, et pourquoi.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:125 attr:sub"
+   "ui/diplomacy.tsx:137 attr:sub"
   ]
  },
  {
   "key": ", contre {0} kt de minerais qu'ils vous versent",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:128"
+   "ui/diplomacy.tsx:141"
   ]
  },
  {
   "key": ", contre {0} kt de minerais que vous leur versez",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:128"
+   "ui/diplomacy.tsx:141"
   ]
  },
  {
   "key": "exigent de vous un tribut de {0} kt de minerais",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:129 jsx"
+   "ui/diplomacy.tsx:143 jsx"
   ]
  },
  {
   "key": "vous demandent d'ouvrir vos frontières à leurs vaisseaux{0}",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:129 jsx"
+   "ui/diplomacy.tsx:143 jsx"
+  ]
+ },
+ {
+  "key": "vous proposent une alliance contre les {0}, dont l'avance menace toute la galaxie",
+  "kind": "tpl",
+  "refs": [
+   "ui/diplomacy.tsx:143"
   ]
  },
  {
   "key": "vous proposent {0}{1}",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:129 jsx"
+   "ui/diplomacy.tsx:143"
   ]
  },
  {
   "key": "Expire en {0}.",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:129 jsx"
+   "ui/diplomacy.tsx:143 jsx"
   ]
  },
  {
   "key": "Accepter",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:130 jsx"
+   "ui/diplomacy.tsx:144 jsx"
   ]
  },
  {
   "key": "Proposition acceptée.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:130 call:act"
+   "ui/diplomacy.tsx:144 call:act"
   ]
  },
  {
   "key": "Proposition refusée.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:130 call:act"
+   "ui/diplomacy.tsx:144 call:act"
   ]
  },
  {
   "key": "Frontières pour les empires rencontrés désormais : {0} {1}",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:132 jsx"
+   "ui/diplomacy.tsx:146 jsx"
   ]
  },
  {
   "key": "Les empires rencontrés désormais trouveront vos frontières fermées.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:132 call:act"
+   "ui/diplomacy.tsx:146 call:act"
   ]
  },
  {
   "key": "Les empires rencontrés désormais trouveront vos frontières ouvertes.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:132 call:act"
+   "ui/diplomacy.tsx:146 call:act"
   ]
  },
  {
   "key": "Ouvertes",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:132 jsx"
+   "ui/diplomacy.tsx:146 jsx"
   ]
  },
  {
   "key": "Fermées",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:132 jsx"
+   "ui/diplomacy.tsx:146 jsx"
   ]
  },
  {
   "key": "(puis empire par empire, ci-dessous)",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:132 jsx"
+   "ui/diplomacy.tsx:146 jsx"
   ]
  },
  {
   "key": "Vous n'avez encore rencontré aucun autre empire. Les empires apparaissent ici après un premier contact (scanner pénétrant, colonie découverte ou combat). En attendant, vous êtes en paix avec tous.",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:133 jsx"
+   "ui/diplomacy.tsx:147 jsx"
   ]
  },
  {
   "key": "Statut",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:135 jsx"
+   "ui/diplomacy.tsx:149 jsx"
   ]
  },
  {
   "key": "Accords",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:135 jsx"
+   "ui/diplomacy.tsx:149 jsx"
   ]
  },
  {
   "key": "Opinion de vous",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:135 jsx"
+   "ui/diplomacy.tsx:149 jsx"
   ]
  },
  {
   "key": "ce que cet empire pense de vous (de −100 à +100)",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:135 attr:title"
+   "ui/diplomacy.tsx:149 attr:title"
   ]
  },
  {
   "key": "ce que vous savez de cet empire (0 à 100)",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:135 attr:title"
+   "ui/diplomacy.tsx:149 attr:title"
   ]
  },
  {
   "key": "taille de sa flotte de guerre, comparée à la vôtre",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:135 attr:title"
+   "ui/diplomacy.tsx:149 attr:title"
   ]
  },
  {
   "key": " · joueur humain",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:147 jsx"
+   "ui/diplomacy.tsx:161 jsx"
   ]
  },
  {
   "key": "Némésis : ont juré votre perte",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:148 jsx"
+   "ui/diplomacy.tsx:162 jsx"
   ]
  },
  {
   "key": "Ils refusent toute paix tant que leur empire n'est pas brisé (60 % des mondes qu'ils tenaient, ou leur capitale).",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:148 attr:title"
+   "ui/diplomacy.tsx:162 attr:title"
   ]
  },
  {
   "key": "depuis {0}",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:149 jsx"
+   "ui/diplomacy.tsx:163 jsx"
   ]
  },
  {
   "key": "leur lassitude {0}",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:149 jsx"
+   "ui/diplomacy.tsx:163 jsx"
   ]
  },
  {
   "key": "vos frontières : fermées",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:150 jsx"
+   "ui/diplomacy.tsx:164 jsx"
   ]
  },
  {
   "key": "Leurs vaisseaux ne peuvent pas entrer dans votre territoire sans vous déclarer la guerre",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:150 attr:title"
+   "ui/diplomacy.tsx:164 attr:title"
   ]
  },
  {
   "key": "leurs frontières : fermées",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:151 jsx"
+   "ui/diplomacy.tsx:165 jsx"
   ]
  },
  {
   "key": "Entrer dans leur territoire leur déclarerait la guerre",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:151 attr:title"
+   "ui/diplomacy.tsx:165 attr:title"
   ]
  },
  {
   "key": "Commerce",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:152 call:filter"
+   "ui/diplomacy.tsx:166 call:filter"
   ]
  },
  {
   "key": "il faut un renseignement de 40 pour estimer leur flotte",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:155 attr:title"
+   "ui/diplomacy.tsx:169 attr:title"
   ]
  },
  {
   "key": "estimation à ±{0} %",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:155 attr:title"
+   "ui/diplomacy.tsx:169 attr:title"
   ]
  },
  {
   "key": "Pourquoi :",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:157 jsx"
+   "ui/diplomacy.tsx:171 jsx"
   ]
  },
  {
   "key": "Rancune envers vous : {0} sur {1}. Elle monte avec chaque vaisseau et chaque monde que vous leur prenez, et retombe lentement ; au seuil, ils jurent votre perte.",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:158 jsx"
+   "ui/diplomacy.tsx:172 jsx"
   ]
  },
  {
   "key": "En attente de leur réponse à {0} (expire en {1}).",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:160 jsx"
+   "ui/diplomacy.tsx:174 jsx"
   ]
  },
  {
   "key": "Vos accords vous rapportent {0} de ressources et {1} de recherche (trois partenaires au plus pour chacun).",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:167 jsx"
+   "ui/diplomacy.tsx:181 jsx"
   ]
  },
  {
   "key": "Dernières nouvelles",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:168 jsx"
+   "ui/diplomacy.tsx:182 jsx"
   ]
  },
  {
   "key": "On ne combat, n'envahit et ne bombarde que les empires avec qui l'on est en guerre, et les champs de mines épargnent les autres. Les ordinateurs pèsent chaque proposition selon les raisons affichées à côté (opinion, rapport de forces, lassitude, minerais) ; leur réponse garde une part d'incertitude : « probablement » n'est pas « sûrement ». Seules les règles fermes (une guerre qui vient de commencer, un accord déjà signé...) sont certaines. Une guerre déclarée malgré un accord ou une alliance est une trahison que tous retiennent ; déclarer la guerre à un allié d'un ordinateur fait entrer cet ordinateur en guerre contre vous.{0}",
   "kind": "jsx",
   "refs": [
-   "ui/diplomacy.tsx:169 jsx"
+   "ui/diplomacy.tsx:183 jsx"
   ]
  },
  {
   "key": " Des frontières fermées interdisent votre territoire aux vaisseaux d'un empire : y entrer, c'est vous déclarer la guerre. Les ordinateurs mesurent ce que des frontières fermées leur barrent : plus elles les enferment, plus ils en veulent à qui les ferme, plus ils demandent qu'on les rouvre, et plus ils sont prêts à la guerre.",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:169 jsx"
+   "ui/diplomacy.tsx:183 jsx"
   ]
  },
  {
@@ -38925,7 +39016,7 @@
   "key": "diplomatie inactive",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:557"
+   "engine/diplomacy.ts:595"
   ]
  },
  {
@@ -39431,14 +39522,14 @@
   "key": "opinion {0}{1}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:322"
+   "engine/diplomacy.ts:347"
   ]
  },
  {
   "key": "minerais {0}{1}",
   "kind": "tpl",
   "refs": [
-   "engine/diplomacy.ts:338 call:push"
+   "engine/diplomacy.ts:363 call:push"
   ]
  },
  {
@@ -39865,21 +39956,21 @@
   "key": "accepterait probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:285"
+   "engine/diplomacy.ts:310"
   ]
  },
  {
   "key": "refuserait probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:285"
+   "engine/diplomacy.ts:310"
   ]
  },
  {
   "key": "paierait probablement",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:387"
+   "engine/diplomacy.ts:415"
   ]
  },
  {

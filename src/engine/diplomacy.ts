@@ -18,7 +18,7 @@ import { addChronicle } from './chronicle';
 import { actOf } from './acts';
 import { worldGrudge, warGrudge, isNemesis, swornAgainst } from './nemesis';
 import { bordersGrievance, bordersWarPush, closedTo, bordersOn, setBorders, openForAllies, hindrance } from './borders';
-import { aiCan } from './aiskill';
+import { aiSkill, aiOff } from './aiskill';
 import { knownScore } from './aiknow';
 
 export const diplomacyOn = (game: GameState) => !!game.settings.diplomacy && !!game.diplomacy;
@@ -134,8 +134,10 @@ const score = (p: Player) => p.scores[p.scores.length - 1]?.score ?? 0;
 
 /**
  * 0.3.9.14: how far an empire runs away with the game, from 0 (not at all) to 1: the leader of three empires or more,
- * 40 % ahead of the next one at least and holding 30 % of all the scores. 0.3.9.15: `by` judges with the scores it
- * knows (public, or estimated by its intelligence), not the real ones.
+ * holding a quarter of all the scores at least. 0.3.9.15: `by` judges with the scores it knows (public, or estimated by
+ * its intelligence), not the real ones. 0.3.9.19: in proportion to its lead over the next one (nothing at 1.2 times
+ * its score, everything at 2.5 times), and only as the years make it plain (fully from 2430: the first scores mean
+ * little).
  */
 export function runaway(game: GameState, id: number, by?: number): number {
   const live = game.players.filter(p => isEmp(game, p.id) && !p.dead);
@@ -145,8 +147,32 @@ export function runaway(game: GameState, id: number, by?: number): number {
   if (sc[0].id !== id) return 0;
   const total = sc.reduce((a, x) => a + x.s, 0);
   const lead = sc[0].s / Math.max(1, sc[1].s);
-  if (lead < 1.4 || sc[0].s < total * 0.3) return 0;
-  return Math.min(1, 0.2 + (lead - 1.4) / 1.1);
+  if (sc[0].s < total * 0.25) return 0;
+  const ramp = Math.max(0, Math.min(1, (game.year - 2410) / 20));
+  return Math.round(Math.max(0, Math.min(1, (lead - 1.2) / 1.3)) * ramp * 1000) / 1000;
+}
+/**
+ * 0.3.9.19: the empire that dominates the galaxy as `by` sees it, and by how much (0 to 1): the common enemy that
+ * draws the others together.
+ */
+export function hegemon(game: GameState, by: number): { id: number; t: number } | undefined {
+  const id = runawayLeader(game, by);
+  return id === undefined ? undefined : { id, t: runaway(game, id, by) };
+}
+/**
+ * 0.3.9.19: does this computer feel the pull of a common enemy against that leader? Every level does, except that an
+ * easy computer never bands together against a human player (it still rallies with you against a computer).
+ */
+export function coalitionMind(a: Player | undefined, leader: Player | undefined): boolean {
+  if (!a?.ai || !leader || aiOff('coalition')) return false;
+  return aiSkill(a) >= 1 || !!leader.ai;
+}
+/** 0.3.9.19: the dominant empire `of` would rally `other` against (none when `other` is it, or allied with it). */
+export function rallyAgainst(game: GameState, of: number, other: number, min = 0.25): number | undefined {
+  const hg = hegemon(game, of);
+  if (!hg || hg.t < min || hg.id === of || hg.id === other || !coalitionMind(game.players[of], game.players[hg.id])) return undefined;
+  if (statusOf(game, other, hg.id) === 'alliance') return undefined;
+  return hg.id;
 }
 /** The empire running away with the game, if any (as `by` sees the scores). */
 function runawayLeader(game: GameState, by?: number): number | undefined {
@@ -233,14 +259,13 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   if (common) add('Ennemi commun', 12);
   if (game.crisis?.phase === 'active') add('Les Moissonneurs', 15);
   if (knownScore(game, a, about) > 1.5 * Math.max(1, score(a))) add('Votre puissance les inquiète', -10);
-  // 0.3.9.14: the better computers band together against an empire that runs away with the game
-  if (a.ai && aiCan(a, 2, 'coalition')) {
-    const r = runaway(game, about, of);
-    if (r > 0) add('Votre avance les pousse à s\'unir contre vous', -(10 + 25 * r));
-    else {
-      const lead = runawayLeader(game, of);
-      if (lead !== undefined && lead !== of && lead !== about) add('Un rival commun', 6 + 8 * runaway(game, lead, of));
-    }
+  // 0.3.9.14: the computers band together against an empire that runs away with the game. 0.3.9.19: every level (an
+  // easy one never against a human), in proportion to its lead: the others draw closer to each other, even those who
+  // dislike one another (not one that has sworn the other's ruin)
+  const hg = a.ai ? hegemon(game, of) : undefined;
+  if (hg && hg.id !== of && coalitionMind(a, game.players[hg.id])) {
+    if (hg.id === about) add('Votre avance les pousse à s\'unir contre vous', -40 * hg.t);
+    else if (statusOf(game, about, hg.id) !== 'alliance' && !isNemesis(game, of, about)) add(`Rival commun : les ${name(game, hg.id)}`, 50 * hg.t);
   }
   const portal = game.settings.megaprojects ? portalThreat(game) : null;
   if (portal && portal.owner === about && portal.announced > 0) add('Vous construisez le Portail', -40);
@@ -355,9 +380,12 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
       if (st === 'war') return firm('en guerre');
       if (st === 'alliance') return firm('déjà alliés', 0);
       const common = game.players.some(c => c.id !== ai && c.id !== from && isEmp(game, c.id) && !c.dead && statusOf(game, ai, c.id) === 'war' && statusOf(game, from, c.id) === 'war');
-      const need = common || game.crisis?.phase === 'active' ? NEED.alliance : NEED.alliance + 20;
+      // 0.3.9.19: against an empire that dominates the galaxy, as against a common enemy at war
+      const rival = rallyAgainst(game, ai, from);
+      const need = common || rival !== undefined || game.crisis?.phase === 'active' ? NEED.alliance : NEED.alliance + 20;
       const sc = Math.round(op + sweet - need);
-      return weighed(sc, `${fmtOp}, il faudrait une opinion d'au moins ${need}${common ? ', ennemi commun' : ''}`);
+      const against = rival !== undefined ? `, contre les ${name(game, rival)}` : '';
+      return weighed(sc, `${fmtOp}, il faudrait une opinion d'au moins ${need}${common ? ', ennemi commun' : against}`);
     }
     case 'borders': {
       // 0.3.9.10: `from` asks `ai` to open its borders to it; the peaceful open them more readily
@@ -462,6 +490,12 @@ export function declareWar(game: GameState, a: number, b: number, why?: string) 
     if (c.ai) { if (statusOf(game, c.id, a) !== 'war') { declareWar(game, c.id, a, `pour défendre leurs alliés, les ${name(game, b)}`); remember(game, b, c.id, 'ally', 15, 0.5); } }
     else tell(game, c.id, `Vos alliés les ${name(game, b)} sont attaqués par les ${name(game, a)}. Rien ne vous oblige à entrer en guerre, mais vos alliés s'en souviendront.`, a);
   }
+  // 0.3.9.19: against the empire that dominates the galaxy, the attacker's allies who fear it as much follow
+  if (runaway(game, b, a) >= 0.25) for (const c of game.players) {
+    if (c.id === a || c.id === b || !isEmp(game, c.id) || c.dead || statusOf(game, a, c.id) !== 'alliance' || statusOf(game, c.id, b) === 'war') continue;
+    if (c.ai) { if (coalitionMind(c, game.players[b]) && runaway(game, b, c.id) >= 0.25) declareWar(game, c.id, b, `pour contenir leur avance, aux côtés des ${name(game, a)}`); }
+    else tell(game, c.id, `Vos alliés les ${name(game, a)} entrent en guerre contre les ${name(game, b)} pour contenir leur avance. Rien ne vous oblige à les suivre.`, a);
+  }
 }
 
 export function makePeace(game: GameState, a: number, b: number, minerals = 0, payer?: number) {
@@ -479,10 +513,14 @@ export function makePeace(game: GameState, a: number, b: number, minerals = 0, p
   syncRelations(game);
 }
 
-export function sign(game: GameState, a: number, b: number, kind: 'trade' | 'research' | 'alliance' | 'embassy', minerals = 0, payer?: number) {
+export function sign(game: GameState, a: number, b: number, kind: 'trade' | 'research' | 'alliance' | 'embassy', minerals = 0, payer?: number, against?: number) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status === 'war') return;
-  if (kind === 'alliance') { pr.status = 'alliance'; pr.since = game.year; addChronicle(game, 'alliance', `Alliance entre les ${name(game, a)} et les ${name(game, b)}.`, [a, b]); openForAllies(game, a, b); } else pr[kind] = game.year;
+  if (kind === 'alliance') {
+    pr.status = 'alliance'; pr.since = game.year;
+    addChronicle(game, 'alliance', against !== undefined ? `Alliance entre les ${name(game, a)} et les ${name(game, b)} contre la domination des ${name(game, against)}.` : `Alliance entre les ${name(game, a)} et les ${name(game, b)}.`, [a, b]);
+    openForAllies(game, a, b);
+  } else pr[kind] = game.year;
   let paid = 0;
   if (minerals > 0 && payer !== undefined) paid = transferMinerals(game, payer, payer === a ? b : a, minerals);
   if (paid) tellTransfer(game, lastTransfer, payer!, payer === a ? b : a, `Pour cet accord, les ${name(game, payer!)} vous versent`, `Pour cet accord, vous versez aux ${name(game, payer === a ? b : a)}`);
@@ -527,10 +565,10 @@ export function gift(game: GameState, from: number, to: number, kt: number): num
   return moved;
 }
 
-function applyProposal(game: GameState, x: { from: number; to: number; kind: ProposalKind; minerals?: number; payer?: number }) {
+function applyProposal(game: GameState, x: { from: number; to: number; kind: ProposalKind; minerals?: number; payer?: number; against?: number }) {
   switch (x.kind) {
     case 'peace': makePeace(game, x.from, x.to, x.minerals ?? 0, x.payer); break;
-    case 'trade': case 'research': case 'alliance': case 'embassy': sign(game, x.from, x.to, x.kind, x.minerals ?? 0, x.payer); break;
+    case 'trade': case 'research': case 'alliance': case 'embassy': sign(game, x.from, x.to, x.kind, x.minerals ?? 0, x.payer, x.kind === 'alliance' ? x.against : undefined); break;
     case 'borders': {
       // the one asked opens its borders to the one who asked
       let paid = 0;
@@ -573,7 +611,7 @@ export function proposalBlocker(game: GameState, from: number, to: number, kind:
  * A proposal. To a computer: answered at once (with the odds `evaluate` tells, drawn by `decideAnswer`). To a human:
  * kept until answered or expired (two years). Returns the computer's answer, or null when it waits.
  */
-export function propose(game: GameState, from: number, to: number, kind: ProposalKind, minerals = 0, payer?: number): Answer | null {
+export function propose(game: GameState, from: number, to: number, kind: ProposalKind, minerals = 0, payer?: number, against?: number): Answer | null {
   if (proposalBlocker(game, from, to, kind)) return firm(proposalBlocker(game, from, to, kind)!);
   acquaint(game, from, to);
   const target = game.players[to];
@@ -581,16 +619,18 @@ export function propose(game: GameState, from: number, to: number, kind: Proposa
   if (target.ai) {
     const ans = evaluate(game, to, from, kind, minerals, payer);
     const yes = decideAnswer(game, to, from, kind, ans);
-    if (yes) applyProposal(game, { from, to, kind, minerals, payer });
+    if (yes) applyProposal(game, { from, to, kind, minerals, payer, against });
     else {
       if (kind === 'tribute') { remember(game, to, from, 'demand', -15, 1); tell(game, from, `Les ${target.name} refusent de vous payer le tribut de ${minerals} kt.`, to); }
       else if (!game.players[from].ai) tell(game, from, ans.sure ? `Les ${target.name} refusent ${OFFER_NAMES[kind]} : ${ans.why}.` : `Les ${target.name} refusent ${OFFER_NAMES[kind]}.`, to);
     }
     return { ...ans, ok: yes };
   }
-  const p: Proposal = { id: game.nextId++, from, to, kind, year: game.year, expires: game.year + 2, minerals: minerals || undefined, payer: minerals ? payer : undefined };
+  const p: Proposal = { id: game.nextId++, from, to, kind, year: game.year, expires: game.year + 2, minerals: minerals || undefined, payer: minerals ? payer : undefined, against: kind === 'alliance' ? against : undefined };
   D(game).proposals.push(p);
   const terms = minerals ? (payer === from ? ` (ils offrent ${minerals} kt de minerais)` : ` (ils demandent ${minerals} kt de minerais)`) : '';
+  // 0.3.9.19: an alliance against the empire that dominates the galaxy
+  if (p.against !== undefined) { tell(game, to, `Les ${name(game, from)} vous proposent une alliance contre les ${name(game, p.against)}, dont l'avance menace toute la galaxie. Répondez dans la page Diplomatie.`, from); return null; }
   tell(game, to, kind === 'tribute' ? `Les ${name(game, from)} exigent de vous un tribut de ${minerals} kt de minerais. Refuser les mettra en colère.` : kind === 'borders' ? `Les ${name(game, from)} vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}. Répondez dans la page Diplomatie.` : `Les ${name(game, from)} vous proposent ${KIND_NAMES[kind]}${terms}. Répondez dans la page Diplomatie.`, from);
   return null;
 }
@@ -670,8 +710,9 @@ export function warDesire(game: GameState, ai: number, other: number): number {
   if (!game.players[other].ai) d += 5; // a little more often the player: livelier games
   if (isNemesis(game, ai, other)) d += 70;
   d += bordersWarPush(game, ai, other);
-  // 0.3.9.14: the empire running away with the game is the one to stop
-  if (aiCan(game.players[ai], 2, 'coalition')) d += Math.round(25 * runaway(game, other, ai));
+  // 0.3.9.14: the empire running away with the game is the one to stop (0.3.9.19: every level, an easy one only
+  // against a computer)
+  if (coalitionMind(game.players[ai], game.players[other])) d += Math.round(35 * runaway(game, other, ai));
   return Math.round(d);
 }
 
@@ -715,6 +756,13 @@ export function runDiplomacy(game: GameState) {
       }
       // treaties
       const op = opinion(game, p.id, o.id).total;
+      // 0.3.9.19: against an empire that dominates the galaxy, an alliance comes first (offered to the players too)
+      const rival = rallyAgainst(game, p.id, o.id);
+      if (rival !== undefined && op >= NEED.alliance + 5 && !proposalBlocker(game, p.id, o.id, 'alliance')) {
+        if (o.ai) { if (rng.chance(0.5) && decideAnswer(game, o.id, p.id, 'alliance', evaluate(game, o.id, p.id, 'alliance'))) sign(game, p.id, o.id, 'alliance', 0, undefined, rival); }
+        else if (!pending(o.id) && !refusedLately(o.id) && rng.chance(0.4)) propose(game, p.id, o.id, 'alliance', 0, undefined, rival);
+        continue;
+      }
       for (const kind of [...(intelOn(game) ? ['embassy'] as const : []), 'trade', 'research', 'alliance'] as const) {
         if (proposalBlocker(game, p.id, o.id, kind)) continue;
         if (op < NEED[kind] + 5) continue;
@@ -733,7 +781,13 @@ export function runDiplomacy(game: GameState) {
     const start = 2400 + (WAR_YEAR[p.ai] ?? 40) - Math.round(10 * aggression(p));
     if (game.year < start) continue;
     const wars = others.filter(o => statusOf(game, p.id, o.id) === 'war').length;
-    if (wars >= (aggression(p) >= 0.8 ? 2 : 1)) continue;
+    if (wars >= (aggression(p) >= 0.8 ? 2 : 1)) {
+      // 0.3.9.19: one war more, against an empire that dominates the galaxy
+      const hg = hegemon(game, p.id);
+      const ph = hg && hg.t >= 0.5 && hg.id !== p.id && coalitionMind(p, game.players[hg.id]) ? pairOf(game, p.id, hg.id) : undefined;
+      if (hg && ph && ph.status !== 'war' && !(ph.wars > 0 && game.year - ph.since < 10) && p.intel.met.includes(hg.id) && warDesire(game, p.id, hg.id) >= 45 && rng.chance(0.35)) declareWar(game, p.id, hg.id, 'pour contenir leur avance');
+      continue;
+    }
     let best: Player | undefined, bd = -Infinity;
     for (const o of others) {
       const po = pairOf(game, p.id, o.id)!;

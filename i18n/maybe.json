@@ -374,8 +374,7 @@
   "key": "coalition",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:237 call:aiCan",
-   "engine/diplomacy.ts:674 call:aiCan"
+   "engine/diplomacy.ts:167 call:aiOff"
   ]
  },
  {
@@ -1276,7 +1275,7 @@
    "ui/dialogs/designer.tsx:345",
    "ui/dialogs/designer.tsx:487",
    "ui/dialogs/misc.tsx:75",
-   "ui/diplomacy.tsx:145"
+   "ui/diplomacy.tsx:159"
   ]
  },
  {
@@ -1370,24 +1369,24 @@
   "key": "chk",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:334 attr:class",
-   "ui/dialogs/misc.tsx:337 attr:class"
+   "ui/dialogs/misc.tsx:335 attr:class",
+   "ui/dialogs/misc.tsx:338 attr:class"
   ]
  },
  {
   "key": " locked",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:334",
-   "ui/dialogs/misc.tsx:337",
-   "ui/dialogs/misc.tsx:340"
+   "ui/dialogs/misc.tsx:335",
+   "ui/dialogs/misc.tsx:338",
+   "ui/dialogs/misc.tsx:341"
   ]
  },
  {
   "key": "chk rule",
   "kind": "str",
   "refs": [
-   "ui/dialogs/misc.tsx:340 attr:class"
+   "ui/dialogs/misc.tsx:341 attr:class"
   ]
  },
  {
@@ -1623,14 +1622,14 @@
   "key": "exact",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:155 attr:title"
+   "ui/diplomacy.tsx:169 attr:title"
   ]
  },
  {
   "key": "×{0}",
   "kind": "tpl",
   "refs": [
-   "ui/diplomacy.tsx:155 jsx",
+   "ui/diplomacy.tsx:169 jsx",
    "ui/discoveries.tsx:86 jsx",
    "ui/factions.tsx:83 jsx",
    "ui/factions.tsx:119 jsx"
@@ -1640,7 +1639,7 @@
   "key": "chip small ",
   "kind": "str",
   "refs": [
-   "ui/diplomacy.tsx:157 attr:class"
+   "ui/diplomacy.tsx:171 attr:class"
   ]
  },
  {

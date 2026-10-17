@@ -1945,5 +1945,22 @@
  "Effet de serre : +{0} °C, stable avec son industrie actuelle.": "온실 효과: +{0} °C, 현재 산업으로는 안정적.",
  "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.": "멈추지 않습니다. 한 해가 끝나는 지점에서 그 항로 위에 머물며 기다려야 하고, 화물칸에 광물을 최소 {0} kt 실어야 합니다 (최고 보상은 최대 {1} kt). 앞으로 몇 년간의 위치는 지도의 금색 갈매기표이며, 가끔 항로를 바꾸거나 가속합니다.",
  "Nouvelle version {0} disponible (vous avez la {1}).": "새 버전 {0}이 나왔습니다 (현재 {1}).",
- "Voir les nouveautés et la télécharger": "새 기능 보기 및 내려받기"
+ "Voir les nouveautés et la télécharger": "새 기능 보기 및 내려받기",
+ "Rival commun : les {0}": "공동의 경쟁자: {0}",
+ ", contre les {0}": ", {0} 측에 맞서",
+ "pour contenir leur avance, aux côtés des {0}": "그들의 우위를 막기 위해 {0} 측과 함께",
+ "Vos alliés les {0} entrent en guerre contre les {1} pour contenir leur avance. Rien ne vous oblige à les suivre.": "우리 동맹인 {0} 측이 {1} 측의 우위를 막기 위해 전쟁에 나섭니다. 따라야 할 의무는 없습니다.",
+ "Alliance entre les {0} et les {1} contre la domination des {2}.": "{2} 측의 패권에 맞서 {0} 측과 {1} 측이 동맹을 맺었습니다.",
+ "Les {0} vous proposent une alliance contre les {1}, dont l'avance menace toute la galaxie. Répondez dans la page Diplomatie.": "{0} 측이 은하 전체를 위협하는 우위를 가진 {1} 측에 맞서는 동맹을 제안했습니다. 외교 화면에서 답해 주십시오.",
+ "pour contenir leur avance": "그들의 우위를 막기 위해",
+ "{0} Quand un empire écrase la partie (ordinateur ou joueur, d'après les scores que chacun connaît), les autres se rapprochent contre lui, d'autant plus que son avance est grande : leur opinion les uns des autres monte, même entre empires qui se détestent (pas envers celui qui a juré votre perte), une alliance contre lui leur demande moins d'opinion qu'en temps normal, et ils la proposent en priorité, aux joueurs aussi. Ils lui déclarent plus volontiers la guerre, même déjà engagés ailleurs ; quand l'un l'attaque, ses alliés qui le craignent autant le suivent. L'opinion de l'empire qui domine baisse d'autant. L'onglet Diplomatie signale cette domination quand elle commence. Les ordinateurs faciles ne se liguent jamais contre un joueur, mais s'allient à lui contre un ordinateur qui domine.": "{0} 한 제국이 크게 앞서 나가면(컴퓨터든 플레이어든, 각자 아는 점수 기준), 나머지는 그 제국에 맞서 뭉치며, 앞선 정도가 클수록 더 단단히 뭉칩니다. 서로에 대한 의견이 오르고, 서로 미워하는 제국 사이에서도 마찬가지입니다(당신의 파멸을 맹세한 상대는 예외). 그 제국에 맞선 동맹은 평소보다 낮은 의견으로도 맺어지며, 이들은 이를 우선적으로, 플레이어에게도 제안합니다. 이미 다른 곳에서 전쟁 중이어도 그 제국에 더 쉽게 선전포고하고, 한 나라가 공격하면 똑같이 두려워하는 동맹들이 뒤따릅니다. 지배적인 제국에 대한 의견도 그만큼 떨어집니다. 이런 지배가 시작되면 외교 탭에서 알려 줍니다. 쉬움 컴퓨터는 플레이어에 맞서 뭉치지 않지만, 지배적인 컴퓨터에 맞서서는 플레이어와 동맹합니다.",
+ "Ennemi commun.": "공동의 적.",
+ "Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s'allie à vous contre un ordinateur qui écrase la partie.": "단순한 경제와 전쟁, 적은 연구, 늦은 전쟁. 당신에게 맞서 뭉치지는 않지만, 게임을 지배하는 컴퓨터에 맞서서는 당신과 동맹합니다.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais. S'allie aux autres contre l'empire qui écrase la partie, vous compris.": "경제와 방어를 관리합니다: 함선과 스테이션을 개량하고, 위협받는 세계를 지키고, 함대를 모아 두고, 더 빨리 확장하며 광물을 낭비하지 않습니다. 게임을 지배하는 제국에 맞서, 당신을 포함해 다른 제국들과 동맹합니다.",
+ "Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l'ennemi. Recherche plus rapide, guerres plus précoces.": "Standard와 같고, 침공을 계획하며 적 함선에 맞서는 함선을 설계합니다. 더 빠른 연구, 더 이른 전쟁.",
+ "Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.": "당신의 우위가 은하를 압도하고 있습니다. 다른 제국들이 당신에게 맞서려고 뭉치고 있으며, 이미 당신을 미워하던 제국들은 기회를 놓치지 않을 것입니다.",
+ "Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.": "당신의 우위가 은하를 불안하게 만들기 시작했습니다. 다른 제국들이 당신에게 맞서 뭉치고 있습니다.",
+ "Les {0} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.": "{0} 측이 은하를 압도하고 있습니다. 다른 제국들이 그 우위가 커질수록 더 단단히 그들에 맞서 뭉치며, 당신에게도 동맹을 제안합니다.",
+ "L'avance des {0} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.": "{0} 측의 우위가 은하를 불안하게 만들기 시작했습니다. 다른 제국들이 그들에 맞서 뭉치고 있습니다.",
+ "vous proposent une alliance contre les {0}, dont l'avance menace toute la galaxie": "측이 은하 전체를 위협하는 우위를 가진 {0} 측에 맞서는 동맹을 제안했습니다"
 }

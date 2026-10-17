@@ -1935,5 +1935,22 @@
  "Effet de serre : +{0} °C, stable avec son industrie actuelle.": "温室效应：+{0} °C，在目前的工业下保持稳定。",
  "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.": "它从不停下：你必须在它的航线上等它，选在它某一年结束时所处的位置，且货舱中至少有 {0} kt 矿物（最多 {1} kt 可换取最佳奖励）。它未来几年的位置就是星图上的金色箭头；它有时会改变航向或加速。",
  "Nouvelle version {0} disponible (vous avez la {1}).": "新版本 {0} 已发布（你的是 {1}）。",
- "Voir les nouveautés et la télécharger": "查看更新内容并下载"
+ "Voir les nouveautés et la télécharger": "查看更新内容并下载",
+ "Rival commun : les {0}": "共同的对手：{0}",
+ ", contre les {0}": "，针对{0}",
+ "pour contenir leur avance, aux côtés des {0}": "为遏制其优势，与{0}并肩作战",
+ "Vos alliés les {0} entrent en guerre contre les {1} pour contenir leur avance. Rien ne vous oblige à les suivre.": "你的盟友{0}为遏制{1}的优势而向其开战。没有什么强迫你跟随他们。",
+ "Alliance entre les {0} et les {1} contre la domination des {2}.": "{0}与{1}结盟，对抗{2}的霸权。",
+ "Les {0} vous proposent une alliance contre les {1}, dont l'avance menace toute la galaxie. Répondez dans la page Diplomatie.": "{0}向你提议结盟对抗{1}，后者的优势威胁着整个星系。请在“外交”页面回复。",
+ "pour contenir leur avance": "为遏制其优势",
+ "{0} Quand un empire écrase la partie (ordinateur ou joueur, d'après les scores que chacun connaît), les autres se rapprochent contre lui, d'autant plus que son avance est grande : leur opinion les uns des autres monte, même entre empires qui se détestent (pas envers celui qui a juré votre perte), une alliance contre lui leur demande moins d'opinion qu'en temps normal, et ils la proposent en priorité, aux joueurs aussi. Ils lui déclarent plus volontiers la guerre, même déjà engagés ailleurs ; quand l'un l'attaque, ses alliés qui le craignent autant le suivent. L'opinion de l'empire qui domine baisse d'autant. L'onglet Diplomatie signale cette domination quand elle commence. Les ordinateurs faciles ne se liguent jamais contre un joueur, mais s'allient à lui contre un ordinateur qui domine.": "{0} 当某个帝国在对局中遥遥领先时（无论是电脑还是玩家，以各方所知的分数为准），其他帝国会联合起来对抗它，它的优势越大，联合越紧密：它们彼此的好感会上升，即使是互相憎恨的帝国之间也是如此（但对已发誓要毁灭你的那个除外）；结盟对抗它所需的好感低于平时，而且它们会优先提议结盟，也会向玩家提议。它们更愿意向它宣战，即使已在别处交战；当其中一方攻击它时，同样畏惧它的盟友会跟进。它们对占主导地位的帝国的好感也会相应下降。这种主导地位一出现，“外交”标签页就会提示。简单难度的电脑从不联合对付玩家，但会与玩家结盟对抗占主导地位的电脑。",
+ "Ennemi commun.": "共同敌人。",
+ "Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s'allie à vous contre un ordinateur qui écrase la partie.": "简单的经济与战争，研究较少，战争较晚。从不联合对付你，但会与你结盟对抗称霸的电脑。",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais. S'allie aux autres contre l'empire qui écrase la partie, vous compris.": "照顾好经济与防御：改装舰船和空间站，保卫受威胁的星球，让舰队集结在一起，扩张更快，不浪费矿物。会与其他帝国结盟对抗称霸的帝国，包括你。",
+ "Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l'ennemi. Recherche plus rapide, guerres plus précoces.": "与 Standard 相同，此外还会筹划入侵，并针对敌方舰船设计舰船。研究更快，战争更早。",
+ "Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.": "你的优势压倒了整个星系：其他帝国正联合起来与你抗衡，而那些早已憎恨你的帝国不会放过任何机会。",
+ "Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.": "你的优势开始让星系感到不安：其他帝国正联合起来对抗你。",
+ "Les {0} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.": "{0}正压倒整个星系：其他帝国正联合起来对抗他们，其优势越大，联合越紧密，并且会提议结盟，也会向你提议。",
+ "L'avance des {0} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.": "{0}的优势开始让星系感到不安：其他帝国正联合起来对抗他们。",
+ "vous proposent une alliance contre les {0}, dont l'avance menace toute la galaxie": "向你提议结盟对抗{0}，后者的优势威胁着整个星系"
 }

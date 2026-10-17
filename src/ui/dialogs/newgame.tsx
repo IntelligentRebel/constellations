@@ -20,9 +20,9 @@ type Opp = { race: number; diff: AIDifficulty | 'human'; hrace?: string };
 const DIFF: Record<AIDifficulty, string> = { easy: 'Facile', standard: 'Standard', harder: 'Difficile', expert: 'Expert' };
 /** 0.3.9.14: what each level of the computers does (aiskill.ts). */
 const DIFF_TIP: Record<AIDifficulty, string> = {
-  easy: 'Économie et guerre simples, peu de recherche, des guerres tardives.',
-  standard: 'Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s\'étend plus vite et ne gaspille pas ses minerais.',
-  harder: 'Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l\'ennemi et s\'allie aux autres contre l\'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.',
+  easy: 'Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s\'allie à vous contre un ordinateur qui écrase la partie.',
+  standard: 'Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s\'étend plus vite et ne gaspille pas ses minerais. S\'allie aux autres contre l\'empire qui écrase la partie, vous compris.',
+  harder: 'Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l\'ennemi. Recherche plus rapide, guerres plus précoces.',
   expert: 'Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.',
 };
 /** 0.3.9.15: what no level does. */

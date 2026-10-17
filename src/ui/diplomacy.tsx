@@ -110,6 +110,18 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
   </div>;
 }
 
+/** 0.3.9.19: an empire dominates the galaxy (as far as you know the scores): the others draw together against it. */
+function HegemonNote() {
+  const s = useStore();
+  const g = s.game!, me = s.me!;
+  const hg = DIP.hegemon(g, me.id);
+  if (!hg || hg.t < 0.1) return null;
+  const strong = hg.t >= 0.5;
+  if (hg.id === me.id) return <div class="alert small">{strong ? 'Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.' : 'Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.'}</div>;
+  const L = g.players[hg.id];
+  return <div class="alert info small">{strong ? `Les ${L.name} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.` : `L'avance des ${L.name} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.`}</div>;
+}
+
 export function DiplomacyDialog() {
   const s = useStore();
   const g = s.game!, me = s.me!;
@@ -123,10 +135,12 @@ export function DiplomacyDialog() {
   const log = g.diplomacy!.log.filter(e => e.a === me.id || e.b === me.id || me.intel.met.includes(e.a) || me.intel.met.includes(e.b)).slice(-14).reverse();
   return (
     <Modal title="Diplomatie" sub={intelOn(g) ? "Guerre, paix et alliances ; accords et ambassades ; ce que chaque empire pense de vous, et ce que vous savez de lui." : "Guerre, paix et alliances ; accords ; ce que chaque empire pense de vous, et pourquoi."} actions={<button onClick={() => s.open('battlePlans')}>Plans de bataille…</button>} onClose={() => s.close('relations')} width={860} footer={<button class="primary" onClick={() => s.close('relations')}>Terminé</button>}>
+      <HegemonNote />
       {incoming.length > 0 && <div class="diplo-inbox">{incoming.map(x => {
         const o = g.players[x.from];
         const terms = x.minerals ? (x.payer === x.from ? `, contre ${x.minerals} kt de minerais qu'ils vous versent` : `, contre ${x.minerals} kt de minerais que vous leur versez`) : '';
-        return <div class="alert info diplo-prop"><span><b style={{ color: o.color }}>{o.name}</b> {x.kind === 'tribute' ? `exigent de vous un tribut de ${x.minerals} kt de minerais` : x.kind === 'borders' ? `vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}` : `vous proposent ${DIP.KIND_NAMES[x.kind]}${terms}`}. <span class="small muted">Expire en {x.expires}.</span></span>
+        const against = x.against !== undefined ? g.players[x.against]?.name : undefined;
+        return <div class="alert info diplo-prop"><span><b style={{ color: o.color }}>{o.name}</b> {x.kind === 'tribute' ? `exigent de vous un tribut de ${x.minerals} kt de minerais` : x.kind === 'borders' ? `vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}` : against ? `vous proposent une alliance contre les ${against}, dont l'avance menace toute la galaxie` : `vous proposent ${DIP.KIND_NAMES[x.kind]}${terms}`}. <span class="small muted">Expire en {x.expires}.</span></span>
           <span class="row-btns"><button class="primary small" onClick={() => act(() => DIP.answer(g, x.id, true), 'Proposition acceptée.')}>Accepter</button> <button class="small" onClick={() => act(() => DIP.answer(g, x.id, false), 'Proposition refusée.')}>Refuser</button></span></div>;
       })}</div>}
       {BD.bordersOn(g) && <div class="diplo-policy small">Frontières pour les empires rencontrés désormais : <select value={me.borderPolicy ?? 'open'} onChange={e => { const v = (e.target as HTMLSelectElement).value as 'open' | 'closed'; act(() => { me.borderPolicy = v; }, v === 'closed' ? 'Les empires rencontrés désormais trouveront vos frontières fermées.' : 'Les empires rencontrés désormais trouveront vos frontières ouvertes.'); }}><option value="open">Ouvertes</option><option value="closed">Fermées</option></select> <span class="muted">(puis empire par empire, ci-dessous)</span></div>}

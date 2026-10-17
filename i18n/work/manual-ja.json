@@ -1946,5 +1946,22 @@
  "Effet de serre : +{0} °C, stable avec son industrie actuelle.": "温室効果：+{0} °C、現在の産業では安定。",
  "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.": "決して止まりません。進路上の、1年を終える地点で待ち受ける必要があります。貨物室には鉱物が最低{0} kt必要です（最高の報酬には最大{1} kt）。今後数年の位置は、マップ上の金色のシェブロンです。進路を変えたり加速したりすることもあります。",
  "Nouvelle version {0} disponible (vous avez la {1}).": "新しいバージョン{0}があります（現在は{1}）。",
- "Voir les nouveautés et la télécharger": "更新内容を見てダウンロード"
+ "Voir les nouveautés et la télécharger": "更新内容を見てダウンロード",
+ "Rival commun : les {0}": "共通の競争相手：{0}",
+ ", contre les {0}": "、{0}に対抗して",
+ "pour contenir leur avance, aux côtés des {0}": "その優位を抑えるため、{0}と共に",
+ "Vos alliés les {0} entrent en guerre contre les {1} pour contenir leur avance. Rien ne vous oblige à les suivre.": "同盟国の{0}が、{1}の優位を抑えるため参戦しました。後に続く義務はありません。",
+ "Alliance entre les {0} et les {1} contre la domination des {2}.": "{2}の覇権に対抗し、{0}と{1}が同盟。",
+ "Les {0} vous proposent une alliance contre les {1}, dont l'avance menace toute la galaxie. Répondez dans la page Diplomatie.": "{0}が、銀河全体を脅かす優位を持つ{1}に対抗する同盟を提案しています。外交ページで返答してください。",
+ "pour contenir leur avance": "その優位を抑えるため",
+ "{0} Quand un empire écrase la partie (ordinateur ou joueur, d'après les scores que chacun connaît), les autres se rapprochent contre lui, d'autant plus que son avance est grande : leur opinion les uns des autres monte, même entre empires qui se détestent (pas envers celui qui a juré votre perte), une alliance contre lui leur demande moins d'opinion qu'en temps normal, et ils la proposent en priorité, aux joueurs aussi. Ils lui déclarent plus volontiers la guerre, même déjà engagés ailleurs ; quand l'un l'attaque, ses alliés qui le craignent autant le suivent. L'opinion de l'empire qui domine baisse d'autant. L'onglet Diplomatie signale cette domination quand elle commence. Les ordinateurs faciles ne se liguent jamais contre un joueur, mais s'allient à lui contre un ordinateur qui domine.": "{0} ある帝国が大きく抜け出すと（コンピューターでもプレイヤーでも、各自が知るスコアによる）、他の帝国はその帝国に対抗して結束します。リードが大きいほど結束は強まります：互いへの評価が上がり、憎み合う帝国同士でも同じです（貴国の破滅を誓った相手は除く）。その帝国に対抗する同盟は通常より低い評価で結ばれ、彼らはそれを優先して提案します（プレイヤーにも）。すでに他で戦争中でも、その帝国にはより進んで宣戦し、一国が攻撃すると、同じく恐れている同盟国も続きます。支配的な帝国への評価もその分下がります。こうした支配が始まると外交タブが知らせます。易しいコンピューターはプレイヤーに対して結束することはありませんが、支配的なコンピューターに対してはプレイヤーと同盟します。",
+ "Ennemi commun.": "共通の敵。",
+ "Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s'allie à vous contre un ordinateur qui écrase la partie.": "単純な経済と戦争、研究は少なめ、戦争は遅め。貴国に対して結束することはありませんが、ゲームを支配するコンピューターに対しては貴国と同盟します。",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais. S'allie aux autres contre l'empire qui écrase la partie, vous compris.": "経済と防衛を管理します：艦船とステーションを改修し、脅かされた世界を守り、艦隊をまとめ、より速く拡大し、鉱物を無駄にしません。ゲームを支配する帝国に対して、貴国を含め、他国と同盟します。",
+ "Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l'ennemi. Recherche plus rapide, guerres plus précoces.": "Standardに加え、侵攻を計画し、敵の艦船に対抗する艦を設計します。研究はより速く、戦争はより早く。",
+ "Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.": "貴国の優位が銀河を圧倒しています：他の帝国は貴国に立ち向かうため結束しつつあり、すでに貴国を憎んでいた国は機会を逃さないでしょう。",
+ "Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.": "貴国の優位が銀河を不安にさせ始めています：他の帝国が貴国に対抗して結束しつつあります。",
+ "Les {0} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.": "{0}が銀河を圧倒しています：他の帝国はその優位が大きくなるほど強く結束して対抗し、貴国にも同盟を提案しています。",
+ "L'avance des {0} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.": "{0}の優位が銀河を不安にさせ始めています：他の帝国が彼らに対抗して結束しつつあります。",
+ "vous proposent une alliance contre les {0}, dont l'avance menace toute la galaxie": "が、銀河全体を脅かす優位を持つ{0}に対抗する同盟を提案しています"
 }

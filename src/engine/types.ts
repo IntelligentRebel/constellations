@@ -1188,7 +1188,7 @@ export interface DiploMemory { by: number; about: number; kind: 'war' | 'betraya
 /** 0.3.9.10: 'borders': the proposer asks the other empire to open its borders to it. */
 export type ProposalKind = 'peace' | 'trade' | 'research' | 'alliance' | 'tribute' | 'embassy' | 'borders';
 /** A proposal waiting for an answer (to a human player). */
-export interface Proposal { id: number; from: number; to: number; kind: ProposalKind; year: number; expires: number; /** minerals (kt) that change hands with it, and who pays */ minerals?: number; payer?: number }
+export interface Proposal { id: number; from: number; to: number; kind: ProposalKind; year: number; expires: number; /** minerals (kt) that change hands with it, and who pays */ minerals?: number; payer?: number; /** 0.3.9.19: an alliance against the empire that dominates the galaxy */ against?: number }
 export interface DiplomacyState {
   pairs: Record<string, DiploPair>;
   memory: DiploMemory[];

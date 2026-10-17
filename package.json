@@ -1,6 +1,6 @@
 {
   "name": "constellations",
-  "version": "0.3.9.18",
+  "version": "0.3.9.19",
   "description": "Constellations: a turn-based 4X space strategy game in the spirit of Stars! (1995), with a modern interface, playable offline in a browser.",
   "scripts": {
     "build": "node scripts/build.mjs --prod",
