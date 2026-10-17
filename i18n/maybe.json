@@ -282,7 +282,7 @@
   "kind": "str",
   "refs": [
    "engine/chains.ts:47 call:rngOf",
-   "engine/newgame.ts:392 call:seedFromString"
+   "engine/newgame.ts:394 call:seedFromString"
   ]
  },
  {
@@ -658,23 +658,23 @@
   "key": "unload",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:261"
+   "engine/tasks.ts:274"
   ]
  },
  {
   "key": "dunnage",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:261"
+   "engine/tasks.ts:274"
   ]
  },
  {
   "key": "defense",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:67 prop:defenses",
-   "engine/turn.ts:67 prop:autoDefenses",
-   "engine/turn.ts:154"
+   "engine/turn.ts:68 prop:defenses",
+   "engine/turn.ts:68 prop:autoDefenses",
+   "engine/turn.ts:155"
   ]
  },
  {

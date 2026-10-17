@@ -247,7 +247,7 @@ function TraderSummary({ g, me, id }: { g: GameState; me: Player; id: number }) 
   return <div class="summary"><h3>Marchand nomade</h3>
     <Row k="Vitesse" v={`Warp ${t.warp} (${t.warp * t.warp} al par an)`} />
     <Row k="Trajectoire" v={path.length ? `quitte la galaxie dans ≈ ${path.length} an${path.length > 1 ? 's' : ''} s'il garde son cap` : t.heading ? 'sur le point de quitter la galaxie' : 'cap inconnu'} />
-    <p class="small">Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {fmt(TRADER_MIN)} kt de minerais en soute (jusqu'à {fmt(TRADER_BEST)} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte.</p>
+    <p class="small">Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {fmt(TRADER_MIN)} kt de minerais en soute (jusqu'à {fmt(TRADER_BEST)} kt pour la meilleure récompense) : il prend la flotte entière en paiement, escorte comprise. Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.</p>
     {done && <p class="small green">Vous avez déjà commercé avec lui.</p>}
     {going.map(f => <div class="intercept small">{f.name} va à sa rencontre{f.waypoints.length > 1 ? ` (point de rendez-vous en ${Math.round(f.waypoints[1].x)}, ${Math.round(f.waypoints[1].y)})` : ', et l\'attend sur place'}. <button class="small ghost" onClick={() => A.stopTraderMeet(f)}>Annuler</button></div>)}
     {!done && shown.map(o => <div class="intercept">

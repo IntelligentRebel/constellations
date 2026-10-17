@@ -196,6 +196,8 @@ export interface Waypoint {
 }
 
 export interface Fleet {
+  /** 0.3.9.17: the year it last went through a stargate (no repairs that year) */
+  gatedYear?: number;
   id: number;
   owner: number;
   num: number;

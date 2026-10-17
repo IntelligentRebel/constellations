@@ -555,13 +555,16 @@ function CrewBlock({ g, f }: { g: GameState; f: Fleet }) {
  */
 function GateNote({ gc, warp, leg }: { gc: GateCheck; warp: number; leg?: { years: number; fuel: number } }) {
   const inf = (v: number) => v >= 1e9;
-  const risk = gc.risks.length > 0 && <div class="hint yellow">Saut risqué : {gc.risks.join(', ')}. Chaque vaisseau peut y perdre jusqu'à {Math.round(gc.damage * 100)} % de son blindage.{gc.lossRisk ? ' Certains peuvent aussi se perdre dans le vide.' : ''}</div>;
+  // 0.3.9.17: the damage adds to what the ships already had
+  const doomed = gc.doomed > 1 ? `Les ${gc.doomed} vaisseaux déjà endommagés n'y survivraient pas.` : gc.doomed === 1 ? 'Le vaisseau déjà endommagé n\'y survivrait pas.' : '';
+  const risk = gc.risks.length > 0 && <div class="hint yellow">Saut risqué : {gc.risks.join(', ')}. Chaque vaisseau peut y perdre jusqu'à {Math.round(gc.damage * 100)} % de son blindage, en plus des dégâts qu'il a déjà.{gc.lossRisk ? ' Certains peuvent aussi se perdre dans le vide.' : ''} {doomed}</div>;
+  const norepair = gc.damaged && <div class="hint muted">Une flotte ne se répare pas l'année où elle franchit une porte.</div>;
   const cargo = gc.dropsCargo && <div class="hint yellow">Votre race ne peut pas faire passer de cargaison par une porte : elle serait déposée à {gc.src!.name} avant le saut.</div>;
   if (warp >= 11) {
     if (gc.problem) return <div class="alert">Le saut sera refusé : {gc.problem}. La flotte partira à sa vitesse idéale.</div>;
     return <>
       {!gc.risks.length && <div class="hint">Saut sans risque, sans carburant : masse sûre {inf(gc.safeMass) ? 'illimitée' : `${fmt(gc.safeMass)} kt`} par vaisseau (le plus lourd : {fmt(gc.heaviest)} kt), portée sûre {inf(gc.safeRange) ? 'illimitée' : `${fmt(gc.safeRange)} al`} (distance : {fmt(gc.dist, 0)} al).</div>}
-      {risk}{cargo}
+      {risk}{cargo}{norepair}
     </>;
   }
   if (!gc.srcGate) {

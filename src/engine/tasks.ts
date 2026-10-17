@@ -23,6 +23,8 @@ import { colonyBlocker, plantBeacon, beaconToStation, miningBlocker } from './cu
 import { mergeExperience, splitExperience } from './veterans';
 import { addChronicle } from './chronicle';
 import { diasporaOn, refound } from './diaspora';
+import { tradeTech, designLevels, maxLevels } from './techtrade';
+import { seedFromString } from './rng';
 
 function planetHere(game: GameState, f: Fleet): Planet | undefined {
   return f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
@@ -141,6 +143,7 @@ function takePlanet(game: GameState, attacker: Player, defender: Player | undefi
   if (attacker.defaultTemplate >= 0) applyTemplate(game, planet, attacker.defaultTemplate);
   if (before && raceSpec(before.race).instaform) { planet.hab = [...planet.baseHab] as typeof planet.hab; planet.terraformed = [0, 0, 0]; }
   if (defender) techTrade(game, attacker, defender, new Rng(game.rng));
+  discoverArtifact(game, attacker, planet);
 }
 
 /**
@@ -210,16 +213,26 @@ function emptyWorld(planet: Planet) {
   planet.route = undefined; planet.packetTarget = undefined; planet.conqueredYear = undefined; resetPlanetPolicies(planet);
 }
 
+/** A world conquered: its archives may teach the conqueror a level (0.3.9.17: one trade a year, at most 50 %). */
 export function techTrade(game: GameState, gainer: Player, other: Player, rng: Rng) {
-  for (const f of FIELDS) {
-    const diff = other.tech[f] - gainer.tech[f];
-    if (diff <= 0) continue;
-    if (rng.chance(0.5 * (1 - Math.pow(0.5, diff)))) {
-      gainer.tech[f] += 1;
-      gainer.messages.push({ year: game.year, kind: 'research', text: `En étudiant la technologie des ${other.name}, vos scientifiques ont progressé en ${FIELD_NAMES[f]}.`, target: { kind: 'research', id: 0 } });
-      return;
-    }
-  }
+  tradeTech(game, gainer, other.tech, rng, `En étudiant la technologie des ${other.name}`);
+}
+
+/**
+ * Ancient artifacts (Stars!, random events): a third of the worlds hide one; the first colonists or troops to settle
+ * there find it, worth 100 to 400 research points in a random field (less for a colony of under 1,000).
+ */
+export function discoverArtifact(game: GameState, p: Player, planet: Planet) {
+  if (!planet.artifact) return;
+  planet.artifact = false;
+  if (!game.settings.randomEvents || p.monster) return;
+  const rng = new Rng(seedFromString(`${game.settings.seed}|artifact|${planet.id}|${game.year}`));
+  let amount = 100 + rng.int(301);
+  if (planet.pop < 1000) amount = Math.trunc(amount * planet.pop / 1000);
+  const field = FIELDS[rng.int(6)];
+  if (amount <= 0) return;
+  addResearch(game, p, field, amount);
+  p.messages.push({ year: game.year, kind: 'research', text: `Vos colons ont découvert un artefact ancien sur ${planet.name}, qui vous rapporte ${amount} points de recherche en ${FIELD_NAMES[field]}.`, target: { kind: 'planet', id: planet.id } });
 }
 
 function amountFor(game: GameState, f: Fleet, key: TransportKey, o: { action: string; amount: number }, planet: Planet | undefined, other: Fleet | undefined): number {
@@ -322,13 +335,7 @@ export function colonize(game: GameState, f: Fleet, planet: Planet): boolean {
   owner.stats.planetsColonized++;
   owner.messages.push({ year: game.year, kind: 'colony', text: `${f.name} a fondé une colonie sur ${planet.name} avec ${people(game, planet.pop)} colons.`, target: { kind: 'planet', id: planet.id } });
   if (diasporaOn(game)) refound(game, owner, planet);
-  if (planet.artifact) {
-    planet.artifact = false;
-    const amount = 120 + new Rng(game.rng).int(280);
-    const field = FIELDS[new Rng(game.rng).int(6)];
-    addResearch(game, owner, field, amount);
-    owner.messages.push({ year: game.year, kind: 'research', text: `Vos colons ont découvert un artefact ancien sur ${planet.name}, qui vous rapporte ${amount} points de recherche.`, target: { kind: 'planet', id: planet.id } });
-  }
+  discoverArtifact(game, owner, planet);
   beaconToStation(game, planet);
   game.fleets.splice(game.fleets.indexOf(f), 1);
   return true;
@@ -355,6 +362,8 @@ export function scrapFleet(game: GameState, f: Fleet) {
       planet.bonusResources += Math.trunc(spec.resources * r / (spec.resources + r || 1));
     }
     owner.messages.push({ year: game.year, kind: 'fleet', text: `${f.name} a été démantelée sur ${planet.name} : ${minerals.ironium + minerals.boranium + minerals.germanium} kt de minerais déposés sur la planète.`, target: { kind: 'planet', id: planet.id } });
+    // 0.3.9.17 (Stars!): ships taken apart at a station may teach its owner the technology they carry
+    if (planet.starbase && planet.owner >= 0) tradeTech(game, game.players[planet.owner], maxLevels(f.tokens.map(t => designLevels(game, t.designId))), new Rng(seedFromString(`${game.settings.seed}|scrap|${f.id}|${game.year}`)), `En démontant ${f.name} sur ${planet.name}`);
   } else {
     game.salvage.push({ id: game.nextId++, owner: f.owner, x: f.x, y: f.y, cargo: { ironium: minerals.ironium + f.cargo.ironium, boranium: minerals.boranium + f.cargo.boranium, germanium: minerals.germanium + f.cargo.germanium }, age: 0 });
     owner.messages.push({ year: game.year, kind: 'fleet', text: here

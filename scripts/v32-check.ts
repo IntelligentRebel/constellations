@@ -678,7 +678,7 @@ if (want('nav')) {
   // technology learnt from others: field names in French
   me.tech.energy = 1; o.tech.energy = 20; me.messages = [];
   for (let i = 0; i < 30 && !me.messages.length; i++) techTrade(g, me, o, new Rng([i + 1, 2, 3, 4]));
-  check(me.messages.some(m => /progressé en (Énergie|Armement|Propulsion|Construction|Électronique|Biotechnologie)\./.test(m.text)), `field named in French: « ${me.messages[0]?.text} »`);
+  check(me.messages.some(m => /progressé en (Énergie|Armement|Propulsion|Construction|Électronique|Biotechnologie)( : niveau \d+)?\./.test(m.text)), `field named in French: « ${me.messages[0]?.text} »`);
   // trader: the report points at it
   g.settings.randomEvents = true; g.year = 2440; g.traders = []; me.messages = [];
   for (let i = 0; i < 200 && !g.traders.length; i++) spawnTraders(g, new Rng([i + 7, 9, 11, 13]));

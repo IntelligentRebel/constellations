@@ -5028,7 +5028,7 @@
   "kind": "tpl",
   "refs": [
    "engine/chronicle.ts:89 call:push",
-   "engine/turn.ts:688"
+   "engine/turn.ts:734"
   ]
  },
  {
@@ -5057,7 +5057,7 @@
   "kind": "tpl",
   "refs": [
    "engine/chronicle.ts:89",
-   "engine/turn.ts:691"
+   "engine/turn.ts:737"
   ]
  },
  {
@@ -9367,7 +9367,7 @@
   "refs": [
    "engine/movement.ts:217",
    "engine/movement.ts:225",
-   "engine/movement.ts:754",
+   "engine/movement.ts:784",
    "engine/secrets.ts:273"
   ]
  },
@@ -9417,142 +9417,163 @@
   "key": "il faut partir d'une planète qui a une porte stellaire",
   "kind": "str",
   "refs": [
-   "engine/movement.ts:364"
+   "engine/movement.ts:368"
   ]
  },
  {
   "key": "{0} n'a pas de porte stellaire",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:365",
-   "engine/movement.ts:368"
+   "engine/movement.ts:369",
+   "engine/movement.ts:372"
   ]
  },
  {
   "key": "la porte de {0} appartient aux {1}, qui ne sont pas vos alliés",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:366",
-   "engine/movement.ts:369"
+   "engine/movement.ts:370",
+   "engine/movement.ts:373"
   ]
  },
  {
   "key": "la destination n'est pas une planète",
   "kind": "str",
   "refs": [
-   "engine/movement.ts:367"
+   "engine/movement.ts:371"
+  ]
+ },
+ {
+  "key": "des colons sont à bord : seules les races Maîtrise des portails (IT) font passer une cargaison, et ces colons ne peuvent pas descendre à {0}, qui n'est pas à vous",
+  "kind": "tpl",
+  "refs": [
+   "engine/movement.ts:376"
   ]
  },
  {
   "key": "{0} al, plus de cinq fois la portée sûre de la porte de {1} ({2} al)",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:373"
+   "engine/movement.ts:379"
   ]
  },
  {
   "key": "le plus lourd de vos vaisseaux ({0} kt) dépasse cinq fois la masse sûre des portes ({1} kt)",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:374"
+   "engine/movement.ts:380"
   ]
  },
  {
   "key": "{0} al pour une portée sûre de {1} al",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:375 call:push"
+   "engine/movement.ts:381 call:push"
   ]
  },
  {
   "key": "le plus lourd de vos vaisseaux pèse {0} kt pour une masse sûre de {1} kt",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:376 call:push"
+   "engine/movement.ts:382 call:push"
   ]
  },
  {
   "key": "{0} ne peut pas utiliser de porte stellaire : il faut une porte au départ et à l'arrivée.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:400 call:msg"
+   "engine/movement.ts:412 call:msg"
+  ]
+ },
+ {
+  "key": "{0} ne peut pas franchir la porte de {1} avec des colons à bord : seules les races Maîtrise des portails (IT) font passer une cargaison, et ces colons ne peuvent pas descendre sur une planète qui n'est pas à vous.",
+  "kind": "tpl",
+  "refs": [
+   "engine/movement.ts:422 call:msg"
   ]
  },
  {
   "key": "{0} : destination trop lointaine pour la porte (portée {1} al).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:414 call:msg"
+   "engine/movement.ts:430 call:msg"
   ]
  },
  {
   "key": "{0} : un vaisseau est trop lourd pour la porte.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:417 call:msg"
+   "engine/movement.ts:433 call:msg"
   ]
  },
  {
   "key": "{0} vaisseau(x) de {1} se sont perdus dans le vide en franchissant la porte.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:434 call:msg"
+   "engine/movement.ts:450 call:msg"
+  ]
+ },
+ {
+  "key": "{0} vaisseau(x) de {1}, déjà endommagé(s), n'ont pas survécu au passage de la porte.",
+  "kind": "tpl",
+  "refs": [
+   "engine/movement.ts:459 call:msg"
   ]
  },
  {
   "key": "{0} a heurté un champ de mines {1} en ({2}, {3}).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:500 call:msg"
+   "engine/movement.ts:530 call:msg"
   ]
  },
  {
   "key": "Une flotte {0} a heurté votre champ de mines en ({1}, {2}).",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:501 prop:text"
+   "engine/movement.ts:531 prop:text"
   ]
  },
  {
   "key": "{0} vaisseau(x) de {1} ont été détruits par des mines.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:560 prop:text"
+   "engine/movement.ts:590 prop:text"
   ]
  },
  {
   "key": "{0} a balayé {1} mines.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:708 prop:text"
+   "engine/movement.ts:738 prop:text"
   ]
  },
  {
   "key": "Un paquet de minerais lancé vers {0} s'est perdu dans {1} : les nuages sombres sont infranchissables.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:756 prop:text"
+   "engine/movement.ts:786 prop:text"
   ]
  },
  {
   "key": "Un paquet de minerais non intercepté a frappé {0} : {1} colons tués, {2} défenses détruites.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:801 prop:text"
+   "engine/movement.ts:831 prop:text"
   ]
  },
  {
   "key": "Votre paquet a frappé {0} : {1} colons tués.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:802 prop:text"
+   "engine/movement.ts:832 prop:text"
   ]
  },
  {
   "key": "Un paquet de {0} kt est arrivé sur {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/movement.ts:805 prop:text"
+   "engine/movement.ts:835 prop:text"
   ]
  },
  {
@@ -9721,14 +9742,14 @@
   "key": "Bienvenue, {0}. Votre monde natal {1} vous attend. Envoyez vos éclaireurs explorer la galaxie.",
   "kind": "tpl",
   "refs": [
-   "engine/newgame.ts:378 prop:text"
+   "engine/newgame.ts:380 prop:text"
   ]
  },
  {
   "key": "Partie rapide",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:396 prop:name",
+   "engine/newgame.ts:398 prop:name",
    "ui/welcome.tsx:72 jsx"
   ]
  },
@@ -9736,7 +9757,7 @@
   "key": "Tutoriel",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:410",
+   "engine/newgame.ts:412",
    "ui/app.tsx:162 prop:label",
    "ui/tutorial.tsx:1230 jsx",
    "ui/tutorial.tsx:1243 attr:aria-label"
@@ -11218,7 +11239,7 @@
   "kind": "str",
   "refs": [
    "engine/production.ts:204 prop:what",
-   "engine/turn.ts:71 prop:defense"
+   "engine/turn.ts:72 prop:defense"
   ]
  },
  {
@@ -13457,232 +13478,239 @@
   "key": "Impossible d'envahir {0} : la planète est protégée par une station orbitale.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:66 prop:text"
+   "engine/tasks.ts:68 prop:text"
   ]
  },
  {
   "key": "Impossible d'envahir {0} : vous n'êtes pas en guerre avec les {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:67 prop:text"
+   "engine/tasks.ts:69 prop:text"
   ]
  },
  {
   "key": "L'invasion de {0} a échoué : vos {1} colons ont tous péri. Il reste {2} défenseurs.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:117 prop:text"
+   "engine/tasks.ts:119 prop:text"
   ]
  },
  {
   "key": "Vos colons de {0} ont repoussé une invasion des {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:118 prop:text"
+   "engine/tasks.ts:120 prop:text"
   ]
  },
  {
   "key": "Vos troupes ont conquis {0} ! {1} de vos colons survivent et peuplent désormais la planète.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:125 prop:text"
+   "engine/tasks.ts:127 prop:text"
   ]
  },
  {
   "key": "Vos troupes ont pris pied sur {0}, vidée par les bombardements : {1} colons s'y installent, avec ses mines et ses usines.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:125 prop:text"
+   "engine/tasks.ts:127 prop:text"
   ]
  },
  {
   "key": "{0} a été envahie et conquise par les {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:126 prop:text"
+   "engine/tasks.ts:128 prop:text"
   ]
  },
  {
   "key": "Les {0} ont débarqué sur {1}, vidée par les bombardements : la planète est à eux.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:126 prop:text"
+   "engine/tasks.ts:128 prop:text"
   ]
  },
  {
   "key": "Les {0} prennent {1}, monde natal des {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:129 call:addChronicle"
+   "engine/tasks.ts:131 call:addChronicle"
   ]
  },
  {
   "key": "Les {0} prennent {1}, capitale des {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:129 call:addChronicle"
+   "engine/tasks.ts:131 call:addChronicle"
   ]
  },
  {
   "key": "Les troupes de {0} n'ont pas pu débarquer sur {1}{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:169 prop:text"
+   "engine/tasks.ts:172 prop:text"
   ]
  },
  {
   "key": " et sont remontées à bord",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:169 prop:text"
+   "engine/tasks.ts:172 prop:text"
   ]
  },
  {
   "key": " et ont été perdues",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:169 prop:text"
+   "engine/tasks.ts:172 prop:text"
   ]
  },
  {
   "key": "Vos {0} colons débarqués sur {1} ont tous péri dans les combats au sol contre plusieurs empires.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:193 prop:text"
+   "engine/tasks.ts:196 prop:text"
   ]
  },
  {
   "key": "Vos {0} colons débarqués sur {1} ont tous péri dans les combats au sol.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:193 prop:text"
+   "engine/tasks.ts:196 prop:text"
   ]
  },
  {
   "key": "Les combats au sol ont anéanti toute la population de {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:197 prop:text"
+   "engine/tasks.ts:200 prop:text"
   ]
  },
  {
   "key": "Vos colons de {0} ont repoussé {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:203 prop:text"
+   "engine/tasks.ts:206 prop:text"
   ]
  },
  {
   "key": "les invasions de plusieurs empires",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:203 prop:text"
+   "engine/tasks.ts:206 prop:text"
   ]
  },
  {
   "key": "une invasion",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:203 prop:text"
+   "engine/tasks.ts:206 prop:text"
   ]
  },
  {
-  "key": "En étudiant la technologie des {0}, vos scientifiques ont progressé en {1}.",
+  "key": "En étudiant la technologie des {0}",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:219 prop:text"
+   "engine/tasks.ts:218 call:tradeTech"
+  ]
+ },
+ {
+  "key": "Vos colons ont découvert un artefact ancien sur {0}, qui vous rapporte {1} points de recherche en {2}.",
+  "kind": "tpl",
+  "refs": [
+   "engine/tasks.ts:235 prop:text"
   ]
  },
  {
   "key": "toute sa population",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:283"
+   "engine/tasks.ts:296"
   ]
  },
  {
   "key": "environ {0} an{1} de croissance",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:283"
+   "engine/tasks.ts:296"
   ]
  },
  {
   "key": "{0} a embarqué {1} colons de {2} ({3} % de sa population) : {4} perd {5}. En dessous d'un quart de sa capacité, un monde croît en proportion de sa population ; pour l'épargner, chargez moins de colons (onglet Échanges de la flotte) ou partez d'un monde plus peuplé.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:284 prop:text"
+   "engine/tasks.ts:297 prop:text"
   ]
  },
  {
   "key": "{0} ne possède pas de module de colonisation.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:299 prop:text"
+   "engine/tasks.ts:312 prop:text"
   ]
  },
  {
   "key": "{0} ne peut pas coloniser {1} : la planète est déjà habitée.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:300 prop:text"
+   "engine/tasks.ts:313 prop:text"
   ]
  },
  {
   "key": "{0} ne transporte aucun colon pour coloniser {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:301 prop:text"
+   "engine/tasks.ts:314 prop:text"
   ]
  },
  {
   "key": "{0} ne peut pas coloniser {1} : la planète est dans le territoire des {2}. Pour la prendre, il faut d'abord affaiblir leur influence (conquérir leurs mondes voisins) ou la conquérir une fois qu'ils l'auront colonisée.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:303 prop:text"
+   "engine/tasks.ts:316 prop:text"
   ]
  },
  {
   "key": "{0} a fondé une colonie sur {1} avec {2} colons.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:323 prop:text"
-  ]
- },
- {
-  "key": "Vos colons ont découvert un artefact ancien sur {0}, qui vous rapporte {1} points de recherche.",
-  "kind": "tpl",
-  "refs": [
-   "engine/tasks.ts:330 prop:text"
+   "engine/tasks.ts:336 prop:text"
   ]
  },
  {
   "key": "{0} a été démantelée sur {1} : {2} kt de minerais déposés sur la planète.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:357 prop:text"
+   "engine/tasks.ts:364 prop:text"
+  ]
+ },
+ {
+  "key": "En démontant {0} sur {1}",
+  "kind": "tpl",
+  "refs": [
+   "engine/tasks.ts:366 call:tradeTech"
   ]
  },
  {
   "key": "{0} a été démantelée en orbite de {1}, sans colonie ni station pour récupérer ses matériaux : l'épave dérive sur place et se disperse peu à peu.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:361 prop:text"
+   "engine/tasks.ts:370 prop:text"
   ]
  },
  {
   "key": "{0} a été démantelée dans l'espace ; une épave de minerais dérive à cet endroit.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:362 prop:text"
+   "engine/tasks.ts:371 prop:text"
   ]
  },
  {
   "key": "Flotte",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:454",
-   "engine/tasks.ts:460 prop:other",
+   "engine/tasks.ts:463",
+   "engine/tasks.ts:469 prop:other",
    "ui/dialogs/reports.tsx:57 prop:label",
    "ui/diplomacy.tsx:135 jsx"
   ]
@@ -13691,42 +13719,42 @@
   "key": "Flotte de guerre",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:war"
+   "engine/tasks.ts:469 prop:war"
   ]
  },
  {
   "key": "Flotte de colonisation",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:colony"
+   "engine/tasks.ts:469 prop:colony"
   ]
  },
  {
   "key": "Flotte de minage",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:miner"
+   "engine/tasks.ts:469 prop:miner"
   ]
  },
  {
   "key": "Mouilleurs de mines",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:layer"
+   "engine/tasks.ts:469 prop:layer"
   ]
  },
  {
   "key": "Convoi",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:cargo"
+   "engine/tasks.ts:469 prop:cargo"
   ]
  },
  {
   "key": "Ravitailleurs",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:tanker",
+   "engine/tasks.ts:469 prop:tanker",
    "ui/pages.tsx:495"
   ]
  },
@@ -13734,7 +13762,7 @@
   "key": "Éclaireurs",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:460 prop:scout",
+   "engine/tasks.ts:469 prop:scout",
    "ui/pages.tsx:495"
   ]
  },
@@ -13742,128 +13770,128 @@
   "key": "Colonisation escortée",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:464"
+   "engine/tasks.ts:473"
   ]
  },
  {
   "key": "Convoi escorté",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:464"
+   "engine/tasks.ts:473"
   ]
  },
  {
   "key": "Flotte mixte",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:465"
+   "engine/tasks.ts:474"
   ]
  },
  {
   "key": "Vous avez cédé {0} aux {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:538 prop:text"
+   "engine/tasks.ts:547 prop:text"
   ]
  },
  {
   "key": "Les {0} vous ont cédé la flotte {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:539 prop:text"
+   "engine/tasks.ts:548 prop:text"
   ]
  },
  {
   "key": "{0} a fusionné avec {1}{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:566 prop:text"
+   "engine/tasks.ts:575 prop:text"
   ]
  },
  {
   "key": ", qui reprend les ordres de la flotte absorbée",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:566 prop:text"
+   "engine/tasks.ts:575 prop:text"
   ]
  },
  {
   "key": "{0} n'a pas pu poser sa balise : une balise de souveraineté ne se pose qu'en orbite d'une planète.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:589 prop:text"
+   "engine/tasks.ts:598 prop:text"
   ]
  },
  {
   "key": "{0} ne poursuit pas {1} : cette flotte est bien trop forte pour elle ({2}). Pour l'attaquer malgré tout, donnez à {3} un ordre d'interception manuel (déconseillé).",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:624 prop:text"
+   "engine/tasks.ts:633 prop:text"
   ]
  },
  {
   "key": "la flotte ennemie",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:624 prop:text",
-   "engine/tasks.ts:653 prop:text"
+   "engine/tasks.ts:633 prop:text",
+   "engine/tasks.ts:662 prop:text"
   ]
  },
  {
   "key": "{0} renonce à intercepter {1} : maintenant identifiée, elle est bien trop forte ({2}){3}. Pour l'attaquer malgré tout, donnez un ordre d'interception manuel (déconseillé).",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:653 prop:text"
+   "engine/tasks.ts:662 prop:text"
   ]
  },
  {
   "key": " ; retour au poste de patrouille",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:653 prop:text"
+   "engine/tasks.ts:662 prop:text"
   ]
  },
  {
   "key": "{0} n'a plus assez de carburant pour regagner son poste de patrouille : elle passe faire le plein à {1}, puis regagne son poste.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:681 prop:text"
+   "engine/tasks.ts:690 prop:text"
   ]
  },
  {
   "key": "{0} sont sans escorte à {1}{2}, et des ennemis armés sont toujours sur place. Ils ont échappé aux tirs cette fois-ci : donnez-leur l'ordre de partir.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:706 prop:text"
+   "engine/tasks.ts:715 prop:text"
   ]
  },
  {
   "key": " : vos vaisseaux de guerre y ont été détruits",
   "kind": "str",
   "refs": [
-   "engine/tasks.ts:706",
-   "engine/tasks.ts:707"
+   "engine/tasks.ts:715",
+   "engine/tasks.ts:716"
   ]
  },
  {
   "key": "{0} est sans escorte à {1}{2}, et des ennemis armés sont toujours sur place. Il a échappé aux tirs cette fois-ci : donnez-lui l'ordre de partir.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:707 prop:text"
+   "engine/tasks.ts:716 prop:text"
   ]
  },
  {
   "key": "{0} a rejoint {1}, qui fore déjà {2} : {3} robots en orbite.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:745 prop:text"
+   "engine/tasks.ts:754 prop:text"
   ]
  },
  {
   "key": "{0} ne fore pas {1} : la planète est dans le territoire de vos amis les {2}. Le forage n'y est permis qu'aux empires neutres ou en guerre avec eux.",
   "kind": "tpl",
   "refs": [
-   "engine/tasks.ts:763 prop:text"
+   "engine/tasks.ts:772 prop:text"
   ]
  },
  {
@@ -14384,455 +14412,511 @@
   "key": "Genesis",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:12"
+   "engine/trader.ts:14"
   ]
  },
  {
-  "key": "Un {0} s'annonce à {1} al de {2}, Warp {3}{4} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense. Tant qu'il passe à moins de {5} al de vos mondes, il émet sa position.",
+  "key": "Un {0} s'annonce à {1} al de {2}, Warp {3}{4} : il ne s'arrête pas. Interceptez-le avec une flotte transportant au moins 5 000 kt de minerais pour obtenir une récompense (il garde la flotte en paiement). Tant qu'il passe à moins de {5} al de vos mondes, il émet sa position.",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:56 prop:text"
+   "engine/trader.ts:58 prop:text"
   ]
  },
  {
   "key": "cap à l'est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au sud-est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au sud",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au sud-ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap à l'ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au nord-ouest",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au nord",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
   "key": "cap au nord-est",
   "kind": "str",
   "refs": [
-   "engine/trader.ts:63"
+   "engine/trader.ts:65"
   ]
  },
  {
-  "key": "Le {0} a accepté vos {1} kt de minerais et vous a transmis {2} niveaux de technologie ({3}).",
+  "key": "vos {0} kt de minerais et {1} ({2} vaisseaux)",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:103 prop:text"
+   "engine/trader.ts:133"
   ]
  },
  {
-  "key": "Le {0} vous a cédé une technologie extraterrestre : {1}.",
+  "key": "vos {0} kt de minerais et {1} (un vaisseau)",
   "kind": "tpl",
   "refs": [
-   "engine/trader.ts:110 prop:text"
+   "engine/trader.ts:133"
+  ]
+ },
+ {
+  "key": "Le {0} a pris en paiement {1}, et vous a transmis {2} niveaux de technologie ({3}).",
+  "kind": "tpl",
+  "refs": [
+   "engine/trader.ts:144 prop:text"
+  ]
+ },
+ {
+  "key": "Le {0} a pris en paiement {1}, et vous a cédé une technologie extraterrestre : {2}.",
+  "kind": "tpl",
+  "refs": [
+   "engine/trader.ts:154 prop:text"
   ]
  },
  {
   "key": "défense",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:defense"
+   "engine/turn.ts:72 prop:defense"
   ]
  },
  {
   "key": "{0} devient capitale régionale : les planètes à moins de {1} al retrouvent leur plein rendement.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:135 prop:text"
+   "engine/turn.ts:136 prop:text"
   ]
  },
  {
   "key": "{0} : {1} × {2} construit{3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:145 prop:text"
+   "engine/turn.ts:146 prop:text"
   ]
  },
  {
   "key": "La file de production de {0} est vide.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:149 prop:text"
+   "engine/turn.ts:150 prop:text"
   ]
  },
  {
   "key": "Constructions de l'année : {0} sur {1} planète{2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:157 prop:text"
+   "engine/turn.ts:158 prop:text"
   ]
  },
  {
   "key": "La colonie de {0} s'est éteinte.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:179 prop:text"
+   "engine/turn.ts:180 prop:text"
   ]
  },
  {
   "key": "Victoire ! Les {0} ont atteint les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:258 prop:text"
+   "engine/turn.ts:261 prop:text"
   ]
  },
  {
   "key": "Les {0} ont atteint les conditions de victoire. La partie peut continuer.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:258 prop:text"
+   "engine/turn.ts:261 prop:text"
   ]
  },
  {
   "key": " {0} (Recherche, Technologies déjà trouvées).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:276"
+   "engine/turn.ts:279"
   ]
  },
  {
   "key": "{0} peut améliorer {1} de vos modèles",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:276 call:map"
+   "engine/turn.ts:279 call:map"
   ]
  },
  {
   "key": "Nouvelles technologies disponibles{0} : {1}.{2}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:280 prop:text"
+   "engine/turn.ts:283 prop:text"
   ]
  },
  {
   "key": "Vous avez reçu {0} enregistrement{1} de bataille cette année.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:287 prop:text"
+   "engine/turn.ts:290 prop:text"
   ]
  },
  {
   "key": "Objectif atteint : le grand projet « {0} » peut être lancé.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:302 prop:text"
+   "engine/turn.ts:305 prop:text"
   ]
  },
  {
   "key": "Objectif atteint : {0} est disponible.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:302 prop:text"
+   "engine/turn.ts:305 prop:text"
   ]
  },
  {
   "key": " Percée en avance sur les prévisions !",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:325"
+   "engine/turn.ts:328"
   ]
  },
  {
   "key": " La percée s'est fait attendre.",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:325"
+   "engine/turn.ts:328"
   ]
  },
  {
   "key": "Vos scientifiques ont atteint le niveau {0} en {1}.{2}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:326 prop:text"
+   "engine/turn.ts:329 prop:text"
   ]
  },
  {
   "key": "{0} : {1} vaisseau{2} de {3} modernisé{4} ({5}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:349 prop:text"
+   "engine/turn.ts:352 prop:text"
   ]
  },
  {
   "key": "Modernisation ",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:349 call:replace"
+   "engine/turn.ts:352 call:replace"
   ]
  },
  {
   "key": "{0} a construit {1}, qui rejoint le réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:360 prop:text"
+   "engine/turn.ts:363 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, qui commence ses allers-retours entre {2} et {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:361 prop:text"
+   "engine/turn.ts:364 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, qui part {2} {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:361 prop:text"
+   "engine/turn.ts:364 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1}, mais {2} est hors de portée avec son carburant : donnez-lui ses ordres.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:361 prop:text"
+   "engine/turn.ts:364 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1} × {2}, en renfort de {3}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:367 prop:text"
+   "engine/turn.ts:370 prop:text"
   ]
  },
  {
   "key": "{0} a construit {1} × {2} ({3}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:371 prop:text"
+   "engine/turn.ts:374 prop:text"
   ]
  },
  {
   "key": "La base {0} est opérationnelle en orbite de {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:389 prop:text"
+   "engine/turn.ts:392 prop:text"
   ]
  },
  {
   "key": "Le Créateur de mondes a remodelé {0}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:403 prop:text"
+   "engine/turn.ts:406 prop:text"
   ]
  },
  {
   "key": "L'environnement de {0} s'est amélioré de façon permanente.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:457 prop:text"
+   "engine/turn.ts:460 prop:text"
   ]
  },
  {
   "key": "Les bombardiers des {0}",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:514"
+   "engine/turn.ts:517"
   ]
  },
  {
   "key": "{0} colons tués, {1} mines, {2} usines et {3} défenses détruites",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:529 call:push"
+   "engine/turn.ts:532 call:push"
   ]
  },
  {
   "key": "{0} colons tués par les bombes intelligentes",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:535 call:push"
+   "engine/turn.ts:538 call:push"
   ]
  },
  {
   "key": "dé-terraformée",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:546 call:push"
+   "engine/turn.ts:549 call:push"
   ]
  },
  {
   "key": "Vos {0} flottes de bombardiers ont bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:549 prop:text"
+   "engine/turn.ts:552 prop:text"
   ]
  },
  {
   "key": "{0} a bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:549 prop:text"
+   "engine/turn.ts:552 prop:text"
   ]
  },
  {
   "key": "{0} ont bombardé {1} : {2}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:550 prop:text"
+   "engine/turn.ts:553 prop:text"
   ]
  },
  {
   "key": "{0} a été entièrement dépeuplée par les bombardements.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:553 call:report"
+   "engine/turn.ts:556 call:report"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et commence à forer (premiers minerais l'an prochain).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:629"
+   "engine/turn.ts:638"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et pose ses mines.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:630"
+   "engine/turn.ts:639"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et patrouille.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:631"
+   "engine/turn.ts:640"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et reste en poste.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:632"
+   "engine/turn.ts:641"
   ]
  },
  {
   "key": "{0} est à son poste à {1} : elle ravitaillera les flottes à court de carburant dans un rayon de {2} al.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:633"
+   "engine/turn.ts:642"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et commence l'étude de l'anomalie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:634"
+   "engine/turn.ts:643"
   ]
  },
  {
   "key": "{0} est arrivée dans la zone de sondage et cherche un passage dans le nuage.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:635"
+   "engine/turn.ts:644"
   ]
  },
  {
   "key": "{0} est arrivée au trou de ver scellé et commence à l'étudier.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:636"
+   "engine/turn.ts:645"
   ]
  },
  {
   "key": "{0} est arrivée à {1} : modernisation en chantier ({2}).",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:637"
+   "engine/turn.ts:646"
   ]
  },
  {
   "key": "{0} est arrivée à {1} et attend des ordres.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:638"
+   "engine/turn.ts:647"
   ]
  },
  {
   "key": "énorme",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:661"
+   "engine/turn.ts:671"
   ]
  },
  {
   "key": "d'ironium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:662 prop:ironium"
+   "engine/turn.ts:672 prop:ironium"
   ]
  },
  {
   "key": "de boranium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:662 prop:boranium"
+   "engine/turn.ts:672 prop:boranium"
   ]
  },
  {
   "key": "de germanium",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:662 prop:germanium"
+   "engine/turn.ts:672 prop:germanium"
   ]
  },
  {
   "key": "Une comète {0} a frappé {1} : {2} colons tués et {3} kt {4} déposés en surface.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:664"
+   "engine/turn.ts:674"
   ]
  },
  {
   "key": "Une comète {0} a frappé {1} : {2} kt {3} déposés en surface.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:665"
+   "engine/turn.ts:675"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : la gravité augmente pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:706"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : la gravité baisse pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:707"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : la planète se réchauffe pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:709"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : la planète se refroidit pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:710"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : les radiations augmentent pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:711"
+  ]
+ },
+ {
+  "key": "Changement de climat sur {0} : les radiations baissent pour de bon, de {1} à {2}. Valeur pour votre race : {3} % → {4} %.",
+  "kind": "tpl",
+  "refs": [
+   "engine/turn.ts:712"
   ]
  },
  {
   "key": "Votre empire a été anéanti.",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:678 prop:text",
+   "engine/turn.ts:724 prop:text",
    "ui/dialogs/misc.tsx:315 jsx"
   ]
  },
@@ -14840,42 +14924,42 @@
   "key": "L'empire des {0} a été anéanti.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:678 prop:text"
+   "engine/turn.ts:724 prop:text"
   ]
  },
  {
   "key": "L'empire des {0} disparaît.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:679 call:addChronicle"
+   "engine/turn.ts:725 call:addChronicle"
   ]
  },
  {
   "key": "Les {0} abattent le Nexus et remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:689"
+   "engine/turn.ts:735"
   ]
  },
  {
   "key": "Les {0} scellent la Brèche et remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:690"
+   "engine/turn.ts:736"
   ]
  },
  {
   "key": "Les {0}, derniers debout, remportent la partie.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:692"
+   "engine/turn.ts:738"
   ]
  },
  {
   "key": "Les {0} atteignent les conditions de victoire.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:693"
+   "engine/turn.ts:739"
   ]
  },
  {
@@ -19594,7 +19678,7 @@
    "ui/dialogs/designer.tsx:206",
    "ui/dialogs/designer.tsx:310 attr:v",
    "ui/inspector.tsx:509 attr:v",
-   "ui/inspector.tsx:563 jsx"
+   "ui/inspector.tsx:566 jsx"
   ]
  },
  {
@@ -29881,109 +29965,130 @@
   ]
  },
  {
-  "key": "Saut risqué : {0}. Chaque vaisseau peut y perdre jusqu'à {1} % de son blindage.{2}",
+  "key": "Les {0} vaisseaux déjà endommagés n'y survivraient pas.",
+  "kind": "tpl",
+  "refs": [
+   "ui/inspector.tsx:559"
+  ]
+ },
+ {
+  "key": "Le vaisseau déjà endommagé n'y survivrait pas.",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:559"
+  ]
+ },
+ {
+  "key": "Saut risqué : {0}. Chaque vaisseau peut y perdre jusqu'à {1} % de son blindage, en plus des dégâts qu'il a déjà.{2} {3}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:558 jsx"
+   "ui/inspector.tsx:560 jsx"
   ]
  },
  {
   "key": " Certains peuvent aussi se perdre dans le vide.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:558 jsx"
+   "ui/inspector.tsx:560 jsx"
   ]
  },
  {
-  "key": "Votre race ne peut pas faire passer de cargaison par une porte : elle serait déposée à {0} avant le saut.",
-  "kind": "jsx",
-  "refs": [
-   "ui/inspector.tsx:559 jsx"
-  ]
- },
- {
-  "key": "Le saut sera refusé : {0}. La flotte partira à sa vitesse idéale.",
+  "key": "Une flotte ne se répare pas l'année où elle franchit une porte.",
   "kind": "jsx",
   "refs": [
    "ui/inspector.tsx:561 jsx"
   ]
  },
  {
+  "key": "Votre race ne peut pas faire passer de cargaison par une porte : elle serait déposée à {0} avant le saut.",
+  "kind": "jsx",
+  "refs": [
+   "ui/inspector.tsx:562 jsx"
+  ]
+ },
+ {
+  "key": "Le saut sera refusé : {0}. La flotte partira à sa vitesse idéale.",
+  "kind": "jsx",
+  "refs": [
+   "ui/inspector.tsx:564 jsx"
+  ]
+ },
+ {
   "key": "Saut sans risque, sans carburant : masse sûre {0} par vaisseau (le plus lourd : {1} kt), portée sûre {2} (distance : {3} al).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:563 jsx"
+   "ui/inspector.tsx:566 jsx"
   ]
  },
  {
   "key": "Pas de portail pour cette étape : {0}.",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:570 jsx",
-   "ui/inspector.tsx:572 jsx"
+   "ui/inspector.tsx:573 jsx",
+   "ui/inspector.tsx:575 jsx"
   ]
  },
  {
   "key": "Portes stellaires à {0} et à {1} : la dernière case de la barre de vitesse, « Portail », fait le saut en un an, sans carburant. {2}",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:574 jsx"
+   "ui/inspector.tsx:577 jsx"
   ]
  },
  {
   "key": "Ici, Warp {0} met aussi un an : le portail n'économiserait que le carburant ({1} mg).",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:574 jsx"
+   "ui/inspector.tsx:577 jsx"
   ]
  },
  {
   "key": "Le portail ferait gagner {0} an{1}.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:574 jsx"
+   "ui/inspector.tsx:577 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration ni colonie habitable sous {0} % de sa capacité. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:584 jsx"
+   "ui/inspector.tsx:587 jsx"
   ]
  },
  {
   "key": "Aucune destination : aucune planète en Immigration. Réglages : Empire, Réseau logistique.",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:584 jsx"
+   "ui/inspector.tsx:587 jsx"
   ]
  },
  {
   "key": "{0} : {1} (automatique)",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:586 call:map"
+   "ui/inspector.tsx:589 call:map"
   ]
  },
  {
   "key": "Vers {0} planètes qui manquent de colons ({1}…), les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:586 jsx"
+   "ui/inspector.tsx:589 jsx"
   ]
  },
  {
   "key": "Vers {0}, les plus proches et les plus vides d'abord. Réglages : Empire, Réseau logistique.",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:586 jsx"
+   "ui/inspector.tsx:589 jsx"
   ]
  },
  {
   "key": "Reçoit les émigrants de vos planètes en Émigration jusqu'à {0} % de sa capacité (envoi automatique, réglable dans Empire, Réseau logistique).",
   "kind": "jsx",
   "refs": [
-   "ui/inspector.tsx:589 jsx"
+   "ui/inspector.tsx:592 jsx"
   ]
  },
  {
@@ -34141,7 +34246,7 @@
   ]
  },
  {
-  "key": "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense). Ses positions des prochaines années sont les chevrons dorés de la carte.",
+  "key": "Il ne s'arrête jamais : il faut l'attendre sur sa route, à l'endroit où il finit une année, avec au moins {0} kt de minerais en soute (jusqu'à {1} kt pour la meilleure récompense) : il prend la flotte entière en paiement, escorte comprise. Ses positions des prochaines années sont les chevrons dorés de la carte ; il lui arrive de changer de cap ou d'accélérer.",
   "kind": "jsx",
   "refs": [
    "ui/summary.tsx:250 jsx"
@@ -38586,7 +38691,7 @@
   "key": "ralentisseur",
   "kind": "str",
   "refs": [
-   "engine/movement.ts:500 call:msg",
+   "engine/movement.ts:530 call:msg",
    "ui/map.tsx:346 call:fillText"
   ]
  },
@@ -38617,7 +38722,7 @@
   "refs": [
    "engine/production.ts:204 prop:what",
    "engine/production.ts:207",
-   "engine/turn.ts:71 prop:factory",
+   "engine/turn.ts:72 prop:factory",
    "ui/dialogs/race.tsx:102 attr:unit"
   ]
  },
@@ -38632,21 +38737,21 @@
   "key": "petite",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:661"
+   "engine/turn.ts:671"
   ]
  },
  {
   "key": "moyenne",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:661"
+   "engine/turn.ts:671"
   ]
  },
  {
   "key": "grande",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:661"
+   "engine/turn.ts:671"
   ]
  },
  {
@@ -38980,7 +39085,7 @@
   "key": "coloniser",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:361",
+   "engine/turn.ts:364",
    "ui/missionui.tsx:25 prop:verb"
   ]
  },
@@ -38988,7 +39093,7 @@
   "key": "forer",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:361",
+   "engine/turn.ts:364",
    "ui/missionui.tsx:27 prop:verb"
   ]
  },
@@ -38996,7 +39101,7 @@
   "key": "explorer",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:361",
+   "engine/turn.ts:364",
    "ui/missionui.tsx:26 prop:verb"
   ]
  },
@@ -39004,28 +39109,28 @@
   "key": "usine",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:factory"
+   "engine/turn.ts:72 prop:factory"
   ]
  },
  {
   "key": "terraformation",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:terraform"
+   "engine/turn.ts:72 prop:terraform"
   ]
  },
  {
   "key": "conversion alchimique",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:alchemy"
+   "engine/turn.ts:72 prop:alchemy"
   ]
  },
  {
   "key": "paquet",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:packet"
+   "engine/turn.ts:72 prop:packet"
   ]
  },
  {
@@ -39042,21 +39147,21 @@
   "key": "paquets",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:packet"
+   "engine/turn.ts:72 prop:packet"
   ]
  },
  {
   "key": "terraformations",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:terraform"
+   "engine/turn.ts:72 prop:terraform"
   ]
  },
  {
   "key": "conversions alchimiques",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:71 prop:alchemy"
+   "engine/turn.ts:72 prop:alchemy"
   ]
  },
  {
@@ -39120,7 +39225,7 @@
   "key": "{0} a construit {1}.",
   "kind": "tpl",
   "refs": [
-   "engine/turn.ts:360 prop:text"
+   "engine/turn.ts:363 prop:text"
   ]
  },
  {

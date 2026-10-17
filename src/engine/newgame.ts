@@ -352,6 +352,8 @@ export function createGame(opts: NewGameOptions): GameState {
   for (const p of game.players) { const hw = game.planets.find(pl => pl.owner === p.id && pl.homeworld); if (hw) p.capital = hw.id; }
   if (settings.secretObjectives) assignObjectives(game);
   // Constellations 3.2: discoveries, guardians, origins (own random streams)
+  // 0.3.9.17 (Stars!, random events): ancient artifacts hidden on a third of the worlds (found by the first to settle there)
+  if (settings.randomEvents) { const ar = new Rng(seedFromString(settings.seed + '|artifacts')); for (const pl of game.planets) if (pl.owner < 0 && ar.chance(1 / 3)) pl.artifact = true; }
   if (settings.anomalies) generateAnomalies(game);
   if (settings.guardians) placeGuardians(game);
   // 0.3.7: the hidden stars (own random stream; the sanctuary of the Ancients moves to one of them)

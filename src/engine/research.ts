@@ -139,9 +139,14 @@ export function levelGained(player: Player, field: Field) {
 /** Add research points directly to a field (artifacts, Mystery Trader, stealing). */
 export function addResearch(game: GameState, player: Player, field: Field, amount: number, rng?: Rng): ResearchEvent[] {
   const events: ResearchEvent[] = [];
-  if (luckOn(game)) { addAndRoll(game, player, field, amount, events, rng ?? fallbackRng(game, player, field)); return events; }
-  let l = amount, g = 0;
-  while (l > 0 && g++ < 20 && player.tech[field] < MAX_TECH) l = spendOnce(game, player, field, l, events);
+  const before = player.tech[field];
+  if (luckOn(game)) addAndRoll(game, player, field, amount, events, rng ?? fallbackRng(game, player, field));
+  else {
+    let l = amount, g = 0;
+    while (l > 0 && g++ < 20 && player.tech[field] < MAX_TECH) l = spendOnce(game, player, field, l, events);
+  }
+  // 0.3.9.17: research then moves on to the next field set, as after a level researched
+  if (player.tech[field] > before) levelGained(player, field);
   return events;
 }
 

@@ -348,6 +348,10 @@ export interface GateCheck {
   dist: number; heaviest: number; safeMass: number; safeRange: number;
   /** the cargo would be left at the departure (not an IT race) */
   dropsCargo: boolean;
+  /** 0.3.9.17: ships already damaged that the jump would finish off ("Guts of Overgating") */
+  doomed: number;
+  /** 0.3.9.17: some ships are damaged (no repairs the year of a jump) */
+  damaged: boolean;
 }
 export function gateCheck(game: GameState, f: Fleet, i: number): GateCheck {
   const owner = game.players[f.owner];
@@ -359,7 +363,7 @@ export function gateCheck(game: GameState, f: Fleet, i: number): GateCheck {
   const gateOf = (p?: Planet) => p && p.starbase && !foreign(p) ? specOf(game, p.starbase.designId).gate : null;
   const sg = gateOf(src), dg = gateOf(dst);
   const heaviest = Math.max(0, ...f.tokens.map(t => specOf(game, t.designId).mass));
-  const out: GateCheck = { src, dst, srcGate: !!sg, risks: [], damage: 0, lossRisk: false, dist: src && dst ? distance(src, dst) : 0, heaviest, safeMass: 0, safeRange: 0, dropsCargo: false };
+  const out: GateCheck = { src, dst, srcGate: !!sg, risks: [], damage: 0, lossRisk: false, dist: src && dst ? distance(src, dst) : 0, heaviest, safeMass: 0, safeRange: 0, dropsCargo: false, doomed: 0, damaged: f.tokens.some(t => t.qtyDamaged > 0 && t.damage > 0) };
   const hasGate = (p: Planet) => !!(p.starbase && specOf(game, p.starbase.designId).gate);
   if (!src) out.problem = 'il faut partir d\'une planète qui a une porte stellaire';
   else if (!hasGate(src)) out.problem = `${src.name} n'a pas de porte stellaire`;
@@ -368,6 +372,8 @@ export function gateCheck(game: GameState, f: Fleet, i: number): GateCheck {
   else if (!hasGate(dst)) out.problem = `${dst.name} n'a pas de porte stellaire`;
   else if (foreign(dst)) out.problem = `la porte de ${dst.name} appartient aux ${game.players[dst.owner].name}, qui ne sont pas vos alliés`;
   if (out.problem || !sg || !dg) return out;
+  // 0.3.9.17: colonists cannot be left at a friend's gate, and only IT take them through
+  if (!rs.canGateCargo && f.cargo.colonists > 0 && src!.owner !== owner.id) { out.problem = `des colons sont à bord : seules les races Maîtrise des portails (IT) font passer une cargaison, et ces colons ne peuvent pas descendre à ${src!.name}, qui n'est pas à vous`; return out; }
   out.safeRange = sg.safeRange; out.safeMass = Math.min(sg.safeMass, dg.safeMass);
   const inf = (v: number) => v >= 1e9;
   if (!inf(out.safeRange) && out.dist > out.safeRange * 5) { out.problem = `${Math.round(out.dist)} al, plus de cinq fois la portée sûre de la porte de ${src!.name} (${out.safeRange} al)`; return out; }
@@ -379,12 +385,18 @@ export function gateCheck(game: GameState, f: Fleet, i: number): GateCheck {
     const rangeF = inf(out.safeRange) || out.dist <= out.safeRange ? 0 : (out.dist - out.safeRange) / (4 * out.safeRange);
     const fm = (safe: number) => s.mass > safe && !inf(safe) ? (5 * safe - s.mass) / (4 * safe) : 1;
     const massF = 1 - fm(sg.safeMass) * fm(dg.safeMass);
-    out.damage = Math.max(out.damage, Math.min(0.98, massF + (1 - massF) * rangeF));
+    const total = Math.min(0.98, massF + (1 - massF) * rangeF);
+    out.damage = Math.max(out.damage, total);
+    const perShip = Math.round(total * s.armor);
+    if (perShip > 0 && t.qtyDamaged > 0 && t.damage > 0 && t.damage + perShip >= s.armor) out.doomed += t.qtyDamaged;
   }
   out.lossRisk = out.damage > 0 && rs.shipsVanishInVoid;
-  out.dropsCargo = !rs.canGateCargo && cargoMass(f.cargo) > 0 && src!.owner === owner.id;
+  out.dropsCargo = !rs.canGateCargo && cargoMass(f.cargo) > 0;
   return out;
 }
+
+/** For the checks. */
+export const gateFleetForTests = (game: GameState, rng: Rng, f: Fleet, wp: Waypoint) => gateFleet(game, rng, f, wp);
 
 function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   const owner = game.players[f.owner];
@@ -403,12 +415,16 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   }
   const dist = distance(src, dst);
   const rs = raceSpec(owner.race);
-  // cargo: only IT may gate cargo (others dump it on the source planet)
+  // cargo: only IT may gate cargo (others dump it on the source planet; 0.3.9.17: at a friend's gate too, where the
+  // colonists cannot be left: then the fleet does not jump)
   if (!rs.canGateCargo && cargoMass(f.cargo) > 0) {
-    if (src.owner === owner.id) {
-      for (const m of MINERALS) { src.surface[m] += f.cargo[m]; f.cargo[m] = 0; }
-      src.pop += f.cargo.colonists * 100; f.cargo.colonists = 0;
+    if (src.owner !== owner.id && f.cargo.colonists > 0) {
+      msg(game, owner, `${f.name} ne peut pas franchir la porte de ${src.name} avec des colons à bord : seules les races Maîtrise des portails (IT) font passer une cargaison, et ces colons ne peuvent pas descendre sur une planète qui n'est pas à vous.`, f);
+      wp.warp = fleetSpec(game, f).idealSpeed || 5;
+      return;
     }
+    for (const m of MINERALS) { src.surface[m] += f.cargo[m]; f.cargo[m] = 0; }
+    if (src.owner === owner.id) { src.pop += f.cargo.colonists * 100; f.cargo.colonists = 0; }
   }
   const safeRange = sg.safeRange, safeMass = Math.min(sg.safeMass, dg.safeMass);
   if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al).`, f); return; }
@@ -434,11 +450,25 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
         if (lost) msg(game, owner, `${lost} vaisseau(x) de ${f.name} se sont perdus dans le vide en franchissant la porte.`, f);
       }
       const perShip = Math.round(total * s.armor);
-      if (t.qty > 0 && perShip > 0) { t.damage = Math.min(s.armor - 1, t.damage + perShip); t.qtyDamaged = t.qty; }
+      if (t.qty > 0 && perShip > 0) {
+        // 0.3.9.17 ("Guts of Overgating"): the damage adds to what the ships already had; past their armour, they are lost
+        const damaged = t.qtyDamaged > 0 ? t.damage : 0;
+        if (damaged > 0 && damaged + perShip >= s.armor) {
+          const lost = Math.min(t.qty, t.qtyDamaged);
+          t.qty -= lost; t.qtyDamaged = 0; t.damage = 0;
+          msg(game, owner, `${lost} vaisseau(x) de ${f.name}, déjà endommagé(s), n'ont pas survécu au passage de la porte.`, f);
+          if (t.qty > 0) { t.damage = Math.min(s.armor - 1, perShip); t.qtyDamaged = t.qty; }
+        } else {
+          t.damage = Math.min(s.armor - 1, Math.round((damaged * t.qtyDamaged + perShip * t.qty) / t.qty));
+          t.qtyDamaged = t.qty;
+        }
+      }
     }
   }
   f.tokens = f.tokens.filter(t => t.qty > 0);
   if (!f.tokens.length) { game.fleets.splice(game.fleets.indexOf(f), 1); return; }
+  // 0.3.9.17 (help, Damage Repair): no repairs in the year a fleet goes through a stargate
+  f.gatedYear = game.year;
   f.heading = { x: (dst.x - src.x) / (dist || 1), y: (dst.y - src.y) / (dist || 1) };
   f.lastWarp = 11;
   f.x = dst.x; f.y = dst.y;

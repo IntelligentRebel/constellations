@@ -100,7 +100,7 @@ console.log('--- the Mystery Trader: route and interception');
     for (let y = 0; y < 12 && !met; y++) { generateTurn(g); met = t.rewarded.includes(me.id) || msgs(g).some(m => m.includes('a accepté vos') || m.includes('vous a cédé')); }
     check(met, `the trader is met and pays (${g.year}: ${msgs(g).find(m => m.includes('Marchand') || m.includes('accepté')) ?? 'nothing'})`);
     generateTurn(g);
-    check(f.meetTrader === undefined, 'the standing order ends once rewarded');
+    check(!g.fleets.includes(f) || f.meetTrader === undefined, 'the standing order ends once rewarded (0.3.9.17: the trader keeps the fleet)');
   }
 }
 
