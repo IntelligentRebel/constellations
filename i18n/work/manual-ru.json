@@ -1826,5 +1826,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "все корабли этой модели уже переоснащаются",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Кораблей для переоснащения в этой строке: не более {0} (остальные уже на верфи или не существуют).",
  "sur {0}{1} · ": "из {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} уже на верфи)"
+ " ({0} déjà en chantier)": " ({0} уже на верфи)",
+ "Votre avance les pousse à s'unir contre vous": "Ваше превосходство толкает их объединиться против вас",
+ "Un rival commun": "Общий соперник",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Простая экономика и война, мало исследований, поздние войны.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Следит за экономикой и обороной: переоснащает корабли и станции, защищает миры под угрозой, держит флоты вместе, быстрее расширяется и не тратит минералы впустую.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Как «Standard», а также готовит вторжения, проектирует корабли против кораблей врага и объединяется с остальными против империи, которая подавляет всех. Более быстрые исследования, более ранние войны.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Как «Сложный», с самыми быстрыми исследованиями и самыми ранними войнами.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "Граница империи «{0}» продвинулась до выхода, к которому шёл {1}: ближайшая граница теперь в {2} св. г., и на её пересечение есть время до {3} года."
 }

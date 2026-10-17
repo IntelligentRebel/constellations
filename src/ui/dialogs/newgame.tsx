@@ -18,6 +18,13 @@ import { originUnlocked, originAchievement } from '../achievements';
 
 type Opp = { race: number; diff: AIDifficulty | 'human'; hrace?: string };
 const DIFF: Record<AIDifficulty, string> = { easy: 'Facile', standard: 'Standard', harder: 'Difficile', expert: 'Expert' };
+/** 0.3.9.14: what each level of the computers does (aiskill.ts). */
+const DIFF_TIP: Record<AIDifficulty, string> = {
+  easy: 'Économie et guerre simples, peu de recherche, des guerres tardives.',
+  standard: 'Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s\'étend plus vite et ne gaspille pas ses minerais.',
+  harder: 'Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l\'ennemi et s\'allie aux autres contre l\'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.',
+  expert: 'Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.',
+};
 const NAMES = ['Une promenade pieds nus', 'Le grand bazar stellaire', 'Les confins du zénith', 'La valse des comètes', 'Le dernier phare', 'Opération Tournesol', 'Les nébuleuses perdues', 'Croisière en eaux noires'];
 
 export function NewGameDialog() {
@@ -101,7 +108,8 @@ export function NewGameDialog() {
           {SHAPES_OFFERED.map(k => <label class="radio" title={SHAPE_TEXT[k]}><input type="radio" checked={(settings.shape ?? 'square') === k} onChange={() => set(x => { x.shape = k; })} /> {SHAPE_LABELS[k]}</label>)}
           <p class="small muted">{SHAPE_TEXT[settings.shape ?? 'square']}</p>
           <h4>Difficulté des adversaires</h4>
-          {(Object.keys(DIFF) as AIDifficulty[]).map(k => <label class="radio"><input type="radio" checked={opponents.filter(o => o.diff !== 'human').every(o => o.diff === k)} onChange={() => setOpponents(opponents.map(o => o.diff === 'human' ? o : { ...o, diff: k }))} /> {DIFF[k]}</label>)}
+          {(Object.keys(DIFF) as AIDifficulty[]).map(k => <label class="radio" title={DIFF_TIP[k]}><input type="radio" checked={opponents.filter(o => o.diff !== 'human').every(o => o.diff === k)} onChange={() => setOpponents(opponents.map(o => o.diff === 'human' ? o : { ...o, diff: k }))} /> {DIFF[k]}</label>)}
+          {(() => { const ds = [...new Set(opponents.filter(o => o.diff !== 'human').map(o => o.diff as AIDifficulty))]; return ds.length === 1 ? <p class="small muted">{DIFF_TIP[ds[0]]}</p> : null; })()}
           {opponents.some(o => o.diff === 'human') && <>
             <p class="small muted">{byFiles ? `Partie par fichiers : ${opponents.filter(o => o.diff === 'human').length + 1} joueurs humains jouent chacun chez soi ; ce navigateur héberge la partie.` : `Partie à plusieurs sur cet appareil : ${opponents.filter(o => o.diff === 'human').length + 1} joueurs humains jouent chacun leur tour.`}</p>
             <label class="chk"><input type="checkbox" checked={byFiles} onChange={e => setByFiles((e.target as HTMLInputElement).checked)} /> Chacun joue chez soi, par fichiers de tour (comme Stars! par courrier)</label>
@@ -139,7 +147,7 @@ export function NewGameDialog() {
               <td>{o.diff === 'human'
                 ? <select value={o.hrace ?? 'Humanoid'} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, hrace: (e.target as HTMLSelectElement).value }; setOpponents(arr); }}>{PREDEFINED_ORDER.map(k => <option value={k}>{PREDEFINED_LABELS[k]}</option>)}{saved.map(r => <option value={'saved:' + r.name}>{r.name}</option>)}</select>
                 : <select value={o.race} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, race: +(e.target as HTMLSelectElement).value }; setOpponents(arr); }}><option value={-1}>Aléatoire</option>{AI_RACES.map((r, k) => { const rr = r(); return <option value={k}>{rr.pluralName} ({rr.prt})</option>; })}</select>}</td>
-              <td><select value={o.diff} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, diff: (e.target as HTMLSelectElement).value as Opp['diff'] }; setOpponents(arr); }}>{(Object.keys(DIFF) as AIDifficulty[]).map(k => <option value={k}>Ordinateur {DIFF[k].toLowerCase()}</option>)}<option value="human">Humain (même appareil)</option></select></td>
+              <td><select value={o.diff} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, diff: (e.target as HTMLSelectElement).value as Opp['diff'] }; setOpponents(arr); }}>{(Object.keys(DIFF) as AIDifficulty[]).map(k => <option value={k} title={DIFF_TIP[k]}>Ordinateur {DIFF[k].toLowerCase()}</option>)}<option value="human">Humain (même appareil)</option></select></td>
               <td><button class="link" onClick={() => setOpponents(opponents.filter((_, k) => k !== i))} disabled={opponents.length <= 1}>✕</button></td></tr>)}
           </tbody>
         </table>

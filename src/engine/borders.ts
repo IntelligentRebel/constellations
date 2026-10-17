@@ -332,6 +332,18 @@ function caughtInside(game: GameState) {
       }
       continue;
     }
+    // 0.3.9.14: the territory grew over the way out the fleet was taking: a new delay from where it is now
+    const ways = [{ x: e.x, y: e.y }, ...(e.ways ?? [])];
+    const goal = f.waypoints.length > 1 ? f.waypoints[f.waypoints.length - 1] : f;
+    const following = ways.find(w => Math.round(goal.x) === w.x && Math.round(goal.y) === w.y);
+    if (following && closedFor(game, f.owner, following) >= 0 && game.year + plan.years + 1 > e.by) {
+      ways.splice(ways.indexOf(following), 1); // once per way out: parked there, it gets no more time
+      e.by = game.year + (plan.stranded ? Math.min(plan.fast, 6) + 2 : plan.years + 1);
+      delete e.warned;
+      if (!auto) fleetNote(game, f, `La frontière des ${nm(game, c)} a avancé jusqu'à la sortie que prenait ${f.name} : la frontière la plus proche est désormais à ${d} al, et elle a jusqu'à l'an ${e.by} pour la franchir.`);
+    }
+    e.ways = (plan.x !== e.x || plan.y !== e.y ? ways : ways.slice(1)).filter(w => w.x !== plan.x || w.y !== plan.y).slice(0, 4);
+    if (!e.ways.length) delete e.ways;
     e.closer = c; e.x = plan.x; e.y = plan.y; e.warp = plan.warp;
     if (plan.stranded) e.stranded = true; else delete e.stranded;
     if (game.year < e.by) continue;

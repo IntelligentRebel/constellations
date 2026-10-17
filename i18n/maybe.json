@@ -84,27 +84,49 @@
   ]
  },
  {
+  "key": "retool",
+  "kind": "str",
+  "refs": [
+   "engine/ai.ts:155 call:aiCan"
+  ]
+ },
+ {
   "key": "minelayer",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:210 call:roleDesign",
-   "engine/ai.ts:215 call:count",
-   "engine/ai.ts:436",
-   "engine/ai.ts:437"
+   "engine/ai.ts:273 call:roleDesign",
+   "engine/ai.ts:278 call:count",
+   "engine/ai.ts:507",
+   "engine/ai.ts:508"
   ]
  },
  {
   "key": "picket",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:527"
+   "engine/ai.ts:601"
+  ]
+ },
+ {
+  "key": "hubs",
+  "kind": "str",
+  "refs": [
+   "engine/ai.ts:610 call:aiCan",
+   "engine/ai.ts:617 call:aiCan"
+  ]
+ },
+ {
+  "key": "reserve",
+  "kind": "str",
+  "refs": [
+   "engine/ai.ts:704 call:aiCan"
   ]
  },
  {
   "key": "vendetta",
   "kind": "str",
   "refs": [
-   "engine/ai3.ts:68 call:wants",
+   "engine/ai3.ts:69 call:wants",
    "engine/objectives.ts:141"
   ]
  },
@@ -112,14 +134,21 @@
   "key": "cartographer",
   "kind": "str",
   "refs": [
-   "engine/ai3.ts:73 call:wants"
+   "engine/ai3.ts:74 call:wants"
   ]
  },
  {
   "key": "architect",
   "kind": "str",
   "refs": [
-   "engine/ai3.ts:175 call:wants"
+   "engine/ai3.ts:176 call:wants"
+  ]
+ },
+ {
+  "key": "counter",
+  "kind": "str",
+  "refs": [
+   "engine/ai4.ts:336 call:aiCan"
   ]
  },
  {
@@ -339,6 +368,14 @@
   "kind": "str",
   "refs": [
    "engine/dilemmas.ts:161 call:rngOf"
+  ]
+ },
+ {
+  "key": "coalition",
+  "kind": "str",
+  "refs": [
+   "engine/diplomacy.ts:231 call:aiCan",
+   "engine/diplomacy.ts:668 call:aiCan"
   ]
  },
  {
@@ -637,14 +674,14 @@
   "refs": [
    "engine/turn.ts:67 prop:defenses",
    "engine/turn.ts:67 prop:autoDefenses",
-   "engine/turn.ts:148"
+   "engine/turn.ts:151"
   ]
  },
  {
   "key": "retro",
   "kind": "str",
   "refs": [
-   "engine/turn.ts:477"
+   "engine/turn.ts:480"
   ]
  },
  {
@@ -1270,7 +1307,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/index.tsx:47 prop:file",
-   "ui/dialogs/newgame.tsx:84 prop:file"
+   "ui/dialogs/newgame.tsx:91 prop:file"
   ]
  },
  {
@@ -1357,14 +1394,14 @@
   "key": "races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:40 call:seedFromString"
+   "ui/dialogs/newgame.tsx:47 call:seedFromString"
   ]
  },
  {
   "key": "preset",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:181 attr:class"
+   "ui/dialogs/newgame.tsx:189 attr:class"
   ]
  },
  {

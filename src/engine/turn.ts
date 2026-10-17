@@ -71,6 +71,9 @@ const AUTO_WORDS: Record<string, [string, string]> = {
   factory: ['usine', 'usines'], mine: ['mine', 'mines'], defense: ['défense', 'défenses'], terraform: ['terraformation', 'terraformations'], alchemy: ['conversion alchimique', 'conversions alchimiques'], packet: ['paquet', 'paquets'],
 };
 
+/** 0.3.9.14: for the AI arena (scripts/ai-arena.ts): another AI may play some computers (true: it played this one). */
+export const aiHooks: { run?: (game: GameState, p: Player, rng: Rng) => boolean } = {};
+
 export function generateTurn(game: GameState) {
   const rng = new Rng(game.rng);
   startChronicle(game);
@@ -78,7 +81,7 @@ export function generateTurn(game: GameState) {
   // one) is kept for this year's reports: the reports were cleared just after, and those messages never showed
   const told = game.players.map(p => p.messages.length);
   runDiplomacy(game);
-  for (const p of game.players) if (p.ai && !p.dead) runAI(game, p, rng);
+  for (const p of game.players) if (p.ai && !p.dead && !aiHooks.run?.(game, p, rng)) runAI(game, p, rng);
   const early = game.players.map((p, i) => p.messages.slice(told[i]).filter(m => m.kind === 'diplomacy'));
   const techBefore = game.players.map(p => new Set(availableTechNames(p)));
   const levelsBefore = game.players.map(p => ({ ...p.tech }));

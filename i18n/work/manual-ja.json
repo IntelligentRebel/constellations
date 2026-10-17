@@ -1841,5 +1841,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "この設計の艦船はすべて改修待ちです",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "この行で改修できる艦船は最大{0}隻です（残りはすでに造船所にあるか、存在しません）。",
  "sur {0}{1} · ": "/ {0}{1} · ",
- " ({0} déjà en chantier)": "（{0}隻はすでに造船所）"
+ " ({0} déjà en chantier)": "（{0}隻はすでに造船所）",
+ "Votre avance les pousse à s'unir contre vous": "貴国の優位が、彼らを貴国に対する団結へと駆り立てています",
+ "Un rival commun": "共通の競争相手",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "単純な経済と戦争、研究は少なめ、戦争は遅め。",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "経済と防衛を管理します：艦船とステーションを改修し、脅かされた世界を守り、艦隊をまとめ、より速く拡大し、鉱物を無駄にしません。",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Standardに加え、侵攻を計画し、敵の艦船に対抗する艦を設計し、ゲームを支配する帝国に対して他国と同盟します。研究はより速く、戦争はより早く。",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "難しいと同じで、研究が最も速く、戦争が最も早い。",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "{0}の国境が、{1}が向かっていた出口まで広がりました：最寄りの国境は現在{2}光年先にあり、{3}年までに越える必要があります。"
 }

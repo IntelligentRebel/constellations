@@ -18,6 +18,7 @@ import { fleetStrength } from './factions';
 import { warOnPortal } from './diplomacy';
 import { intelOn, agencyBlocker, agencyOf, spyBlocker } from './espionage';
 import { capitalOf } from './empire';
+import { pendingRefit } from './refit';
 
 const has = (game: GameState, p: Player, pred: (q: QueueItem) => boolean) => game.planets.some(pl => pl.owner === p.id && pl.queue.some(pred));
 const insertBeforeAuto = (pl: Planet, item: QueueItem) => { const i = pl.queue.findIndex(q => isAuto(q.kind)); pl.queue.splice(i < 0 ? pl.queue.length : i, 0, item); };
@@ -205,7 +206,7 @@ function aiBeacons(game: GameState, p: Player) {
   for (const b of beacons) {
     const bs = fleetSpec(game, b);
     const strength = Math.max(1, bs.armor + bs.shields) * Math.max(1, bs.powerRating);
-    const ships = game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && f.waypoints.length <= 1 && f.orbiting >= 0 && game.planets[f.orbiting].owner === p.id && fleetSpec(game, f).hasWeapons)
+    const ships = game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && f.waypoints.length <= 1 && f.orbiting >= 0 && game.planets[f.orbiting].owner === p.id && fleetSpec(game, f).hasWeapons && !f.aiGuard && !pendingRefit(game, f))
       .sort((a, c) => distance(a, b) - distance(c, b));
     let hp = 0, pow = 0;
     const group: typeof ships = [];
@@ -237,7 +238,7 @@ function aiGuardians(game: GameState, p: Player) {
   // idle warships, by the planet they guard
   const groups = new Map<number, typeof game.fleets>();
   for (const f of game.fleets) {
-    if (f.owner !== p.id || f.purpose !== 'warship' || f.waypoints.length > 1 || f.orbiting < 0) continue;
+    if (f.owner !== p.id || f.purpose !== 'warship' || f.waypoints.length > 1 || f.orbiting < 0 || f.aiGuard || pendingRefit(game, f)) continue;
     if (game.planets[f.orbiting].owner !== p.id || !fleetSpec(game, f).hasWeapons) continue;
     const l = groups.get(f.orbiting) ?? []; l.push(f); groups.set(f.orbiting, l);
   }
@@ -266,7 +267,7 @@ function aiPirates(game: GameState, p: Player) {
   for (const f of game.fleets) if (f.owner === p.id && f.aiGuard && f.aiGuard.until < game.year) f.aiGuard = undefined;
   if (!piratesActive(game)) return;
   const st = p.aiState;
-  const idleWar = () => game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && !f.aiGuard && f.waypoints.length <= 1 && f.orbiting >= 0
+  const idleWar = () => game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && !f.aiGuard && f.waypoints.length <= 1 && f.orbiting >= 0 && !pendingRefit(game, f)
     && game.planets[f.orbiting].owner === p.id && fleetSpec(game, f).hasWeapons && fleetSpec(game, f).hasEngines);
   // 1. raids announced against us
   for (const raid of raidsAgainst(game, p.id)) {

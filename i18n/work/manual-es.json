@@ -1822,5 +1822,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "todas las naves de este modelo ya están en modernización",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Naves a modernizar en esta línea: {0} como máximo (las demás ya están en el astillero o no existen).",
  "sur {0}{1} · ": "de {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} ya en el astillero)"
+ " ({0} déjà en chantier)": " ({0} ya en el astillero)",
+ "Votre avance les pousse à s'unir contre vous": "Tu ventaja los empuja a unirse contra ti",
+ "Un rival commun": "Un rival común",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Economía y guerra sencillas, poca investigación, guerras tardías.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Cuida su economía y su defensa: moderniza sus naves y estaciones, defiende sus mundos amenazados, mantiene sus flotas agrupadas, se expande más rápido y no desperdicia sus minerales.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Como Standard, y además prepara sus invasiones, diseña sus naves contra las del enemigo y se alía con los demás contra el imperio que domina la partida. Investigación más rápida, guerras más tempranas.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Como Difícil, con la investigación más rápida y las guerras más tempranas.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "La frontera de los {0} ha avanzado hasta la salida que tomaba {1}: la frontera más cercana está ahora a {2} al, y tiene hasta {3} para cruzarla."
 }

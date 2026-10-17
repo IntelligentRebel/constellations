@@ -280,6 +280,8 @@ export interface BorderExit {
   auto?: boolean;
   /** year it was warned, past the deadline (war, or the scrapyard, the year after) */
   warned?: number;
+  /** 0.3.9.14: the ways out offered before (the territory grew over them): a fleet flying to one is leaving */
+  ways?: { x: number; y: number }[];
 }
 
 /** 0.3.9: a game played by turn files (pbem.ts). */
@@ -713,6 +715,14 @@ export interface AIState {
   portalTarget?: number;
   /** Constellations 3.4: the Breach of the crisis (planet id), while the Nexus stands */
   crisisTarget?: number;
+  /** 0.3.9.14: the enemy world the main fleet went to take (the troops follow once its orbit is held) */
+  siege?: number;
+  /** 0.3.9.14: the warships designed against the enemy's fleet (torpedoes or beams) */
+  counter?: 'beamWarship' | 'torpedoWarship';
+  /** 0.3.9.14: loaded colony ships with no world to go to (fleet id -> since when) */
+  idleColonizers?: Record<number, number>;
+  /** 0.3.9.14: refits waiting in a yard's queue (fleet id -> since when) */
+  refitSince?: Record<number, number>;
 }
 
 export type MinefieldType = 'standard' | 'heavy' | 'speedBump';

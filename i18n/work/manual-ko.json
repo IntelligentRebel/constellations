@@ -1840,5 +1840,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "이 설계의 함선은 모두 이미 개량 중입니다",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "이 줄에서 개량할 수 있는 함선은 최대 {0}척입니다(나머지는 이미 조선소에 있거나 존재하지 않습니다).",
  "sur {0}{1} · ": "{0}{1} 중 · ",
- " ({0} déjà en chantier)": " ({0}척은 이미 조선소에)"
+ " ({0} déjà en chantier)": " ({0}척은 이미 조선소에)",
+ "Votre avance les pousse à s'unir contre vous": "우리의 우위가 그들을 우리에 맞서 단결하게 만듭니다",
+ "Un rival commun": "공동의 경쟁자",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "단순한 경제와 전쟁, 적은 연구, 늦은 전쟁.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "경제와 방어를 관리합니다: 함선과 스테이션을 개량하고, 위협받는 세계를 지키고, 함대를 모아 두고, 더 빨리 확장하며 광물을 낭비하지 않습니다.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Standard와 같고, 침공을 계획하고, 적 함선에 맞서는 함선을 설계하며, 게임을 지배하는 제국에 맞서 다른 제국들과 동맹합니다. 더 빠른 연구, 더 이른 전쟁.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "어려움과 같으며, 연구가 가장 빠르고 전쟁이 가장 이릅니다.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "{0} 측 국경이 {1}이(가) 향하던 출구까지 넓어졌습니다: 가장 가까운 국경은 이제 {2}광년 떨어져 있으며, {3}년까지 넘어야 합니다."
 }

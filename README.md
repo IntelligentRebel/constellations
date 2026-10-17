@@ -7,7 +7,7 @@ entirely in the browser, offline, with nothing to install.
 
 **[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
 
-**Version 0.3.9.13** (early version: the numbering restarts at 0.x until the game is considered complete).
+**Version 0.3.9.14** (early version: the numbering restarts at 0.x until the game is considered complete).
 
 ![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
@@ -139,6 +139,7 @@ npm run sim -- 150 Small   # computer against computer for 150 years
 npm run fuzz              # random orders and invariant checks
 npx tsx scripts/tutorial-check.ts   # plays the whole tutorial without a browser
 npx tsx scripts/v39-check.ts        # checks of the latest features (one script per version)
+OLD=<copy of an older src/engine> npx tsx scripts/ai-arena.ts a1 100 expert   # the current AI against an older one, in the same games
 ```
 
 Code: `src/engine` (rules, no browser dependency, 100 % JSON state, deterministic randomness), `src/ui` (Preact),

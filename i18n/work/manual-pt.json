@@ -1830,5 +1830,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "todas as naves deste modelo já estão em modernização",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Naves a modernizar nesta linha: no máximo {0} (as outras já estão no estaleiro ou não existem).",
  "sur {0}{1} · ": "de {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} já no estaleiro)"
+ " ({0} déjà en chantier)": " ({0} já no estaleiro)",
+ "Votre avance les pousse à s'unir contre vous": "A sua vantagem os leva a se unir contra você",
+ "Un rival commun": "Um rival comum",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Economia e guerra simples, pouca pesquisa, guerras tardias.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Cuida da economia e da defesa: moderniza naves e estações, defende os mundos ameaçados, mantém as frotas agrupadas, expande-se mais rápido e não desperdiça minerais.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Como Standard, e ainda prepara invasões, projeta naves contra as do inimigo e se alia aos outros contra o império que domina a partida. Pesquisa mais rápida, guerras mais cedo.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Como Difícil, com a pesquisa mais rápida e as guerras mais cedo.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "A fronteira dos {0} avançou até a saída que {1} estava tomando: a fronteira mais próxima agora fica a {2} anos-luz, e ela tem até {3} para cruzá-la."
 }

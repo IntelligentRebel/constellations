@@ -1835,5 +1835,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "wszystkie statki tego modelu są już modernizowane",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Statki do modernizacji w tym wierszu: najwyżej {0} (pozostałe są już w stoczni albo nie istnieją).",
  "sur {0}{1} · ": "z {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} już w stoczni)"
+ " ({0} déjà en chantier)": " ({0} już w stoczni)",
+ "Votre avance les pousse à s'unir contre vous": "Twoja przewaga skłania ich do zjednoczenia się przeciw tobie",
+ "Un rival commun": "Wspólny rywal",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Prosta gospodarka i wojna, mało badań, późne wojny.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Dba o gospodarkę i obronę: modernizuje statki i stacje, broni zagrożonych światów, trzyma floty razem, szybciej się rozwija i nie marnuje minerałów.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Jak Standard, a do tego przygotowuje inwazje, projektuje statki przeciw statkom wroga i sprzymierza się z innymi przeciw imperium, które dominuje w grze. Szybsze badania, wcześniejsze wojny.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Jak Trudny, z najszybszymi badaniami i najwcześniejszymi wojnami.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "Granica (rasa: {0}) przesunęła się aż do wyjścia, ku któremu zmierzała flota {1}: najbliższa granica jest teraz {2} l.św. stąd, a flota ma czas do {3} roku, by ją przekroczyć."
 }

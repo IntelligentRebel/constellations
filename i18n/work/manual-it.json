@@ -1823,5 +1823,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "tutte le navi di questo modello sono già in ammodernamento",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Navi da ammodernare in questa riga: al massimo {0} (le altre sono già in cantiere o non esistono).",
  "sur {0}{1} · ": "su {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} già in cantiere)"
+ " ({0} déjà en chantier)": " ({0} già in cantiere)",
+ "Votre avance les pousse à s'unir contre vous": "Il tuo vantaggio li spinge a unirsi contro di te",
+ "Un rival commun": "Un rivale comune",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Economia e guerra semplici, poca ricerca, guerre tardive.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Cura la sua economia e la sua difesa: ammoderna navi e stazioni, difende i mondi minacciati, tiene unite le flotte, si espande più in fretta e non spreca i minerali.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Come Standard, e in più prepara le invasioni, progetta le navi contro quelle del nemico e si allea con gli altri contro l'impero che domina la partita. Ricerca più rapida, guerre più precoci.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Come Difficile, con la ricerca più rapida e le guerre più precoci.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "Il confine di {0} è avanzato fino all'uscita che stava prendendo {1}: il confine più vicino è ora a {2} anni luce, e ha tempo fino al {3} per attraversarlo."
 }

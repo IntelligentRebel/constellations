@@ -1826,5 +1826,12 @@
  "tous les vaisseaux de ce modèle sont déjà en modernisation": "alle Schiffe dieses Modells werden bereits umgerüstet",
  "Vaisseaux à moderniser sur cette ligne : {0} au plus (les autres sont déjà en chantier ou n'existent pas).": "Umzurüstende Schiffe in dieser Zeile: höchstens {0} (die anderen sind bereits in der Werft oder existieren nicht).",
  "sur {0}{1} · ": "von {0}{1} · ",
- " ({0} déjà en chantier)": " ({0} bereits in der Werft)"
+ " ({0} déjà en chantier)": " ({0} bereits in der Werft)",
+ "Votre avance les pousse à s'unir contre vous": "Ihr Vorsprung treibt sie dazu, sich gegen Sie zu verbünden",
+ "Un rival commun": "Ein gemeinsamer Rivale",
+ "Économie et guerre simples, peu de recherche, des guerres tardives.": "Einfache Wirtschaft und Kriegsführung, wenig Forschung, späte Kriege.",
+ "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "Pflegt Wirtschaft und Verteidigung: rüstet Schiffe und Stationen um, verteidigt bedrohte Welten, hält seine Flotten zusammen, expandiert schneller und verschwendet keine Mineralien.",
+ "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Wie Standard, plant zudem Invasionen, entwirft Schiffe gegen die des Feindes und verbündet sich mit den anderen gegen ein Imperium, das die Partie beherrscht. Schnellere Forschung, frühere Kriege.",
+ "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "Wie Schwer, mit der schnellsten Forschung und den frühesten Kriegen.",
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "Die Grenze der {0} hat sich bis zu dem Ausgang vorgeschoben, den {1} nehmen wollte: Die nächste Grenze ist jetzt {2} Lj entfernt, und die Flotte hat bis {3} Zeit, sie zu überqueren."
 }

@@ -18,6 +18,7 @@ import { addChronicle } from './chronicle';
 import { actOf } from './acts';
 import { worldGrudge, warGrudge, isNemesis, swornAgainst } from './nemesis';
 import { bordersGrievance, bordersWarPush, closedTo, bordersOn, setBorders, openForAllies, hindrance } from './borders';
+import { aiCan } from './aiskill';
 
 export const diplomacyOn = (game: GameState) => !!game.settings.diplomacy && !!game.diplomacy;
 const isEmp = (game: GameState, id: number) => !!game.players[id] && !game.players[id].monster;
@@ -129,6 +130,27 @@ const MEMORY_LABELS: Record<DiploMemory['kind'], string> = {
   choice: 'Vos décisions à leur égard',
 };
 const score = (p: Player) => p.scores[p.scores.length - 1]?.score ?? 0;
+
+/**
+ * 0.3.9.14: how far an empire runs away with the game, from 0 (not at all) to 1: the leader of three empires or more,
+ * 40 % ahead of the next one at least and holding 30 % of all the scores.
+ */
+export function runaway(game: GameState, id: number): number {
+  const live = game.players.filter(p => isEmp(game, p.id) && !p.dead);
+  if (live.length < 3) return 0;
+  const sc = live.map(p => ({ id: p.id, s: score(p) })).sort((a, b) => b.s - a.s);
+  if (sc[0].id !== id) return 0;
+  const total = sc.reduce((a, x) => a + x.s, 0);
+  const lead = sc[0].s / Math.max(1, sc[1].s);
+  if (lead < 1.4 || sc[0].s < total * 0.3) return 0;
+  return Math.min(1, 0.2 + (lead - 1.4) / 1.1);
+}
+/** The empire running away with the game, if any. */
+function runawayLeader(game: GameState): number | undefined {
+  const live = game.players.filter(p => isEmp(game, p.id) && !p.dead);
+  const top = live.sort((a, b) => score(b) - score(a))[0];
+  return top && runaway(game, top.id) > 0 ? top.id : undefined;
+}
 /** Military weight (proportional to the size of the navy). */
 export const power = (game: GameState, id: number) => Math.sqrt(navyStrength(game, id));
 /** Constellations 3.5: the military weight of `about` as `of` believes it (exact with good intelligence). */
@@ -205,6 +227,15 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   if (common) add('Ennemi commun', 12);
   if (game.crisis?.phase === 'active') add('Les Moissonneurs', 15);
   if (score(b) > 1.5 * Math.max(1, score(a))) add('Votre puissance les inquiète', -10);
+  // 0.3.9.14: the better computers band together against an empire that runs away with the game
+  if (a.ai && aiCan(a, 2, 'coalition')) {
+    const r = runaway(game, about);
+    if (r > 0) add('Votre avance les pousse à s\'unir contre vous', -(10 + 25 * r));
+    else {
+      const lead = runawayLeader(game);
+      if (lead !== undefined && lead !== of && lead !== about) add('Un rival commun', 6 + 8 * runaway(game, lead));
+    }
+  }
   const portal = game.settings.megaprojects ? portalThreat(game) : null;
   if (portal && portal.owner === about && portal.announced > 0) add('Vous construisez le Portail', -40);
   if (isNemesis(game, of, about)) add('Ils ont juré votre perte', -60);
@@ -633,6 +664,8 @@ export function warDesire(game: GameState, ai: number, other: number): number {
   if (!game.players[other].ai) d += 5; // a little more often the player: livelier games
   if (isNemesis(game, ai, other)) d += 70;
   d += bordersWarPush(game, ai, other);
+  // 0.3.9.14: the empire running away with the game is the one to stop
+  if (aiCan(game.players[ai], 2, 'coalition')) d += Math.round(25 * runaway(game, other));
   return Math.round(d);
 }
 

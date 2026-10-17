@@ -25,6 +25,9 @@ import { colonyBlocker, cultureOn, CULTURE_BUILDINGS, PATRONAGE, hasReq } from '
 import { swornAgainst, isNemesis, counterPurpose } from './nemesis';
 import { actOf } from './acts';
 import { dangerAt } from './cataclysms';
+import { aiCan, aiOff } from './aiskill';
+import { busy, aiRefits, aiStations, aiDefend, hubsOf, toHub, mergeAtHubs, mineralRich, mineralShort, researchBoost, warCounter, idleColonyShip, baseRole } from './ai4';
+import { pendingRefit } from './refit';
 
 const RESEARCH_PLAN: Partial<Record<Field, number>>[] = [
   { propulsion: 2, biotechnology: 1 }, { energy: 1, weapons: 1 }, { construction: 4, electronics: 2 }, { weapons: 6, biotechnology: 3 },
@@ -65,6 +68,10 @@ export function runAI(game: GameState, p: Player, rng: Rng) {
     st.targetPlayer = t;
   }
   runAI3(game, p);
+  // 0.3.9.14: the worlds threatened are defended first, idle ships at the yards refitted, stations replaced
+  aiDefend(game, p);
+  aiRefits(game, p);
+  aiStations(game, p);
   production(game, p, rng);
   fleets(game, p, rng);
 }
@@ -93,6 +100,9 @@ function pickEnemy(game: GameState, p: Player, enemies: number[]): number | unde
 }
 
 function chooseResearch(game: GameState, p: Player) {
+  // 0.3.9.14: what the empire lacks comes before the plan
+  const boost = researchBoost(game, p);
+  if (boost) { p.researching = boost; p.nextField = 'same'; return; }
   for (const step of RESEARCH_PLAN) {
     let best: Field | null = null;
     for (const f of FIELDS) {
@@ -119,7 +129,7 @@ const DESIGN_ROLES: { role: string; purpose: Purpose; hulls: string[] }[] = [
   { role: 'minelayer', purpose: 'mineLayer', hulls: ['Super Mine Layer', 'Mini Mine Layer', 'Galleon', 'Frigate', 'Cruiser', 'Privateer', 'Destroyer'] },
 ];
 
-function roleDesign(game: GameState, p: Player, role: string): ShipDesign | undefined {
+export function roleDesign(game: GameState, p: Player, role: string): ShipDesign | undefined {
   return game.designs.filter(d => d.owner === p.id && !d.deleted && !d.alien && d.purpose === role).sort((a, b) => b.id - a.id)[0];
 }
 
@@ -131,12 +141,8 @@ function updateDesigns(game: GameState, p: Player) {
     if (r.role === 'colonizer' && hull === 'Medium Freighter') continue;
     if (r.role === 'freighter' && p.ai && raceSpec(p.race).livesOnStarbases) continue;
     // 0.3.9: a nemesis arms its warships against yours
-    const d = autoDesign(p, hull, r.role === 'warship' ? counterPurpose(game, p) ?? r.purpose : r.purpose, '');
-    if (!d) continue;
-    if (r.role === 'colonizer' && !d.slots.some(s => /Colonization|Orbital Construction/.test(s.part))) continue;
-    if (r.role === 'bomber' && !d.slots.some(s => designSpec(p, d).bombs.length > 0 && s)) continue;
-    if (r.role === 'minelayer' && !(designSpec(p, d).mineLaying.standard > 0)) continue;
-    if (r.role === 'tanker' && designSpec(p, d).fuelCapacity < 350) continue;
+    const d = autoDesign(p, hull, r.role === 'warship' ? counterPurpose(game, p) ?? warCounter(game, p) ?? r.purpose : r.purpose, '');
+    if (!d || !fitFor(p, r.role, d)) continue;
     d.purpose = r.role;
     const old = roleDesign(game, p, r.role);
     if (old && old.hull === d.hull && JSON.stringify(old.slots) === JSON.stringify(d.slots)) continue;
@@ -145,7 +151,55 @@ function updateDesigns(game: GameState, p: Player) {
     addDesign(game, d);
     // retire old design of that role from future production (keep for existing ships)
     if (old) old.deleted = true;
+    // 0.3.9.14: the production lines that were building it build the new one
+    if (old && aiCan(p, 1, 'retool')) for (const pl of game.planets) if (pl.owner === p.id) for (const q of pl.queue) {
+      if ((q.kind === 'ship' || q.kind === 'starbase') && q.designId === old.id) q.designId = d.id;
+      // a refit to it goes on to the new one when the hull is the same (the yard cancels it otherwise)
+      if (q.kind === 'refit' && q.designId === old.id && d.hull === old.hull) q.designId = d.id;
+    }
   }
+  if (aiCan(p, 1, 'refit')) refitDesigns(game, p, hulls);
+}
+
+/**
+ * 0.3.9.14: the ships of an older hull still in service (two or more) get a design of their role on that hull with
+ * today's parts, to be refitted to; it is never built new ('warship:refit' and so on).
+ */
+const REFITTED = new Set(['warship', 'bomber']);
+function refitDesigns(game: GameState, p: Player, hulls: Set<string>) {
+  const inService = new Map<string, number>();
+  for (const f of game.fleets) if (f.owner === p.id) for (const t of f.tokens) {
+    const d = game.designs.find(x => x.id === t.designId);
+    const role = baseRole(d);
+    if (!d || !role || d.starbase || !REFITTED.has(role)) continue;
+    const k = `${role}|${d.hull}`;
+    inService.set(k, (inService.get(k) ?? 0) + t.qty);
+  }
+  for (const [k, n] of inService) {
+    const [role, hull] = k.split('|');
+    if (n < 2 || !hulls.has(hull)) continue;
+    const main = roleDesign(game, p, role);
+    if (!main || main.hull === hull) continue;
+    const r = DESIGN_ROLES.find(x => x.role === role)!;
+    const d = autoDesign(p, hull, role === 'warship' ? counterPurpose(game, p) ?? warCounter(game, p) ?? r.purpose : r.purpose, '');
+    if (!d || !d.slots.length || !fitFor(p, role, d)) continue;
+    const old = game.designs.filter(x => x.owner === p.id && !x.deleted && x.purpose === `${role}:refit` && x.hull === hull)[0];
+    if (old && JSON.stringify(old.slots) === JSON.stringify(d.slots)) continue;
+    d.purpose = `${role}:refit`;
+    const count = game.designs.filter(x => x.owner === p.id && baseRole(x) === role).length;
+    d.name = `${roleName(role)} ${romanize(count + 1)}`;
+    addDesign(game, d);
+    if (old) old.deleted = true;
+  }
+}
+
+/** Does an automatic design do its role's job? */
+function fitFor(p: Player, role: string, d: ShipDesign): boolean {
+  if (role === 'colonizer' && !d.slots.some(s => /Colonization|Orbital Construction/.test(s.part))) return false;
+  if (role === 'bomber' && !(designSpec(p, d).bombs.length > 0)) return false;
+  if (role === 'minelayer' && !(designSpec(p, d).mineLaying.standard > 0)) return false;
+  if (role === 'tanker' && designSpec(p, d).fuelCapacity < 350) return false;
+  return true;
 }
 
 function roleName(role: string): string {
@@ -189,10 +243,16 @@ function production(game: GameState, p: Player, rng: Rng) {
   // scouts still exploring (a short-legged one turned picket no longer counts)
   const scouts = myFleets.filter(f => f.purpose === 'scout' || (!f.purpose && designPurpose(f) === 'scout')).reduce((a, f) => a + f.tokens.reduce((b, t) => b + t.qty, 0), 0);
   const colonizers = myFleets.filter(f => fleetSpec(game, f).colonizer).length;
-  const targets = colonyTargets(game, p).length;
+  const targetList = colonyTargets(game, p), targets = targetList.length;
   const queuedColonizers = mine.reduce((a, pl) => a + pl.queue.filter(q => q.kind === 'ship' && game.designs.find(d => d.id === q.designId)?.purpose === 'colonizer').reduce((b, q) => b + q.qty, 0), 0);
   const queuedScouts = mine.reduce((a, pl) => a + pl.queue.filter(q => q.kind === 'ship' && game.designs.find(d => d.id === q.designId)?.purpose === 'scout').reduce((b, q) => b + q.qty, 0), 0);
-  let wantColonizers = Math.max(0, Math.min(targets, Math.ceil(mine.length / 2) + 1) - colonizers - queuedColonizers);
+  // 0.3.9.14: as many colony ships at once as the empire has good targets and output for (not half its worlds plus one)
+  const output = aiCan(p, 1, 'expand') ? mine.reduce((a, pl) => a + planetSpec(game, pl, p).resources, 0) : 0;
+  const pace = aiCan(p, 1, 'expand') ? Math.max(Math.ceil(mine.length / 2) + 1, Math.min(mine.length + 2, 2 + Math.floor(output / 120))) : Math.ceil(mine.length / 2) + 1;
+  // the colony ships beyond the old pace go only to good worlds
+  const good = aiCan(p, 1, 'expand') ? targetList.filter(t => t.value >= 30).length : 0;
+  const wanted = Math.max(Math.min(targets, Math.ceil(mine.length / 2) + 1), Math.min(good, pace));
+  let wantColonizers = Math.max(0, wanted - colonizers - queuedColonizers);
   let wantScouts = Math.max(0, (game.year - 2400 < 30 ? 2 + Math.trunc(game.planets.length / 60) : 1) - scouts - queuedScouts);
   const warships = count('warship'), bombers = count('bomber');
   // troop transports for invasions
@@ -200,6 +260,9 @@ function production(game: GameState, p: Player, rng: Rng) {
   let wantFreighters = 0;
   if (st.phase === 'war' && freD) {
     const needs = troopTargets(game, p).map(t => t.needKt).sort((a, b) => a - b).slice(0, 3);
+    // 0.3.9.14: the troops for the world under siege are ready before its orbit is won
+    const sieged = aiCan(p, 2, 'siege') && st.siege !== undefined ? game.planets[st.siege] : undefined;
+    if (sieged && sieged.owner >= 0 && sieged.owner !== p.id) needs.push(invasionNeed(game, p, sieged));
     const need = Math.min(needs.length ? Math.max(...needs) : 0, 6000);
     const have = myFleets.filter(f => f.purpose === 'freighter').reduce((a, f) => a + fleetSpec(game, f).cargoCapacity, 0);
     const queued = mine.reduce((a, pl) => a + pl.queue.filter(q => q.kind === 'ship' && q.designId === freD.id).reduce((b, q) => b + q.qty, 0), 0);
@@ -230,7 +293,10 @@ function production(game: GameState, p: Player, rng: Rng) {
     // base economy items
     if (!rs.livesOnStarbases) {
       if (!inQueue(planet, 'autoFactories')) push(planet, 'autoFactories', 250);
-      if (!inQueue(planet, 'autoMines')) push(planet, 'autoMines', 250);
+      // 0.3.9.14: a world sitting on years of minerals builds no more mines (the resources go to factories and research)
+      const rich = aiCan(p, 1, 'minerals') && mineralRich(planet);
+      if (rich) planet.queue = planet.queue.filter(q => q.kind !== 'autoMines');
+      else if (!inQueue(planet, 'autoMines')) push(planet, 'autoMines', 250);
       if (st.phase !== 'expand' && !inQueue(planet, 'autoDefenses') && planet.pop > 50000) push(planet, 'autoDefenses', 50);
     }
     if (!inQueue(planet, 'autoMaxTerraform') && spec.canTerraform) push(planet, 'autoMaxTerraform', 10);
@@ -248,7 +314,7 @@ function production(game: GameState, p: Player, rng: Rng) {
     if (wantFreighters > 0 && canBuild(freD) && planet.pop > 100000) { const n = Math.min(wantFreighters, 4); push(planet, 'ship', n, freD!.id, true); wantFreighters -= n; }
     if (shipItems >= 3) continue;
     if (wantScouts > 0 && canBuild(scoutD)) { push(planet, 'ship', 1, scoutD!.id, true); wantScouts--; }
-    if (wantColonizers > 0 && canBuild(colD) && spec.maxPop > 0 && planet.pop / spec.maxPop > 0.2) { push(planet, 'ship', 1, colD!.id, true); wantColonizers--; }
+    if (wantColonizers > 0 && canBuild(colD) && spec.maxPop > 0 && planet.pop / spec.maxPop > (aiCan(p, 1, 'expand') && !aiOff('expand-hw') && planet.homeworld ? 0.12 : 0.2)) { push(planet, 'ship', 1, colD!.id, true); wantColonizers--; }
     if (st.phase !== 'expand' && spec.resources > 60) {
       const warWanted = (st.phase === 'war' ? 2 + Math.trunc((game.year - 2400) / 10) * mine.length : Math.trunc(mine.length / 2) + 1) * (swornAgainst(game, p.id).length ? 1.5 : 1);
       if (canBuild(warD) && warships < warWanted && !inQueue(planet, 'ship', warD!.id)) push(planet, 'ship', 1 + Math.trunc(spec.resources / 300), warD!.id);
@@ -268,7 +334,9 @@ function production(game: GameState, p: Player, rng: Rng) {
     // Packet Physicists bombard the enemy with mineral packets
     if (p.race.prt === 'PP' && planet.starbase && hasMassDriver(game, planet)) packets(game, p, planet);
     // alchemy if starving on minerals
-    if (planet.queue.length > 0 && !inQueue(planet, 'autoAlchemy') && game.year - 2400 > 60 && rng.chance(0.2)) push(planet, 'autoAlchemy', 1);
+    // (0.3.9.14: only on a world short of one, alchemy turns resources into minerals)
+    if (planet.queue.length > 0 && !inQueue(planet, 'autoAlchemy') && game.year - 2400 > 60 && (!aiCan(p, 1, 'minerals') || mineralShort(planet)) && rng.chance(0.2)) push(planet, 'autoAlchemy', 1);
+    if (aiCan(p, 1, 'minerals') && inQueue(planet, 'autoAlchemy') && !mineralShort(planet)) planet.queue = planet.queue.filter(q => q.kind !== 'autoAlchemy');
   }
 }
 
@@ -298,7 +366,7 @@ function packets(game: GameState, p: Player, planet: Planet) {
 
 // ------------------------------------------------------------------ fleets
 
-function colonyTargets(game: GameState, p: Player): { planet: Planet; value: number }[] {
+export function colonyTargets(game: GameState, p: Player): { planet: Planet; value: number }[] {
   const res: { planet: Planet; value: number }[] = [];
   for (const pi of p.intel.planets) {
     if (pi.year === undefined || !pi.hab || pi.guardian || pi.lair) continue;
@@ -425,9 +493,12 @@ function fleets(game: GameState, p: Player, rng: Rng) {
     if (game.fleets.some(f => f.id === fid)) claimed.add(+pid); else delete st.colonyTargets[+pid];
   }
   const homes = game.planets.filter(x => x.owner === p.id);
+  let hubs: Planet[] | undefined;
   for (const f of myFleets) {
+    if (!game.fleets.includes(f)) continue; // merged at a hub
     if (f.auto === 'logistics') continue; // the logistics network flies these
     if (f.aiGuard && f.aiGuard.until >= game.year) continue; // 3.4: guarding a world against a raid
+    if (pendingRefit(game, f)) continue; // 0.3.9.14: waiting in orbit for a refit
     const spec = fleetSpec(game, f);
     if (!spec.hasEngines) continue;
     const idle = f.waypoints.length <= 1;
@@ -487,8 +558,11 @@ function fleets(game: GameState, p: Player, rng: Rng) {
       }
       if (!done) {
         f.waypoints = [home];
-        if (crawl && safeGoto(game, f, { x: crawl.x, y: crawl.y, planetId: crawl.id }, 'colonize', false)) { st.colonyTargets[crawl.id] = f.id; claimed.add(crawl.id); }
+        if (crawl && safeGoto(game, f, { x: crawl.x, y: crawl.y, planetId: crawl.id }, 'colonize', false)) { st.colonyTargets[crawl.id] = f.id; claimed.add(crawl.id); done = true; }
       }
+      // 0.3.9.14: nowhere to go for years: its colonists are put to use
+      if (done) delete st.idleColonizers?.[f.id];
+      else idleColonyShip(game, p, f);
       continue;
     }
     if (!idle) continue;
@@ -532,12 +606,15 @@ function fleets(game: GameState, p: Player, rng: Rng) {
       }
       continue;
     }
+    // 0.3.9.14: idle warships and bombers wait at the nearest hub, where they make one fleet
+    if ((role === 'warship' || role === 'bomber') && aiCan(p, 1, 'hubs')) { hubs ??= hubsOf(game, p); toHub(game, p, f, hubs); continue; }
     if (role === 'warship' && homes.length) {
       // patrol around the most populous planet
       const home = homes.sort((a, b) => b.pop - a.pop)[0];
       if (distance(home, f) > 0) travel(game, f, { x: home.x, y: home.y, planetId: home.id });
     }
   }
+  if (aiCan(p, 1, 'hubs')) mergeAtHubs(game, p, hubs ?? hubsOf(game, p));
   if (st.phase === 'war' && st.crisisTarget !== undefined) crisisFleets(game, p, game.planets[st.crisisTarget]);
   else if (st.phase === 'war' && st.targetPlayer !== undefined) warFleets(game, p);
   troopFleets(game, p);
@@ -615,13 +692,22 @@ function warFleets(game: GameState, p: Player) {
   const enemyPlanets = portal && portal.owner === st.targetPlayer ? [portal] : p.intel.planets.filter(pi => pi.owner === st.targetPlayer).map(pi => game.planets[pi.id]);
   const homes = game.planets.filter(x => x.owner === p.id);
   const docks = homes.filter(h => canRefuelAt(game, p, h));
-  const war = () => game.fleets.filter(f => f.owner === p.id && (f.purpose === 'warship' || f.purpose === 'bomber') && !(f.aiGuard && f.aiGuard.until >= game.year));
+  const war = () => game.fleets.filter(f => f.owner === p.id && (f.purpose === 'warship' || f.purpose === 'bomber') && !busy(game, f));
   if (!docks.length) return;
   let staging = docks[0], sd = Infinity;
   for (const d of docks) for (const e of enemyPlanets) { const dd = distance(d, e); if (dd < sd) { sd = dd; staging = d; } }
   st.staging = staging.id;
+  // 0.3.9.14: the world under siege, while it is still the enemy's and the fleet is still there or on its way
+  if (st.siege !== undefined && (game.planets[st.siege].owner === p.id || game.planets[st.siege].owner < 0 || p.relations[game.planets[st.siege].owner] !== 'enemy'
+    || !game.fleets.some(f => f.owner === p.id && f.purpose === 'warship' && (f.orbiting === st.siege || f.waypoints.some(w => w.targetId === st.siege && w.target === 'planet'))))) st.siege = undefined;
+  // 0.3.9.14: a reserve of a quarter of the war fleet stays at the other hubs
+  const hubs = aiCan(p, 1, 'reserve') ? hubsOf(game, p).filter(h => h.id !== staging.id) : [];
+  const quota = hubs.length ? war().reduce((a, f) => a + combatScore(game, f), 0) * 0.25 / hubs.length : 0;
+  const kept = new Map<number, number>();
   for (const f of war()) {
     if (f.waypoints.length > 1) continue;
+    const hub = f.purpose === 'warship' && f.orbiting >= 0 ? hubs.find(h => h.id === f.orbiting) : undefined;
+    if (hub && (kept.get(hub.id) ?? 0) < quota) { kept.set(hub.id, (kept.get(hub.id) ?? 0) + combatScore(game, f)); continue; }
     const here = f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
     if (here && here.owner >= 0 && here.owner !== p.id && p.relations[here.owner] === 'enemy') {
       // siege: hold the orbit (bombers bomb, troops follow) unless badly hurt
@@ -656,7 +742,7 @@ function warFleets(game: GameState, p: Player) {
   const home = main.waypoints[0];
   for (const c of cands.sort((a, b) => b.sc - a.sc).slice(0, 8)) {
     main.waypoints = [home];
-    if (safeGoto(game, main, { x: c.e.x, y: c.e.y, planetId: c.e.id }, 'none', false) && decentLeg(game, main)) return;
+    if (safeGoto(game, main, { x: c.e.x, y: c.e.y, planetId: c.e.id }, 'none', false) && decentLeg(game, main)) { if (aiCan(p, 2, 'siege')) st.siege = c.e.id; return; }
   }
   main.waypoints = [home];
 }
@@ -677,7 +763,7 @@ function crisisFleets(game: GameState, p: Player, breach: Planet) {
   const rally = { x: Math.round(breach.x + (staging.x - breach.x) * RALLY / d), y: Math.round(breach.y + (staging.y - breach.y) * RALLY / d) };
   const near = (f: Fleet) => distance(f, breach) <= TRUCE_RADIUS;
   const hurt = (f: Fleet) => { const sp = fleetSpec(game, f); return f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0) > (sp.armor + sp.shields) * 0.5; };
-  const war = () => game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && !(f.aiGuard && f.aiGuard.until >= game.year));
+  const war = () => game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && !busy(game, f));
   // fleets add up (Lanchester): hit points with hit points, firepower with firepower
   const pool = (fs: Fleet[]) => { let hp = 0, pow = 0; for (const f of fs) { const sp = fleetSpec(game, f); hp += Math.max(0, sp.armor + sp.shields - f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0)); pow += sp.powerRating; } return hp * pow; };
   // everything armed gathered around the Breach, whoever it belongs to (the truce holds there)
@@ -730,14 +816,21 @@ export function troopTargets(game: GameState, p: Player): { planet: Planet; need
     if (st.targetPlayer !== undefined && pi.owner !== st.targetPlayer) continue;
     if (pi.starbaseDesign !== undefined || pi.year === undefined || game.year - pi.year > 3) continue;
     const planet = game.planets[pi.id];
-    const defender = game.players[pi.owner];
-    const cov = planetSpec(game, planet, defender).defenseCoverage;
-    const atk = raceSpec(p.race).invasionAttack, def = raceSpec(defender.race).invasionDefend;
-    const pop = (pi.pop ?? 0) * Math.pow(1.12, game.year - pi.year) + 2500;
-    const need = pop * def / atk / Math.max(0.15, 1 - cov * 0.75) * 1.25;
-    res.push({ planet, needKt: Math.ceil(need / 100) });
+    res.push({ planet, needKt: invasionNeed(game, p, planet) });
   }
   return res;
+}
+
+/** The colonists (kT) an invasion of this enemy world takes, from what is known of it (a quarter more for safety). */
+export function invasionNeed(game: GameState, p: Player, planet: Planet): number {
+  const pi = p.intel.planets[planet.id];
+  const defender = game.players[planet.owner];
+  if (!defender) return 0;
+  const cov = planetSpec(game, planet, defender).defenseCoverage;
+  const atk = raceSpec(p.race).invasionAttack, def = raceSpec(defender.race).invasionDefend;
+  const pop = (pi.pop ?? 0) * Math.pow(1.12, game.year - (pi.year ?? game.year)) + 2500;
+  const need = pop * def / atk / Math.max(0.15, 1 - cov * 0.75) * 1.25;
+  return Math.ceil(need / 100);
 }
 
 function troopFleets(game: GameState, p: Player) {
@@ -751,12 +844,17 @@ function troopFleets(game: GameState, p: Player) {
   const targets = st.phase === 'war' ? troopTargets(game, p).filter(t => st.troopClaims![t.planet.id] === undefined) : [];
   const homes = game.planets.filter(x => x.owner === p.id && !raceSpec(p.race).livesOnStarbases);
   const surplusOf = (pl: Planet) => Math.trunc(pl.pop / 100) - Math.max(300, Math.trunc(planetSpec(game, pl, p).maxPop * 0.3 / 100));
+  // 0.3.9.14: the world under siege comes first; until its station falls, the troops wait, loaded, at the staging world
+  const sieged = aiCan(p, 2, 'siege') && st.phase === 'war' && st.siege !== undefined ? game.planets[st.siege] : undefined;
+  const first = (t: { planet: Planet }) => t.planet.id === sieged?.id ? 0 : 1;
+  const prep = sieged && !targets.some(t => t.planet.id === sieged.id) && st.troopClaims[sieged.id] === undefined ? invasionNeed(game, p, sieged) : 0;
+  const stage = st.staging !== undefined ? game.planets[st.staging] : undefined;
   for (const f of freighters()) {
     if (!game.fleets.includes(f) || f.waypoints.length > 1) continue;
     const here = f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
     // colonists left aboard at home: put them back
-    if (here && here.owner === p.id && f.cargo.colonists > 0 && !targets.length) transferWithPlanet(game, f, here, 'colonists', -f.cargo.colonists);
-    if (!targets.length) continue;
+    if (here && here.owner === p.id && f.cargo.colonists > 0 && !targets.length && !prep) transferWithPlanet(game, f, here, 'colonists', -f.cargo.colonists);
+    if (!targets.length && !prep) continue;
     if (!here || here.owner !== p.id) {
       const src = homes.filter(h => canRefuelAt(game, p, h)).sort((a, b) => surplusOf(b) - surplusOf(a))[0];
       if (src) travel(game, f, { x: src.x, y: src.y, planetId: src.id });
@@ -766,7 +864,7 @@ function troopFleets(game: GameState, p: Player) {
     f.purpose = 'freighter';
     const cap = fleetSpec(game, f).cargoCapacity - cargoMass(f.cargo) + f.cargo.colonists;
     const avail = surplusOf(here) + f.cargo.colonists;
-    const ok = targets.filter(t => t.needKt <= Math.min(cap, avail)).sort((a, b) => distance(here, a.planet) - distance(here, b.planet));
+    const ok = targets.filter(t => t.needKt <= Math.min(cap, avail)).sort((a, b) => first(a) - first(b) || distance(here, a.planet) - distance(here, b.planet));
     const t = ok[0];
     if (t) {
       if (f.cargo.colonists < t.needKt) transferWithPlanet(game, f, here, 'colonists', Math.min(cap, avail) - f.cargo.colonists);
@@ -776,6 +874,11 @@ function troopFleets(game: GameState, p: Player) {
         st.troopClaims[t.planet.id] = f.id;
         targets.splice(targets.indexOf(t), 1);
       }
+      continue;
+    }
+    if (prep) {
+      if (f.cargo.colonists < Math.min(cap, prep)) transferWithPlanet(game, f, here, 'colonists', Math.max(0, Math.min(cap, prep, avail) - f.cargo.colonists));
+      if (stage && stage.owner === p.id && here.id !== stage.id) travel(game, f, { x: stage.x, y: stage.y, planetId: stage.id });
       continue;
     }
     const smallest = Math.min(...targets.map(x => x.needKt));

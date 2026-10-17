@@ -84,7 +84,8 @@ async function main() {
     const by = f.borderExit!.by;
     const wp = B.exitOrder(g, f)!;
     f.waypoints = [f.waypoints[0], wp];
-    for (let y = 0; y < 10 && f.borderExit; y++) generateTurn(g);
+    // (like a player, it is ordered out again when told the border moved over its way out)
+    for (let y = 0; y < 10 && f.borderExit; y++) { if (f.waypoints.length <= 1 && f.borderExit) f.waypoints = [f.waypoints[0], B.exitOrder(g, f)!]; generateTurn(g); if (process.env.DBG) console.log(g.year, f.x, f.y, f.fuel, JSON.stringify(f.borderExit), f.waypoints.map(w => w.x + ',' + w.y + ':' + w.warp).join(' '), B.closedFor(g, 0, f), g.players[0].messages.filter(m => m.target?.id === f.id).map(m => m.text.slice(0, 90))); }
     check(!f.borderExit && g.year <= by && B.closedFor(g, 0, f) === -1 && DIP.statusOf(g, 0, 1) === 'peace', `ordered out by the shortest way, it is out in time (${g.year}, by ${by}): no war`);
   }
 
