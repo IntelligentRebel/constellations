@@ -49,8 +49,8 @@ It was created with the help of **Claude Opus 5.5** (Anthropic).
 
 - **Online**: [intelligentrebel.github.io/constellations](https://intelligentrebel.github.io/constellations/), nothing
   to install.
-- **Offline**: download the repository (green **Code** button, then **Download ZIP**), unzip it and open `index.html` in
-  a web browser. No server, no installation, no internet connection needed.
+- **Offline**: download the zip of the latest version from [Releases](https://github.com/IntelligentRebel/constellations/releases/latest),
+  unzip it and open `index.html` in a web browser. No server, no installation, no internet connection needed.
 - The online and offline copies keep their saves apart (each in its own browser storage): to move a game from one to
   the other, "Export" it, then "Import" it.
 - The game picks the language of your browser; if that language is not supported, it starts in English. You can

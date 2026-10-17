@@ -42,7 +42,7 @@ Il a été créé avec l'aide de **Claude Opus 5.5** (Anthropic).
 ## Jouer
 
 - **En ligne** : [intelligentrebel.github.io/constellations](https://intelligentrebel.github.io/constellations/), rien à installer.
-- **Hors ligne** : télécharger le dépôt (bouton vert **Code**, puis **Download ZIP**), le décompresser et ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation, pas besoin d'internet.
+- **Hors ligne** : télécharger le zip de la dernière version dans [Releases](https://github.com/IntelligentRebel/constellations/releases/latest), le décompresser et ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation, pas besoin d'internet.
 - La version en ligne et la version hors ligne gardent leurs sauvegardes séparément (chacune dans le stockage de son navigateur) : pour passer une partie de l'une à l'autre, « Exporter » puis « Importer ».
 - Le jeu prend la langue du navigateur ; si elle n'est pas prise en charge, il démarre en anglais. On la change sur l'écran d'accueil ou dans le menu « ⋯ ». Langues : English, 简体中文, Deutsch, Español, Português (Brasil), Русский, Français, 日本語, 한국어, Polski, Italiano.
 - Nouveau dans le jeu ? **✦ Tutoriel**, sur l'écran d'accueil, l'enseigne pas à pas dans une vraie partie, toujours sur la même carte : l'essentiel d'abord (une vingtaine de minutes), puis des chapitres facultatifs sur tout le reste. Une fiche explique chaque étape et entoure à l'écran ce dont elle parle ; les étapes qui demandent une action l'attendent, et « Le faire pour moi » l'exécute quand on bloque. On peut le fermer et le reprendre à tout moment (menu « ⋯ », ou écran d'accueil).
