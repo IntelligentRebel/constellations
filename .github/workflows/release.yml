@@ -1,0 +1,35 @@
+# Publishes a GitHub release for each version: when package.json (the version) or docs/releases/ changes on main,
+# and that version has no release yet, it zips the repository (index.html is the whole game) and creates the release
+# v<version>, with docs/releases/<version>.md as its notes.
+name: Release
+on:
+  push:
+    branches: [main]
+    paths: [package.json, 'docs/releases/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Version
+        id: v
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Already released?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.v.outputs.version }}" > /dev/null 2>&1; then echo "exists=1" >> "$GITHUB_OUTPUT"; fi
+      - name: Zip and release
+        if: steps.check.outputs.exists != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V="${{ steps.v.outputs.version }}"
+          zip -qr "Constellations_v$V.zip" . -x '.git/*' '.github/*' 'node_modules/*' 'dist/*'
+          NOTES="docs/releases/$V.md"
+          if [ ! -f "$NOTES" ]; then echo "The history of versions is in README.fr.md (in French)." > /tmp/notes.md; NOTES=/tmp/notes.md; fi
+          gh release create "v$V" "Constellations_v$V.zip" --title "Constellations $V" --notes-file "$NOTES" --target "$GITHUB_SHA" --latest
