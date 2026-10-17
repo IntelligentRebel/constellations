@@ -89,6 +89,12 @@ export const PRT_RAW: any[] = [
        "purpose": "Scout"
       },
       {
+       "name": "Shadow Transport",
+       "hullName": "Small Freighter",
+       "hullSetNumber": 2,
+       "purpose": "CloakedFreighter"
+      },
+      {
        "name": "Santa Maria",
        "hullName": "Colony Ship",
        "purpose": "Colonizer"
@@ -163,6 +169,11 @@ export const PRT_RAW: any[] = [
        "hullName": "Scout",
        "hullSetNumber": 1,
        "purpose": "FighterScout"
+      },
+      {
+       "name": "Stalwart Defender",
+       "hullName": "Destroyer",
+       "purpose": "StartingFighter"
       },
       {
        "name": "Gadfly",
@@ -422,7 +433,7 @@ export const PRT_RAW: any[] = [
    },
    "startingPlanets": [
     {
-     "population": 20000,
+     "population": 25000,
      "mines": 10,
      "factories": 10,
      "defenses": 10,
@@ -445,6 +456,7 @@ export const PRT_RAW: any[] = [
     },
     {
      "population": 10000,
+     "populationFromHomeworld": 5000,
      "mines": 10,
      "factories": 4,
      "habPenaltyFactor": 1,
@@ -470,7 +482,7 @@ export const PRT_RAW: any[] = [
    "detectPacketDestinationStarbases": true,
    "detectAllPackets": true,
    "packetTerraformChance": 0.5,
-   "packetPermaformChance": 0.001,
+   "packetPermaformChance": 0.1,
    "packetPermaTerraformSizeUnit": 100,
    "shipsVanishInVoid": true,
    "techsCostExtraLevel": 3,
@@ -502,7 +514,7 @@ export const PRT_RAW: any[] = [
    },
    "startingPlanets": [
     {
-     "population": 20000,
+     "population": 25000,
      "mines": 10,
      "factories": 10,
      "defenses": 10,
@@ -516,8 +528,9 @@ export const PRT_RAW: any[] = [
        "purpose": "Scout"
       },
       {
-       "name": "Santa Maria",
+       "name": "Mayflower",
        "hullName": "Colony Ship",
+       "hullSetNumber": 2,
        "purpose": "Colonizer"
       },
       {
@@ -535,6 +548,7 @@ export const PRT_RAW: any[] = [
     },
     {
      "population": 10000,
+     "populationFromHomeworld": 5000,
      "mines": 10,
      "factories": 4,
      "habPenaltyFactor": 1,
@@ -604,8 +618,9 @@ export const PRT_RAW: any[] = [
        "purpose": "Scout"
       },
       {
-       "name": "Santa Maria",
+       "name": "Pinta",
        "hullName": "Colony Ship",
+       "hullSetNumber": 1,
        "purpose": "Colonizer"
       }
      ],

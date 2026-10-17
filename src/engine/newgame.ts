@@ -1,5 +1,6 @@
 // New game creation: universe, players, homeworlds, starting designs and fleets.
 import { makeShape } from './shape';
+import type { TechReq } from '../data/types';
 import type { AIDifficulty, BattlePlan, Fleet, GameSettings, GameState, Hab, Intel, Planet, Player, Race, ShipDesign, TechLevels } from './types';
 import { initCulture, ensureBeaconCarrier } from './culture';
 import { initGovernors } from './governors';
@@ -11,6 +12,7 @@ import { ensureSpecialShift } from './specials';
 import { generatePlanets, chooseHomeworlds, generateWormholes, UNIVERSE_SIZES, WORMHOLE_PAIRS, randomConcentrations } from './universe';
 import { raceSpec, advantagePoints, PREDEFINED_RACES, habitability as habitabilityOf } from './race';
 import { autoDesign, designSpec, type Purpose } from './design';
+import { HULLS, TECHS, canLearn, meetsLevels, partFitsSlot } from './tech';
 import { defaultTemplates } from './production';
 import { emptyCargo } from './fleet';
 import { updateIntel } from './scan';
@@ -108,10 +110,11 @@ export function emptyIntel(game: GameState): Intel {
   };
 }
 
-const START_FLEETS: Record<string, { name: string; hull: string; purpose: Purpose }[]> = {
+type StartFleet = { name: string; hull: string; purpose: Purpose; part?: string };
+const START_FLEETS: Record<string, StartFleet[]> = {
   HE: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Spore Cloud', hull: 'Mini-Colony Ship', purpose: 'colonizer' }, { name: 'Spore Cloud', hull: 'Mini-Colony Ship', purpose: 'colonizer' }, { name: 'Spore Cloud', hull: 'Mini-Colony Ship', purpose: 'colonizer' }],
-  SS: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }],
-  WM: [{ name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }, { name: 'Armed Probe', hull: 'Scout', purpose: 'armedScout' }, { name: 'Gadfly', hull: 'Mini Bomber', purpose: 'bomber' }],
+  SS: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Shadow Transport', hull: 'Small Freighter', purpose: 'freighter', part: 'Transport Cloaking' }, { name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }],
+  WM: [{ name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }, { name: 'Armed Probe', hull: 'Scout', purpose: 'armedScout' }, { name: 'Stalwart Defender', hull: 'Destroyer', purpose: 'startingFighter' }, { name: 'Gadfly', hull: 'Mini Bomber', purpose: 'bomber' }],
   CA: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }, { name: 'Change of Heart', hull: 'Mini-Miner', purpose: 'terraformer' }],
   IS: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }],
   SD: [{ name: 'Long Range Scout', hull: 'Scout', purpose: 'scout' }, { name: 'Santa Maria', hull: 'Colony Ship', purpose: 'colonizer' }, { name: 'Little Hen', hull: 'Mini Mine Layer', purpose: 'mineLayer' }, { name: 'Speed Turtle', hull: 'Mini Mine Layer', purpose: 'speedMineLayer' }],
@@ -165,7 +168,9 @@ function initHomeworld(game: GameState, rng: Rng, player: Player, planet: Planet
   planet.conc = extra ? randomConcentrations(rng, planet.hab[2], game.settings.accelerated) : { ...conc };
   const minSurf = game.settings.maxMinerals ? 5000 : 300;
   planet.surface = { ironium: minSurf + rng.int(1000), boranium: minSurf + rng.int(1000), germanium: minSurf + rng.int(1000) };
-  let pop = Math.trunc((extra ? 10000 : (player.race.prt === 'PP' || player.race.prt === 'IT') ? 20000 : 25000) * rs.startingPopFactor);
+  // PP and IT give 5,000 colonists of their homeworld to their second world (none on a tiny map, where they have no second world)
+  const twoWorlds = (player.race.prt === 'PP' || player.race.prt === 'IT') && game.settings.size !== 'Tiny';
+  let pop = Math.trunc((extra ? 10000 : twoWorlds ? 20000 : 25000) * rs.startingPopFactor);
   if (game.settings.accelerated) pop += Math.trunc(pop * player.race.growthRate * rs.growthFactor / 5 / 100);
   planet.pop = Math.trunc(pop / 100) * 100;
   if (rs.livesOnStarbases) { planet.mines = 0; planet.factories = 0; planet.defenses = 0; }
@@ -274,14 +279,29 @@ export function createGame(opts: NewGameOptions): GameState {
     hw.starbase = { designId: sbDesign.id, damage: 0 };
     hw.packetWarp = 5;
     const made = new Map<string, number>();
-    const fleets = [...(START_FLEETS[player.race.prt] ?? START_FLEETS.JoaT)];
+    // 0.3.9.15 (as in Stars!, after craig-stars): a starting ship comes only if the race has the tech for its hull (WM's
+    // Destroyer needs Construction 3, OBRM forbids the miner hulls), and some are better when the race starts higher
+    // (the requirements of Stars!, before any shift of the tech tree: the starting fleet does not depend on the draw)
+    const has = (t: { req: TechReq } | undefined) => !!t && canLearn(player.race, t.req) && meetsLevels(player.tech, t.req) && !t.req.acquirable;
+    const canHull = (n: string) => has(HULLS.get(n));
+    let fleets = [...(START_FLEETS[player.race.prt] ?? START_FLEETS.JoaT)];
     if (player.race.lrts.includes('ARM')) fleets.push({ name: 'Potato Bug', hull: 'Midget Miner', purpose: 'miner' }, { name: 'Potato Bug', hull: 'Midget Miner', purpose: 'miner' });
+    if (player.race.prt === 'JoaT' && canHull('Privateer')) fleets = fleets.map(f => f.name === 'Teamster' ? { name: 'Swashbuckler', hull: 'Privateer', purpose: 'startingFighter' } : f);
+    // the transport cloak does not fit a hull with room for weapons: a stealth scout gets a real cloak, if it has one
+    if (player.race.prt === 'SS' && has(TECHS.get('Stealth Cloak'))) fleets = fleets.map(f => f.name === 'Long Range Scout' ? { name: 'Shadow Sleuth', hull: 'Scout', purpose: 'scout', part: 'Stealth Cloak' } : f);
+    fleets = fleets.filter(f => canHull(f.hull));
     for (const sf of fleets) {
       let id = made.get(sf.name);
       if (id === undefined) {
         const label = START_DESIGN_LABELS[sf.name] ?? sf.name;
         const d = autoDesign(player, sf.hull, sf.purpose, label) ?? autoDesign(player, 'Scout', 'scout', label);
         if (!d) continue;
+        const extra = sf.part ? TECHS.get(sf.part) : undefined;
+        if (extra && has(extra)) {
+          const h = HULLS.get(d.hull)!;
+          const at = h.slots.findIndex(sl => !sl.types.includes('Engine') && partFitsSlot(extra, sl.types, h.name));
+          if (at >= 0) { d.slots = d.slots.filter(x => x.slot !== at + 1); d.slots.push({ slot: at + 1, part: extra.name, qty: 1 }); }
+        }
         id = addDesign(game, d).id;
         made.set(sf.name, id);
       }

@@ -132,6 +132,8 @@ export function partFitsSlot(part: TechData, slotTypes: string[], hullName: stri
   if (!slotTypes.includes(part.slot)) return false;
   if (part.req.hullsAllowed && !part.req.hullsAllowed.includes(hullName)) return false;
   if (part.req.hullsDenied && part.req.hullsDenied.includes(hullName)) return false;
+  // 0.3.9.15 (Stars!): the transport cloak does not go on a hull with room for weapons
+  if (part.stats?.cloakUnarmedOnly && HULLS.get(hullName)?.slots.some(s => s.types.includes('Weapon'))) return false;
   return true;
 }
 

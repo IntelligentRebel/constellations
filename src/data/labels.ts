@@ -93,6 +93,7 @@ export const START_DESIGN_LABELS: Record<string, string> = {
   'Long Range Scout': 'Éclaireur Horizon', 'Santa Maria': 'Arche pionnière', 'Spore Cloud': 'Nuée de spores', 'Armed Probe': 'Sonde armée',
   'Gadfly': 'Taon', 'Change of Heart': 'Métamorphose', 'Little Hen': 'Pondeuse', 'Speed Turtle': 'Tortue', 'Swashbuckler': 'Flibustier',
   'Stalwart Defender': 'Sentinelle', 'Teamster': 'Transport Atlas', 'Cotton Picker': 'Glaneuse', 'Potato Bug': 'Doryphore', 'Starbase': 'Station mère',
+  'Shadow Transport': 'Transport fantôme', 'Shadow Sleuth': 'Limier fantôme',
 };
 
 /** Display name of a hull or a component (identity for names that are not in the tables). */

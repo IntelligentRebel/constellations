@@ -4,6 +4,7 @@ import { popScale } from '../engine/words';
 import { useEffect, useState } from 'preact/hooks';
 import { ensureSpecialShift } from '../engine/specials';
 import { tidyRefits } from '../engine/refit';
+import { tidyDesigns } from '../engine/design';
 import { applyPrefs } from './prefs';
 import { snapshot, afterTurn, moodNow } from './sound';
 import { checkAchievements } from './achievements';
@@ -131,6 +132,7 @@ class Store {
   setGame(g: GameState, keepCamera = false) {
     ensureSpecialShift(g);
     tidyRefits(g);
+    tidyDesigns(g);
     applyPrefs(g);
     this.game = g;
     this.undo = [];

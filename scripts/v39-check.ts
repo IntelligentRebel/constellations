@@ -157,7 +157,12 @@ async function main() {
       const d = addDesign(g, designAtTech(me, 14, 'Battleship', 'beamWarship', 'Bouclier')!);
       const { specOf } = await import('../src/engine/design');
       const sp = specOf(g, d.id);
-      newFleet(g, me, d.id, 3, hw);
+      const nf = newFleet(g, me, d.id, 3, hw);
+      // 0.3.9.15: it can only adapt to warships it has seen, of a design met in battle
+      check(counterPurpose(g, ai) === undefined, 'your fleet unseen: it designs as before');
+      const { learnDesign } = await import('../src/engine/scan');
+      ai.intel.fleets.push({ id: nf.id, owner: me.id, x: nf.x, y: nf.y, detail: 'full', tokens: nf.tokens.map(t => ({ designId: t.designId, qty: t.qty })) });
+      learnDesign(ai, g, d.id, true);
       const want = sp.shields / (sp.shields + sp.armor) > 0.35 ? 'torpedoWarship' : 'beamWarship';
       check(counterPurpose(g, ai) === want, `it arms its warships against yours (${counterPurpose(g, ai)}, your shields ${sp.shields} / armour ${sp.armor})`);
     }

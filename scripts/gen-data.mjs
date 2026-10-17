@@ -1,7 +1,7 @@
 // Generates typed data modules from the research JSON (craig-stars MIT data extraction).
 import fs from 'node:fs';
 // R: folder of the JSON extracted from craig-stars (https://github.com/sirgwain/craig-stars); not part of this repository
-const R = process.env.CRAIG_DATA || '../craig-stars/data/';
+const R = process.env.CRAIG_DATA || '../craig-stars/data/'; // extracted from craig-stars develop of 15 October 2026 (8998e60)
 const out = 'src/data/';
 const techs = JSON.parse(fs.readFileSync(R + 'techs.json', 'utf8')).techs;
 const hulls = JSON.parse(fs.readFileSync(R + 'hulls.json', 'utf8')).hulls;
@@ -16,8 +16,11 @@ const reqOf = (r) => {
 };
 const costOf = (c) => [c.ironium || 0, c.boranium || 0, c.germanium || 0, c.resources || 0];
 
+// 0.3.9.15: craig-stars renamed two parts to the original's spelling; the names are keys of saved designs and of the
+// labels, so the game keeps its own (what the player reads is the label anyway)
+const KEEP_NAME = { 'Robo-Midget Miner': 'Robo-Midget-Miner', 'Anti-matter Generator': 'Anti-Matter Generator' };
 const T = techs.filter(t => t.category !== 'ShipHull' && t.category !== 'StarbaseHull').map(t => {
-  const o = { name: t.name, cat: t.category, tags: t.tags, req: reqOf(t.requirements), cost: costOf(t.cost), rank: t.ranking || 0 };
+  const o = { name: KEEP_NAME[t.name] ?? t.name, cat: t.category, tags: t.tags, req: reqOf(t.requirements), cost: costOf(t.cost), rank: t.ranking || 0 };
   if (t.origin) o.origin = t.origin;
   if (t.mass !== undefined) o.mass = t.mass;
   if (t.hullSlotType) o.slot = t.hullSlotType;

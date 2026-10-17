@@ -14,7 +14,9 @@ import { resetPlanetPolicies } from './empire';
 import { veteransOn, rankOf, rankBonus, battleExperience, logFleet } from './veterans';
 import { battleGrudges } from './nemesis';
 
-const START: { x: number; y: number }[] = RULES_RAW.battleStart;
+// 0.3.9.15: the starting squares depend on how many empires take part (one formation per count, as in Stars!; more than
+// the largest formation share its squares)
+const FORMATIONS: ({ x: number; y: number }[] | null)[] = RULES_RAW.battleStart;
 const MOVES: Record<string, number[]> = RULES_RAW.movesPerRound;
 
 interface Token {
@@ -192,7 +194,8 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   const tokens: Token[] = [];
   let nextTokenId = 1;
   const startPos = new Map<number, { x: number; y: number }>();
-  owners.forEach((o, i) => startPos.set(o, START[i % START.length]));
+  const formation = FORMATIONS[Math.max(1, Math.min(FORMATIONS.length - 1, owners.length))]!;
+  owners.forEach((o, i) => startPos.set(o, formation[i % formation.length]));
   // Constellations 3 roles: screens one square forward, artillery one square back
   const placed = (o: number, role: ShipRole) => {
     const p = startPos.get(o)!;

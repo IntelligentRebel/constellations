@@ -19,6 +19,7 @@ import { raceSpec } from './race';
 import { etaYears } from './pirates';
 import { researchCost } from './research';
 import { safeGoto, travel, roleDesign, colonyTargets } from './ai';
+import { seenMight, seenProtection } from './aiknow';
 
 /** Busy: guarding a world, or waiting in orbit for a refit (nothing else may send it away). */
 export function busy(game: GameState, f: Fleet): boolean {
@@ -206,8 +207,8 @@ function stationStrength(game: GameState, pl: Planet): number {
 }
 
 /**
- * The enemy fleets seen coming for the empire's worlds (armed, bombers or troop ships, within 180 ly of a world, or
- * heading for one): the idle warships that can be there in time and are strong enough together go and guard the world
+ * The enemy fleets seen coming for the empire's worlds (armed or bombers as far as it can tell, within 180 ly of a world,
+ * or heading for one): the idle warships that can be there in time and are strong enough together go and guard the world
  * (they are kept for it until the danger has passed); otherwise the world raises its defenses.
  */
 export function aiDefend(game: GameState, p: Player) {
@@ -217,10 +218,10 @@ export function aiDefend(game: GameState, p: Player) {
   const byWorld = new Map<number, { target: Planet; s: number; eta: number }>();
   for (const fi of p.intel.fleets) {
     if (fi.owner < 0 || fi.owner === p.id || p.relations[fi.owner] !== 'enemy' || game.players[fi.owner]?.monster) continue;
-    const f = game.fleets.find(x => x.id === fi.id);
-    if (!f) continue;
-    const sp = fleetSpec(game, f);
-    if (!sp.hasWeapons && !sp.bomber && f.cargo.colonists <= 0) continue;
+    // 0.3.9.15: what it can tell of them (designs met in battle, or a guess from the hull), not what they really are
+    const m = seenMight(game, p, fi);
+    if (m.pow <= 0 && !m.bomber) continue;
+    const strength = Math.max(1, m.hp) * Math.max(1, m.pow);
     const tr = estimateTrajectory(p, fi.id, 2);
     const ahead = tr?.ahead[tr.ahead.length - 1];
     let target: Planet | undefined, bd = Infinity;
@@ -230,10 +231,10 @@ export function aiDefend(game: GameState, p: Player) {
     }
     if (!target || distance(target, fi) > 180) continue;
     const seen = tr && tr.from.length >= 2 ? distance(tr.from[tr.from.length - 2], tr.from[tr.from.length - 1]) : 0;
-    const speed = Math.max(16, seen || (sp.idealSpeed || 6) ** 2);
+    const speed = Math.max(16, seen || (fi.warp || 6) ** 2);
     const eta = Math.max(1, Math.ceil(distance(target, fi) / speed));
     const w = byWorld.get(target.id);
-    if (w) { w.s += fleetStrength(game, f); w.eta = Math.min(w.eta, eta); } else byWorld.set(target.id, { target, s: fleetStrength(game, f), eta });
+    if (w) { w.s += strength; w.eta = Math.min(w.eta, eta); } else byWorld.set(target.id, { target, s: strength, eta });
   }
   if (!byWorld.size) return;
   const rs = raceSpec(p.race);
@@ -334,11 +335,8 @@ export function researchBoost(game: GameState, p: Player): Field | null {
 export function warCounter(game: GameState, p: Player): 'beamWarship' | 'torpedoWarship' | undefined {
   const st = p.aiState;
   if (!aiCan(p, 2, 'counter') || !st || st.phase !== 'war' || st.targetPlayer === undefined) return st?.counter;
-  let sh = 0, ar = 0;
-  for (const fi of p.intel.fleets) {
-    if (fi.owner !== st.targetPlayer || !fi.tokens) continue;
-    for (const t of fi.tokens) { const s = specOf(game, t.designId); if (!s.hasWeapons || s.starbase) continue; sh += s.shields * t.qty; ar += s.armor * t.qty; }
-  }
+  // 0.3.9.15: only the designs it knows inside out (met in battle) tell it how the enemy protects its ships
+  const { shields: sh, armor: ar } = seenProtection(game, p, st.targetPlayer);
   if (sh + ar <= 0) return st.counter;
   const share = sh / (sh + ar);
   if (share > 0.4) st.counter = 'torpedoWarship';

@@ -87,39 +87,39 @@
   "key": "retool",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:155 call:aiCan"
+   "engine/ai.ts:157 call:aiCan"
   ]
  },
  {
   "key": "minelayer",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:273 call:roleDesign",
-   "engine/ai.ts:278 call:count",
-   "engine/ai.ts:507",
-   "engine/ai.ts:508"
+   "engine/ai.ts:275 call:roleDesign",
+   "engine/ai.ts:280 call:count",
+   "engine/ai.ts:509",
+   "engine/ai.ts:510"
   ]
  },
  {
   "key": "picket",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:601"
+   "engine/ai.ts:603"
   ]
  },
  {
   "key": "hubs",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:610 call:aiCan",
-   "engine/ai.ts:617 call:aiCan"
+   "engine/ai.ts:612 call:aiCan",
+   "engine/ai.ts:619 call:aiCan"
   ]
  },
  {
   "key": "reserve",
   "kind": "str",
   "refs": [
-   "engine/ai.ts:704 call:aiCan"
+   "engine/ai.ts:702 call:aiCan"
   ]
  },
  {
@@ -148,7 +148,7 @@
   "key": "counter",
   "kind": "str",
   "refs": [
-   "engine/ai4.ts:336 call:aiCan"
+   "engine/ai4.ts:337 call:aiCan"
   ]
  },
  {
@@ -230,7 +230,7 @@
   "key": "sim",
   "kind": "str",
   "refs": [
-   "engine/battle.ts:597",
+   "engine/battle.ts:600",
    "ui/dialogs/designer.tsx:69 attr:key"
   ]
  },
@@ -282,7 +282,7 @@
   "kind": "str",
   "refs": [
    "engine/chains.ts:47 call:rngOf",
-   "engine/newgame.ts:372 call:seedFromString"
+   "engine/newgame.ts:392 call:seedFromString"
   ]
  },
  {
@@ -374,8 +374,8 @@
   "key": "coalition",
   "kind": "str",
   "refs": [
-   "engine/diplomacy.ts:231 call:aiCan",
-   "engine/diplomacy.ts:668 call:aiCan"
+   "engine/diplomacy.ts:237 call:aiCan",
+   "engine/diplomacy.ts:674 call:aiCan"
   ]
  },
  {
@@ -424,14 +424,14 @@
   "key": "terrain",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "doctrines",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53",
+   "engine/newgame.ts:55",
    "ui/nav.tsx:27 call:scrollTo",
    "ui/todo.ts:38 call:scrollTo"
   ]
@@ -440,63 +440,63 @@
   "key": "guardians",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "origins",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "espionage",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "debris",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "veterans",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "acts",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "cataclysms",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "dilemmas",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
   "key": "governors",
   "kind": "str",
   "refs": [
-   "engine/newgame.ts:53"
+   "engine/newgame.ts:55"
   ]
  },
  {
@@ -1307,7 +1307,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/index.tsx:47 prop:file",
-   "ui/dialogs/newgame.tsx:91 prop:file"
+   "ui/dialogs/newgame.tsx:93 prop:file"
   ]
  },
  {
@@ -1394,14 +1394,14 @@
   "key": "races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:47 call:seedFromString"
+   "ui/dialogs/newgame.tsx:49 call:seedFromString"
   ]
  },
  {
   "key": "preset",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:189 attr:class"
+   "ui/dialogs/newgame.tsx:191 attr:class"
   ]
  },
  {
@@ -2168,22 +2168,22 @@
   "key": "null",
   "kind": "str",
   "refs": [
-   "ui/store.ts:90 call:parse"
+   "ui/store.ts:91 call:parse"
   ]
  },
  {
   "key": "gzip",
   "kind": "str",
   "refs": [
-   "ui/store.ts:418 call:pipeThrough",
-   "ui/store.ts:430 call:pipeThrough"
+   "ui/store.ts:420 call:pipeThrough",
+   "ui/store.ts:432 call:pipeThrough"
   ]
  },
  {
   "key": "downloads",
   "kind": "str",
   "refs": [
-   "ui/store.ts:476 call:use"
+   "ui/store.ts:478 call:use"
   ]
  },
  {

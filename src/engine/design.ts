@@ -365,6 +365,15 @@ export function isScoutDesign(d: { hull: string; scout?: boolean }, s: { scanRan
   return s.scanRange > 0 && (d.scout ?? d.hull === 'Scout');
 }
 
+/** 0.3.9.15: no slot of a design holds more than its hull allows (the tables changed: the Super Mine Layer's armor slot). */
+export function tidyDesigns(game: GameState) {
+  for (const d of game.designs) {
+    const h = HULLS.get(d.hull);
+    if (!h) continue;
+    for (const s of d.slots) { const cap = h.slots[s.slot - 1]?.cap; if (cap !== undefined && s.qty > cap) s.qty = cap; }
+  }
+}
+
 export function specOf(game: GameState, designId: number): DesignSpec {
   const d = getDesign(game, designId);
   const owner = game.players[d.owner] ?? game.players[0];

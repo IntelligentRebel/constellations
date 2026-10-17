@@ -1847,5 +1847,8 @@
  "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais.": "경제와 방어를 관리합니다: 함선과 스테이션을 개량하고, 위협받는 세계를 지키고, 함대를 모아 두고, 더 빨리 확장하며 광물을 낭비하지 않습니다.",
  "Comme Standard, et prépare ses invasions, conçoit ses navires contre ceux de l'ennemi et s'allie aux autres contre l'empire qui écrase la partie. Recherche plus rapide, guerres plus précoces.": "Standard와 같고, 침공을 계획하고, 적 함선에 맞서는 함선을 설계하며, 게임을 지배하는 제국에 맞서 다른 제국들과 동맹합니다. 더 빠른 연구, 더 이른 전쟁.",
  "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.": "어려움과 같으며, 연구가 가장 빠르고 전쟁이 가장 이릅니다.",
- "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "{0} 측 국경이 {1}이(가) 향하던 출구까지 넓어졌습니다: 가장 가까운 국경은 이제 {2}광년 떨어져 있으며, {3}년까지 넘어야 합니다."
+ "La frontière des {0} a avancé jusqu'à la sortie que prenait {1} : la frontière la plus proche est désormais à {2} al, et elle a jusqu'à l'an {3} pour la franchir.": "{0} 측 국경이 {1}이(가) 향하던 출구까지 넓어졌습니다: 가장 가까운 국경은 이제 {2}광년 떨어져 있으며, {3}년까지 넘어야 합니다.",
+ "Transport fantôme": "유령 수송선",
+ "Limier fantôme": "유령 추적견",
+ "Aucun niveau ne triche : mêmes règles que vous, sans bonus de production ni de recherche, et ils ne savent que ce que leurs scanners, leurs batailles et leurs espions leur apprennent.": "어떤 난이도도 속임수를 쓰지 않습니다. 당신과 같은 규칙을 따르고, 생산이나 연구 보너스도 없으며, 자신의 스캐너와 전투와 첩보원이 알려 주는 것만 압니다."
 }

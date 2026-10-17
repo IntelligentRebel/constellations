@@ -7,7 +7,7 @@ entirely in the browser, offline, with nothing to install.
 
 **[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
 
-**Version 0.3.9.14** (early version: the numbering restarts at 0.x until the game is considered complete).
+**Version 0.3.9.15** (early version: the numbering restarts at 0.x until the game is considered complete).
 
 ![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
@@ -70,6 +70,10 @@ the open-source craig-stars project, checked against the original game under Win
 
 The interface improvements stay: you play the Stars! rules with the comfort of a modern game. Each new rule can also be
 switched on or off one by one.
+
+The computers play by the same rules: no production, growth or research bonus at any difficulty level (the levels differ
+in how they play), and they decide from what they know, as you do: their scanners, their battles and, with the
+Intelligence rule, their spies.
 
 <p align="center"><img src="docs/screenshots/en/purist.png" width="720" alt="New game: Experience close to Stars! 2.7j (2000)"></p>
 
@@ -155,5 +159,5 @@ but not reuse or redistribute it.
 Stars! is a trademark of its respective owners. Constellations is an independent tribute, not affiliated with them,
 and uses none of their code or assets.
 
-The game data tables are derived from craig-stars, and the page bundles Preact and fflate, all three under the MIT
+The game data tables are derived from craig-stars (as of 15 October 2026), and the page bundles Preact and fflate, all three under the MIT
 licence: see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

@@ -28,6 +28,7 @@ import { dangerAt } from './cataclysms';
 import { aiCan, aiOff } from './aiskill';
 import { busy, aiRefits, aiStations, aiDefend, hubsOf, toHub, mergeAtHubs, mineralRich, mineralShort, researchBoost, warCounter, idleColonyShip, baseRole } from './ai4';
 import { pendingRefit } from './refit';
+import { seenMight, seenDesign, seenCoverage, knownScore } from './aiknow';
 
 const RESEARCH_PLAN: Partial<Record<Field, number>>[] = [
   { propulsion: 2, biotechnology: 1 }, { energy: 1, weapons: 1 }, { construction: 4, electronics: 2 }, { weapons: 6, biotechnology: 3 },
@@ -82,6 +83,7 @@ function pickEnemy(game: GameState, p: Player, enemies: number[]): number | unde
   // closest reachable enemy, weighted towards weaker empires (and slightly towards humans, to keep games lively)
   const mine = game.planets.filter(x => x.owner === p.id);
   const myScore = Math.max(1, p.scores[p.scores.length - 1]?.score ?? 1);
+  // 0.3.9.15: their scores as known (public, or estimated by the intelligence), not the real ones
   let best: number | undefined, bs = Infinity;
   for (const e of enemies) {
     let d = Infinity;
@@ -92,7 +94,7 @@ function pickEnemy(game: GameState, p: Player, enemies: number[]): number | unde
     }
     if (!Number.isFinite(d)) continue;
     const their = game.players[e];
-    const ratio = Math.max(1, their.scores[their.scores.length - 1]?.score ?? 1) / myScore;
+    const ratio = Math.max(1, knownScore(game, p, e)) / myScore;
     const sc = d * (0.6 + 0.4 * Math.min(2.5, ratio)) * (their.ai ? 1 : 0.8);
     if (sc < bs) { bs = sc; best = e; }
   }
@@ -360,7 +362,7 @@ function packets(game: GameState, p: Player, planet: Planet) {
     if (idx < 0) push(planet, 'autoPackets', 1);
   } else {
     if (idx >= 0) planet.queue.splice(idx, 1);
-    if (planet.packetTarget !== undefined && game.planets[planet.packetTarget].owner !== p.id) planet.packetTarget = undefined;
+    if (planet.packetTarget !== undefined && p.intel.planets[planet.packetTarget].owner !== p.id) planet.packetTarget = undefined;
   }
 }
 
@@ -669,19 +671,14 @@ function planetDefense(game: GameState, p: Player, planet: Planet): number {
   const pi = p.intel.planets[planet.id];
   let hp = 0, pow = 0;
   if (pi.starbaseDesign !== undefined && game.designs.some(d => d.id === pi.starbaseDesign)) {
-    const sp = specOf(game, pi.starbaseDesign); hp += sp.armor + sp.shields; pow += sp.powerRating;
+    const sb = seenDesign(game, p, pi.starbaseDesign); hp += sb.hp; pow += sb.pow; // 0.3.9.15: as far as it knows that station
   }
   for (const fi of p.intel.fleets) {
     if ((fi.owner !== pi.owner && !(fi.uncertain && fi.owner < 0)) || distance(fi, planet) > 30) continue;
-    if (fi.uncertain) {
-      // Constellations 3: only an estimate (decoys included): assume a warship of that mass
-      hp += (fi.mass ?? 0) * 3; pow += (fi.mass ?? 0) * 4; continue;
-    }
-    const f = game.fleets.find(x => x.id === fi.id);
-    if (!f) continue;
-    const sp = fleetSpec(game, f);
-    if (!sp.hasWeapons) continue;
-    hp += sp.armor + sp.shields; pow += sp.powerRating;
+    // 0.3.9.15: what the scanners and the battles have taught of those fleets, not their real make-up
+    const m = seenMight(game, p, fi);
+    if (m.pow <= 0) continue;
+    hp += m.hp; pow += m.pow;
   }
   return hp * pow;
 }
@@ -698,7 +695,8 @@ function warFleets(game: GameState, p: Player) {
   for (const d of docks) for (const e of enemyPlanets) { const dd = distance(d, e); if (dd < sd) { sd = dd; staging = d; } }
   st.staging = staging.id;
   // 0.3.9.14: the world under siege, while it is still the enemy's and the fleet is still there or on its way
-  if (st.siege !== undefined && (game.planets[st.siege].owner === p.id || game.planets[st.siege].owner < 0 || p.relations[game.planets[st.siege].owner] !== 'enemy'
+  const siegeOwner = st.siege !== undefined ? p.intel.planets[st.siege].owner ?? -1 : -1;
+  if (st.siege !== undefined && (siegeOwner === p.id || siegeOwner < 0 || p.relations[siegeOwner] !== 'enemy'
     || !game.fleets.some(f => f.owner === p.id && f.purpose === 'warship' && (f.orbiting === st.siege || f.waypoints.some(w => w.targetId === st.siege && w.target === 'planet'))))) st.siege = undefined;
   // 0.3.9.14: a reserve of a quarter of the war fleet stays at the other hubs
   const hubs = aiCan(p, 1, 'reserve') ? hubsOf(game, p).filter(h => h.id !== staging.id) : [];
@@ -765,10 +763,16 @@ function crisisFleets(game: GameState, p: Player, breach: Planet) {
   const hurt = (f: Fleet) => { const sp = fleetSpec(game, f); return f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0) > (sp.armor + sp.shields) * 0.5; };
   const war = () => game.fleets.filter(f => f.owner === p.id && f.purpose === 'warship' && !busy(game, f));
   // fleets add up (Lanchester): hit points with hit points, firepower with firepower
-  const pool = (fs: Fleet[]) => { let hp = 0, pow = 0; for (const f of fs) { const sp = fleetSpec(game, f); hp += Math.max(0, sp.armor + sp.shields - f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0)); pow += sp.powerRating; } return hp * pow; };
-  // everything armed gathered around the Breach, whoever it belongs to (the truce holds there)
-  const gathered = game.fleets.filter(f => !game.players[f.owner].monster && !game.players[f.owner].dead && f.tokens.length > 0 && near(f) && fleetSpec(game, f).hasWeapons);
-  const strike = pool(gathered) >= nx * STRIKE;
+  const pool = (fs: Fleet[], hp = 0, pow = 0) => { for (const f of fs) { const sp = fleetSpec(game, f); hp += Math.max(0, sp.armor + sp.shields - f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0)); pow += sp.powerRating; } return hp * pow; };
+  // everything armed gathered around the Breach, whoever it belongs to (the truce holds there): its own fleets, and
+  // those of the others as far as it can see them (0.3.9.15)
+  const gathered = game.fleets.filter(f => f.owner === p.id && f.tokens.length > 0 && near(f) && fleetSpec(game, f).hasWeapons);
+  let ohp = 0, opow = 0;
+  for (const fi of p.intel.fleets) {
+    if (fi.owner < 0 || fi.owner === p.id || game.players[fi.owner]?.monster || distance(fi, breach) > TRUCE_RADIUS) continue;
+    const m = seenMight(game, p, fi); ohp += m.hp; opow += m.pow;
+  }
+  const strike = pool(gathered, ohp, opow) >= nx * STRIKE;
   for (const f of war()) {
     if (f.waypoints.length > 1) continue;
     const atBreach = f.x === breach.x && f.y === breach.y;
@@ -824,9 +828,9 @@ export function troopTargets(game: GameState, p: Player): { planet: Planet; need
 /** The colonists (kT) an invasion of this enemy world takes, from what is known of it (a quarter more for safety). */
 export function invasionNeed(game: GameState, p: Player, planet: Planet): number {
   const pi = p.intel.planets[planet.id];
-  const defender = game.players[planet.owner];
+  const defender = pi.owner !== undefined && pi.owner >= 0 ? game.players[pi.owner] : undefined;
   if (!defender) return 0;
-  const cov = planetSpec(game, planet, defender).defenseCoverage;
+  const cov = seenCoverage(game, p, planet); // 0.3.9.15: the defenses counted there, not the real figure
   const atk = raceSpec(p.race).invasionAttack, def = raceSpec(defender.race).invasionDefend;
   const pop = (pi.pop ?? 0) * Math.pow(1.12, game.year - (pi.year ?? game.year)) + 2500;
   const need = pop * def / atk / Math.max(0.15, 1 - cov * 0.75) * 1.25;

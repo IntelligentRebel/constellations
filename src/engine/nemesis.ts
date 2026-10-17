@@ -4,7 +4,7 @@
 // worlds it held, or its capital). One nemesis at a time per human empire; another may rise later.
 import type { GameState, Nemesis, Player } from './types';
 import { addChronicle } from './chronicle';
-import { specOf } from './design';
+import { seenProtection } from './aiknow';
 
 export const nemesisOn = (game: GameState) => !!game.settings.nemesis;
 /** Grudge at which a computer swears your destruction. */
@@ -57,11 +57,8 @@ export function counterPurpose(game: GameState, p: Player): 'beamWarship' | 'tor
   if (!nemesisOn(game)) return undefined;
   const n = game.nemeses?.find(x => x.ai === p.id && x.broken === undefined && !game.players[x.of].dead);
   if (!n) return undefined;
-  let sh = 0, ar = 0;
-  for (const f of game.fleets) {
-    if (f.owner !== n.of) continue;
-    for (const t of f.tokens) { const s = specOf(game, t.designId); if (!s.hasWeapons || s.starbase) continue; sh += s.shields * t.qty; ar += s.armor * t.qty; }
-  }
+  // 0.3.9.15: the warships of the sworn enemy it has in sight and whose designs it knows (met in battle), not all of them
+  const { shields: sh, armor: ar } = seenProtection(game, p, n.of);
   if (sh + ar <= 0) return n.counter;
   const want = sh / (sh + ar) > 0.35 ? 'torpedoWarship' : 'beamWarship';
   if (n.counter !== want) {

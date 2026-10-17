@@ -15,6 +15,8 @@ async function main() {
   const { planetSpec } = await import('../src/engine/planet');
   const { fleetSpec, distance } = await import('../src/engine/fleet');
   const DIP = await import('../src/engine/diplomacy');
+  const AK = await import('../src/engine/aiknow');
+  const { learnDesign } = await import('../src/engine/scan');
   const { Rng, seedFromString } = await import('../src/engine/rng');
   type G = ReturnType<typeof quickGame>;
   const clone = (g: G): G => JSON.parse(JSON.stringify(g));
@@ -202,8 +204,15 @@ async function main() {
     check(A4.warCounter(g, p) === st.counter, 'at peace, the warships are designed as before');
     st.phase = 'war'; st.targetPlayer = 2;
     const ew = g.designs.find(d => !d.starbase && specOf(g, d.id).hasWeapons)!;
-    p.intel.fleets.push({ id: 999999, owner: 2, x: 0, y: 0, detail: 'full', tokens: [{ designId: ew.id, qty: 5 }] });
-    const s = specOf(g, ew.id);
+    const ew2 = g.designs.find(d => d.owner !== 1 && !d.starbase && specOf(g, d.id).hasWeapons) ?? ew;
+    p.intel.fleets.push({ id: 999999, owner: 2, x: 0, y: 0, detail: 'full', tokens: [{ designId: ew2.id, qty: 5 }] });
+    // 0.3.9.15: a design only seen in the scanners (its hull) tells nothing of its shields
+    if (ew2.owner !== 1) {
+      delete p.intel.designs[ew2.id];
+      check(A4.warCounter(g, p) === st.counter, 'enemy ships only seen from afar: the warships are designed as before');
+      learnDesign(p, g, ew2.id, true); // met in battle
+    }
+    const s = specOf(g, ew2.id);
     const share = s.shields / Math.max(1, s.shields + s.armor);
     const want = share > 0.4 ? 'torpedoWarship' : share < 0.3 ? 'beamWarship' : undefined;
     check(A4.warCounter(g, p) === want, `against ships ${Math.round(share * 100)} % shields: ${want ?? 'unchanged'}`);
@@ -228,8 +237,21 @@ async function main() {
   console.log('--- a coalition against the leader');
   {
     const g = fresh();
+    g.settings.publicScores = true;
     const last = (id: number) => g.players[id].scores[g.players[id].scores.length - 1];
     for (const pl of g.players) if (!pl.monster) last(pl.id).score = pl.id === 0 ? 3000 : 600;
+    // 0.3.9.15: scores kept secret and no intelligence on them: the computers judge from the worlds they have seen
+    {
+      const h = clone(g);
+      h.settings.publicScores = false;
+      for (const pl of h.players) if (pl.intel.dossiers) for (const d of Object.values(pl.intel.dossiers)) delete d.facts.score;
+      const seen = (id: number) => h.players[1].intel.planets.filter(pi => pi.owner === id).length;
+      const mineN = h.planets.filter(pl => pl.owner === 1).length;
+      check(AK.knownScore(h, h.players[1], 0) === Math.round(600 * seen(0) / mineN), `secret scores: the human's guessed from the ${seen(0)} worlds seen (${AK.knownScore(h, h.players[1], 0)}, really 3000)`);
+      h.players[1].intel.dossiers ??= {};
+      (h.players[1].intel.dossiers[0] ??= { level: 60, lines: [], facts: {} } as any).facts.score = { v: 2800, err: 10, year: h.year };
+      check(AK.knownScore(h, h.players[1], 0) === 2800, 'with intelligence on it, its estimate');
+    }
     check(DIP.runaway(g, 0) > 0 && DIP.runaway(g, 1) === 0, `the human far ahead runs away with the game (${DIP.runaway(g, 0).toFixed(2)})`);
     const op = DIP.opinion(g, 1, 0);
     check(op.lines.some(l => l.label.includes('s\'unir contre vous') && l.value < 0), `an expert computer resents it (${op.lines.find(l => l.label.includes('unir'))?.value})`);
