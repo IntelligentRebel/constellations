@@ -1,5 +1,6 @@
 // Discoveries (Constellations 3.2) in the interface: anomaly and guardian of a planet, the Empire page section
 // (relics, map of the Ancients, choices waiting), and the notes of the map tooltip.
+import { viewFleet } from './memo';
 import type { GameState, Planet, Player } from '../engine/types';
 import { store, useStore, fmt } from './store';
 import { useSorted } from './components';
@@ -39,7 +40,7 @@ export function planetNotes(g: GameState, me: Player, planetId: number): string[
 /** Strength of what you could send: the selected fleet, or all your warships. */
 function yourStrength(g: GameState, me: Player): { label: string; v: number } | null {
   const c = store.commanded?.kind === 'fleet' ? g.fleets.find(f => f.id === store.commanded!.id && f.owner === me.id) : undefined;
-  if (c) { const sp = fleetSpec(g, c); return { label: c.name, v: Math.max(1, sp.armor + sp.shields) * Math.max(1, sp.powerRating) }; }
+  if (c) { const sp = viewFleet(g, c); return { label: c.name, v: Math.max(1, sp.armor + sp.shields) * Math.max(1, sp.powerRating) }; }
   return null;
 }
 
@@ -125,11 +126,11 @@ const currentRateIf = (g: GameState, me: Player) => { let r = 2 + Math.floor(me.
 
 /** 0.3.7: sends the nearest idle ship with a scanner to a point (the zone where to sound a cloud). */
 function sendScanner(g: GameState, me: Player, at: { x: number; y: number }, what: string) {
-  const cands = g.fleets.filter(f => f.owner === me.id && f.waypoints.length <= 1 && !f.auto && fleetSpec(g, f).hasEngines && (fleetSpec(g, f).scanRange > 0 || fleetSpec(g, f).scanRangePen > 0)).sort((a, b) => distance(a, at) - distance(b, at));
+  const cands = g.fleets.filter(f => f.owner === me.id && f.waypoints.length <= 1 && !f.auto && viewFleet(g, f).hasEngines && (viewFleet(g, f).scanRange > 0 || viewFleet(g, f).scanRangePen > 0)).sort((a, b) => distance(a, at) - distance(b, at));
   const f = cands[0];
   if (!f) { store.notify('Aucun vaisseau équipé d\'un scanner n\'est libre.'); return; }
   store.checkpoint();
-  f.waypoints = [f.waypoints[0], { x: Math.round(at.x), y: Math.round(at.y), target: 'space', warp: fleetSpec(g, f).idealSpeed || 5, task: 'none' }];
+  f.waypoints = [f.waypoints[0], { x: Math.round(at.x), y: Math.round(at.y), target: 'space', warp: viewFleet(g, f).idealSpeed || 5, task: 'none' }];
   store.notify(`${f.name} part ${what}`);
   store.bump();
 }
@@ -154,7 +155,7 @@ function SecretQuest({ g, me, s }: { g: GameState; me: Player; s: Secret }) {
     if (s.tunnel?.includes(me.id)) return <p class="small green">Vous connaissez le couloir qui y mène : il est tracé sur la carte. On y vole à Warp 3 au plus.</p>;
     const fl = probeFleets(g, me, s);
     const have = s.probe?.[me.id] ?? 0;
-    const rate = fl.length ? studyRate(g, me, fl.length, false, fl.some(f => fleetSpec(g, f).scanRangePen > 0)) : 0;
+    const rate = fl.length ? studyRate(g, me, fl.length, false, fl.some(f => viewFleet(g, f).scanRangePen > 0)) : 0;
     return <>
       <div class="anom-prog"><div class="bar"><div style={{ width: Math.min(100, have / PROBE_NEED * 100) + '%' }} /></div><span class="small">passage : {fmt(have)} / {PROBE_NEED} points</span></div>
       {fl.length ? <div class="small green">{fl.map(f => f.name).join(', ')} sonde{fl.length > 1 ? 'nt' : ''} le nuage : {rate} points par an.</div>

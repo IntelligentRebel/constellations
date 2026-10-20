@@ -3,8 +3,8 @@ import { isStudying, anomalyAt, defOf, pointsNeeded } from '../engine/anomalies'
 import type { ComponentChildren } from 'preact';
 import { store, useStore, fmt, fmtPop, INSPECTOR_TABS } from './store';
 import type { Fleet, GameState, Player } from '../engine/types';
-import { fleetSpec, estimateRoute } from '../engine/fleet';
-import { planetSpec } from '../engine/planet';
+import { fleetSpec } from '../engine/fleet';
+import { viewSpec, viewRoute, viewFleet } from './memo';
 import { wpName } from './command';
 import { fleetHasObsolete, pendingRefit } from '../engine/refit';
 import { defaultTankerRange } from '../engine/refuel';
@@ -21,7 +21,7 @@ export function fleetMission(g: GameState, me: Player, f: Fleet): MissionInfo {
   const wps = f.waypoints;
   const last = wps[wps.length - 1];
   const dest = wps.length > 1 ? wpName(g, me.id, last) : '';
-  const eta = () => { const e = estimateRoute(g, f); return e.length ? ` · ${e[e.length - 1].arrival} a` : ''; };
+  const eta = () => { const e = viewRoute(g, f); return e.length ? ` · ${e[e.length - 1].arrival} a` : ''; };
   if (f.beaconOf !== undefined) return { id: 'beacon', label: 'Balises', detail: `revendique ${g.planets[f.beaconOf].name}` };
   if (f.auto === 'explore') return { id: 'explore', label: 'Exploration', detail: dest ? `explore ${dest}${eta()}` : 'exploration automatique' };
   if (f.refuelFor !== undefined) {
@@ -108,7 +108,7 @@ export function Sidebar() {
   const busy = fleets.filter(f => info.get(f.id)!.id !== 'idle');
   const sel = s.selected;
   const fleetRow = (f: Fleet) => {
-    const sp = fleetSpec(g, f);
+    const sp = viewFleet(g, f);
     const mi = info.get(f.id)!;
     const low = sp.fuelCapacity > 0 && f.fuel < sp.fuelCapacity * 0.2;
     return <button class={'srow fleet' + (sel?.kind === 'fleet' && sel.id === f.id ? ' sel' : '')} data-tut={'fleet-' + f.id} onClick={() => pick('fleet', f.id, f.x, f.y)} title={f.name}>
@@ -123,7 +123,7 @@ export function Sidebar() {
       <div class="side-race"><span style={{ color: me.color }}>{me.name}</span><i /></div>
       <Group id="sb-col" title="Colonies" count={colonies.length}>
         {colonies.map(p => {
-          const sp = planetSpec(g, p, me);
+          const sp = viewSpec(g, p, me);
           return <button class={'srow colony' + (sel?.kind === 'planet' && sel.id === p.id ? ' sel' : '')} data-tut={'colony-' + p.id} onClick={() => pick('planet', p.id, p.x, p.y)}>
             <span class="dot" style={{ background: me.color }} />
             <span class="sname">{p.name}{p.homeworld ? <span class="star" title="Monde natal">★</span> : null}</span>

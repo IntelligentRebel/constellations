@@ -1,4 +1,5 @@
 // Production queue dialog.
+import { viewSpec, viewQueue } from '../memo';
 import { SPY_UNIT, SPY_MAX, SPY_CAP, SPY_DECAY, AGENCY_COST, spyGain } from '../../engine/espionage';
 import { useState } from 'preact/hooks';
 import { store, useStore, fmt, fmtPeople } from '../store';
@@ -109,8 +110,8 @@ export function ProductionDialog({ planetId }: { planetId: number }) {
   const cats = ITEM_CATS.filter(c => c.id === 'all' || allItems.some(it => catOf(it.kind) === c.id));
   const items = cat === 'all' || !cats.some(c => c.id === cat) ? allItems : allItems.filter(it => catOf(it.kind) === cat);
   const avail = items[Math.min(selAvail, items.length - 1)];
-  const spec = planetSpec(g, planet, me);
-  const est = estimateQueue(g, planet, 80);
+  const spec = viewSpec(g, planet, me);
+  const est = viewQueue(g, planet, 80);
   const mine = g.planets.filter(p => p.owner === me.id);
   const cyc = (d: number) => { const i = mine.findIndex(p => p.id === pid); const p = mine[(i + d + mine.length) % mine.length]; setPid(p.id); setSelQueue(-1); s.select({ kind: 'planet', id: p.id }, true); };
   const add = (e?: MouseEvent) => {

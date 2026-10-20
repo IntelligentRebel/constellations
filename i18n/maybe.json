@@ -353,7 +353,7 @@
   "key": "design ",
   "kind": "str",
   "refs": [
-   "engine/design.ts:358"
+   "engine/design.ts:369"
   ]
  },
  {
@@ -432,7 +432,7 @@
   "refs": [
    "engine/newgame.ts:55",
    "ui/nav.tsx:27 call:scrollTo",
-   "ui/todo.ts:38 call:scrollTo"
+   "ui/todo.ts:39 call:scrollTo"
   ]
  },
  {
@@ -747,7 +747,7 @@
   "refs": [
    "ui/app.tsx:184 attr:class",
    "ui/components.tsx:34 attr:class",
-   "ui/pages.tsx:59 attr:class"
+   "ui/pages.tsx:60 attr:class"
   ]
  },
  {
@@ -762,7 +762,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:374 attr:class",
-   "ui/dialogs/research.tsx:62"
+   "ui/dialogs/research.tsx:63"
   ]
  },
  {
@@ -770,9 +770,9 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:374 attr:class",
-   "ui/dialogs/production.tsx:170",
-   "ui/empire.tsx:196 attr:class",
-   "ui/empire.tsx:212 attr:class"
+   "ui/dialogs/production.tsx:171",
+   "ui/empire.tsx:197 attr:class",
+   "ui/empire.tsx:213 attr:class"
   ]
  },
  {
@@ -865,9 +865,9 @@
   "key": "small ",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:30 attr:class",
+   "ui/command.tsx:31 attr:class",
    "ui/diplomacy.tsx:39 attr:class",
-   "ui/discoveries.tsx:86 attr:class",
+   "ui/discoveries.tsx:87 attr:class",
    "ui/factions.tsx:83 attr:class"
   ]
  },
@@ -875,7 +875,7 @@
   "key": "red",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:30",
+   "ui/command.tsx:31",
    "ui/dialogs/misc.tsx:113",
    "ui/diplomacy.tsx:31 attr:class",
    "ui/diplomacy.tsx:39"
@@ -885,25 +885,25 @@
   "key": "muted",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:30",
+   "ui/command.tsx:31",
    "ui/dialogs/misc.tsx:113",
-   "ui/dialogs/research.tsx:67 attr:class",
-   "ui/discoveries.tsx:228"
+   "ui/dialogs/research.tsx:68 attr:class",
+   "ui/discoveries.tsx:229"
   ]
  },
  {
   "key": " clickable",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:31",
-   "ui/command.tsx:32"
+   "ui/command.tsx:32",
+   "ui/command.tsx:33"
   ]
  },
  {
   "key": "button",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:31 attr:role",
+   "ui/command.tsx:32 attr:role",
    "ui/tutorial.tsx:1218 call:closest"
   ]
  },
@@ -911,24 +911,24 @@
   "key": "small muted",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:32 attr:class"
+   "ui/command.tsx:33 attr:class"
   ]
  },
  {
   "key": "bad",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:58 attr:class",
-   "ui/inspector.tsx:81 attr:class",
-   "ui/inspector.tsx:443",
-   "ui/pages.tsx:223 attr:class"
+   "ui/command.tsx:59 attr:class",
+   "ui/inspector.tsx:82 attr:class",
+   "ui/inspector.tsx:444",
+   "ui/pages.tsx:225 attr:class"
   ]
  },
  {
   "key": "on",
   "kind": "str",
   "refs": [
-   "ui/command.tsx:101 attr:class",
+   "ui/command.tsx:102 attr:class",
    "ui/components.tsx:142 attr:class",
    "ui/dialogs/designer.tsx:136 attr:class",
    "ui/dialogs/designer.tsx:136 attr:class"
@@ -1028,7 +1028,7 @@
   "kind": "str",
   "refs": [
    "ui/components.tsx:123 attr:class",
-   "ui/pages.tsx:34 attr:class"
+   "ui/pages.tsx:35 attr:class"
   ]
  },
  {
@@ -1092,28 +1092,28 @@
   "key": "cbld",
   "kind": "str",
   "refs": [
-   "ui/culture.tsx:32 attr:class"
+   "ui/culture.tsx:33 attr:class"
   ]
  },
  {
   "key": " strong",
   "kind": "str",
   "refs": [
-   "ui/culture.tsx:37"
+   "ui/culture.tsx:38"
   ]
  },
  {
   "key": "terr-note small",
   "kind": "str",
   "refs": [
-   "ui/culture.tsx:61 attr:class"
+   "ui/culture.tsx:62 attr:class"
   ]
  },
  {
   "key": " foreign",
   "kind": "str",
   "refs": [
-   "ui/culture.tsx:61"
+   "ui/culture.tsx:62"
   ]
  },
  {
@@ -1199,7 +1199,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/designer.tsx:160 prop:label",
-   "ui/dialogs/production.tsx:70"
+   "ui/dialogs/production.tsx:71"
   ]
  },
  {
@@ -1251,7 +1251,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/designer.tsx:341 jsx",
-   "ui/pages.tsx:217 attr:unit"
+   "ui/pages.tsx:219 attr:unit"
   ]
  },
  {
@@ -1289,16 +1289,16 @@
   "key": "mg",
   "kind": "str",
   "refs": [
-   "ui/dialogs/fleetops.tsx:62",
-   "ui/dialogs/fleetops.tsx:69"
+   "ui/dialogs/fleetops.tsx:63",
+   "ui/dialogs/fleetops.tsx:70"
   ]
  },
  {
   "key": "kt",
   "kind": "str",
   "refs": [
-   "ui/dialogs/fleetops.tsx:62",
-   "ui/dialogs/fleetops.tsx:69"
+   "ui/dialogs/fleetops.tsx:63",
+   "ui/dialogs/fleetops.tsx:70"
   ]
  },
  {
@@ -1322,8 +1322,8 @@
   "refs": [
    "ui/dialogs/misc.tsx:104 call:useSorted",
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/discoveries.tsx:253 call:th",
-   "ui/empire.tsx:94 call:wth"
+   "ui/discoveries.tsx:254 call:th",
+   "ui/empire.tsx:95 call:wth"
   ]
  },
  {
@@ -1331,7 +1331,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:107 call:th",
-   "ui/pages.tsx:220 attr:initial"
+   "ui/pages.tsx:222 attr:initial"
   ]
  },
  {
@@ -1407,39 +1407,39 @@
   "key": "du ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/production.tsx:92 jsx"
+   "ui/dialogs/production.tsx:93 jsx"
   ]
  },
  {
   "key": "sel ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/production.tsx:149",
-   "ui/dialogs/production.tsx:170",
-   "ui/dialogs/research.tsx:62",
-   "ui/inspector.tsx:443"
+   "ui/dialogs/production.tsx:150",
+   "ui/dialogs/production.tsx:171",
+   "ui/dialogs/research.tsx:63",
+   "ui/inspector.tsx:444"
   ]
  },
  {
   "key": "dis ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/production.tsx:149"
+   "ui/dialogs/production.tsx:150"
   ]
  },
  {
   "key": "auto ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/production.tsx:149",
-   "ui/dialogs/production.tsx:170"
+   "ui/dialogs/production.tsx:150",
+   "ui/dialogs/production.tsx:171"
   ]
  },
  {
   "key": "blocked",
   "kind": "str",
   "refs": [
-   "ui/dialogs/production.tsx:170"
+   "ui/dialogs/production.tsx:171"
   ]
  },
  {
@@ -1513,92 +1513,92 @@
   "refs": [
    "ui/dialogs/reports.tsx:128",
    "ui/dialogs/reports.tsx:177",
-   "ui/pages.tsx:150"
+   "ui/pages.tsx:152"
   ]
  },
  {
   "key": "good",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:67 attr:class",
-   "ui/inspector.tsx:81 attr:class",
-   "ui/pages.tsx:223 attr:class",
-   "ui/pages.tsx:302 attr:class"
+   "ui/dialogs/research.tsx:68 attr:class",
+   "ui/inspector.tsx:82 attr:class",
+   "ui/pages.tsx:225 attr:class",
+   "ui/pages.tsx:304 attr:class"
   ]
  },
  {
   "key": "chosen",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:112"
+   "ui/dialogs/research.tsx:113"
   ]
  },
  {
   "key": "later",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:112"
+   "ui/dialogs/research.tsx:113"
   ]
  },
  {
   "key": " pending",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:125"
+   "ui/dialogs/research.tsx:126"
   ]
  },
  {
   "key": "years",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:209 call:useSorted",
-   "ui/dialogs/research.tsx:221 call:th"
+   "ui/dialogs/research.tsx:210 call:useSorted",
+   "ui/dialogs/research.tsx:222 call:th"
   ]
  },
  {
   "key": "field",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:221 call:th"
+   "ui/dialogs/research.tsx:222 call:th"
   ]
  },
  {
   "key": "pc ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:232 attr:class"
+   "ui/dialogs/research.tsx:233 attr:class"
   ]
  },
  {
   "key": "ont",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:239",
-   "ui/dialogs/research.tsx:239"
+   "ui/dialogs/research.tsx:240",
+   "ui/dialogs/research.tsx:240"
   ]
  },
  {
   "key": "upg",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:256 call:useState",
-   "ui/dialogs/research.tsx:280 call:map",
-   "ui/dialogs/research.tsx:283 call:th"
+   "ui/dialogs/research.tsx:257 call:useState",
+   "ui/dialogs/research.tsx:281 call:map",
+   "ui/dialogs/research.tsx:284 call:th"
   ]
  },
  {
   "key": "lvl",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:272 call:useSorted",
-   "ui/dialogs/research.tsx:283 call:th"
+   "ui/dialogs/research.tsx:273 call:useSorted",
+   "ui/dialogs/research.tsx:284 call:th"
   ]
  },
  {
   "key": "used",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:283 call:th"
+   "ui/dialogs/research.tsx:284 call:th"
   ]
  },
  {
@@ -1614,8 +1614,8 @@
   "refs": [
    "ui/diplomacy.tsx:31 attr:class",
    "ui/diplomacy.tsx:39",
-   "ui/discoveries.tsx:86",
-   "ui/discoveries.tsx:228"
+   "ui/discoveries.tsx:87",
+   "ui/discoveries.tsx:229"
   ]
  },
  {
@@ -1630,7 +1630,7 @@
   "kind": "tpl",
   "refs": [
    "ui/diplomacy.tsx:169 jsx",
-   "ui/discoveries.tsx:86 jsx",
+   "ui/discoveries.tsx:87 jsx",
    "ui/factions.tsx:83 jsx",
    "ui/factions.tsx:119 jsx"
   ]
@@ -1646,100 +1646,100 @@
   "key": " stale",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:65"
+   "ui/discoveries.tsx:66"
   ]
  },
  {
   "key": "primary mbtn",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:118 attr:class",
    "ui/discoveries.tsx:119 attr:class",
-   "ui/missionui.tsx:125 attr:class",
-   "ui/missionui.tsx:127 attr:class"
+   "ui/discoveries.tsx:120 attr:class",
+   "ui/missionui.tsx:126 attr:class",
+   "ui/missionui.tsx:128 attr:class"
   ]
  },
  {
   "key": " slow",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:118",
    "ui/discoveries.tsx:119",
-   "ui/missionui.tsx:125",
-   "ui/missionui.tsx:127"
+   "ui/discoveries.tsx:120",
+   "ui/missionui.tsx:126",
+   "ui/missionui.tsx:128"
   ]
  },
  {
   "key": "{0} part {1}",
   "kind": "tpl",
   "refs": [
-   "ui/discoveries.tsx:133 call:notify"
+   "ui/discoveries.tsx:134 call:notify"
   ]
  },
  {
   "key": "nt",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:160 jsx",
-   "ui/discoveries.tsx:182 jsx"
+   "ui/discoveries.tsx:161 jsx",
+   "ui/discoveries.tsx:183 jsx"
   ]
  },
  {
   "key": "natural",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:234 call:useSorted",
-   "ui/pages.tsx:442 call:useSorted"
+   "ui/discoveries.tsx:235 call:useSorted",
+   "ui/pages.tsx:444 call:useSorted"
   ]
  },
  {
   "key": "level",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:253 call:th"
+   "ui/discoveries.tsx:254 call:th"
   ]
  },
  {
   "key": "pct",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:253 call:th"
+   "ui/discoveries.tsx:254 call:th"
   ]
  },
  {
   "key": "status",
   "kind": "str",
   "refs": [
-   "ui/discoveries.tsx:253 call:th"
+   "ui/discoveries.tsx:254 call:th"
   ]
  },
  {
   "key": "loss",
   "kind": "str",
   "refs": [
-   "ui/empire.tsx:82 call:useSorted",
-   "ui/empire.tsx:94 call:wth"
+   "ui/empire.tsx:83 call:useSorted",
+   "ui/empire.tsx:95 call:wth"
   ]
  },
  {
   "key": "eff",
   "kind": "str",
   "refs": [
-   "ui/empire.tsx:94 call:wth"
+   "ui/empire.tsx:95 call:wth"
   ]
  },
  {
   "key": " victory",
   "kind": "str",
   "refs": [
-   "ui/empire.tsx:182"
+   "ui/empire.tsx:183"
   ]
  },
  {
   "key": "failed",
   "kind": "str",
   "refs": [
-   "ui/empire.tsx:196 attr:class"
+   "ui/empire.tsx:197 attr:class"
   ]
  },
  {
@@ -1755,7 +1755,7 @@
   "refs": [
    "ui/enginechart.tsx:28",
    "ui/langpick.tsx:8",
-   "ui/missionui.tsx:189"
+   "ui/missionui.tsx:190"
   ]
  },
  {
@@ -1776,72 +1776,72 @@
   "key": "blk ",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:64 attr:class"
+   "ui/inspector.tsx:65 attr:class"
   ]
  },
  {
   "key": "rows",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:155 attr:cls",
-   "ui/inspector.tsx:367 attr:cls"
+   "ui/inspector.tsx:156 attr:cls",
+   "ui/inspector.tsx:368 attr:cls"
   ]
  },
  {
   "key": "rows empire-blk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:274 attr:cls"
+   "ui/inspector.tsx:275 attr:cls"
   ]
  },
  {
   "key": " ×{0}",
   "kind": "tpl",
   "refs": [
-   "ui/inspector.tsx:312 jsx",
-   "ui/pages.tsx:227 jsx"
+   "ui/inspector.tsx:313 jsx",
+   "ui/pages.tsx:229 jsx"
   ]
  },
  {
   "key": "blk prodblk",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:320 attr:class"
+   "ui/inspector.tsx:321 attr:class"
   ]
  },
  {
   "key": " open",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:320"
+   "ui/inspector.tsx:321"
   ]
  },
  {
   "key": " old",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:355"
+   "ui/inspector.tsx:356"
   ]
  },
  {
   "key": "hint",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:495 attr:class"
+   "ui/inspector.tsx:496 attr:class"
   ]
  },
  {
   "key": "crew",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:558 attr:cls"
+   "ui/inspector.tsx:559 attr:cls"
   ]
  },
  {
   "key": "rank r",
   "kind": "str",
   "refs": [
-   "ui/inspector.tsx:558 attr:class"
+   "ui/inspector.tsx:559 attr:class"
   ]
  },
  {
@@ -1867,7 +1867,7 @@
   "refs": [
    "ui/intel.tsx:77",
    "ui/intel.tsx:81",
-   "ui/summary.tsx:64"
+   "ui/summary.tsx:65"
   ]
  },
  {
@@ -1876,75 +1876,75 @@
   "refs": [
    "ui/intel.tsx:77",
    "ui/intel.tsx:81",
-   "ui/summary.tsx:64"
+   "ui/summary.tsx:65"
   ]
  },
  {
   "key": "middle",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:192"
+   "ui/map.tsx:188"
   ]
  },
  {
   "key": "{0}px",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:194"
+   "ui/map.tsx:190"
   ]
  },
  {
   "key": "right",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:483"
+   "ui/map.tsx:489"
   ]
  },
  {
   "key": "left",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:483",
-   "ui/map.tsx:1232"
+   "ui/map.tsx:489",
+   "ui/map.tsx:1238"
   ]
  },
  {
   "key": "grabbing",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1005 prop:cursor"
+   "ui/map.tsx:1011 prop:cursor"
   ]
  },
  {
   "key": "grab",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1005 prop:cursor"
+   "ui/map.tsx:1011 prop:cursor"
   ]
  },
  {
   "key": "red small",
   "kind": "str",
   "refs": [
-   "ui/missionui.tsx:138 attr:class",
-   "ui/missionui.tsx:141 attr:class",
-   "ui/pages.tsx:227"
+   "ui/missionui.tsx:139 attr:class",
+   "ui/missionui.tsx:142 attr:class",
+   "ui/pages.tsx:229"
   ]
  },
  {
   "key": "muted small",
   "kind": "str",
   "refs": [
-   "ui/missionui.tsx:138 attr:class",
-   "ui/missionui.tsx:141 attr:class",
-   "ui/pages.tsx:227"
+   "ui/missionui.tsx:139 attr:class",
+   "ui/missionui.tsx:142 attr:class",
+   "ui/pages.tsx:229"
   ]
  },
  {
   "key": "mission-row haul",
   "kind": "str",
   "refs": [
-   "ui/missionui.tsx:189 attr:class"
+   "ui/missionui.tsx:190 attr:class"
   ]
  },
  {
@@ -1953,142 +1953,142 @@
   "refs": [
    "ui/nav.tsx:32 call:scrollTo",
    "ui/nav.tsx:33 call:scrollTo",
-   "ui/todo.ts:37 call:scrollTo"
+   "ui/todo.ts:38 call:scrollTo"
   ]
  },
  {
   "key": "ghost touch-only",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:123 attr:class"
+   "ui/pages.tsx:124 attr:class"
   ]
  },
  {
   "key": "rep-text kind-",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:150 attr:class"
+   "ui/pages.tsx:152 attr:class"
   ]
  },
  {
   "key": "yellow small",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:227"
+   "ui/pages.tsx:229"
   ]
  },
  {
   "key": "val",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:284 call:useSorted",
-   "ui/pages.tsx:294 call:th"
+   "ui/pages.tsx:286 call:useSorted",
+   "ui/pages.tsx:296 call:th"
   ]
  },
  {
   "key": "tf",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:294 call:th"
+   "ui/pages.tsx:296 call:th"
   ]
  },
  {
   "key": "owner",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:294 call:th"
+   "ui/pages.tsx:296 call:th"
   ]
  },
  {
   "key": "conc",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:294 call:th",
-   "ui/pages.tsx:380 call:th"
+   "ui/pages.tsx:296 call:th",
+   "ui/pages.tsx:382 call:th"
   ]
  },
  {
   "key": "ark",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:294 call:th",
-   "ui/pages.tsx:495",
-   "ui/pages.tsx:497"
+   "ui/pages.tsx:296 call:th",
+   "ui/pages.tsx:497",
+   "ui/pages.tsx:499"
   ]
  },
  {
   "key": "fe",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:359 prop:ironium",
-   "ui/pages.tsx:380 call:btn"
+   "ui/pages.tsx:361 prop:ironium",
+   "ui/pages.tsx:382 call:btn"
   ]
  },
  {
   "key": "bo",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:359 prop:boranium",
-   "ui/pages.tsx:380 call:btn"
+   "ui/pages.tsx:361 prop:boranium",
+   "ui/pages.tsx:382 call:btn"
   ]
  },
  {
   "key": "ge",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:359 prop:germanium",
-   "ui/pages.tsx:380 call:btn"
+   "ui/pages.tsx:361 prop:germanium",
+   "ui/pages.tsx:382 call:btn"
   ]
  },
  {
   "key": "total",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:359 call:useSorted",
-   "ui/pages.tsx:380 call:th"
+   "ui/pages.tsx:361 call:useSorted",
+   "ui/pages.tsx:382 call:th"
   ]
  },
  {
   "key": "de ",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:372 jsx"
+   "ui/pages.tsx:374 jsx"
   ]
  },
  {
   "key": "surf",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:380 call:th",
-   "ui/pages.tsx:444 call:th"
+   "ui/pages.tsx:382 call:th",
+   "ui/pages.tsx:446 call:th"
   ]
  },
  {
   "key": "flow",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:444 call:th"
+   "ui/pages.tsx:446 call:th"
   ]
  },
  {
   "key": "bal",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:444 call:th"
+   "ui/pages.tsx:446 call:th"
   ]
  },
  {
   "key": " ghost",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:489"
+   "ui/pages.tsx:491"
   ]
  },
  {
   "key": "low",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:530 attr:class",
+   "ui/pages.tsx:532 attr:class",
    "ui/sidebar.tsx:118 attr:class"
   ]
  },
@@ -2096,15 +2096,15 @@
   "key": "mn",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:549 attr:key"
+   "ui/pages.tsx:551 attr:key"
   ]
  },
  {
   "key": "dip",
   "kind": "str",
   "refs": [
-   "ui/pages.tsx:554 attr:key",
-   "ui/pages.tsx:554 attr:key"
+   "ui/pages.tsx:556 attr:key",
+   "ui/pages.tsx:556 attr:key"
   ]
  },
  {
@@ -2167,7 +2167,7 @@
   "key": "null",
   "kind": "str",
   "refs": [
-   "ui/store.ts:91 call:parse",
+   "ui/store.ts:99 call:parse",
    "ui/update.ts:55 call:parse"
   ]
  },
@@ -2175,78 +2175,78 @@
   "key": "gzip",
   "kind": "str",
   "refs": [
-   "ui/store.ts:420 call:pipeThrough",
-   "ui/store.ts:432 call:pipeThrough"
+   "ui/store.ts:441 call:pipeThrough",
+   "ui/store.ts:453 call:pipeThrough"
   ]
  },
  {
   "key": "downloads",
   "kind": "str",
   "refs": [
-   "ui/store.ts:478 call:use"
+   "ui/store.ts:514 call:use"
   ]
  },
  {
   "key": "old",
   "kind": "str",
   "refs": [
-   "ui/summary.tsx:118"
+   "ui/summary.tsx:119"
   ]
  },
  {
   "key": "green b",
   "kind": "str",
   "refs": [
-   "ui/summary.tsx:119 attr:class"
+   "ui/summary.tsx:120 attr:class"
   ]
  },
  {
   "key": "red b",
   "kind": "str",
   "refs": [
-   "ui/summary.tsx:119 attr:class"
+   "ui/summary.tsx:120 attr:class"
   ]
  },
  {
   "key": "× {0}{1}",
   "kind": "tpl",
   "refs": [
-   "ui/summary.tsx:191 attr:v"
+   "ui/summary.tsx:192 attr:v"
   ]
  },
  {
   "key": "small primary",
   "kind": "str",
   "refs": [
-   "ui/summary.tsx:279 attr:class"
+   "ui/summary.tsx:280 attr:class"
   ]
  },
  {
   "key": "dec",
   "kind": "str",
   "refs": [
-   "ui/todo.ts:37 prop:key"
+   "ui/todo.ts:38 prop:key"
   ]
  },
  {
   "key": "doc",
   "kind": "str",
   "refs": [
-   "ui/todo.ts:38 prop:key"
+   "ui/todo.ts:39 prop:key"
   ]
  },
  {
   "key": "pro",
   "kind": "str",
   "refs": [
-   "ui/todo.ts:39 prop:key"
+   "ui/todo.ts:40 prop:key"
   ]
  },
  {
   "key": "dil",
   "kind": "str",
   "refs": [
-   "ui/todo.ts:40 prop:key"
+   "ui/todo.ts:41 prop:key"
   ]
  },
  {

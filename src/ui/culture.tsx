@@ -1,4 +1,5 @@
 // Culture and territory in the interface (Constellations 3.3): planet blocks, the Empire page section.
+import { viewFleet } from './memo';
 import { useStore, fmt } from './store';
 import { Row } from './components';
 import type { GameState, Planet, Player } from '../engine/types';
@@ -102,14 +103,14 @@ export function ClaimBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }
   if (!cultureOn(g) || p.owner >= 0 || (me.intel.planets[p.id]?.owner ?? -1) >= 0) return null;
   const b = beaconAt(g, p.id);
   if (b && b.owner === me.id) return null;
-  const kits = g.fleets.filter(f => f.owner === me.id && f.beaconOf === undefined && fleetSpec(g, f).beaconKits > 0);
+  const kits = g.fleets.filter(f => f.owner === me.id && f.beaconOf === undefined && viewFleet(g, f).beaconKits > 0);
   const o = knownTerritoryOwner(g, me, p);
   if (o >= 0 && o !== me.id) return null;
   const ready = kits.filter(f => !beaconBlocker(g, f, p)).sort((a, b2) => distance(a, p) - distance(b2, p)).slice(0, 3);
   return <section class="blk claim">
     <div class="blk-head"><h3>Revendiquer</h3><span class="small muted">balise de souveraineté</span></div>
     <p class="small muted">Une balise posée en orbite revendique ce monde et {BEACON_RADIUS} al autour : un fort armé qu'un autre empire devra détruire avant de pouvoir coloniser ici. Il faut un vaisseau qui porte un kit de balise.</p>
-    {ready.length ? <div class="btns">{ready.map(f => { const leg = f.x === p.x && f.y === p.y ? null : estimateRoute(g, f, [f.waypoints[0], { x: p.x, y: p.y, target: 'planet', targetId: p.id, warp: fleetSpec(g, f).idealSpeed || 5, task: 'beacon' }])[0]; return <button class="small primary" onClick={() => A.sendBeacon(f, p.id)}>Envoyer {f.name}{leg ? <small> · {leg.years} a</small> : <small> · sur place</small>}</button>; })}</div>
+    {ready.length ? <div class="btns">{ready.map(f => { const leg = f.x === p.x && f.y === p.y ? null : estimateRoute(g, f, [f.waypoints[0], { x: p.x, y: p.y, target: 'planet', targetId: p.id, warp: viewFleet(g, f).idealSpeed || 5, task: 'beacon' }])[0]; return <button class="small primary" onClick={() => A.sendBeacon(f, p.id)}>Envoyer {f.name}{leg ? <small> · {leg.years} a</small> : <small> · sur place</small>}</button>; })}</div>
       : <p class="small">{kits.length ? 'Aucun de vos porte-balises ne peut s\'y rendre pour l\'instant.' : 'Aucun vaisseau avec un kit de balise : construisez un Porte-balise (ou ajoutez le kit à un modèle dans Conception).'}</p>}
   </section>;
 }

@@ -1,6 +1,7 @@
 // Global UI state for the browser client.
 import { beforeGenerate, prepareTurn } from '../engine/pbem';
 import { popScale } from '../engine/words';
+import { LOCALE } from '../i18n';
 import { useEffect, useState } from 'preact/hooks';
 import { ensureSpecialShift } from '../engine/specials';
 import { tidyRefits } from '../engine/refit';
@@ -57,6 +58,8 @@ const INDEX_KEY = 'constellations.v1.slots';
 const GAME_KEY = 'constellations.v1.game.';
 const MAX_SLOTS = 8;
 
+/** 0.3.9.20: the parts of the interface that can render again on their own. */
+export type Channel = 'reports' | 'toast';
 export interface SaveSlot { id: string; name: string; year: number; race: string; players: number; humans: number; updated: number }
 const PREFS_KEY = 'constellations.v1.prefs';
 
@@ -70,6 +73,11 @@ class Store {
   dialogs: Dialog[] = [];
   messageIndex = 0;
   version = 0;
+  /**
+   * 0.3.9.20: bumped with every change that may touch the game (bump), not with the changes only one part of the
+   * interface shows (bumpOnly): what the map and the caches of the interface compare to know whether to redo their work.
+   */
+  dataRev = 0;
   dirty = false;
   undo: string[] = [];
   busy = false;
@@ -103,7 +111,19 @@ class Store {
   subscribeCamera(fn: () => void) { this.camListeners.add(fn); return () => { this.camListeners.delete(fn); }; }
   /** pan/zoom: only the map needs to redraw, not the whole interface */
   setCamera(c: Camera) { this.camera = c; for (const l of this.camListeners) l(); }
-  bump() { this.version++; for (const l of this.listeners) l(); }
+  bump() { this.version++; this.dataRev++; this.dataDirty = false; for (const l of this.listeners) l(); }
+  /**
+   * 0.3.9.20: a change of the interface alone (selection, dialog, tab, centring, toast): everything renders again, but
+   * what was computed from the game stays valid (see memo.ts), unless an order was given since (checkpoint).
+   */
+  private dataDirty = false;
+  viewBump() { if (this.dataDirty) { this.dataRev++; this.dataDirty = false; } this.version++; for (const l of this.listeners) l(); }
+  /** 0.3.9.20: a change only some components show (the report strip, the toast): only they render again. */
+  private channels = new Map<string, Set<() => void>>();
+  subscribeTo(ch: Channel, fn: () => void) { let set = this.channels.get(ch); if (!set) this.channels.set(ch, set = new Set()); set.add(fn); return () => { set!.delete(fn); }; }
+  bumpOnly(ch: Channel) { for (const l of this.channels.get(ch) ?? []) l(); }
+  /** The report shown in the strip under the map (arrows, ↑ ↓): nothing else has to render again. */
+  setMessageIndex(i: number) { this.messageIndex = i; this.bumpOnly('reports'); }
 
   savePrefs() {
     try { localStorage.setItem(PREFS_KEY, JSON.stringify({ view: this.view, collapsed: this.collapsed, v36: true })); } catch { /* ignore */ }
@@ -114,6 +134,7 @@ class Store {
     if (!this.game) return;
     this.undo.push(JSON.stringify(this.game));
     if (this.undo.length > 25) this.undo.shift();
+    this.dataRev++; this.dataDirty = true; // (the game is about to change: the caches of the interface start again)
     this.dirty = true;
     this.autosaveSoon();
   }
@@ -297,10 +318,10 @@ class Store {
     return this.saved ?? null;
   }
 
-  notify(text: string) { this.toast = { text, t: Date.now() }; this.bump(); setTimeout(() => { if (this.toast && Date.now() - this.toast.t >= 2900) { this.toast = null; this.bump(); } }, 3000); }
+  notify(text: string) { this.toast = { text, t: Date.now() }; this.viewBump(); setTimeout(() => { if (this.toast && Date.now() - this.toast.t >= 2900) { this.toast = null; this.bumpOnly('toast'); } }, 3000); }
 
-  open(kind: DialogKind, data?: any) { this.dialogs = this.dialogs.filter(d => d.kind !== kind); this.dialogs.push({ kind, data }); this.bump(); }
-  close(kind?: DialogKind) { if (kind) this.dialogs = this.dialogs.filter(d => d.kind !== kind); else this.dialogs.pop(); this.bump(); }
+  open(kind: DialogKind, data?: any) { this.dialogs = this.dialogs.filter(d => d.kind !== kind); this.dialogs.push({ kind, data }); this.viewBump(); }
+  close(kind?: DialogKind) { if (kind) this.dialogs = this.dialogs.filter(d => d.kind !== kind); else this.dialogs.pop(); this.viewBump(); }
   isOpen(kind: DialogKind) { return this.dialogs.some(d => d.kind === kind); }
 
   select(ref: ObjRef | null, command = true) {
@@ -313,13 +334,13 @@ class Store {
         if (f && f.owner === me) { this.commanded = { kind: 'fleet', id: ref.id }; this.waypointIndex = Math.min(1, f.waypoints.length - 1); }
       }
     }
-    this.bump();
+    this.viewBump();
   }
 
   /** in-page confirmation (window.confirm is unavailable in the artifact viewer) */
   ask(message: string, onYes: () => void, yesLabel = 'Confirmer') { this.open('confirm', { message, onYes, yesLabel }); }
 
-  goTab(t: TabId, data?: any) { this.tab = t; this.tabData = data ?? null; this.drawer = false; this.dialogs = this.dialogs.filter(d => !['research', 'designer', 'relations', 'reports', 'planner', 'help', 'score'].includes(d.kind)); this.bump(); }
+  goTab(t: TabId, data?: any) { this.tab = t; this.tabData = data ?? null; this.drawer = false; this.dialogs = this.dialogs.filter(d => !['research', 'designer', 'relations', 'reports', 'planner', 'help', 'score'].includes(d.kind)); this.viewBump(); }
 
   /** select an object and show it on the map */
   focus(ref: ObjRef, pos?: { x: number; y: number } | null) {
@@ -329,7 +350,7 @@ class Store {
     if (pos) this.center(pos.x, pos.y);
   }
 
-  center(x: number, y: number) { this.camera = { ...this.camera, x, y }; this.bump(); }
+  center(x: number, y: number) { this.camera = { ...this.camera, x, y }; this.viewBump(); }
 
   /** hotseat: the next player must confirm before seeing the map */
   handoff = false;
@@ -437,6 +458,13 @@ export const store = new Store();
 void store.loadSaved();
 (globalThis as any).__store = store;
 
+/** 0.3.9.20: the store, and also the changes of one channel (see bumpOnly). */
+export function useChannel(ch: Channel): Store {
+  const [, set] = useState(0);
+  useEffect(() => store.subscribeTo(ch, () => set(v => v + 1)), []);
+  return useStore();
+}
+
 export function useStore(): Store {
   const [, set] = useState(0);
   const seen = store.version;
@@ -450,7 +478,15 @@ export function useStore(): Store {
 
 // ------------------------------------------------------------------ formatting helpers
 
-export const fmt = (n: number, digits = 0) => (Number.isFinite(n) ? (n + 0 === 0 ? 0 : n).toLocaleString('fr-FR', { maximumFractionDigits: digits, minimumFractionDigits: digits }) : '∞');
+// 0.3.9.20: one formatter per number of decimals, made once (toLocaleString builds a new one at every call, and the
+// interface formats thousands of numbers each time it renders)
+const NUMBER_FORMATS = new Map<number, Intl.NumberFormat>();
+const numberFormat = (digits: number) => {
+  let f = NUMBER_FORMATS.get(digits);
+  if (!f) NUMBER_FORMATS.set(digits, f = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: digits, minimumFractionDigits: digits }));
+  return f;
+};
+export const fmt = (n: number, digits = 0) => (Number.isFinite(n) ? numberFormat(digits).format(n + 0 === 0 ? 0 : n) : '∞');
 /**
  * A population (in the rules' colonists). 3.6: when the game shows populations in millions (a colonist stands for a
  * thousand people), compactly: "25 M", "1,02 Md".

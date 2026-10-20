@@ -1,5 +1,6 @@
 // The scanner: a canvas map of the galaxy (pan, zoom, select, waypoints, overlays).
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { viewRoute, viewFleet, viewScanners } from './memo';
 import { mapColors, uiPrefs } from './prefs';
 import { store, useStore, type ObjRef, fmt, fmtPop } from './store';
 import type { Fleet, GameState, Planet, Player, Waypoint } from '../engine/types';
@@ -55,7 +56,7 @@ export const patrolRadiusOf = (g: GameState, f: Fleet, i: number) => f.waypoints
 function routeHandles(g: GameState, f: Fleet): RouteHandle[] {
   const res: RouteHandle[] = [];
   f.waypoints.forEach((w, i) => { if (w.task === 'patrol' || w.task === 'refuel') res.push({ kind: 'radius', i, x: w.x + patrolRadiusOf(g, f, i), y: w.y }); });
-  const est = estimateRoute(g, f);
+  const est = viewRoute(g, f);
   let prev = { x: f.x, y: f.y };
   for (let i = 1; i < f.waypoints.length; i++) {
     const wp = f.waypoints[i];
@@ -117,13 +118,8 @@ function offscreen(w: number, h: number): HTMLCanvasElement {
   return offCanvas;
 }
 
-/** scanner list only changes with the year, the active player or the fleet list */
-let scanCache: { key: string; game: GameState; list: ReturnType<typeof scannersOf> } | null = null;
-function cachedScanners(game: GameState, me: Player) {
-  const key = `${game.year}|${me.id}|${game.fleets.length}|${game.planets.reduce((a, p) => a + (p.owner === me.id ? p.id + 1 : 0), 0)}|${store.undo.length}`;
-  if (!scanCache || scanCache.game !== game || scanCache.key !== key) scanCache = { key, game, list: scannersOf(game, me) };
-  return scanCache.list;
-}
+/** the scanners of the player (0.3.9.20: kept until the game changes, see memo.ts) */
+const cachedScanners = (game: GameState, me: Player) => viewScanners(game, me);
 
 /**
  * 3.6: the glow of a whole galaxy (games of 0.3.5.8 to 0.3.6.2: it draws its outline), painted once and stretched over
@@ -242,12 +238,12 @@ export function MapView() {
     return t ? { x: t.x, y: t.y, label: t.label } : toWorld(sx, sy);
   };
 
-  const [, setCamTick] = useState(0);
+  const [camTick, setCamTick] = useState(0);
   useEffect(() => s.subscribeCamera(() => setCamTick(v => v + 1)), []);
   useEffect(() => { const f = () => setCamTick(v => v + 1); cloudsReady.add(f); return () => { cloudsReady.delete(f); }; }, []);
   useEffect(() => {
     const el = wrap.current!;
-    const ro = new ResizeObserver(() => setSize({ w: el.clientWidth, h: el.clientHeight }));
+    const ro = new ResizeObserver(() => setSize(o => o.w === el.clientWidth && o.h === el.clientHeight ? o : { w: el.clientWidth, h: el.clientHeight }));
     ro.observe(el);
     setSize({ w: el.clientWidth, h: el.clientHeight });
     return () => ro.disconnect();
@@ -256,7 +252,17 @@ export function MapView() {
   const toScreen = (x: number, y: number) => ({ x: (x - s.camera.x) * s.camera.zoom + size.w / 2, y: (y - s.camera.y) * s.camera.zoom + size.h / 2 });
   const toWorld = (sx: number, sy: number) => ({ x: (sx - size.w / 2) / s.camera.zoom + s.camera.x, y: (sy - size.h / 2) / s.camera.zoom + s.camera.y });
 
-  useEffect(() => { const t0 = performance.now(); draw(); (window as any).__drawMs = performance.now() - t0; });
+  // 0.3.9.20: the map is drawn again only when what it shows may have changed: the game (any bump of the store, any
+  // order), the camera, the size, the clouds coming in, a route being dragged, a ruler. A tooltip, the report strip or
+  // a toast no longer redraw the whole galaxy.
+  const drawn = useRef<unknown[] | null>(null);
+  useEffect(() => {
+    const sig = [s.game, s.me, s.version, s.camera.x, s.camera.y, s.camera.zoom, size.w, size.h, camTick, dragPt, hoverHandle, ruler, routeDrag.current?.moved];
+    const prev = drawn.current;
+    if (prev && sig.every((v, i) => v === prev[i])) return;
+    drawn.current = sig;
+    const w = window as any, t0 = performance.now(); draw(); w.__drawMs = performance.now() - t0; w.__draws = (w.__draws | 0) + 1;
+  });
 
   function draw() {
     const cv = canvas.current;
@@ -692,7 +698,7 @@ export function MapView() {
     }
 
     function drawRoute(c: CanvasRenderingContext2D, g: GameState, f: Fleet, selected: boolean) {
-      const est = estimateRoute(g, f);
+      const est = viewRoute(g, f);
       let prev = { x: f.x, y: f.y };
       for (let i = 1; i < f.waypoints.length; i++) {
         const wp = f.waypoints[i];
@@ -975,7 +981,7 @@ export function MapView() {
         if (s.commanded?.kind === 'fleet') {
           const f = game.fleets.find(x => x.id === s.commanded!.id);
           if (f) {
-            const sp = fleetSpec(game, f);
+            const sp = viewFleet(game, f);
             lines.push(`§Trajet de votre flotte ${f.name}`);
             if (sp.idealSpeed) {
               lines.push(`${fmt(d, 1)} al · ${travelYears(d, sp.idealSpeed)} a à Warp ${sp.idealSpeed}`);
@@ -1020,7 +1026,7 @@ export function MapView() {
         </div>
       )}
       <div class="map-scale">{fmt(100 / s.camera.zoom, 0)} al / 100 px{s.commanded?.kind === 'fleet' && s.selected?.kind === 'fleet' ? <span class="hide-touch"> · Maj+clic : destination · Ctrl+Maj+clic : étape en plus</span> : <span class="hide-touch"> · Ctrl+glisser : règle</span>}</div>
-      {s.view.minimap && <Minimap w={size.w} h={size.h} />}
+      {s.view.minimap && <Minimap w={size.w} h={size.h} tick={camTick} />}
       {s.wpMode && s.commanded?.kind === 'fleet' && <div class="wp-banner">Mode étapes : le premier toucher fixe la destination, les suivants ajoutent des étapes <button class="small" onClick={() => { s.wpMode = false; resetStepSession(); s.bump(); }}>Terminer</button></div>}
     </div>
   );
@@ -1454,14 +1460,20 @@ function drawFlag(ctx: CanvasRenderingContext2D, x: number, y: number, color: st
 export type { Waypoint };
 
 /** Galaxy overview in the corner: owned worlds, the visible area; click or drag to move there. */
-function Minimap({ w, h }: { w: number; h: number }) {
+function Minimap({ w, h, tick }: { w: number; h: number; tick: number }) {
   const s = store;
   const ref = useRef<HTMLCanvasElement>(null);
   const g = s.game!, me = s.me!;
   const S = Math.min(150, Math.max(90, Math.round(Math.min(w, h) * 0.22)));
   const k = S / Math.max(g.width, g.height);
+  const drawn = useRef<unknown[] | null>(null);
   useEffect(() => {
     const cv = ref.current; if (!cv) return;
+    // 0.3.9.20: only when what it shows may have changed
+    const sig = [g, me, s.version, s.camera.x, s.camera.y, s.camera.zoom, w, h, S, tick];
+    const prev = drawn.current;
+    if (prev && sig.every((v, i) => v === prev[i])) return;
+    drawn.current = sig;
     const dpr = window.devicePixelRatio || 1;
     if (cv.width !== S * dpr) { cv.width = S * dpr; cv.height = S * dpr; }
     const c = cv.getContext('2d')!;

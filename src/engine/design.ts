@@ -353,8 +353,19 @@ function computeSpec(player: Owner, design: { hull: string; slots: DesignSlot[];
   };
 }
 
+// 0.3.9.20: where each design sits in game.designs (checked on every use, rebuilt when the list has moved)
+const designIndex = new WeakMap<ShipDesign[], Map<number, number>>();
 export function getDesign(game: GameState, id: number): ShipDesign {
-  const d = game.designs.find(x => x.id === id);
+  const list = game.designs;
+  let idx = designIndex.get(list);
+  let i = idx?.get(id);
+  if (i === undefined || list[i]?.id !== id) {
+    idx = new Map();
+    for (let k = 0; k < list.length; k++) if (!idx.has(list[k].id)) idx.set(list[k].id, k);
+    designIndex.set(list, idx);
+    i = idx.get(id);
+  }
+  const d = i === undefined ? undefined : list[i];
   if (!d) throw new Error('design ' + id);
   return d;
 }

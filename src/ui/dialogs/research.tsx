@@ -1,4 +1,5 @@
 // Research page: fields with estimated (random) breakthroughs, and the technologies within reach.
+import { viewSpec } from '../memo';
 import { useState } from 'preact/hooks';
 import { useStore, fmt, fmtPeople } from '../store';
 import { Modal, Bar, Row, Num, CompIcon, HullImg, useSorted } from '../components';
@@ -38,8 +39,8 @@ export function ResearchDialog() {
   const g = s.game!, me = s.me!;
   const [view, setView] = useState<Field | 'all'>(me.researching);
   const planets = g.planets.filter(p => p.owner === me.id);
-  const total = planets.reduce((a, p) => a + planetSpec(g, p, me).resources, 0);
-  const budget = planets.reduce((a, p) => a + planetSpec(g, p, me).resourcesResearch, 0);
+  const total = planets.reduce((a, p) => a + viewSpec(g, p, me).resources, 0);
+  const budget = planets.reduce((a, p) => a + viewSpec(g, p, me).resourcesResearch, 0);
   const rs = raceSpec(me.race);
   const perYear = Math.trunc(Math.max(budget, me.researchLastYear) * rs.researchFactor + 0.5);
   const luck = !!g.settings.randomResearch;

@@ -8,6 +8,7 @@ import type { Fleet, GameState, Planet, Player, WaypointTask } from '../engine/t
 import { habitability, habString, HAB_NAMES, raceSpec } from '../engine/race';
 import { planetSpec, terraformRemaining, maxPopulation } from '../engine/planet';
 import { fleetSpec, estimateRoute, canPassThrough } from '../engine/fleet';
+import { viewRoute, viewSpec, viewFleet, viewQueue, viewMemo } from './memo';
 import { canUseWormholes, WORMHOLE_NAV, specialReqText, specialLevelText } from '../engine/specials';
 import { greenhouseOn, greenhouseTarget, emissionFactor } from '../engine/greenhouse';
 import { terrainAt, terrainName, terrainOnLeg, TERRAIN_INFO } from '../engine/terrain';
@@ -129,7 +130,7 @@ function BorderExitNote({ g, f }: { g: GameState; f: Fleet }) {
 
 function OwnPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const s = store;
-  const spec = planetSpec(g, p, me);
+  const spec = viewSpec(g, p, me);
   const rs = raceSpec(me.race);
   const mine = g.planets.filter(x => x.owner === me.id);
   const go = (dir: number) => { const x = cycle(mine, p.id, dir); if (x) { s.select({ kind: 'planet', id: x.id }); s.center(x.x, x.y); } };
@@ -164,7 +165,7 @@ function OwnPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
       <label class="chk"><input type="checkbox" checked={p.leftoverOnly} onChange={e => { s.checkpoint(); p.leftoverOnly = (e.target as HTMLInputElement).checked; s.bump(); }} /> Ne donner à la recherche que les ressources inutilisées</label>
     </Blk>
     <Blk title={`En orbite (${orbit.length})`}>
-      {orbit.length === 0 ? <div class="muted small">Aucune flotte.</div> : <ul class="orbit">{orbit.map(f => { const sp = fleetSpec(g, f); return <li><button class="lnk" onClick={() => s.select({ kind: 'fleet', id: f.id })}>{f.name}</button><span class="muted small">{sp.ships} v.{sp.cargoCapacity ? ` · ${fmt(f.cargo.ironium + f.cargo.boranium + f.cargo.germanium + f.cargo.colonists)}/${fmt(sp.cargoCapacity)} kt` : ''}</span><button class="small" onClick={() => s.open('cargo', { fleetId: f.id, planetId: p.id })} title="Échanger cargaison et carburant avec la planète">Cargaison</button></li>; })}</ul>}
+      {orbit.length === 0 ? <div class="muted small">Aucune flotte.</div> : <ul class="orbit">{orbit.map(f => { const sp = viewFleet(g, f); return <li><button class="lnk" onClick={() => s.select({ kind: 'fleet', id: f.id })}>{f.name}</button><span class="muted small">{sp.ships} v.{sp.cargoCapacity ? ` · ${fmt(f.cargo.ironium + f.cargo.boranium + f.cargo.germanium + f.cargo.colonists)}/${fmt(sp.cargoCapacity)} kt` : ''}</span><button class="small" onClick={() => s.open('cargo', { fleetId: f.id, planetId: p.id })} title="Échanger cargaison et carburant avec la planète">Cargaison</button></li>; })}</ul>}
     </Blk>
     <Blk title="Station orbitale" tut="station">
       {!sb || !sbSpec ? <div class="muted small">Aucune station : impossible de construire des vaisseaux ici. <button class="lnk" onClick={() => s.open('production', { planetId: p.id })}>En construire une</button></div> : <>
@@ -255,7 +256,7 @@ function EmpireBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const dc = !!g.settings.distanceCost, lg = logisticsOn(g);
   const mega = (p.megaprojects ?? []) as MegaId[];
   if (!dc && !lg && !mega.length && !p.agency) return null;
-  const spec = planetSpec(g, p, me);
+  const spec = viewSpec(g, p, me);
   const e = spec.efficiency;
   const cap = capitalOf(g, me);
   const why: string[] = [];
@@ -306,7 +307,7 @@ function EmpireBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
 function ProdBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const s = useStore();
   const open = !(s.collapsed['insp-prod'] ?? true);
-  const est = p.queue.length ? estimateQueue(g, p, 50) : [];
+  const est = p.queue.length ? viewQueue(g, p, 50) : [];
   const firstManual = p.queue.findIndex(q => !isAuto(q.kind));
   const summary = p.queue.length === 0 ? <span class="warn">vide</span>
     : firstManual >= 0 ? <>{itemLabel(g, p.queue[firstManual])}{p.queue[firstManual].qty > 1 ? ` ×${p.queue[firstManual].qty}` : ''} · {est[firstManual]?.blocked ? 'bloqué' : est[firstManual]?.lastYear ? yearsLabel(est[firstManual].lastYear!) : '…'}</> : 'automatique';
@@ -393,7 +394,7 @@ function RefuelBlock({ g, f }: { g: GameState; f: Fleet }) {
   if (coming.length) return <div class="refuel small">{coming.map(t => <div>⛽ <button class="lnk" onClick={() => s.select({ kind: 'fleet', id: t.id })}>{t.name}</button> vient la ravitailler{t.refuelYear !== undefined ? `, rencontre prévue en ${Math.max(g.year + 1, t.refuelYear)}` : ''}. <button class="lnk" onClick={() => A.stopPursuit(t)}>Annuler</button></div>)}</div>;
   if (f.refuelFor !== undefined) { const d = g.fleets.find(x => x.id === f.refuelFor); const post = f.tankerPost; return <div class="refuel small">⛽ En route pour ravitailler {d ? <button class="lnk" onClick={() => s.select({ kind: 'fleet', id: d.id })}>{d.name}</button> : 'une flotte'}{post ? `, puis retour à son poste (${wpName(g, f.owner, post)})` : ''}. <button class="lnk" onClick={() => A.stopPursuit(f)}>Annuler</button></div>; }
   if (!needsFuel(g, f)) return null;
-  const opts = refuelOptions(g, f);
+  const opts = viewMemo('refuel:' + f.id, g, () => refuelOptions(g, f)); // (each tanker's interception, simulated: kept until the game changes)
   if (!opts.length) return <div class="refuel small muted">Aucune de vos flottes sans ordre n'a assez de carburant à céder pour la rejoindre.</div>;
   const o = opts[0];
   const when = (x: typeof o) => x.plan.ourYears === 0 && x.tanker.x === f.x && x.tanker.y === f.y ? 'sur place' : `rencontre en ${x.meetYear}`;
@@ -411,14 +412,14 @@ function OwnFleet({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
 
 function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
   const s = useStore();
-  const spec = fleetSpec(g, f);
+  const spec = viewFleet(g, f);
   const mineF = g.fleets.filter(x => x.owner === me.id);
   const go = (dir: number) => { const x = cycle(mineF, f.id, dir); if (x) { s.select({ kind: 'fleet', id: x.id }); s.center(x.x, x.y); } };
   const planet = f.orbiting >= 0 ? g.planets[f.orbiting] : undefined;
   const others = g.fleets.filter(x => x !== f && x.x === f.x && x.y === f.y && x.owner === me.id);
   const wi = Math.min(Math.max(0, s.waypointIndex), f.waypoints.length - 1);
   const wp = f.waypoints[wi];
-  const est = estimateRoute(g, f);
+  const est = viewRoute(g, f);
   const leg = wi > 0 ? est[wi - 1] : undefined;
   const gc = wi > 0 ? gateCheck(g, f, wi) : undefined;
   const mainDesign = g.designs.find(d => d.id === f.tokens[0]?.designId);
@@ -551,7 +552,7 @@ function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
 function CrewBlock({ g, f }: { g: GameState; f: Fleet }) {
   const [all, setAll] = useState(false);
   if (!veteransOn(g)) return null;
-  const armed = fleetSpec(g, f).hasWeapons;
+  const armed = viewFleet(g, f).hasWeapons;
   const r = rankOf(f), xp = f.xp ?? 0, next = RANKS[r + 1];
   const j = [...(f.journal ?? [])].reverse();
   const shown = all ? j : j.slice(0, 4);

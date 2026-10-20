@@ -2,14 +2,14 @@
 import { pendingRefit } from '../engine/refit';
 import { LangPicker } from './langpick';
 import { useEffect, useState } from 'preact/hooks';
-import { store, useStore, fmt, fmtPop, INSPECTOR_TABS, type TabId } from './store';
+import { store, useStore, useChannel, fmt, fmtPop, INSPECTOR_TABS, type TabId } from './store';
+import { viewSpec, viewFleet } from './memo';
 import { CenterPage, fitGalaxy } from './pages';
 import { Sidebar } from './sidebar';
 import { Inspector } from './inspector';
 import { Dialogs } from './dialogs';
 import { Welcome } from './welcome';
 import * as A from './actions';
-import { planetSpec } from '../engine/planet';
 import { fleetSpec } from '../engine/fleet';
 import { gotoTarget } from './nav';
 import { Tutorial, tutorialEnter, openTutorial } from './tutorial';
@@ -51,7 +51,7 @@ function Header() {
   const s = useStore();
   const g = s.game!, me = s.me!;
   const planets = g.planets.filter(p => p.owner === me.id);
-  const specs = planets.map(p => planetSpec(g, p, me));
+  const specs = planets.map(p => viewSpec(g, p, me));
   const pop = planets.reduce((a, p) => a + p.pop, 0);
   const res = specs.reduce((a, sp) => a + sp.resources, 0);
   // yearly growth as the turn will apply it (rounded to whole hundreds per planet)
@@ -194,7 +194,7 @@ function TabBar() {
 }
 
 function Toast() {
-  const s = useStore();
+  const s = useChannel('toast');
   if (!s.toast) return null;
   return <div class="toast" role="status">{s.toast.text}</div>;
 }
@@ -243,8 +243,8 @@ function useKeyboard() {
         return;
       }
       switch (e.key) {
-        case 'ArrowUp': if (s.tab === 'map') { s.messageIndex = Math.max(0, s.messageIndex - 1); s.bump(); e.preventDefault(); } break;
-        case 'ArrowDown': if (s.tab === 'map') { s.messageIndex = Math.min(me.messages.length - 1, s.messageIndex + 1); s.bump(); e.preventDefault(); } break;
+        case 'ArrowUp': if (s.tab === 'map') { s.setMessageIndex(Math.max(0, s.messageIndex - 1)); e.preventDefault(); } break;
+        case 'ArrowDown': if (s.tab === 'map') { s.setMessageIndex(Math.min(me.messages.length - 1, s.messageIndex + 1)); e.preventDefault(); } break;
         case 'g': { const m = me.messages[s.messageIndex]; if (m?.target) gotoTarget(m.target); break; }
         case 'q': if (s.commanded?.kind === 'planet') s.open('production', { planetId: s.commanded.id }); break;
         case 'c': s.goTab('planner'); break;
@@ -270,7 +270,7 @@ function useKeyboard() {
           break;
         }
         case 'i': case 'I': {
-          const list = g.fleets.filter(f => f.owner === me.id && f.waypoints.length <= 1 && !f.auto && !['remoteMine', 'layMines', 'patrol', 'refuel', 'stay'].includes(f.waypoints[0]?.task) && !pendingRefit(g, f) && fleetSpec(g, f).hasEngines);
+          const list = g.fleets.filter(f => f.owner === me.id && f.waypoints.length <= 1 && !f.auto && !['remoteMine', 'layMines', 'patrol', 'refuel', 'stay'].includes(f.waypoints[0]?.task) && !pendingRefit(g, f) && viewFleet(g, f).hasEngines);
           if (!list.length) { s.notify('Aucune flotte sans ordre'); break; }
           const i = s.commanded?.kind === 'fleet' ? list.findIndex(f => f.id === s.commanded!.id) : -1;
           const f = list[(i + (e.key === 'I' ? -1 : 1) + list.length) % list.length];

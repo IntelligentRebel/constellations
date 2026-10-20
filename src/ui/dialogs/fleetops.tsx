@@ -1,4 +1,5 @@
 // Cargo transfer, split and merge dialogs.
+import { viewFleet } from '../memo';
 import { useState } from 'preact/hooks';
 import { store, useStore, fmt, fmtPop, MINERAL_COLORS, MINERAL_LABELS } from '../store';
 import { Modal, Bar, HullImg } from '../components';
@@ -15,8 +16,8 @@ export function CargoDialog({ fleetId, planetId, otherId }: { fleetId: number; p
   if (!f) return <Modal title="Cargaison" onClose={() => s.close('cargo')}>Flotte introuvable.</Modal>;
   const planet: Planet | undefined = planetId !== undefined ? g.planets[planetId] : undefined;
   const other: Fleet | undefined = otherId !== undefined ? g.fleets.find(x => x.id === otherId) : undefined;
-  const spec = fleetSpec(g, f);
-  const ospec = other ? fleetSpec(g, other) : null;
+  const spec = viewFleet(g, f);
+  const ospec = other ? viewFleet(g, other) : null;
   const salvage = !planet && !other ? g.salvage.find(x => Math.abs(x.x - f.x) < 1 && Math.abs(x.y - f.y) < 1) : undefined;
   const amt = (e: MouseEvent) => (e.shiftKey && e.ctrlKey ? 1000 : e.ctrlKey ? 100 : e.shiftKey ? 10 : 1);
   const have = (k: TransportKey) => k === 'fuel' ? f.fuel : f.cargo[k];

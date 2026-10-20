@@ -1,4 +1,5 @@
 // "Send a scout / an ark / a miner" and "build and send" controls, shared by the selection panel and the planners.
+import { viewFleet } from './memo';
 import { reachable } from '../engine/secrets';
 import { useState } from 'preact/hooks';
 import { colonyBlocker, miningBlocker } from '../engine/culture';
@@ -61,7 +62,7 @@ export function doSend(g: GameState, f: Fleet, p: Planet, kind: MissionKind, opt
   // 3.6: the colonists an ark will take on board, when it leaves from one of our worlds
   const here = f.orbiting >= 0 ? g.planets[f.orbiting] : undefined;
   const drain = kind === 'colonize' && here && here.owner === f.owner && f.cargo.colonists === 0 && here.pop > 0
-    ? Math.max(0, Math.min(fleetSpec(g, f).cargoCapacity - f.cargo.ironium - f.cargo.boranium - f.cargo.germanium, Math.floor(here.pop / 100) - 1)) * 100 : 0;
+    ? Math.max(0, Math.min(viewFleet(g, f).cargoCapacity - f.cargo.ironium - f.cargo.boranium - f.cargo.germanium, Math.floor(here.pop / 100) - 1)) * 100 : 0;
   const ok = sendFleet(g, f, p.id, kind, opts);
   if (ok && here && drain > here.pop * 0.05) s.notify(`${f.name} part coloniser ${p.name} en emportant ${fmtPop(drain)} colons de ${here.name}, soit ${Math.round(drain / here.pop * 100)} % de sa population.`);
   else if (ok && kind !== 'haul' && f.waypoints.length > 2) s.notify(`${f.name} part ${WORDS[kind].verb} ${p.name}, avec une escale pour faire le plein à ${wpStop(g, f)}`);
@@ -181,14 +182,14 @@ export function HaulBlock({ g, me, p, compact, onDone }: { g: GameState; me: Pla
   const mo: MissionOpts = { homeId };
   const m = missionModel(g, me, p, 'haul', null, true, false, mo);
   const intel = me.intel.planets[p.id];
-  const yearly = intel.conc ? m.st.mining.reduce((t, f) => { const y = miningYield(intel.conc!, fleetSpec(g, f).miningRate); return t + y.ironium + y.boranium + y.germanium; }, 0) : 0;
-  const flow = m.st.haulers.reduce((t, h) => { const cy = haulCycleYears(g, h.fleet, p.id, h.home.id); return t + (Number.isFinite(cy) && cy > 0 ? fleetSpec(g, h.fleet).cargoCapacity / cy : 0); }, 0);
+  const yearly = intel.conc ? m.st.mining.reduce((t, f) => { const y = miningYield(intel.conc!, viewFleet(g, f).miningRate); return t + y.ironium + y.boranium + y.germanium; }, 0) : 0;
+  const flow = m.st.haulers.reduce((t, h) => { const cy = haulCycleYears(g, h.fleet, p.id, h.home.id); return t + (Number.isFinite(cy) && cy > 0 ? viewFleet(g, h.fleet).cargoCapacity / cy : 0); }, 0);
   const portSelect = (value: number | undefined, onChange: (id: number) => void, label: string) => <select value={value} aria-label={label} onChange={e => onChange(+(e.target as HTMLSelectElement).value)} onClick={e => e.stopPropagation()}>
     {ports.map(pt => <option value={pt.id}>{pt.name}{pt.id === cap?.id ? ' (capitale)' : ''} · {fmt(distance(pt, p), 0)} al</option>)}
   </select>;
   return <div class={'mission-row haul' + (compact ? ' compact' : '')}>
     <div class="opt-title">Navette de minerais</div>
-    {m.st.haulers.map(h => <div class="status">{compact ? <b>{h.fleet.name}</b> : <button class="lnk" onClick={() => s.select({ kind: 'fleet', id: h.fleet.id })}>{h.fleet.name}</button>} ⇄ {portSelect(h.home.id, id => changeHaulHome(g, h.fleet, p, id), `Port de ${h.fleet.name}`)} <span class="muted small">soute {fmt(fleetSpec(g, h.fleet).cargoCapacity)} kt · aller-retour ≈ {haulCycleYears(g, h.fleet, p.id, h.home.id)} a</span></div>)}
+    {m.st.haulers.map(h => <div class="status">{compact ? <b>{h.fleet.name}</b> : <button class="lnk" onClick={() => s.select({ kind: 'fleet', id: h.fleet.id })}>{h.fleet.name}</button>} ⇄ {portSelect(h.home.id, id => changeHaulHome(g, h.fleet, p, id), `Port de ${h.fleet.name}`)} <span class="muted small">soute {fmt(viewFleet(g, h.fleet).cargoCapacity)} kt · aller-retour ≈ {haulCycleYears(g, h.fleet, p.id, h.home.id)} a</span></div>)}
     {m.st.queued.filter(q => q.kind === 'haul').map(q => <div class="status">Cargo en construction à <b>{q.planet.name}</b>, pour {g.planets[q.homeId ?? cap?.id ?? q.planet.id]?.name}</div>)}
     {(yearly > 0 || flow > 0) && <div class={'small ' + (flow > 0 && flow < yearly ? 'yellow' : 'muted')}>Extraction ≈ {fmt(yearly)} kt/an{flow > 0 ? ` · navettes ≈ ${fmt(flow)} kt/an${flow < yearly ? ' : insuffisant, les minerais s\'accumulent' : ''}` : ''}{intel.surface ? ` · en surface ${fmt(intel.surface.ironium + intel.surface.boranium + intel.surface.germanium)} kt` : ''}</div>}
     {ports.length > 0 && <label class="haul-port">{m.st.haulers.length ? 'Nouvelle navette, livrée à' : 'Livrer à'} {portSelect(homeId, setHomeSel, 'Port de livraison')}</label>}

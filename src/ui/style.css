@@ -206,7 +206,8 @@ tr.opts-row .mission-opts { max-width: 640px; }
 .rep-main { flex: 1; min-width: 0; }
 .rep-head { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .rep-head b { color: #c9d4e3; font-weight: 600; }
-.rep-text { font-size: 15px; margin: 5px 0 2px; line-height: 1.45; }
+/* 0.3.9.20: two lines high at least, so that going from a short report to a longer one does not resize (and redraw) the map */
+.rep-text { font-size: 15px; margin: 5px 0 2px; line-height: 1.45; min-height: 2.9em; }
 .rep-text.go { cursor: pointer; }
 .rep-btns { display: flex; gap: 6px; align-items: center; padding-top: 4px; }
 .kind-battle, .kind-combat { color: #ffb8ac; }

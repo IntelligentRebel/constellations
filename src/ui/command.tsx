@@ -1,4 +1,5 @@
 // Fleet order widgets shared by the selection panel: fuel and cargo, warp table, waypoint tasks.
+import { viewFleet } from './memo';
 import { useState } from 'preact/hooks';
 import { store, useStore, fmt, fmtPop, pct, MINERAL_COLORS } from './store';
 import { Tile, Bar, PlanetImg, HullImg, Row, MineralLine, Num, CompIcon } from './components';
@@ -17,7 +18,7 @@ import { beaconBlocker, miningBlocker, BEACON_RADIUS } from '../engine/culture';
 import { newestRefit, refitTargets } from '../engine/refit';
 
 export function FuelCargo({ g, f, compact, onCargo }: { g: GameState; f: Fleet; compact?: boolean; /** 3.6: a click on the hold opens the exchange window */ onCargo?: () => void }) {
-  const spec = fleetSpec(g, f);
+  const spec = viewFleet(g, f);
   const cm = cargoMass(f.cargo);
   // fuel the route will burn, shown greyed in the gauge
   const fp = spec.fuelCapacity > 0 ? routeFuelPreview(g, f) : null;
@@ -49,7 +50,7 @@ const ACTIONS: Record<string, string> = {
 export function WarpTable({ g, f, i }: { g: GameState; f: Fleet; i: number }) {
   const [open, setOpen] = useState(false);
   if (!open) return <button class="link small" onClick={() => setOpen(true)}>Comparer les vitesses…</button>;
-  const spec = fleetSpec(g, f);
+  const spec = viewFleet(g, f);
   const rows = [];
   for (let w = 1; w <= 10; w++) {
     const wps = f.waypoints.map((x, j) => j === i ? { ...x, warp: w } : x);
@@ -74,7 +75,7 @@ export function wpName(g: GameState, me: number, w: { target: string; targetId?:
 }
 
 export function taskPossible(g: GameState, f: Fleet, t: WaypointTask): boolean {
-  const spec = fleetSpec(g, f);
+  const spec = viewFleet(g, f);
   switch (t) {
     case 'colonize': return spec.colonizer || spec.orbitalConstruction;
     case 'remoteMine': return spec.miningRate > 0;
@@ -91,7 +92,7 @@ export function TaskDetails({ g, f, i }: { g: GameState; f: Fleet; i: number }) 
   const s = store;
   const me = s.me!;
   const wp = f.waypoints[i];
-  const spec = fleetSpec(g, f);
+  const spec = viewFleet(g, f);
   switch (wp.task) {
     case 'transport':
       return <table class="transport">

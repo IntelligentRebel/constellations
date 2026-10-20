@@ -1,4 +1,5 @@
 // 0.3.9: the interface of the sector governors (Empire page, planet panel) and of the operations (fleet panel).
+import { viewFleet, viewSpec } from './memo';
 import { useState } from 'preact/hooks';
 import { useStore, store, fmt } from './store';
 import { Bar, Num } from './components';
@@ -32,7 +33,7 @@ export function GovernorsSection({ g, me }: { g: GameState; me: Player }) {
     <div class="sectors">{seats.map(seat => {
       const gov = govs.find(x => x.seat === seat.id);
       const worlds = G.sectorWorlds(g, me, seat.id);
-      const res = worlds.reduce((a, pl) => a + planetSpec(g, pl, me).resources, 0);
+      const res = worlds.reduce((a, pl) => a + viewSpec(g, pl, me).resources, 0);
       return <div class="sector">
         <div class="sector-head"><PlanetLink p={seat} /> <span class="small muted">{worlds.length > 1 ? `${kindOf(seat)} · ${worlds.length} mondes · ${fmt(res)} R/an` : `${kindOf(seat)} · un monde · ${fmt(res)} R/an`}</span></div>
         {gov ? <>
@@ -95,7 +96,7 @@ export function OperationBlock({ g, me, f }: { g: GameState; me: Player; f: Flee
         <button class="small ghost" onClick={() => { s.checkpoint(); f.joinOp = undefined; f.waypoints = [f.waypoints[0]]; s.bump(); }}>Détacher</button></div>
     </section>;
   }
-  const armed = fleetSpec(g, f).hasWeapons;
+  const armed = viewFleet(g, f).hasWeapons;
   if (!f.op && !armed) return null;
   if (f.op && !edit) {
     const op = f.op, st = O.opStatus(g, f), t = g.planets[op.planetId], d = g.designs.find(x => x.id === op.designId);

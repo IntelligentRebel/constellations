@@ -1,5 +1,6 @@
 // Empire page (Constellations 3): administration and regional capitals, logistics network, megaprojects,
 // secret objectives and doctrines, in one place.
+import { viewSpec } from './memo';
 import type { ComponentChildren } from 'preact';
 import { useStore, fmt, fmtPop, pct } from './store';
 import { Bar, Cost, PageCtx, useSorted, Num } from './components';
@@ -61,7 +62,7 @@ function regionalGain(g: GameState, me: Player, c: Planet, mine: Planet[]): numb
   for (const o of mine) {
     if (distance(o, c) > ADMIN_RADIUS) continue;
     const now = seats.length ? adminFactor(Math.min(...seats.map(x => distance(x, o)))) : 1;
-    gain += planetSpec(g, o, me).resourcesBase * (1 - now);
+    gain += viewSpec(g, o, me).resourcesBase * (1 - now);
   }
   return gain;
 }
@@ -69,7 +70,7 @@ function regionalGain(g: GameState, me: Player, c: Planet, mine: Planet[]): numb
 function Administration({ g, me }: { g: GameState; me: Player }) {
   const s = useStore();
   const mine = g.planets.filter(p => p.owner === me.id);
-  const rows = mine.map(p => ({ p, sp: planetSpec(g, p, me) }));
+  const rows = mine.map(p => ({ p, sp: viewSpec(g, p, me) }));
   const base = rows.reduce((a, r) => a + r.sp.resourcesBase, 0), real = rows.reduce((a, r) => a + r.sp.resources - (r.p.bonusResources ?? 0), 0);
   const lost = Math.max(0, base - real);
   const cap = capitalOf(g, me);
@@ -163,12 +164,12 @@ function Megaprojects({ g, me }: { g: GameState; me: Player }) {
   const built = mine.flatMap(p => (p.megaprojects ?? []).map(id => ({ p, id: id as MegaId })));
   const running = mine.flatMap(p => p.queue.filter(q => q.kind === 'mega').map(q => ({ p, q })));
   const threat = portalThreat(g);
-  const best = [...mine].sort((a, b) => planetSpec(g, b, me).resources - planetSpec(g, a, me).resources)[0];
+  const best = [...mine].sort((a, b) => viewSpec(g, b, me).resources - viewSpec(g, a, me).resources)[0];
   const list = megaList(g).filter(m => m.id !== 'seal' || me.secretKnown !== undefined);
   const visible = list.filter(m => megaVisible(me, m) || built.some(b => b.id === m.id) || running.some(r => r.q.megaId === m.id));
   const hidden = list.length - visible.length;
   // 0.3.9: a relay goes to the richest world that has none (and none on the way)
-  const relayAt = [...mine].sort((a, b) => planetSpec(g, b, me).resources - planetSpec(g, a, me).resources).find(p => !megaBlocker(g, p, 'relay'));
+  const relayAt = [...mine].sort((a, b) => viewSpec(g, b, me).resources - viewSpec(g, a, me).resources).find(p => !megaBlocker(g, p, 'relay'));
   const relays = relaysOn(g) ? relaysOf(g, me.id) : [];
   return <Sec id="megaprojects" title="Mégaprojets" sub={`travaux de longue haleine ; ils apparaissent quand vos sciences approchent de leur niveau (à ${MEGA_HORIZON} niveaux près)`}>
     {threat && threat.owner !== me.id && <div class="alert strong">Les {g.players[threat.owner].name} construisent le Portail de l'Ascension sur <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: threat.planet.id }, threat.planet)}>{threat.planet.name}</button> : travaux avancés à {threat.announced} % au moins. S'ils l'achèvent, ils gagnent.</div>}

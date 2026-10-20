@@ -4,7 +4,8 @@ import { DiplomacyDialog } from './diplomacy';
 import { useState, useEffect } from 'preact/hooks';
 import { colonyBlocker } from '../engine/culture';
 import type { ComponentChildren } from 'preact';
-import { store, useStore, fmt, fmtPop, pct, MINERAL_COLORS, type ViewSettings } from './store';
+import { viewRoute, viewSpec, viewMemo, viewFleet, viewScanners, viewQueue } from './memo';
+import { store, useStore, useChannel, fmt, fmtPop, pct, MINERAL_COLORS, type ViewSettings } from './store';
 import { closersOf } from '../engine/borders';
 import { PageCtx, MineralLine, useSorted, RangeFilter, rangeOf, rangeDistance, setRangeOf, Num } from './components';
 import type { Fleet, GameState, Planet, Player } from '../engine/types';
@@ -108,7 +109,7 @@ export function MapPage() {
   const g = s.game!, me = s.me!;
   const v = s.view;
   const analysed = me.intel.planets.filter(p => p.year !== undefined).length;
-  const pen = Math.max(0, ...scannersOf(g, me).map(x => x.pen));
+  const pen = Math.max(0, ...viewScanners(g, me).map(x => x.pen));
   return <section class="mappage">
     <header class="map-head">
       <div class="map-title"><h2>Carte galactique</h2><div class="page-sub">{v.mode === 8 ? <RadarSummary /> : <>{analysed} systèmes analysés sur {g.planets.length} · {pen > 0 ? `analyse à distance jusqu'à ${pen} al` : 'analyse en orbite uniquement'}</>}</div></div>
@@ -138,7 +139,8 @@ export function MapPage() {
 }
 
 function ReportsStrip() {
-  const s = useStore();
+  // 0.3.9.20: the arrows move through the reports without rendering the rest of the interface again
+  const s = useChannel('reports');
   const g = s.game!, me = s.me!;
   const msgs = me.messages;
   const n = msgs.length;
@@ -151,8 +153,8 @@ function ReportsStrip() {
       <TodoBar />
     </div>
     <div class="rep-btns">
-      <button class="icon" onClick={() => { s.messageIndex = Math.max(0, i - 1); s.bump(); }} disabled={i <= 0} title="Rapport précédent (↑)" aria-label="Rapport précédent">↑</button>
-      <button class="icon" onClick={() => { s.messageIndex = Math.min(n - 1, i + 1); s.bump(); }} disabled={i >= n - 1} title="Rapport suivant (↓)" aria-label="Rapport suivant">↓</button>
+      <button class="icon" onClick={() => s.setMessageIndex(Math.max(0, i - 1))} disabled={i <= 0} title="Rapport précédent (↑)" aria-label="Rapport précédent">↑</button>
+      <button class="icon" onClick={() => s.setMessageIndex(Math.min(n - 1, i + 1))} disabled={i >= n - 1} title="Rapport suivant (↓)" aria-label="Rapport suivant">↓</button>
       <button onClick={() => s.goTab('reports')}>Tous les rapports</button>
     </div>
   </div>;
@@ -202,8 +204,8 @@ export function ColoniesPage() {
   const s = useStore();
   const g = s.game!, me = s.me!;
   const rows = g.planets.filter(p => p.owner === me.id).map(p => {
-    const sp = planetSpec(g, p, me);
-    const est = p.queue.length ? estimateQueue(g, p, 50) : [];
+    const sp = viewSpec(g, p, me);
+    const est = p.queue.length ? viewQueue(g, p, 50) : [];
     const k = p.queue.findIndex(q => !isAuto(q.kind));
     return { p, sp, est, cur: k >= 0 ? p.queue[k] : p.queue[0], years: k >= 0 ? est[k]?.lastYear ?? null : null, blocked: k >= 0 && !!est[k]?.blocked };
   });
@@ -358,7 +360,7 @@ export function MiningPage() {
     { key: 'surf', get: r => sum(r.pi.surface), num: true }, { key: 'dist', get: r => r.nd, num: true },
   ], focus ? ({ ironium: 'fe', boranium: 'bo', germanium: 'ge' } as const)[focus.mineral] : 'total', -1);
   const shown = sorted.slice(0, limit);
-  const working = g.fleets.filter(f => f.owner === me.id && fleetSpec(g, f).miningRate > 0);
+  const working = g.fleets.filter(f => f.owner === me.id && viewFleet(g, f).miningRate > 0);
   const totX = exploited.reduce((a, x) => a + x.extraction, 0), totF = exploited.reduce((a, x) => a + x.flow, 0);
   const optsRow = (pl: Planet, cols: number) => open?.id === pl.id && <tr class="opts-row"><td colSpan={cols}>{open.kind === 'mine' ? <MissionOptions g={g} me={me} p={pl} kind="mine" onDone={() => setOpen(null)} /> : <HaulBlock g={g} me={me} p={pl} compact onDone={() => setOpen(null)} />}</td></tr>;
   const toggle = (pl: Planet, k: 'mine' | 'haul') => setOpen(open?.id === pl.id && open.kind === k ? null : { id: pl.id, kind: k });
@@ -408,7 +410,7 @@ function exploitedWorlds(g: GameState, me: Player): Exploited[] {
   const ids = new Set<number>();
   for (const f of g.fleets) {
     if (f.owner !== me.id) continue;
-    if (f.orbiting >= 0 && fleetSpec(g, f).miningRate > 0) ids.add(f.orbiting);
+    if (f.orbiting >= 0 && viewFleet(g, f).miningRate > 0) ids.add(f.orbiting);
     for (const w of [...f.waypoints, ...(f.route ?? [])]) if (w.target === 'planet' && w.targetId !== undefined && (w.task === 'remoteMine' || w.task === 'transport')) ids.add(w.targetId);
   }
   for (const pl of g.planets) if (pl.owner === me.id) for (const it of pl.queue) if (it.mission && (it.mission.kind === 'mine' || it.mission.kind === 'haul')) ids.add(it.mission.planetId);
@@ -423,8 +425,8 @@ function exploitedWorlds(g: GameState, me: Player): Exploited[] {
     const conc = me.intel.planets[id].conc ?? pl.conc;
     const yearly = { ironium: 0, boranium: 0, germanium: 0 };
     let robots = 0;
-    for (const f of st.mining) { const r = fleetSpec(g, f).miningRate; robots += r; const y = miningYield(conc, r); yearly.ironium += y.ironium; yearly.boranium += y.boranium; yearly.germanium += y.germanium; }
-    const flow = st.haulers.reduce((t, h) => { const cy = haulCycleYears(g, h.fleet, id, h.home.id); return t + (Number.isFinite(cy) && cy > 0 ? fleetSpec(g, h.fleet).cargoCapacity / cy : 0); }, 0);
+    for (const f of st.mining) { const r = viewFleet(g, f).miningRate; robots += r; const y = miningYield(conc, r); yearly.ironium += y.ironium; yearly.boranium += y.boranium; yearly.germanium += y.germanium; }
+    const flow = st.haulers.reduce((t, h) => { const cy = haulCycleYears(g, h.fleet, id, h.home.id); return t + (Number.isFinite(cy) && cy > 0 ? viewFleet(g, h.fleet).cargoCapacity / cy : 0); }, 0);
     let near: Planet | null = null, nd = Infinity;
     for (const o of own) { const d = distance(o, pl); if (d < nd) { nd = d; near = o; } }
     out.push({ pl, st, extraction: yearly.ironium + yearly.boranium + yearly.germanium, yearly, flow, robots, minable: canMineHere(g, me, id), nd, near });
@@ -510,7 +512,7 @@ export function FleetsPage() {
   const [type, setType] = useState('all');
   const [design, setDesign] = useState('');
   const [mission, setMission] = useState('all');
-  const all = g.fleets.filter(f => f.owner === me.id).map(f => { const sp = fleetSpec(g, f); return { f, sp, est: estimateRoute(g, f), mi: fleetMission(g, me, f), type: fleetType(sp) }; });
+  const all = g.fleets.filter(f => f.owner === me.id).map(f => { const sp = viewFleet(g, f); return { f, sp, est: viewRoute(g, f), mi: fleetMission(g, me, f), type: fleetType(sp) }; });
   const rows = all.filter(r => (type === 'all' || r.type === type) && (!design || r.f.tokens.some(t => t.designId === +design)) && (mission === 'all' || (mission === 'idle' ? r.mi.id === 'idle' : r.mi.id !== 'idle')));
   const designs = g.designs.filter(d => d.owner === me.id && !d.starbase && !d.deleted);
   const sel = s.selected;

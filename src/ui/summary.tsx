@@ -1,4 +1,5 @@
 // Selection summary pane and message pane.
+import { viewMemo, viewFleet, viewSpec } from './memo';
 import { pendingRefit } from '../engine/refit';
 import { raidNote } from './factions';
 import { useState } from 'preact/hooks';
@@ -103,7 +104,7 @@ function PlanetSummary({ g, me, id }: { g: GameState; me: Player; id: number }) 
   const best = intel.hab ? intel.hab.map((v, i) => v + rem[i]) as [number, number, number] : undefined;
   const bestVal = best ? habitability(me.race, best) : null;
   const age = known ? g.year - intel.year! : null;
-  const spec = owner === me.id ? planetSpec(g, pl, me) : null;
+  const spec = owner === me.id ? viewSpec(g, pl, me) : null;
   return (
     <div class="summary">
       <div class="sum-head">
@@ -153,7 +154,7 @@ function MineralGraph({ intel, pl }: { intel: Player['intel']['planets'][number]
 function FleetSummary({ g, me, id }: { g: GameState; me: Player; id: number }) {
   const own = g.fleets.find(f => f.id === id && f.owner === me.id);
   if (own) {
-    const spec = fleetSpec(g, own);
+    const spec = viewFleet(g, own);
     const d = g.designs.find(x => x.id === own.tokens[0]?.designId);
     return <div class="summary">
       <div class="sum-head">{d && <HullImg hull={d.hull} color={me.color} w={70} />}<div><h3>{own.name}</h3><div class="small muted">{spec.ships} vaisseau(x) · {fmt(spec.mass)} kt</div></div></div>
@@ -264,12 +265,12 @@ function InterceptBlock({ g, me, id }: { g: GameState; me: Player; id: number })
   const f = s.commanded?.kind === 'fleet' ? g.fleets.find(x => x.id === s.commanded!.id && x.owner === me.id) : undefined;
   const chasers = g.fleets.filter(x => x.owner === me.id && x.pursue === id);
   if (!f) return <div class="intercept small muted">{chasers.length ? <>Poursuivie par {chasers.map(c => c.name).join(', ')}. </> : ''}Pour l'intercepter, sélectionnez d'abord une de vos flottes, puis cliquez sur ce contact.</div>;
-  const plan = planIntercept(g, f, id);
+  const plan = viewMemo(`intercept:${f.id}:${id}`, g, () => planIntercept(g, f, id));
   const already = f.pursue === id;
   const plan2 = plan.ok ? plan : null;
   // 3.6: a manual interception is allowed even when hopeless, but said so
   const theirs = seenStrength(g, me, id), mine = fleetStrength(g, f);
-  const hopeless = theirs !== null && fleetSpec(g, f).hasWeapons && theirs > HOPELESS * mine;
+  const hopeless = theirs !== null && viewFleet(g, f).hasWeapons && theirs > HOPELESS * mine;
   return <div class="intercept">
     {hopeless && <div class="small red">Déconseillé : la flotte visée est bien plus forte que votre flotte {f.name} (environ ×{fmt(theirs! / Math.max(1, mine), 1)}). Une patrouille refuserait de l'attaquer.</div>}
     {chasers.length > 0 && <div class="small">Poursuivie par {chasers.map(c => c.name).join(', ')}.</div>}
@@ -290,7 +291,7 @@ export function TodoBar() {
   const s = useStore();
   const g = s.game!, me = s.me!;
   const [cursor, setCursor] = useState<Record<string, number>>({});
-  const all = todoItems(g, me);
+  const all = viewMemo('todo:' + me.id, g, () => todoItems(g, me));
   // decisions, doctrines and proposals have their own alerts in the header: the chips are for fleets and colonies
   const groups = (['scouts', 'colo', 'cargo', 'fuel', 'queue'] as const).map(id => ({ id, list: all.filter(x => x.group === id) })).filter(x => x.list.length);
   const portal = g.settings.megaprojects ? portalThreat(g) : null;
