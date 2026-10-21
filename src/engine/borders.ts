@@ -13,7 +13,7 @@
 // reach (to explore or to settle) that lie behind those borders. The more they are hemmed in, the more they resent
 // it, the more often they ask for the borders to be opened, and the readier they are for war.
 import type { Fleet, GameState, Planet, Player, Waypoint } from './types';
-import { cultureOn, knownSources, territoryOwner } from './culture';
+import { cultureOn, knownSources, sourcesKey, territoryOwner, CORE_RADIUS } from './culture';
 import { diplomacyOn, statusOf, opinion, aggression, declareWar } from './diplomacy';
 import { gridCell, withDetours, hasWalls, inWall, type Obstacles } from './walls';
 import { distance, fleetSpec, fuelForYear, fuelGenerated, travelYears } from './fleet';
@@ -100,7 +100,10 @@ export function closedMask(game: GameState, who: number): ClosedMask | null {
   if (!cl.length) return null;
   const viewer = game.players[who];
   const srcs = knownSources(game, viewer);
-  const key = `${game.settings.seed}|${game.year}|${who}|${cl.join(',')}|${srcs.length}|${game.width}`;
+  // 0.3.9.21: the key is what the mask is made of (closers, sources, grid). It held only the year and the number of
+  // sources, so a mask made earlier in the year (or in the turn before, after the year changed) was used again after
+  // the territories had moved: a turn differed between a game continued and the same game reloaded.
+  const key = `${game.width}|${game.height}|${cl.join(',')}|${sourcesKey(srcs)}`;
   const hit = masks.get(key);
   if (hit) return hit;
   const cell = gridCell(game), cols = Math.ceil(game.width / cell), rows = Math.ceil(game.height / cell);
@@ -108,6 +111,9 @@ export function closedMask(game: GameState, who: number): ClosedMask | null {
   const closers = new Set(cl);
   for (const s of srcs) {
     if (!closers.has(s.owner)) continue;
+    // 0.3.9.21: only the sources that can reach this source's square decide its cells (same owners, same order: the
+    // same answer as all of them, without going through every world of the galaxy for each cell)
+    const near = srcs.filter(t => Math.hypot(t.x - s.x, t.y - s.y) <= s.r + 2 * cell + Math.max(t.r, CORE_RADIUS));
     const i0 = Math.max(0, Math.floor((s.x - s.r) / cell)), i1 = Math.min(cols - 1, Math.floor((s.x + s.r) / cell));
     const j0 = Math.max(0, Math.floor((s.y - s.r) / cell)), j1 = Math.min(rows - 1, Math.floor((s.y + s.r) / cell));
     for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
@@ -116,7 +122,7 @@ export function closedMask(game: GameState, who: number): ClosedMask | null {
       const at = { x: (i + 0.5) * cell, y: (j + 0.5) * cell };
       if (Math.hypot(at.x - s.x, at.y - s.y) > s.r + cell) continue;
       seen[c] = 1;
-      const o = territoryOwner(game, at, srcs);
+      const o = territoryOwner(game, at, near);
       if (closers.has(o)) { owner[c] = o; hard[c] = 1; }
     }
   }

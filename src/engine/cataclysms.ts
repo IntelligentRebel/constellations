@@ -5,7 +5,7 @@
 import type { Cataclysm, Fleet, GameState, Planet, Player } from './types';
 import { MINERALS } from './types';
 import { Rng, seedFromString } from './rng';
-import { distance } from './fleet';
+import { clampFleetHold, distance } from './fleet';
 import { specOf } from './design';
 import { revealPlanet } from './scan';
 import { resetPlanetPolicies } from './empire';
@@ -49,22 +49,32 @@ function wipe(game: GameState, pl: Planet, why: string) {
   pl.route = undefined; pl.packetTarget = undefined; pl.conqueredYear = undefined; resetPlanetPolicies(pl);
 }
 
+/** 0.3.9.21: an environment remade by a cataclysm is the world's own from now on (not terraforming to undo). */
+function remade(pl: Planet) { pl.baseHab = [...pl.hab] as Planet['hab']; pl.terraformed = [0, 0, 0]; pl.ghShift = undefined; pl.greenhouse = undefined; }
+
 /** Damage to a fleet: a share of the armour of each ship; ships whose armour is gone are lost. */
 function hurt(game: GameState, f: Fleet, share: number): number {
   let lost = 0;
   for (const t of f.tokens) {
-    const armor = specOf(game, t.designId).armor;
+    const armor = Math.max(1, specOf(game, t.designId).armor);
     const dmg = armor * share;
     const before = t.qty;
-    // damaged ships first take the blow
-    const total = t.damage * t.qtyDamaged + dmg * t.qty;
-    const dead = Math.min(t.qty, Math.floor(total / Math.max(1, armor)));
-    t.qty -= dead;
-    t.qtyDamaged = t.qty > 0 ? t.qty : 0;
-    t.damage = t.qty > 0 ? Math.min(armor - 1, (total - dead * armor) / t.qty) : 0;
-    lost += before - t.qty;
+    // 0.3.9.21: each ship takes its blow (the damage of the stack was pooled, which killed whole ships that each
+    // still had armour left, the way battles no longer count it). The damaged ships go first if the blow ends them.
+    if (dmg >= armor) { t.qty = 0; lost += before; continue; }
+    const damagedDie = t.qtyDamaged > 0 && t.damage + dmg >= armor ? Math.min(t.qty, t.qtyDamaged) : 0;
+    const left = t.qty - damagedDie;
+    const damagedLeft = Math.max(0, Math.min(left, t.qtyDamaged - damagedDie));
+    const total = damagedLeft * (t.damage + dmg) + (left - damagedLeft) * dmg;
+    t.qty = left;
+    t.qtyDamaged = left;
+    t.damage = left > 0 ? Math.min(armor - 1, total / left) : 0;
+    lost += before - left;
   }
   f.tokens = f.tokens.filter(t => t.qty > 0);
+  // 0.3.9.21: the fuel and cargo of the ships lost go with them (they stayed in the tanks of the survivors)
+  if (lost && f.tokens.length) clampFleetHold(game, f);
+  if (lost) game.players[f.owner].stats.shipsLost += lost;
   return lost;
 }
 
@@ -129,12 +139,15 @@ function supernovaYear(game: GameState, c: Cataclysm) {
       if (pl.owner >= 0) note(pl.owner, 'worlds', 1);
       wipe(game, pl, `le souffle de la supernova de ${star.name}`);
       pl.hab = [pl.hab[0], d < 5 ? 100 : Math.max(pl.hab[1], 85), 100] as Planet['hab'];
-      for (const m of MINERALS) { pl.surface[m] = Math.trunc(pl.surface[m] * 0.3); pl.conc[m] = Math.min(120, pl.conc[m] + (m === 'ironium' ? 10 : 35)); }
+      remade(pl);
+      for (const m of MINERALS) { pl.surface[m] = Math.trunc(pl.surface[m] * 0.3); pl.conc[m] = Math.max(pl.conc[m], Math.min(120, pl.conc[m] + (m === 'ironium' ? 10 : 35))); }
     } else {
       pl.pop = Math.round(pl.pop * 0.5 / 100) * 100;
       pl.defenses = Math.trunc(pl.defenses * 0.5);
-      pl.hab = [pl.hab[0], pl.hab[1], Math.min(100, pl.hab[2] + 25)] as Planet['hab'];
-      for (const m of MINERALS) pl.conc[m] = Math.min(120, pl.conc[m] + 10);
+      // the radiation of the world itself rises (its terraforming stays what it was)
+      pl.baseHab[2] = Math.min(100, pl.baseHab[2] + 25);
+      pl.hab[2] = Math.max(0, Math.min(100, pl.baseHab[2] + pl.terraformed[2]));
+      for (const m of MINERALS) pl.conc[m] = Math.max(pl.conc[m], Math.min(120, pl.conc[m] + 10));
       if (pl.owner >= 0 && pl.pop <= 0) { note(pl.owner, 'worlds', 1); wipe(game, pl, `les radiations de la supernova de ${star.name}`); }
     }
   }
@@ -143,7 +156,7 @@ function supernovaYear(game: GameState, c: Cataclysm) {
     if (d > SN_FALLOUT || game.players[f.owner]?.monster) continue;
     const before = f.tokens.reduce((a, t) => a + t.qty, 0);
     const n = d <= SN_RADIUS ? before : hurt(game, f, 0.4);
-    if (d <= SN_RADIUS) f.tokens = [];
+    if (d <= SN_RADIUS) { f.tokens = []; game.players[f.owner].stats.shipsLost += n; }
     if (n) note(f.owner, 'ships', n);
   }
   game.fleets = game.fleets.filter(f => f.tokens.length > 0);
@@ -193,6 +206,7 @@ function holeYear(game: GameState, c: Cataclysm) {
       if (pl.owner >= 0) (lost[pl.owner] ??= { worlds: [], ships: 0 }).worlds.push(pl.name);
       wipe(game, pl, 'avalée par le trou noir errant');
       pl.hab = [100, 100, 100] as Planet['hab'];
+      remade(pl);
       for (const m of MINERALS) { pl.surface[m] = 0; pl.conc[m] = Math.max(1, Math.trunc(pl.conc[m] / 2)); }
     } else if (d <= BH_CORE) {
       pl.pop = Math.round(pl.pop * 0.5 / 100) * 100; pl.factories = Math.trunc(pl.factories * 0.7); pl.mines = Math.trunc(pl.mines * 0.7); pl.defenses = Math.trunc(pl.defenses * 0.7);
@@ -205,7 +219,7 @@ function holeYear(game: GameState, c: Cataclysm) {
     if (d > BH_REACH) continue;
     const before = f.tokens.reduce((a, t) => a + t.qty, 0);
     let n: number;
-    if (d <= BH_CORE) { f.tokens = []; n = before; } else n = hurt(game, f, 0.2);
+    if (d <= BH_CORE) { f.tokens = []; n = before; game.players[f.owner].stats.shipsLost += n; } else n = hurt(game, f, 0.2);
     if (n) (lost[f.owner] ??= { worlds: [], ships: 0 }).ships += n;
   }
   game.fleets = game.fleets.filter(f => f.tokens.length > 0);

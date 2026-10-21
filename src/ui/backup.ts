@@ -110,7 +110,8 @@ export async function forgetFolder(): Promise<void> {
 // ------------------------------------------------------------------ the files
 const safe = (s: string) => s.replace(/[\\/:*?"<>|\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60) || 'partie';
 export const backupName = (g: GameState) => `Constellations - ${safe(g.name)} - ${g.year} - ${g.id}.json`;
-const PATTERN = /^Constellations - (.*) - (\d{4,}) - ([a-z0-9]+)\.json$/;
+// (0.3.9.21: the ids of the games by turn files have dashes: pbem-<host>-<player>; their backups were never listed)
+const PATTERN = /^Constellations - (.*) - (\d{4,}) - ([a-z0-9-]+)\.json$/;
 
 export interface BackupEntry { file: string; game: string; year: number; id: string; modified: number; size: number }
 

@@ -4,7 +4,7 @@ import { store, useStore, fmt, fmtPeople } from '../store';
 import { Modal, Row, Num } from '../components';
 import type { Field, LRT, PRT, Race, ResearchCostLevel, LeftoverSpend } from '../../engine/types';
 import { FIELDS } from '../../engine/types';
-import { PRT_INFO, LRT_INFO, PRT_LIST, LRT_LIST, PREDEFINED_RACES, PREDEFINED_ORDER, PREDEFINED_LABELS, advantagePoints, habString, HAB_NAMES, cloneRace, habitableFraction, habCenter } from '../../engine/race';
+import { PRT_INFO, LRT_INFO, PRT_LIST, LRT_LIST, PREDEFINED_RACES, PREDEFINED_ORDER, PREDEFINED_LABELS, advantagePoints, habString, HAB_NAMES, cloneRace, habitableFraction, habCenter, sanitizeRace } from '../../engine/race';
 import { FIELD_NAMES } from '../../engine/tech';
 import { RACE_ICONS } from '../art';
 import { BASE_ICONS, iconUnlocked, iconAchievement } from '../achievements';
@@ -15,7 +15,7 @@ const LEFTOVER: Record<LeftoverSpend, string> = { surfaceMinerals: 'Minerais en 
 const RACES_KEY = 'constellations.v1.races';
 /** custom races remembered in this browser (best effort) */
 export function savedRaces(): Race[] {
-  try { const a = JSON.parse(localStorage.getItem(RACES_KEY) ?? '[]'); return Array.isArray(a) ? a.filter(r => r && r.prt && r.habLow) : []; } catch { return []; }
+  try { const a = JSON.parse(localStorage.getItem(RACES_KEY) ?? '[]'); return Array.isArray(a) ? a.map(r => sanitizeRace(r)).filter((r): r is Race => typeof r !== 'string') : []; } catch { return []; }
 }
 export function saveRace(r: Race) {
   try { const a = savedRaces().filter(x => x.name !== r.name); a.unshift(r); localStorage.setItem(RACES_KEY, JSON.stringify(a.slice(0, 20))); } catch { /* ignore */ }
@@ -85,7 +85,7 @@ export function RaceWizard({ initial, onDone, onCancel }: { initial?: Race; onDo
         <div class="trait-desc"><h4>{PRT_INFO[(hoverTrait && hoverTrait in PRT_INFO ? hoverTrait : r.prt) as PRT].name}</h4><p>{PRT_INFO[(hoverTrait && hoverTrait in PRT_INFO ? hoverTrait : r.prt) as PRT].desc}</p></div>
       </div>}
       {step === 3 && <div class="wiz two">
-        <div class="traits">{LRT_LIST.map(l => <label class="chk" onMouseEnter={() => setHoverTrait(l)}><input type="checkbox" checked={r.lrts.includes(l)} onChange={e => upd(x => { const on = (e.target as HTMLInputElement).checked; x.lrts = on ? [...x.lrts, l as LRT] : x.lrts.filter(y => y !== l); })} /> {LRT_INFO[l].name}</label>)}</div>
+        <div class="traits">{LRT_LIST.map(l => <label class="chk" onMouseEnter={() => setHoverTrait(l)}><input type="checkbox" checked={r.lrts.includes(l)} onChange={e => upd(x => { const on = (e.target as HTMLInputElement).checked; x.lrts = on ? [...x.lrts.filter(y => !(l === 'ARM' && y === 'OBRM') && !(l === 'OBRM' && y === 'ARM')), l as LRT] : x.lrts.filter(y => y !== l); })} /> {LRT_INFO[l].name}</label>)}</div>
         <div class="trait-desc">{hoverTrait && hoverTrait in LRT_INFO ? <><h4>{LRT_INFO[hoverTrait as LRT].name}</h4><p>{LRT_INFO[hoverTrait as LRT].desc}</p></> : <p class="muted">Survolez un trait pour sa description. Les traits avantageux coûtent des points, les handicaps en rapportent.</p>}</div>
       </div>}
       {step === 4 && <div class="wiz">
@@ -115,7 +115,7 @@ export function RaceWizard({ initial, onDone, onCancel }: { initial?: Race; onDo
 }
 
 function EconRow({ label, unit, v, min, max, step, on, disabled }: { label: string; unit: string; v: number; min: number; max: number; step?: number; on: (v: number) => void; disabled?: boolean }) {
-  return <div class={'econ-row' + (disabled ? ' dis' : '')}><span>{label}</span><Num value={v} min={min} max={max} step={step} onChange={x => on(Math.max(min, Math.min(max, x)))} width={74} /><span class="muted">{unit}</span></div>;
+  return <div class={'econ-row' + (disabled ? ' dis' : '')}><span>{label}</span><Num value={v} min={min} max={max} step={step} onChange={x => on(Math.max(min, Math.min(max, step ? min + Math.round((x - min) / step) * step : Math.round(x))))} width={74} /><span class="muted">{unit}</span></div>;
 }
 
 function HabEditor({ i, r, upd }: { i: number; r: Race; upd: (fn: (x: Race) => void) => void }) {

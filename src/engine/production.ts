@@ -9,9 +9,10 @@ import { REGIONAL_COST, regionalBlocker, distanceCostOn } from './empire';
 import { MEGA, megaList, megaBlocker, megaCompleted, megaOn, megaYearCap, hasMega, megaVisible, portalPaused, relaysOf, RELAYS_NEEDED, type MegaId } from './megaprojects';
 import { refitStatus, refitUnitCost } from './refit';
 import { BOUNTY_UNIT, bountyBlocker, placeBounty } from './pirates';
-import { SPY_UNIT, AGENCY_COST, spyBlocker, placeSpies, agencyBlocker, buildAgency, intelOn } from './espionage';
+import { SPY_UNIT, SPY_MAX, AGENCY_COST, spyBlocker, spyGain, placeSpies, agencyBlocker, buildAgency, intelOn } from './espionage';
 import { CULTURE_BUILDING, CULTURE_BUILDINGS, PATRONAGE, cultureOn, hasReq, reqText, type CultureBuildingId } from './culture';
 import { patronageInspiration } from './golden';
+import { people } from './words';
 import { govBonus, governed } from './governors';
 
 export const QUEUE_LABELS: Record<QueueKind, string> = {
@@ -213,8 +214,9 @@ export function maxBuildable(game: GameState, planet: Planet, kind: QueueKind): 
   const race = player.race;
   const popNext = Math.min(spec.popNextYear, spec.maxPop);
   switch (kind) {
-    case 'autoMines': return Math.max(0, Math.max(1, Math.min(spec.maxPossibleMines, Math.trunc(race.numMines * popNext / 10000))) - planet.mines);
-    case 'autoFactories': return Math.max(0, Math.max(1, Math.min(spec.maxPossibleFactories, Math.trunc(race.numFactories * popNext / 10000))) - planet.factories);
+    // (0.3.9.21: at least one, unless the world takes none at all: an AR colony bought one of each)
+    case 'autoMines': return Math.max(0, Math.min(spec.maxPossibleMines, Math.max(1, Math.trunc(race.numMines * popNext / 10000))) - planet.mines);
+    case 'autoFactories': return Math.max(0, Math.min(spec.maxPossibleFactories, Math.max(1, Math.trunc(race.numFactories * popNext / 10000))) - planet.factories);
     case 'mine': return Math.max(0, spec.maxPossibleMines - planet.mines);
     case 'factory': return Math.max(0, spec.maxPossibleFactories - planet.factories);
     case 'autoDefenses': return Math.max(0, Math.min(spec.maxDefenses, Math.trunc((popNext + 2499) / 2500)) - planet.defenses);
@@ -226,6 +228,8 @@ export function maxBuildable(game: GameState, planet: Planet, kind: QueueKind): 
     case 'mega': return 1;
     case 'scanner': return planet.scanner ? 0 : 1;
     case 'culture': return 1;
+    // 0.3.9.21: the units the network can still take (the others were paid for nothing)
+    case 'agency': return 1;
     case 'autoPackets': case 'packetI': case 'packetB': case 'packetG': case 'packetMixed':
       return hasMassDriver(game, planet) && planet.packetTarget !== undefined ? Infinity : 0;
     default: return Infinity;
@@ -261,9 +265,15 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
   let alchemyNext = false;
   let i = 0;
   let stop = false;
+  // 0.3.9.21: a line the production drops by itself gives back the minerals already put into it (only ships, alien
+  // stations and refits did; a capped factory order, a scanner already there, an abandoned project kept them)
+  const drop = (item: QueueItem) => {
+    available = { ...available, ironium: available.ironium + item.allocated.ironium, boranium: available.boranium + item.allocated.boranium, germanium: available.germanium + item.allocated.germanium };
+    queue.splice(i, 1);
+  };
   while (i < queue.length && !stop) {
     const item = queue[i];
-    if (item.qty <= 0 && !isAuto(item.kind)) { queue.splice(i, 1); continue; }
+    if (item.qty <= 0 && !isAuto(item.kind)) { drop(item); continue; }
     if (item.kind === 'ship') {
       const d = game.designs.find(x => x.id === item.designId);
       const why = d ? canBuildShip(game, planet, d) : 'modèle inconnu';
@@ -278,12 +288,14 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
       available = { ...available, ironium: available.ironium + item.allocated.ironium, boranium: available.boranium + item.allocated.boranium, germanium: available.germanium + item.allocated.germanium };
       queue.splice(i, 1); continue;
     }
-    if (item.kind === 'starbase' && planet.starbase?.designId === item.designId) { queue.splice(i, 1); continue; }
-    if (item.kind === 'culture' && (!item.cultureId || (planet.cultureBld ?? []).includes(item.cultureId) || !cultureOn(game))) { queue.splice(i, 1); continue; }
-    if ((item.kind === 'patronage' || item.kind === 'autoPatronage') && !cultureOn(game)) { queue.splice(i, 1); continue; }
-    if (item.kind === 'bounty' && bountyBlocker(game, player, item.bountyOn)) { result.messages.push(`${itemLabel(game, item)} annulée : ${bountyBlocker(game, player, item.bountyOn)}.`); queue.splice(i, 1); continue; }
-    if (item.kind === 'spy' && spyBlocker(game, player, item.bountyOn)) { result.messages.push(`${itemLabel(game, item)} : commande annulée (${spyBlocker(game, player, item.bountyOn)}).`); queue.splice(i, 1); continue; }
-    if (item.kind === 'agency' && agencyBlocker(game, planet)) { result.messages.push(`${itemLabel(game, item)} annulée : ${agencyBlocker(game, planet)}.`); queue.splice(i, 1); continue; }
+    if (item.kind === 'starbase' && planet.starbase?.designId === item.designId) { drop(item); continue; }
+    if (item.kind === 'culture' && (!item.cultureId || (planet.cultureBld ?? []).includes(item.cultureId) || !cultureOn(game))) { drop(item); continue; }
+    if ((item.kind === 'patronage' || item.kind === 'autoPatronage') && !cultureOn(game)) { drop(item); continue; }
+    // 0.3.9.21: patronage needs its technology, also when a governor's order queues it
+    if ((item.kind === 'patronage' || item.kind === 'autoPatronage') && !hasReq(player, PATRONAGE.req)) { if (item.kind === 'patronage') drop(item); else i++; continue; }
+    if (item.kind === 'bounty' && bountyBlocker(game, player, item.bountyOn)) { result.messages.push(`${itemLabel(game, item)} annulée : ${bountyBlocker(game, player, item.bountyOn)}.`); drop(item); continue; }
+    if (item.kind === 'spy' && spyBlocker(game, player, item.bountyOn)) { result.messages.push(`${itemLabel(game, item)} : commande annulée (${spyBlocker(game, player, item.bountyOn)}).`); drop(item); continue; }
+    if (item.kind === 'agency' && agencyBlocker(game, planet)) { result.messages.push(`${itemLabel(game, item)} annulée : ${agencyBlocker(game, planet)}.`); drop(item); continue; }
     if (item.kind === 'refit') {
       // the fleet must still be in orbit, with ships of the old design, and the shipyard able to take the new one
       const st = refitStatus(game, planet, item);
@@ -299,7 +311,13 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
       // Constellations 3: a megaproject absorbs at most its yearly share, the rest of the queue goes on
       const m = MEGA[item.megaId as MegaId];
       const why = !m ? 'inconnu' : megaBlocker(game, planet, m.id, true);
-      if (why) { result.messages.push(`${itemLabel(game, item)} abandonné : ${why}.`); queue.splice(i, 1); continue; }
+      if (why) { result.messages.push(`${itemLabel(game, item)} abandonné : ${why}.`); drop(item); continue; }
+      // 0.3.9.21: a world that has fallen below the population the project needs (a raid, a bombing, colonists taken
+      // away) pauses it, without losing what was paid; it was abandoned
+      if (planet.pop < m!.minPop) {
+        if (!dryRun) result.messages.push(`${itemLabel(game, item)} en pause : il faut ${people(game, m!.minPop)} habitants.`);
+        i++; continue;
+      }
       // 0.3.9: the Portal waits for its three relays (a relay lost pauses it)
       if (m!.id === 'portal' && portalPaused(game, player.id)) {
         if (!dryRun) result.messages.push(`${itemLabel(game, item)} en pause : il faut ${RELAYS_NEEDED} relais de l'Ascension (vous en avez ${relaysOf(game, player.id).length}).`);
@@ -323,11 +341,13 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
       if (short) { stop = true; break; }
       i++; continue;
     }
-    const mb = maxBuildable(game, planet, item.kind);
+    let mb = maxBuildable(game, planet, item.kind);
+    // 0.3.9.21: spies, as many units as the network can still take (those beyond its ceiling were paid for nothing)
+    if (item.kind === 'spy') mb = Math.max(1, Math.ceil((SPY_MAX - (player.intel.dossiers?.[item.bountyOn ?? -1]?.network ?? 0)) / Math.max(1, spyGain(game, player))));
     const room = installationRoom(game, planet, item.kind);
     if (!isAuto(item.kind) && mb === 0) {
       result.messages.push(room ? `${item.qty} ${room.what} retirée${item.qty > 1 ? 's' : ''} de la file : la planète n'en accueille pas davantage (${roomWhy(item.kind, room.max)}).` : `${itemLabel(game, item)} retiré de la file : plus rien à construire.`);
-      queue.splice(i, 1); continue;
+      drop(item); continue;
     }
     if (!isAuto(item.kind) && item.qty > mb) {
       if (room && !dryRun) result.messages.push(`${room.what[0].toUpperCase() + room.what.slice(1)} : commande ramenée de ${item.qty} à ${mb}, la planète n'en accueille pas davantage (${roomWhy(item.kind, room.max)}).`);
@@ -379,7 +399,8 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
     if (numBuilt > 0) {
       applyBuilt(game, planet, player, item, numBuilt, onBuild, result, dryRun);
     }
-    if (item.kind === 'autoAlchemy') { i++; continue; }
+    // (0.3.9.21: what was set aside for an unfinished unit of alchemy is not lost: it goes on to research)
+    if (item.kind === 'autoAlchemy') { available = add(available, paid); paid = zeroCost(); i++; continue; }
     if (!auto) {
       item.qty -= numBuilt;
       item.allocated = remaining > 0 ? paid : zeroCost();
@@ -435,12 +456,14 @@ function applyBuilt(game: GameState, planet: Planet, player: Player, item: Queue
     case 'scanner': planet.scanner = true; break;
     case 'capital': planet.regionalCapital = true; break;
     case 'culture': if (item.cultureId && !(planet.cultureBld ?? []).includes(item.cultureId)) planet.cultureBld = [...(planet.cultureBld ?? []), item.cultureId]; break;
-    case 'patronage': case 'autoPatronage': planet.culture = (planet.culture ?? 0) + PATRONAGE.points * n; patronageInspiration(game, game.players[planet.owner], PATRONAGE.points * n); break;
+    case 'patronage': case 'autoPatronage': planet.culture = (planet.culture ?? 0) + PATRONAGE.points * n; if (!dryRun) patronageInspiration(game, game.players[planet.owner], PATRONAGE.points * n); break; // (0.3.9.21: not in an estimate)
     case 'bounty': if (!dryRun) placeBounty(game, player, item.bountyOn ?? -1, BOUNTY_UNIT * n, planet); break;
     case 'spy': if (!dryRun) placeSpies(game, player, item.bountyOn ?? -1, n, planet); break;
     case 'agency': if (!dryRun) buildAgency(game, planet); break;
     default:
       if (!dryRun) onBuild(item, n);
+      // (0.3.9.21: in an estimate, a station queued first is there for the ships queued after it)
+      else if (item.kind === 'starbase' && item.designId !== undefined) planet.starbase = { designId: item.designId, damage: 0 };
   }
   void terraformRemaining;
 }
@@ -456,7 +479,7 @@ export function queueTotalCost(game: GameState, planet: Planet): Cost {
   return c;
 }
 
-export interface QueueEstimate { firstYear: number | null; lastYear: number | null; doneThisYear: boolean; blocked: boolean }
+export interface QueueEstimate { firstYear: number | null; lastYear: number | null; doneThisYear: boolean; blocked: boolean; /** 0.3.9.21: the year the line leaves the queue with nothing to build (a scanner already there, the cap reached) */ dropped?: number }
 
 /**
  * Projects the queue forward (growth and mining included, technology constant) to estimate completion years.
@@ -470,26 +493,28 @@ export function estimateQueue(game: GameState, planet: Planet, maxYears = 60): Q
   const est: QueueEstimate[] = planet.queue.map(() => ({ firstYear: null, lastYear: null, doneThisYear: false, blocked: false }));
   const player = g.players[clone.owner];
   for (let y = 1; y <= maxYears; y++) {
-    const before = new Map<number, number>();
-    for (const q of clone.queue as (QueueItem & { _tag?: number })[]) if (q._tag !== undefined) before.set(q._tag, q.qty);
+    // 0.3.9.21: the year's mining comes before its production, as in the turn (it came after: a line waiting for the
+    // minerals of the coming year was shown a year late)
+    const spec0 = planetSpec(g, clone, player);
+    for (const m of MINERALS) clone.surface[m] += spec0.mining[m];
     const res = runProduction(g, clone, () => {}, true);
     // attribute builds
     const remainingTags = new Set((clone.queue as (QueueItem & { _tag?: number })[]).map(q => q._tag));
     for (const t of tags) {
       const b = res.built.find(x => (planet.queue[t].kind === x.kind) && (planet.queue[t].designId === x.designId));
       if (b && est[t].firstYear === null) est[t].firstYear = y;
-      if (!remainingTags.has(t) && est[t].lastYear === null && !isAuto(planet.queue[t].kind)) {
-        est[t].lastYear = y; if (est[t].firstYear === null) est[t].firstYear = y;
+      // (0.3.9.21: a line that leaves the queue without anything built was dropped, not finished)
+      if (!remainingTags.has(t) && est[t].lastYear === null && est[t].dropped === undefined && !isAuto(planet.queue[t].kind)) {
+        if (est[t].firstYear !== null) est[t].lastYear = y; else est[t].dropped = y;
       }
     }
     if (clone.queue.every(q => isAuto(q.kind))) break;
-    // growth and mining for next year
+    // growth for next year
     const spec = planetSpec(g, clone, player);
     clone.pop = Math.max(0, clone.pop + spec.growth);
-    for (const m of MINERALS) clone.surface[m] += spec.mining[m];
   }
   for (const e of est) e.doneThisYear = e.lastYear === 1 || e.firstYear === 1;
-  for (let t = 0; t < est.length; t++) if (est[t].firstYear === null && !isAuto(planet.queue[t].kind)) est[t].blocked = true;
+  for (let t = 0; t < est.length; t++) if (est[t].firstYear === null && est[t].dropped === undefined && !isAuto(planet.queue[t].kind)) est[t].blocked = true;
   return est;
 }
 
@@ -584,7 +609,8 @@ export function nextTemplate(game: GameState, planet: Planet): { to: number; rea
   const player = game.players[planet.owner];
   if (!player || player.tplChain === false || planet.tpl === undefined) return null;
   const step = TEMPLATE_CHAIN.find(c => c.from === planet.tpl);
-  if (!step || !player.templates.some(t => t.id === step.to)) return null;
+  // (0.3.9.21: both ends must still exist: a deleted template stopped every turn)
+  if (!step || !player.templates.some(t => t.id === step.to) || !player.templates.some(t => t.id === step.from)) return null;
   const sp = planetSpec(game, planet, player);
   const fill = sp.maxPop > 0 ? planet.pop / sp.maxPop : 0;
   const fac = sp.maxPossibleFactories > 0 ? planet.factories / sp.maxPossibleFactories : 1;
@@ -607,7 +633,8 @@ export function advanceTemplates(game: GameState) {
     }
     const nx = nextTemplate(game, planet);
     if (!nx?.ready) continue;
-    const from = player.templates.find(t => t.id === planet.tpl)!, to = player.templates.find(t => t.id === nx.to)!;
+    const from = player.templates.find(t => t.id === planet.tpl), to = player.templates.find(t => t.id === nx.to);
+    if (!from || !to) { planet.tpl = undefined; continue; }
     const oldKinds = new Set(from.items.map(i => i.kind).filter(k => isAuto(k)));
     // a queue emptied or rebuilt by hand is left alone
     if (!planet.queue.some(q => oldKinds.has(q.kind))) { planet.tpl = undefined; continue; }
@@ -616,6 +643,19 @@ export function advanceTemplates(game: GameState) {
     planet.tpl = to.id;
     player.messages.push({ year: game.year, kind: 'production', text: `${planet.name} passe du modèle « ${from.name} » au modèle « ${to.name} » (population à ${Math.round(nx.fill * 100)} % du maximum).`, target: { kind: 'planet', id: planet.id } });
   }
+}
+
+/**
+ * 0.3.9.21: the id of a new template, never one used before: a deleted default template's id given to a new one put
+ * the colonies of the chain on it.
+ */
+export function newTemplateId(game: GameState): number { return game.nextId++; }
+
+/** 0.3.9.21: a template deleted: no colony keeps following it, and the new colonies no longer get it. */
+export function forgetTemplate(game: GameState, player: Player, id: number) {
+  player.templates = player.templates.filter(t => t.id !== id);
+  for (const p of game.planets) if (p.owner === player.id && p.tpl === id) p.tpl = undefined;
+  if (player.defaultTemplate === id) player.defaultTemplate = -1;
 }
 
 export function defaultTemplates(): import('./types').ProductionTemplate[] {

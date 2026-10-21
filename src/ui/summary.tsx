@@ -10,7 +10,7 @@ import { Bar, HabBar, PlanetImg, HullImg, Row } from './components';
 import type { GameState, Player } from '../engine/types';
 import { habitability, habString, HAB_NAMES, raceSpec } from '../engine/race';
 import { minefieldDecay, minefieldLifetime, minefieldLayers, minefieldOutlook } from '../engine/movement';
-import { terraformRemaining, planetSpec, maxPopulation } from '../engine/planet';
+import { terraformRemaining, planetSpec, maxPopulation, prospectiveMaxPop } from '../engine/planet';
 import { fleetSpec } from '../engine/fleet';
 import { specOf } from '../engine/design';
 import { STABILITY_LABELS } from '../engine/universe';
@@ -121,7 +121,7 @@ function PlanetSummary({ g, me, id }: { g: GameState; me: Player; id: number }) 
         {intel.hab && [0, 1, 2].map(i => <HabBar label={HAB_NAMES[i]} value={intel.hab![i]} base={intel.baseHab?.[i]} best={best?.[i]} lo={me.race.habLow[i]} hi={me.race.habHigh[i]} immune={me.race.immune[i]} text={habString(i, intel.hab![i])} color={['#3b6fe0', '#c23b3b', '#2fa35a'][i]} />)}
         {owner !== undefined && owner >= 0 && <Row k="Population" v={owner === me.id ? fmtPop(pl.pop) : `≈ ${fmtPop(intel.pop ?? 0)}`} />}
         {spec && <Row k="Croissance" v={`${fmtGrowth(spec.growth)} / an (population max. ${fmtPop(spec.maxPop)})`} />}
-        {owner === undefined || owner < 0 ? val !== null && val > 0 && <Row k="Population max." v={fmtPop(maxPopulation(g, me, { ...pl, hab: intel.hab! }, val))} /> : null}
+        {owner === undefined || owner < 0 ? val !== null && val > 0 && <Row k="Population max." v={fmtPop(prospectiveMaxPop(g, me, { ...pl, hab: intel.hab! }, val))} /> : null}
         {intel.defenses !== undefined && owner !== undefined && owner >= 0 && owner !== me.id && <Row k="Défenses" v={fmt(intel.defenses)} />}
         {intel.starbaseName && <Row k="Station" v={intel.starbaseName} />}
         <MineralGraph intel={intel} pl={owner === me.id ? pl : undefined} />

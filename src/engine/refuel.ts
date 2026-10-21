@@ -238,7 +238,7 @@ export function tankerTargets(game: GameState, t: Fleet): { dry: Fleet; plan: In
 }
 
 /** Standing refuelling order: a tanker idle at its post sets out for the fleet that needs it most. */
-export function runTankers(game: GameState) {
+export function runTankers(game: GameState, beforeMoves = false) {
   for (const t of game.fleets) {
     const w0 = t.waypoints[0];
     if (!w0 || w0.task !== 'refuel' || t.waypoints.length > 1 || t.refuelFor !== undefined || t.pursue !== undefined) continue;
@@ -249,7 +249,8 @@ export function runTankers(game: GameState) {
     if (best) {
       rememberPost(t);
       applyIntercept(game, t, best.dry.id, best.plan);
-      t.refuelFor = best.dry.id; t.refuelYear = game.year + best.plan.years;
+      // (0.3.9.21: before this year's movement, the plan's first year is this one: the meeting was told a year late)
+      t.refuelFor = best.dry.id; t.refuelYear = game.year + best.plan.years - (beforeMoves && best.plan.years > 0 ? 1 : 0);
       if (!owner.ai) msg(game, owner, t, best.plan.ourYears === 0
         ? `${t.name} ravitaille ${best.dry.name} sur place.`
         : `${t.name} quitte son poste pour ravitailler ${best.dry.name} (rencontre prévue en ${t.refuelYear}, environ ${best.give} mg à céder).`);

@@ -44,6 +44,7 @@ export function setOperation(game: GameState, f: Fleet, op: Omit<Operation, 'sin
   if (op.kind === 'defend' && pl.owner !== p.id) return 'on ne peut défendre qu\'un de ses mondes';
   if (op.kind === 'attack' && pl.owner === p.id) return 'ce monde est déjà à vous';
   if (!game.designs.some(d => d.id === op.designId && d.owner === p.id)) return 'modèle inconnu';
+  if (game.designs.some(d => d.id === op.designId && d.deleted)) return 'modèle retiré';
   if (op.target < 1 || op.target > 200) return 'entre 1 et 200 vaisseaux';
   const was = f.op;
   f.op = { ...op, since: was?.since ?? game.year, launched: was && was.kind === op.kind && was.planetId === op.planetId ? was.launched : undefined };
@@ -115,7 +116,8 @@ export function runOperations(game: GameState) {
     }
     if (st.missing <= 0) continue;
     const d = game.designs.find(x => x.id === op.designId);
-    if (!d) continue;
+    // (0.3.9.21: nor a design withdrawn since: the operation kept ordering it)
+    if (!d || d.deleted) continue;
     // the closest yards able to build the design, the sector of the target first if asked
     let yards = game.planets.filter(pl => pl.owner === p.id && !pl.queue.some(q => q.forOp === f.id) && canBuildShip(game, pl, d) === null);
     if (op.sectorOnly && target.owner === p.id && target.sector !== undefined) yards = yards.filter(pl => pl.sector === target.sector);

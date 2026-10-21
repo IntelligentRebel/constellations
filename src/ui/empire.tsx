@@ -8,7 +8,7 @@ import type { GameState, Planet, Player } from '../engine/types';
 import { planetSpec } from '../engine/planet';
 import { distance } from '../engine/fleet';
 import { ADMIN_RADIUS, ADMIN_LOSS, ADMIN_STEP, adminFactor, capitalOf, regionalAllowance, regionalBlocker, seatsOf, REGIONAL_PER_WORLDS, DISORG_FACTOR } from '../engine/empire';
-import { activeFlows, colonistNeed, colonistSurplus, idleFreighters, jobText, logisticsOn, mineralSurplus, networkFleets, DEFAULT_IN, DEFAULT_OUT, joinNetwork , migrationTargets, autoImmigration } from '../engine/logistics';
+import { activeFlows, colonistNeed, colonistSurplus, idleFreighters, jobText, logisticsOn, mineralSurplus, networkFleets, DEFAULT_IN, DEFAULT_OUT, joinNetwork , migrationTargets, autoImmigration, mineralSinks } from '../engine/logistics';
 import { MEGAPROJECTS, megaList, megaBlocker, megaProgress, portalThreat, megaVisible, MEGA_HORIZON, relaysOn, relaysOf, RELAYS_NEEDED, type MegaId } from '../engine/megaprojects';
 import { OBJ, objectiveProgress, objectiveText, OBJECTIVE_POINTS } from '../engine/objectives';
 import { DOCTRINE_FORKS, pendingForks } from '../engine/doctrines';
@@ -59,10 +59,13 @@ export function EmpirePage() {
 function regionalGain(g: GameState, me: Player, c: Planet, mine: Planet[]): number {
   const seats = seatsOf(g, me);
   let gain = 0;
+  // 0.3.9.21: every world the new seat brings closer (not only those within the full-output radius), at the factors
+  // it has otherwise (a conquered world, a disorganised empire gain less)
   for (const o of mine) {
-    if (distance(o, c) > ADMIN_RADIUS) continue;
+    const sp = viewSpec(g, o, me), e = sp.efficiency;
     const now = seats.length ? adminFactor(Math.min(...seats.map(x => distance(x, o)))) : 1;
-    gain += viewSpec(g, o, me).resourcesBase * (1 - now);
+    const then = Math.max(now, adminFactor(distance(o, c)));
+    if (then > now) gain += sp.resourcesBase * e.conquest * e.disorg * (then - now);
   }
   return gain;
 }
@@ -76,10 +79,12 @@ function Administration({ g, me }: { g: GameState; me: Player }) {
   const cap = capitalOf(g, me);
   const seats = seatsOf(g, me);
   const al = regionalAllowance(g, me);
-  const worst = rows.filter(r => r.sp.efficiency.total < 0.999).sort((a, b) => (b.sp.resourcesBase - b.sp.resources) - (a.sp.resourcesBase - a.sp.resources)).slice(0, 8);
+  // 0.3.9.21: what the factors take, without the resources given to the world (bonusResources) counted against it
+  const loss = (r: { p: Planet; sp: ReturnType<typeof viewSpec> }) => Math.max(0, r.sp.resourcesBase - (r.sp.resources - (r.p.bonusResources ?? 0)));
+  const worst = rows.filter(r => r.sp.efficiency.total < 0.999).sort((a, b) => loss(b) - loss(a)).slice(0, 8);
   const { sorted: worstSorted, th: wth } = useSorted(worst, [
     { key: 'name', get: r => r.p.name }, { key: 'dist', get: r => r.sp.efficiency.distance, num: true },
-    { key: 'eff', get: r => r.sp.efficiency.total, num: true }, { key: 'loss', get: r => r.sp.resourcesBase - r.sp.resources, num: true },
+    { key: 'eff', get: r => r.sp.efficiency.total, num: true }, { key: 'loss', get: r => loss(r), num: true },
   ], 'loss', -1);
   const cands = mine.filter(p => !regionalBlocker(g, p)).map(p => ({ p, gain: regionalGain(g, me, p, mine) })).filter(c => c.gain > 0).sort((a, b) => b.gain - a.gain).slice(0, 3);
   const queued = mine.find(p => p.queue.some(q => q.kind === 'capital'));
@@ -93,7 +98,7 @@ function Administration({ g, me }: { g: GameState; me: Player }) {
     {disorg && <div class="alert">Capitale perdue : l'empire est désorganisé jusqu'en {me.disorgUntil} (rendement ×{DISORG_FACTOR}).</div>}
     <div class="emp-seats">{seats.map(p => <button class="chip" onClick={() => s.focus({ kind: 'planet', id: p.id }, p)}>{p === cap ? '★ ' : '◆ '}{p.name}</button>)}</div>
     {worst.length > 0 && <table class="report compact"><thead><tr>{wth('name', 'Planète la plus pénalisée')}{wth('dist', 'Distance')}{wth('eff', 'Rendement')}{wth('loss', 'Perte')}</tr></thead>
-      <tbody>{worstSorted.map(r => <tr class="go" title="Voir sur la carte" onClick={() => s.focus({ kind: 'planet', id: r.p.id }, r.p)}><td>{r.p.name}{r.p.conqueredYear !== undefined && r.sp.efficiency.conquest < 1 ? <span class="tag">conquise</span> : ''}</td><td class="num">{fmt(r.sp.efficiency.distance)} al</td><td class="num">{pct(r.sp.efficiency.total)}</td><td class="num">{fmt(r.sp.resourcesBase - r.sp.resources)} R</td></tr>)}</tbody></table>}
+      <tbody>{worstSorted.map(r => <tr class="go" title="Voir sur la carte" onClick={() => s.focus({ kind: 'planet', id: r.p.id }, r.p)}><td>{r.p.name}{r.p.conqueredYear !== undefined && r.sp.efficiency.conquest < 1 ? <span class="tag">conquise</span> : ''}</td><td class="num">{fmt(r.sp.efficiency.distance)} al</td><td class="num">{pct(r.sp.efficiency.total)}</td><td class="num">{fmt(loss(r))} R</td></tr>)}</tbody></table>}
     {queued ? <p class="small">Capitale régionale en construction à <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: queued.id }, queued)}><b>{queued.name}</b></button>.</p>
       : cands.length ? <div class="emp-cands"><span class="small muted">Meilleurs emplacements pour une capitale régionale :</span>{cands.map(c => <div class="emp-cand"><span><button class="lnk" onClick={() => s.focus({ kind: 'planet', id: c.p.id }, c.p)}><b>{c.p.name}</b></button> <span class="muted small">+{fmt(c.gain)} R/an autour</span></span><button class="small" onClick={() => { A.queueAdd(c.p.id, 'capital', undefined, 1, 0); s.notify(`Capitale régionale mise en tête de la file de ${c.p.name}.`); }}>Construire</button></div>)}</div>
       : <p class="small muted">{al.have >= al.allowed ? `Il faut ${REGIONAL_PER_WORLDS} planètes de plus pour une nouvelle capitale régionale.` : 'Aucune planète éloignée ne remplit les conditions (population, distance aux autres capitales).'}</p>}
@@ -145,7 +150,7 @@ function Logistics({ g, me }: { g: GameState; me: Player }) {
         {autoIn.length > 8 && <div class="small muted">et {autoIn.length - 8} autres colonies</div>}
       </> : <span class="muted small">aucune</span>}</div>
       <div><h4>Minerais <span class="muted">· à exporter</span></h4>{exporters.length ? exporters.map(p => { const m = mineralSurplus(p); return <div class="pl" onClick={() => s.focus({ kind: 'planet', id: p.id }, p)}><span>{p.name}</span><b>{fmt(m.ironium + m.boranium + m.germanium)} kt</b></div>; }) : <span class="muted small">aucun export</span>}
-        {exporters.length > 0 && <div class="small muted">vers {importers.length ? importers.map(p => p.name).join(', ') : `la capitale (${capitalOf(g, me)?.name ?? '?'})`}</div>}</div>
+        {exporters.length > 0 && (() => { const sinks = mineralSinks(g, me); return <div class={'small ' + (sinks.length ? 'muted' : 'yellow')}>{sinks.length ? `vers ${importers.length ? sinks.map(p => p.name).join(', ') : `la capitale (${sinks[0].name})`}` : 'aucune destination : la capitale exporte elle aussi, et aucune planète n\'importe'}</div>; })()}</div>
     </div>
     <div class="emp-auto">
       <label class="chk"><input type="checkbox" checked={ai.on} onChange={e => A.setAutoImmigration((e.target as HTMLInputElement).checked)} /> Envoyer aussi les émigrants vers vos colonies habitables sans politique, jusqu'à</label>

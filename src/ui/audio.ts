@@ -11,7 +11,7 @@ let master: GainNode, musicBus: GainNode, sfxBus: GainNode, reverb: ConvolverNod
 let mood: Mood = 'calm';
 let timer: number | undefined;
 let nextChord = 0, chordIdx = 0, nextSparkle = 0, nextPulse = 0;
-let drone: { osc: OscillatorNode; gain: GainNode } | null = null;
+let drone: { osc: OscillatorNode; gain: GainNode; lfo: OscillatorNode } | null = null;
 
 const midi = (n: number) => 440 * Math.pow(2, (n - 69) / 12);
 
@@ -42,6 +42,8 @@ function setup() {
   volumes();
   nextChord = ctx.currentTime + 0.3; nextSparkle = ctx.currentTime + 4; nextPulse = ctx.currentTime + 2;
   timer = window.setInterval(schedule, 200);
+  // 0.3.9.21: a mood set before the sound started (a game loaded in a crisis) gets its drone now
+  if (mood !== 'calm') setDrone(true, mood === 'crisis' ? 26 : 38);
 }
 
 function volumes() {
@@ -116,11 +118,11 @@ function setDrone(on: boolean, note: number) {
     lfo.connect(lg); lg.connect(gain.gain); lfo.start();
     osc.connect(gain); gain.connect(musicBus); osc.start();
     gain.gain.setTargetAtTime(0.06, c.currentTime, 3);
-    drone = { osc, gain };
+    drone = { osc, gain, lfo };
   } else if (!on && drone) {
     const d = drone; drone = null;
     d.gain.gain.setTargetAtTime(0, c.currentTime, 2);
-    d.osc.stop(c.currentTime + 8);
+    d.osc.stop(c.currentTime + 8); d.lfo.stop(c.currentTime + 8); // (0.3.9.21: the LFO ran on for ever)
   } else if (on && drone) drone.osc.frequency.setTargetAtTime(midi(note), c.currentTime, 2);
 }
 
@@ -130,6 +132,10 @@ const rand = () => { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd /
 function schedule() {
   if (!ctx || ctx.state !== 'running' || uiPrefs.music <= 0) return;
   const now = ctx.currentTime, ahead = now + 0.6;
+  // 0.3.9.21: after a pause (music at 0, tab hidden), from now on, not every chord missed played at once
+  if (nextChord < now) nextChord = now + 0.05;
+  if (nextSparkle < now) nextSparkle = now + 1;
+  if (nextPulse < now) nextPulse = now + 0.2;
   const chords = CHORDS[mood], len = CHORD_LEN[mood];
   while (nextChord < ahead) {
     const ch = chords[chordIdx % chords.length];

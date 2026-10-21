@@ -45,7 +45,10 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
   const [tribute, setTribute] = useState(0);
   const st = DIP.statusOf(g, me.id, o.id)!;
   const pr = DIP.pairOf(g, me.id, o.id)!;
-  const have = reserve(g, me);
+  // 0.3.9.21: an empire without a world receives nothing: no offer, no gift (they were counted and never paid)
+  const theyHaveWorld = g.planets.some(pl => pl.owner === o.id);
+  const have = theyHaveWorld ? reserve(g, me) : 0;
+  const offerNow = offer <= have ? offer : 0; // (a gift since may have left less than the offer chosen)
   const send = (kind: ProposalKind, minerals = 0, payer?: number) => act(() => {
     const ans = DIP.propose(g, me.id, o.id, kind, minerals, payer);
     if (ans && kind === 'tribute') store.notify(ans.ok ? `Les ${o.name} vous paient le tribut (détail dans le rapport).` : `Les ${o.name} refusent de vous payer le tribut.`);
@@ -56,9 +59,9 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
   const treaty = pr.trade !== undefined || pr.research !== undefined || st === 'alliance';
   return <div class="diplo-acts">
     {st === 'war' && <div class="diplo-act">
-      <button class="primary" disabled={!!blocked('peace')} onClick={() => send('peace', offer, offer ? me.id : undefined)}>Proposer la paix</button>
-      <select value={offer} onChange={e => setOffer(+(e.target as HTMLSelectElement).value)}>{[0, 200, 500, 1000, 2000].filter(v => v <= have).map(v => <option value={v}>{v ? `en offrant ${v} kt de minerais` : 'sans contrepartie'}</option>)}</select>
-      {blocked('peace') ? <span class="small muted">{blocked('peace')}</span> : <Predict g={g} me={me} other={o} kind="peace" minerals={offer} payer={offer ? me.id : undefined} />}
+      <button class="primary" disabled={!!blocked('peace')} onClick={() => send('peace', offerNow, offerNow ? me.id : undefined)}>Proposer la paix</button>
+      <select value={offerNow} onChange={e => setOffer(+(e.target as HTMLSelectElement).value)}>{[0, 200, 500, 1000, 2000].filter(v => v <= have).map(v => <option value={v}>{v ? `en offrant ${v} kt de minerais` : 'sans contrepartie'}</option>)}</select>
+      {blocked('peace') ? <span class="small muted">{blocked('peace')}</span> : <Predict g={g} me={me} other={o} kind="peace" minerals={offerNow} payer={offerNow ? me.id : undefined} />}
     </div>}
     {st !== 'war' && intelOn(g) && <div class="diplo-act">
       {pr.embassy !== undefined ? <button onClick={() => act(() => DIP.cancel(g, me.id, o.id, 'embassy'), 'Ambassades fermées.')}>Fermer</button> : <button disabled={!!blocked('embassy')} onClick={() => send('embassy')}>Proposer</button>}
@@ -90,8 +93,8 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
     </div>}
     <div class="diplo-act">
       <span class="small">Offrir des minerais :</span>
-      {[200, 500, 1000].map(v => <button class="small" disabled={v > have} onClick={() => act(() => DIP.gift(g, me.id, o.id, v), `${v} kt offerts aux ${o.name}.`)}>{v} kt</button>)}
-      <span class="small muted">pris sur votre monde le plus riche ({fmt(have)} kt) ; l'opinion monte d'un point par 25 kt, puis s'estompe</span>
+      {[200, 500, 1000].map(v => <button class="small" disabled={v > have} onClick={() => { let moved = 0; act(() => { moved = DIP.gift(g, me.id, o.id, v); }); store.notify(moved > 0 ? `${moved} kt offerts aux ${o.name}.` : `Les ${o.name} n'ont aucun monde où recevoir des minerais.`); }}>{v} kt</button>)}
+      <span class="small muted">{theyHaveWorld ? `pris sur votre monde le plus riche (${fmt(reserve(g, me))} kt) ; l'opinion monte d'un point par 25 kt (jusqu'à +30), puis s'estompe` : 'ils n\'ont aucun monde où les recevoir'}</span>
     </div>
     <div class="diplo-act">
       {/* 0.3.7: a tribute humiliates them, whatever they answer; one every three years */}
@@ -116,10 +119,15 @@ function HegemonNote() {
   const g = s.game!, me = s.me!;
   const hg = DIP.hegemon(g, me.id);
   if (!hg || hg.t < 0.1) return null;
+  // 0.3.9.21: only when some computer that knows the leader does feel it (easy ones never rally against a player), and
+  // the leader must be known to you
+  const L0 = g.players[hg.id];
+  if (hg.id !== me.id && !me.intel.met.includes(hg.id)) return null;
+  if (!g.players.some(a => a.ai && !a.dead && !a.monster && a.id !== hg.id && a.intel.met.includes(hg.id) && DIP.coalitionMind(a, L0) && DIP.runaway(g, hg.id, a.id) > 0)) return null;
   const strong = hg.t >= 0.5;
   if (hg.id === me.id) return <div class="alert small">{strong ? 'Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.' : 'Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.'}</div>;
   const L = g.players[hg.id];
-  return <div class="alert info small">{strong ? `Les ${L.name} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.` : `L'avance des ${L.name} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.`}</div>;
+  return <div class="alert info small">{strong ? (DIP.statusOf(g, me.id, hg.id) === 'alliance' ? `Les ${L.name} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances.` : `Les ${L.name} écrasent la galaxie : les autres empires se rapprochent les uns des autres contre eux, d'autant plus que leur avance grandit, et proposent des alliances, à vous aussi.`) : `L'avance des ${L.name} commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre eux.`}</div>;
 }
 
 export function DiplomacyDialog() {

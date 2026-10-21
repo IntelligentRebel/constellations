@@ -57,7 +57,8 @@ function start(game: GameState, p: Player, rng: Rng): StoryChain | undefined {
   if (!home) return undefined;
   for (const kind of kinds) {
     if (kind === 'signal') {
-      const far = game.planets.filter(pl => !pl.hidden && pl.owner !== p.id && distance(pl, home) >= 150 && distance(pl, home) <= 420);
+      // (0.3.9.21: from a free world: "the cipher of no known empire" came from a rival's colony, met on the spot)
+      const far = game.planets.filter(pl => !pl.hidden && pl.owner < 0 && distance(pl, home) >= 150 && distance(pl, home) <= 420);
       if (!far.length) continue;
       const t = far[rng.int(far.length)];
       revealPlanet(game, p, t, false);

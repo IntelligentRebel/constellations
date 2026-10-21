@@ -19,7 +19,8 @@ function Sec({ title, sub, children, id }: { title: string; sub?: string; childr
 export function GoldenSection({ g, me }: { g: GameState; me: Player }) {
   if (!goldenOn(g)) return null;
   const gd = me.golden ?? { inspiration: 0, next: GOLDEN_FIRST, count: 0 };
-  const on = inGoldenAge(g, me);
+  // (0.3.9.21: in the orders of its last year, the age no longer counts for the coming production)
+  const on = inGoldenAge(g, me) && (gd.until ?? 0) > g.year;
   const gain = inspirationGain(g, me);
   const years = gain > 0 ? Math.ceil((gd.next - gd.inspiration) / gain) : null;
   return <Sec id="golden" title="Âge d'or" sub={`la culture devient inspiration ; un âge d'or dure ${GOLDEN_YEARS} ans : +${Math.round(GOLDEN_BONUS * 100)} % de ressources et de recherche`}>
@@ -50,6 +51,7 @@ export function SecretSection({ g, me }: { g: GameState; me: Player }) {
       <p class="small">{k!.lore}</p>
       <p class="small"><b>{k!.where}</b>{anchor && <> {'Le monde-ancre :'} <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: anchor.id }, anchor)}>{anchor.name}</button>.</>}</p>
       {g.crisis?.sealed ? <div class="small">La Brèche est scellée.</div>
+        : g.crisis?.phase === 'ended' ? <div class="small muted">La Brèche s'est refermée sans le Sceau : il n'y a plus rien à sceller.</div>
         : running ? <><div class="small">Sceau des Anciens en chantier sur <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: running.p.id }, running.p)}>{running.p.name}</button>.</div><Bar value={megaProgress(running.q)} max={1} color="#9f7af0" label={`${Math.floor(megaProgress(running.q) * 100)} %`} /></>
           : sites.length ? <div class="btns">{sites.slice(0, 3).map(p => <button class="small primary" onClick={() => { A.queueAdd(p.id, 'mega', undefined, 1, undefined, 'seal'); s.notify(`Sceau des Anciens ajouté à la file de ${p.name}.`); }}>Bâtir le Sceau sur {p.name}</button>)}</div>
             : <div class="small muted">{g.crisis?.phase === 'dormant' || !g.crisis ? 'Le Sceau ne peut s\'élever qu\'une fois la Brèche annoncée.' : <SealWhere g={g} />}</div>}

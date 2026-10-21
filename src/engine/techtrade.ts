@@ -2,7 +2,7 @@
 // meets more advanced technology (the ships it fought and survived, the ships it took apart at its stations, the world it
 // conquered) may learn from it: a 0.5 x (1 - 0.5^n) chance, n being the number of fields where that technology is ahead
 // (so at most 50 %), one level in one of those fields, and no more than one such gain a year.
-import type { Field, GameState, Player, TechLevels } from './types';
+import type { BattleRecord, Field, GameState, Player, TechLevels } from './types';
 import { FIELDS } from './types';
 import { Rng, seedFromString } from './rng';
 import { MAX_TECH, levelGained } from './research';
@@ -52,6 +52,23 @@ export function tradeTech(game: GameState, gainer: Player, source: TechLevels, r
   return f;
 }
 
+/**
+ * 0.3.9.21: the empires this one exchanged fire with in a battle (an ally's ships, or those of a bystander at peace
+ * with everyone, are not "the enemy ships it fought").
+ */
+export function foughtWith(b: BattleRecord, pid: number): Set<number> {
+  const owner = new Map(b.tokens.map(t => [t.id, t.owner]));
+  const out = new Set<number>();
+  for (const a of b.actions) {
+    if (a.t !== 'fire') continue;
+    const from = owner.get(a.id), to = owner.get(a.target);
+    if (from === undefined || to === undefined) continue;
+    if (from === pid && to !== pid) out.add(to);
+    if (to === pid && from !== pid) out.add(from);
+  }
+  return out;
+}
+
 /** After the battles of the year: each empire still on the field may learn from the enemy ships it fought. */
 export function battleTechTrades(game: GameState) {
   const rng = new Rng(seedFromString(`${game.settings.seed}|techtrade|${game.year}`));
@@ -64,7 +81,8 @@ export function battleTechTrades(game: GameState) {
       const here = game.fleets.some(f => f.owner === pid && f.tokens.length && Math.abs(f.x - b.x) < 0.5 && Math.abs(f.y - b.y) < 0.5)
         || (b.planetId !== undefined && game.planets[b.planetId].owner === pid && !!game.planets[b.planetId].starbase);
       if (!here) continue;
-      const theirs = b.tokens.filter(t => t.owner !== pid && !game.players[t.owner]?.monster).map(t => designLevels(game, t.designId));
+      const foes = foughtWith(b, pid);
+      const theirs = b.tokens.filter(t => foes.has(t.owner) && !game.players[t.owner]?.monster).map(t => designLevels(game, t.designId));
       if (!theirs.length) continue;
       tradeTech(game, p, maxLevels(theirs), rng, `En étudiant les vaisseaux ennemis de la bataille de ${where}`);
     }

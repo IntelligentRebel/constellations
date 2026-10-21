@@ -4,10 +4,11 @@ import { useState } from 'preact/hooks';
 import { useStore, fmt, fmtPeople } from '../store';
 import { Modal, Bar, Row, Num, CompIcon, HullImg, useSorted } from '../components';
 import { FIELDS, type Field } from '../../engine/types';
-import { FIELD_NAMES, TECHS, HULLS, canLearn, meetsLevels, FIELD_KEYS, hasTech, CATEGORY_NAMES, mainField } from '../../engine/tech';
+import { FIELD_NAMES, TECHS, HULLS, canLearn, meetsLevels, FIELD_KEYS, hasTech, CATEGORY_NAMES, mainField, effReq } from '../../engine/tech';
 import { TECH_HORIZON, researchCost, MAX_TECH, estimateNextLevel, techOdds, earliestLevel, pointsToReach, breakthroughChance, researchPace, yearsFor, goalTarget, goalProgress, type Pace } from '../../engine/research';
 import { planetSpec } from '../../engine/planet';
 import { raceSpec, researchCostFactor } from '../../engine/race';
+import { researchPerYear } from '../../engine/turn';
 import { tl } from '../../data/labels';
 import { specialsOf, hasSpecial } from '../../engine/specials';
 import { TechTip, techInfo, specialInfo, fieldInfo } from '../techinfo';
@@ -42,7 +43,7 @@ export function ResearchDialog() {
   const total = planets.reduce((a, p) => a + viewSpec(g, p, me).resources, 0);
   const budget = planets.reduce((a, p) => a + viewSpec(g, p, me).resourcesResearch, 0);
   const rs = raceSpec(me.race);
-  const perYear = Math.trunc(Math.max(budget, me.researchLastYear) * rs.researchFactor + 0.5);
+  const perYear = researchPerYear(g, me, budget);
   const luck = !!g.settings.randomResearch;
   const set = (fn: () => void) => { s.checkpoint(); fn(); s.bump(); };
   const pace = researchPace(me, perYear);
@@ -51,7 +52,7 @@ export function ResearchDialog() {
   const goal = g0 && !goalReached(me, g0) ? g0 : undefined;
   return (
     <Modal title="Recherche" wide onClose={() => s.close('research')} footer={<button class="primary" onClick={() => s.close('research')}>Terminé</button>}
-      sub={<>Domaine en cours : {FIELD_NAMES[me.researching]} · niveau {me.tech[me.researching] + 1} {luck ? `${yearsText(cur.years)} (estimation)` : `dans ${cur.years} an${cur.years > 1 ? 's' : ''}`} · {fmt(perYear)} points par an</>}>
+      sub={<>Domaine en cours : {FIELD_NAMES[me.researching]} · niveau {me.tech[me.researching] + 1} {luck ? `${yearsText(cur.years)} (estimation)` : !Number.isFinite(cur.years) ? 'jamais au rythme actuel' : `dans ${cur.years} an${cur.years > 1 ? 's' : ''}`} · {fmt(perYear)} points par an</>}>
       <div class="research">
         <div class="r-fields">
           <table class="fields" data-tut="fields">
@@ -66,7 +67,7 @@ export function ResearchDialog() {
                 <td class="b">{me.tech[f]}</td>
                 <td>{me.tech[f] >= MAX_TECH ? 'maximum atteint' : <div class="rbar"><Bar value={me.researchSpent[f]} max={cost * (luck ? 1.3 : 1)} color={r >= 0.5 && luck ? '#4fd6e3' : '#3a7fbf'} label={`${fmt(me.researchSpent[f])} / ${fmt(cost)}`} />{luck && <><i class="tick" style={{ left: 50 / 1.3 + '%' }} title="Les percées deviennent possibles" /><i class="tick strong" style={{ left: 100 / 1.3 + '%' }} title="Coût nominal du niveau" /></>}</div>}</td>
                 <td class="small">{me.tech[f] >= MAX_TECH ? '' : luck ? <span class={est.chanceThisYear >= 0.5 ? 'good' : est.chanceThisYear > 0 ? '' : 'muted'}>{Math.round(est.chanceThisYear * 100)} %</span> : est.chanceThisYear ? 'oui' : 'non'}</td>
-                <td class="small">{me.tech[f] >= MAX_TECH ? '' : luck ? <span title={`Entre ${est.low} et ${est.high} ans dans 8 cas sur 10, si le domaine reçoit toute la recherche`}>{yearsText(est.years)}{est.high > est.low ? <span class="muted"> ({est.low}–{est.high})</span> : ''}</span> : `${est.years} a`}</td>
+                <td class="small">{me.tech[f] >= MAX_TECH ? '' : luck ? <span title={`Entre ${est.low} et ${est.high} ans dans 8 cas sur 10, si le domaine reçoit toute la recherche`}>{yearsText(est.years)}{est.high > est.low && Number.isFinite(est.high) ? <span class="muted"> ({est.low}–{est.high})</span> : ''}</span> : Number.isFinite(est.years) ? `${est.years} a` : '—'}</td>
               </tr>;
             })}</tbody>
           </table>
@@ -262,7 +263,8 @@ function KnownTechs({ g, me }: { g: GameState; me: Player }) {
     const f = mainField(t.req);
     const used = designs.filter(d => isHull ? d.hull === t.name : d.slots.some(x => x.part === t.name)).length;
     const upg = isHull ? [] : upgradeTargets(g, me, t.name);
-    return { t, isHull, f, lvl: f ? (t.req as any)[FIELD_KEYS[f]] ?? 0 : 0, used, upg, cat: catOf(t) };
+    // 0.3.9.21: the level it was really found at (with a shifted tree, not the nominal one)
+    return { t, isHull, f, lvl: f ? (effReq(me, t) as any)[FIELD_KEYS[f]] ?? 0 : 0, used, upg, cat: catOf(t) };
   });
   const cats = [...new Set(rows.map(r => r.cat))];
   const upgradable = rows.filter(r => r.upg.length > 0).length;

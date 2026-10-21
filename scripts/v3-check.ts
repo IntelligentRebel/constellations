@@ -215,10 +215,13 @@ if (want('distance')) {
   Object.assign(g2.planets[home.id], { owner: 1 });
   generateTurn(g2);
   check(me2.capital === far.id && !g2.planets[far.id].regionalCapital, `capital moved to the regional capital ${g2.planets[me2.capital!].name}`);
-  check(me2.disorgUntil === g2.year + 5 && efficiency(g2, me2, g2.planets[far.id]).disorg === DISORG_FACTOR, 'empire disorganised for 5 years');
+  // (0.3.9.21: five productions after the one of the year it happened: until the year + 6, excluded)
+  check(me2.disorgUntil === g2.year + 6 && efficiency(g2, me2, g2.planets[far.id]).disorg === DISORG_FACTOR, 'empire disorganised for 5 years');
   check(me2.messages.some(m => m.text.includes('Le gouvernement s\'installe')), 'player told');
   check(g2.players[1].messages.some(m => m.text.includes('perdu leur capitale')) || !g2.players[1].intel.met.includes(0), 'rivals told');
   g2.year += 5;
+  check(efficiency(g2, me2, g2.planets[far.id]).disorg === DISORG_FACTOR, 'still disorganised for the fifth production');
+  g2.year += 1;
   check(efficiency(g2, me2, g2.planets[far.id]).disorg === 1, 'disorganisation ends');
 }
 

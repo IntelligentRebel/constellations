@@ -134,10 +134,10 @@ export function TaskDetails({ g, f, i }: { g: GameState; f: Fleet; i: number }) 
     }
     case 'merge': {
       const cands = g.fleets.filter(x => x.owner === me.id && x !== f && Math.abs(x.x - wp.x) < 1 && Math.abs(x.y - wp.y) < 1);
-      return <div class="small">Fusionner avec : <select value={wp.mergeWith} onChange={e => { s.checkpoint(); wp.mergeWith = +(e.target as HTMLSelectElement).value; s.bump(); }}><option value="">—</option>{cands.map(c => <option value={c.id}>{c.name}</option>)}</select></div>;
+      return <div class="small">Fusionner avec : <select value={wp.mergeWith} onChange={e => { const v = (e.target as HTMLSelectElement).value; s.checkpoint(); wp.mergeWith = v === '' ? undefined : +v; s.bump(); }}><option value="">—</option>{cands.map(c => <option value={c.id}>{c.name}</option>)}</select></div>;
     }
     case 'transfer':
-      return <div class="small">Céder à : <select value={wp.transferTo} onChange={e => { s.checkpoint(); wp.transferTo = +(e.target as HTMLSelectElement).value; s.bump(); }}><option value="">—</option>{me.intel.met.map(o => <option value={o}>{g.players[o].name}</option>)}</select></div>;
+      return <div class="small">Céder à : <select value={wp.transferTo} onChange={e => { const v = (e.target as HTMLSelectElement).value; s.checkpoint(); wp.transferTo = v === '' ? undefined : +v; s.bump(); }}><option value="">—</option>{me.intel.met.map(o => <option value={o}>{g.players[o].name}</option>)}</select></div>;
     case 'scrap': {
       const w = f.waypoints[i];
       const pl = w.target === 'planet' && w.targetId !== undefined ? g.planets[w.targetId] : undefined;

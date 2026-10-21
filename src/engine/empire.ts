@@ -116,6 +116,14 @@ export function resetPlanetPolicies(planet: Planet) {
   planet.agency = undefined;
   planet.migration = undefined;
   planet.mineralPolicy = undefined;
+  // 0.3.9.21: nor the sector seat or the hand kept on it (a captured seat stayed one, beyond the conqueror's quota),
+  // nor where its ships went and its packets flew, nor how its production was to be used
+  planet.sectorSeat = undefined;
+  planet.manual = undefined;
+  planet.route = undefined;
+  planet.packetTarget = undefined;
+  planet.leftoverOnly = false;
+  planet.tpl = undefined; // (the former owner's production template)
 }
 
 /**
@@ -140,7 +148,7 @@ export function updateCapitals(game: GameState) {
     next.regionalCapital = undefined;
     player.capital = next.id;
     if (!distanceCostOn(game)) continue;
-    player.disorgUntil = game.year + DISORG_YEARS;
+    player.disorgUntil = game.year + DISORG_YEARS + 1; // (0.3.9.21: set after this year's production: five productions, it gave four)
     player.messages.push({ year: game.year, kind: 'warning', text: `${stored ? `La capitale ${stored.name} est perdue. ` : ''}Le gouvernement s'installe sur ${next.name} : l'empire est désorganisé pendant ${DISORG_YEARS} ans (rendement ×${DISORG_FACTOR}).`, target: { kind: 'planet', id: next.id } });
     for (const o of game.players) {
       if (o.id === player.id || o.dead || !o.intel.met.includes(player.id)) continue;

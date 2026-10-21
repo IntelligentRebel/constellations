@@ -6,7 +6,7 @@
 // Grand Observatoire) or by passing very close. The other empires do not see them until they find them too.
 import type { Fleet, GameState, Hab, Minerals, Planet, Player, Secret, SecretKind, Wormhole } from './types';
 import { Rng, seedFromString } from './rng';
-import { fleetSpec, distance, emptyCargo } from './fleet';
+import { fleetSpec, distance, emptyCargo, damageEvery } from './fleet';
 import { revealPlanet } from './scan';
 import { spawnGuardian, hoard, guardiansOn, guardianAt, ensureMonster, designAtTech } from './guardians';
 import { hasWalls, inWall, wallAt, mainRegionTest, laneT, inPocket, regionOf } from './walls';
@@ -19,7 +19,10 @@ import { galaxyTech } from './factions';
 import { PLANET_NAMES, generatedName } from '../data/names';
 import { applyTemplate } from './production';
 import { resetPlanetPolicies } from './empire';
-import { people } from './words';
+import { people, upperFirst } from './words';
+
+/** 0.3.9.21: the name of a cloud after « un nuage sombre » ("de le Linceul" was written). */
+const cloudOf = (c: string | null) => c ? ` (${upperFirst(c)})` : '';
 
 type Pt = { x: number; y: number };
 
@@ -119,7 +122,12 @@ export function generateSecrets(game: GameState, migrate = false) {
       add('ancients', pt, [world(pt, 'ancients', [r(30, 70), r(30, 70), r(20, 60)], { ironium: r(80, 120), boranium: r(80, 120), germanium: r(80, 120) })]);
       game.anomalies = game.anomalies!.filter(a => a !== vault);
       const g = game.guardians?.find(x => x.kind === 'warden' && x.planetId === vault.planetId);
-      if (g) { game.fleets = game.fleets.filter(f => f.id !== g.fleetId); game.guardians = game.guardians!.filter(x => x !== g); }
+      if (g) {
+        game.fleets = game.fleets.filter(f => f.id !== g.fleetId); game.guardians = game.guardians!.filter(x => x !== g);
+        // 0.3.9.21: and its hoard goes with it (the old world kept 1 200 kt of each mineral, unguarded)
+        const old = game.planets[vault.planetId];
+        for (const k of ['ironium', 'boranium', 'germanium'] as const) { old.surface[k] = Math.max(0, old.surface[k] - 400 * g.tier); old.conc[k] = Math.max(1, old.conc[k] - (20 + 10 * g.tier)); }
+      }
     }
   }
   // the veiled star, in the heart of a dark cloud
@@ -270,7 +278,7 @@ export function followClue(game: GameState, p: Player, planetId: number): string
   if (!s) return 'la piste se perd : la source s\'est tue';
   knowSecret(game, s, p);
   const pl = game.planets[s.ids[0]];
-  if (s.kind === 'veiled') return `l'écho vient d'une jeune étoile cachée au cœur de ${wallAt(game, s.x, s.y) ?? 'un nuage sombre'} : ${pl.name}. Aucune route connue n'y mène. Une flotte équipée d'un scanner qui stationne dans la zone marquée sur la carte, au bord du nuage, finira par trouver un passage`;
+  if (s.kind === 'veiled') return `l'écho vient d'une jeune étoile cachée au cœur d'un nuage sombre${cloudOf(wallAt(game, s.x, s.y))} : ${pl.name}. Aucune route connue n'y mène. Une flotte équipée d'un scanner qui stationne dans la zone marquée sur la carte, au bord du nuage, finira par trouver un passage`;
   return `les horloges battent au rythme d'une étoile à neutrons dont le faisceau ne balaie jamais notre direction : un pulsar muet, ${pl.name}, à ${Math.round(distance(pl, game.planets[planetId]))} al d'ici. Prudence : ses éruptions endommagent les vaisseaux qui passent trop près`;
 }
 
@@ -409,7 +417,7 @@ export function secretStudyOf(game: GameState, f: Fleet): { kind: 'probe' | 'sea
   const p = game.players[f.owner];
   for (const s of game.secrets) {
     if (s.kind === 'veiled' && s.zone && s.known.includes(p.id) && !s.tunnel?.includes(p.id) && probeFleets(game, p, s).includes(f)) return { kind: 'probe', s, pct: Math.min(1, (s.probe?.[p.id] ?? 0) / PROBE_NEED) };
-    if (s.kind === 'pocket' && game.wormholes.find(w => w.id === s.mouthId)?.sealed && sealFleets(game, p, s).includes(f)) return { kind: 'seal', s, pct: Math.min(1, (s.open?.[p.id] ?? 0) / OPEN_NEED) };
+    if (s.kind === 'pocket' && canUseWormholes(p) && game.wormholes.find(w => w.id === s.mouthId)?.sealed && sealFleets(game, p, s).includes(f)) return { kind: 'seal', s, pct: Math.min(1, (s.open?.[p.id] ?? 0) / OPEN_NEED) };
   }
   return null;
 }
@@ -462,8 +470,7 @@ function flares(game: GameState, rng: Rng) {
     for (const f of hit) {
       for (const t of f.tokens) {
         const armor = specOf(game, t.designId).armor;
-        t.damage = Math.min(Math.max(1, armor - 1), t.damage + Math.round(armor * 0.25));
-        t.qtyDamaged = t.qty;
+        damageEvery(t, armor, Math.round(armor * 0.25));
       }
       const p = game.players[f.owner];
       const fresh = knowSecret(game, s, p);

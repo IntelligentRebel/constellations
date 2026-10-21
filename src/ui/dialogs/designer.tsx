@@ -45,7 +45,12 @@ export function DesignerDialog(props: { designId?: number; view?: boolean; /** 0
     else { const nd = addDesign(g, { ...d, owner: me.id, built: 0 }); setSelId(nd.id); }
     setDraft(null); setTab('designs'); s.bump();
   }} />;
-  const startNew = (hull: string) => setDraft({ id: -1, owner: me.id, name: nextName(me, g.designs, hull), hull, slots: [], starbase: !!HULLS.get(hull)?.starbase, built: 0 });
+  const startNew = (hull: string) => {
+    // 0.3.9.21: the same cap as for a copy (a new design on a hull went past it)
+    const sb = !!HULLS.get(hull)?.starbase;
+    if (g.designs.filter(d => d.owner === me.id && !d.deleted && d.starbase === sb).length >= (sb ? MAX_DESIGNS.starbase : MAX_DESIGNS.ship)) { s.notify('Nombre maximal de modèles atteint'); return; }
+    setDraft({ id: -1, owner: me.id, name: nextName(me, g.designs, hull), hull, slots: [], starbase: sb, built: 0 });
+  };
   return (
     <Modal title="Conception" sub="Modèles de vaisseaux et de stations orbitales, coques disponibles, modèles ennemis repérés." wide onClose={() => s.close('designer')} footer={<button class="primary" onClick={() => s.close('designer')}>Terminé</button>}>
       <div class="designer">
@@ -70,7 +75,7 @@ export function DesignerDialog(props: { designId?: number; view?: boolean; /** 0
                 <DesignCompare design={sel} key={'cmp' + sel.id} />
                 {sel.alien && <p class="small muted">Modèle impossible à reproduire (épave restaurée, technologie des Anciens ou prise de guerre) : ses vaisseaux volent et se battent, mais on ne peut ni le construire, ni le copier, ni le modifier.</p>}
                 <div class="btns">
-                  <button disabled={!!sel.alien} onClick={() => { if (designs.length >= (starbase ? MAX_DESIGNS.starbase : MAX_DESIGNS.ship)) { s.notify('Nombre maximal de modèles atteint'); return; } setDraft({ ...JSON.parse(JSON.stringify(sel)), id: -1, name: sel.name + ' (copie)', built: 0 }); }}>Copier le modèle</button>
+                  <button disabled={!!sel.alien} onClick={() => { if (designs.length >= (starbase ? MAX_DESIGNS.starbase : MAX_DESIGNS.ship)) { s.notify('Nombre maximal de modèles atteint'); return; } setDraft({ ...JSON.parse(JSON.stringify(sel)), id: -1, name: sel.name + ' (copie)', built: 0, deleted: undefined, purpose: sel.purpose === 'beacon' ? undefined : sel.purpose }); }}>Copier le modèle</button>
                   <button disabled={count(sel) > 0 || !!sel.alien} title={sel.alien ? 'Modèle impossible à reproduire' : count(sel) > 0 ? 'Des vaisseaux de ce modèle existent : copiez-le plutôt' : ''} onClick={() => setDraft(JSON.parse(JSON.stringify(sel)))}>Modifier</button>
                   <button class="danger" onClick={() => {
                     const n = count(sel);
@@ -197,7 +202,7 @@ function CombatSim({ design }: { design: ShipDesign }) {
 /** 3.6: two designs side by side, metric by metric, as a butterfly chart (where each one is stronger, and by how much). */
 interface Metric { k: string; a: number; b: number; lower?: boolean; show: (v: number) => string; tip?: string }
 function compareMetrics(sa: DesignSpec, sb: DesignSpec, station: boolean): Metric[] {
-  const dmg = (sp: DesignSpec) => sp.weapons.reduce((a, w) => a + w.power * w.qty * (w.torpedo ? w.accuracy + (1 - w.accuracy) * sp.torpedoBonus : sp.beamBonus), 0);
+  const dmg = (sp: DesignSpec) => sp.weapons.reduce((a, w) => a + w.power * w.qty * (w.torpedo ? w.accuracy + (1 - w.accuracy) * sp.torpedoBonus : 1) /* 0.3.9.21: beam power already has the capacitors */, 0);
   const reach = (sp: DesignSpec) => sp.weapons.reduce((a, w) => Math.max(a, w.range), 0);
   const hp = (sp: DesignSpec) => sp.armor + sp.shields;
   const total = (sp: DesignSpec) => sp.cost.resources + sp.cost.ironium + sp.cost.boranium + sp.cost.germanium;
@@ -469,7 +474,9 @@ export function TechBrowserBody({ focus }: { focus?: string } = {}) {
   const cats = [...new Set(TECH_DATA.map(t => t.cat)), 'ShipHull', 'StarbaseHull'];
   const items: (TechData | HullData)[] = cat === 'ShipHull' ? HULL_DATA.filter(h => !h.starbase) : cat === 'StarbaseHull' ? HULL_DATA.filter(h => h.starbase) : TECH_DATA.filter(t => t.cat === cat);
   // the Mystery Trader's technologies stay a surprise until obtained
-  const visible = items.filter(t => (canLearn(me.race, t.req) && !t.req.acquirable) || hasTech(me, t));
+  // 0.3.9.21: the parts of a rule that is off (decoys, sovereignty beacons) are not offered, so not listed either
+  const ruleOff = (t: TechData | HullData) => 'origin' in t && ((t.origin === 'deception' && !g.settings.deception) || (t.origin === 'culture' && !g.settings.culture));
+  const visible = items.filter(t => !ruleOff(t) && ((canLearn(me.race, t.req) && !t.req.acquirable) || hasTech(me, t)));
   const unknown = visible.filter(t => knownState(g, me, t) === 'unknown');
   const shown = visible.filter(t => knownState(g, me, t) !== 'unknown' && (!onlyAvail || hasTech(me, t)));
   return <div class="techbrowser">

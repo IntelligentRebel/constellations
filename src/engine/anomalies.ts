@@ -7,7 +7,7 @@ import { people } from './words';
 import type { Anomaly, Decision, Field, Fleet, GameState, Hab, Planet, Player } from './types';
 import { FIELDS, MINERALS } from './types';
 import { Rng, seedFromString } from './rng';
-import { fleetSpec, distance, emptyCargo } from './fleet';
+import { fleetSpec, distance, emptyCargo, damageEvery } from './fleet';
 import { revealPlanet } from './scan';
 import { addResearch, researchCost } from './research';
 import { FIELD_NAMES } from './tech';
@@ -24,7 +24,8 @@ export const anomaliesOn = (game: GameState) => !!game.settings.anomalies;
 export const STUDY_NEED = [0, 4, 8, 13, 19, 26];
 
 interface Ctx { game: GameState; p: Player; planet: Planet; a: Anomaly; fleet?: Fleet; rng: Rng }
-interface Choice { label: string; hint: string; apply: (c: Ctx) => string }
+/** `fleet`: the choice sends a team from the fleet in orbit (0.3.9.21: without one there, it ran no risk) */
+interface Choice { label: string; hint: string; apply: (c: Ctx) => string; fleet?: true }
 export interface AnomalyDef {
   id: string; name: string; text: string;
   levels: [number, number]; weight: number;
@@ -58,11 +59,14 @@ function veins(planet: Planet, amount: number, rng: Rng): string {
 }
 function revealAround(c: Ctx, r: number): string {
   let n = 0;
-  for (const pl of c.game.planets) if (distance(pl, c.planet) <= r && pl.owner !== c.p.id && !c.p.intel.planets[pl.id].explored) { revealPlanet(c.game, c.p, pl, false); n++; }
+  // (0.3.9.21: not the hidden stars the empire has not found, nor the far end of a sealed wormhole: those are found
+  // otherwise, and the map did not even draw them)
+  for (const pl of c.game.planets) if (distance(pl, c.planet) <= r && pl.owner !== c.p.id && !c.p.intel.planets[pl.id].explored && !c.p.intel.planets[pl.id].unknown) { revealPlanet(c.game, c.p, pl, false); n++; }
   let w = 0;
   for (const wh of c.game.wormholes) {
     if (distance(wh, c.planet) > r) continue;
     const dest = c.game.wormholes.find(x => x.id === wh.destId);
+    if (wh.sealed || dest?.sealed) continue;
     c.p.intel.wormholes[wh.id] = { id: wh.id, x: wh.x, y: wh.y, year: c.game.year, destId: wh.destId, stability: wh.stability };
     if (dest) c.p.intel.wormholes[dest.id] = { id: dest.id, x: dest.x, y: dest.y, year: c.game.year, destId: dest.destId, stability: dest.stability };
     w++;
@@ -84,8 +88,7 @@ function damage(c: Ctx, frac: number): string {
   if (!f) return 'heureusement, plus aucun vaisseau n\'était sur place';
   for (const t of f.tokens) {
     const armor = fleetSpecArmor(c.game, t.designId);
-    t.damage = Math.min(Math.max(1, armor - 1), t.damage + Math.round(armor * frac));
-    t.qtyDamaged = t.qty;
+    damageEvery(t, armor, Math.round(armor * frac));
   }
   return `${f.name} est endommagé`;
 }
@@ -133,7 +136,11 @@ function towardIdeal(c: Ctx, clicks: number): string {
     if (c.p.race.immune[i]) continue;
     const d = Math.sign(center[i] - c.planet.baseHab[i]) * Math.min(clicks, Math.abs(center[i] - c.planet.baseHab[i]));
     c.planet.baseHab[i] = Math.max(0, Math.min(100, c.planet.baseHab[i] + d));
-    c.planet.hab[i] = Math.max(0, Math.min(100, c.planet.hab[i] + d));
+    // 0.3.9.21: the terraforming already done keeps its direction but no longer goes past the ideal (it was added on
+    // top of the new climate: a world at its ideal went beyond it, and its habitability fell)
+    const room = center[i] - c.planet.baseHab[i], t = c.planet.terraformed[i];
+    c.planet.terraformed[i] = Math.sign(t) === Math.sign(room) ? Math.sign(t) * Math.min(Math.abs(t), Math.abs(room)) : 0;
+    c.planet.hab[i] = Math.max(0, Math.min(100, c.planet.baseHab[i] + c.planet.terraformed[i]));
   }
   c.planet.hab = c.planet.hab.map(Math.round) as Hab;
   return `le climat de ${c.planet.name} se rapproche de votre idéal (habitabilité ${before} % → ${habitability(c.p.race, c.planet.hab)} %)`;
@@ -223,7 +230,7 @@ export const ANOMALIES: Record<string, AnomalyDef> = {
     id: 'tomb', name: 'Vaisseau-tombeau', levels: [2, 4], weight: 6,
     text: 'Un navire funéraire, couvert d\'inscriptions d\'avertissement dans une langue morte.',
     choice: {
-      a: { label: 'Fouiller les soutes', hint: 'beaucoup de recherche, mais un risque sur trois de perdre la flotte qui l\'a étudié', apply: c => c.rng.chance(1 / 3) ? `${destroyFleet(c)} : les avertissements étaient sérieux. Ses dernières transmissions sauvent l'essentiel : ${research(c, 0.3)}.` : `${research(c, 1)}.` },
+      a: { label: 'Fouiller les soutes', hint: 'beaucoup de recherche, mais un risque sur trois de perdre la flotte qui l\'a étudié', fleet: true, apply: c => c.rng.chance(1 / 3) ? `${destroyFleet(c)} : les avertissements étaient sérieux. Ses dernières transmissions sauvent l'essentiel : ${research(c, 0.3)}.` : `${research(c, 1)}.` },
       b: { label: 'Le laisser en paix', hint: 'un peu de recherche, aucun risque', apply: c => `${research(c, 0.3)}.` },
       ai: c => c.p.ai === 'easy' ? 'b' : 'a',
     },
@@ -232,7 +239,7 @@ export const ANOMALIES: Record<string, AnomalyDef> = {
     id: 'beacon', name: 'Balise de détresse', levels: [1, 3], weight: 6,
     text: 'Un appel au secours automatique, émis en boucle depuis la surface.',
     choice: {
-      a: { label: 'Envoyer une équipe', hint: 'des survivants à recueillir, ou un piège', apply: c => c.rng.chance(0.65) ? `${colonists(c, 3000 + 2000 * c.a.level)}.` : `C'était une embuscade : ${damage(c, 0.7)}.` },
+      a: { label: 'Envoyer une équipe', hint: 'des survivants à recueillir, ou un piège', fleet: true, apply: c => c.rng.chance(0.65) ? `${colonists(c, 3000 + 2000 * c.a.level)}.` : `C'était une embuscade : ${damage(c, 0.7)}.` },
       b: { label: 'Ignorer l\'appel', hint: 'rien ne se passe', apply: () => 'La balise s\'éteint quelques mois plus tard.' },
       ai: () => 'a',
     },
@@ -284,7 +291,7 @@ export const ANOMALIES: Record<string, AnomalyDef> = {
     id: 'enclave', name: 'Enclave des Exilés', levels: [3, 3], weight: 0,
     text: 'Un peuple coupé du reste de la galaxie depuis des millénaires vit encore ici, dans des cités sous dôme. Ils acceptent de parlementer.',
     choice: {
-      a: { label: 'Échanger avec eux', hint: 'beaucoup de recherche, dans deux domaines', apply: c => `${research(c, 0.8)}. ${cap1(research(c, 0.8))}.` },
+      a: { label: 'Échanger avec eux', hint: 'beaucoup de recherche, dans deux domaines', apply: c => { const f1 = pickField(c); const f2 = pickField(c, FIELDS.filter(f => f !== f1)); return `${research(c, 0.8, f1)}. ${cap1(research(c, 0.8, f2))}.`; } }, // (0.3.9.21: two different fields)
       b: { label: 'Les accueillir dans votre empire', hint: 'la planète devient une de vos colonies, avec 40 000 habitants', apply: c => { const t = joinEnclave(c.game, c.p, c.planet); return t ? `${cap1(t)}.` : `${c.planet.name} est déjà occupée : les Exilés partagent seulement leur savoir. ${cap1(research(c, 0.8))}.`; } },
       ai: () => 'b',
     },
@@ -403,7 +410,7 @@ export function discoverAnomalies(game: GameState, quiet = false) {
     for (const p of game.players) {
       if (p.dead || p.monster || a.known.includes(p.id)) continue;
       if (a.hidden && (p.fragments ?? 0) < need) continue;
-      if (!p.intel.planets[a.planetId]?.explored) continue;
+      if (!p.intel.planets[a.planetId]?.explored || p.intel.planets[a.planetId]?.unknown) continue;
       a.known.push(p.id);
       if (!quiet && !p.ai) {
         const d = defOf(a);
@@ -424,6 +431,20 @@ export function studyBlocker(game: GameState, p: Player, a: Anomaly): string | n
   if (pl.owner >= 0 && pl.owner !== p.id) return `planète occupée par les ${game.players[pl.owner].name}`;
   const g = guardianAt(game, pl.id);
   if (g) return `${theGuardian(g.kind)} veille sur la planète`;
+  return null;
+}
+
+/**
+ * 0.3.9.21: the same as the player knows it (the pages gave away who held the world now, or that a guardian had
+ * settled there, before any scanner saw it).
+ */
+export function studyBlockerSeen(game: GameState, p: Player, a: Anomaly): string | null {
+  if (finished(a)) return 'déjà étudiée';
+  if (!a.known.includes(p.id)) return 'inconnue';
+  const it = p.intel.planets[a.planetId];
+  const owner = it?.owner ?? -1;
+  if (owner >= 0 && owner !== p.id) return `planète occupée par les ${game.players[owner]?.name ?? '?'}`;
+  if (it?.guardian) return `${theGuardian(it.guardian)} veille sur la planète`;
   return null;
 }
 
@@ -533,9 +554,22 @@ export function decide(game: GameState, p: Player, decisionId: number, choice: '
   const a = (game.anomalies ?? []).find(x => x.id === dec.anomalyId);
   const d = ANOMALIES[dec.kind];
   if (!a || !d?.choice) { p.decisions!.splice(i, 1); return null; }
-  const fleet = game.fleets.find(f => f.id === dec.fleetId);
+  const planet = game.planets[dec.planetId];
+  // 0.3.9.21: a world another empire has settled meanwhile is theirs: the decision no longer has an object (its
+  // effects landed on their world)
+  if (planet.owner >= 0 && planet.owner !== p.id && !game.players[planet.owner]?.monster) {
+    p.decisions!.splice(i, 1);
+    const text = `${d.name} (${planet.name}) : ce monde appartient désormais aux ${game.players[planet.owner].name}, la décision n'a plus d'objet.`;
+    msg(game, p, text, dec.planetId);
+    return text;
+  }
+  // the team is sent from one of the empire's fleets in orbit (the one that studied it, still there and still its own,
+  // or another): a fleet gone home, merged or given away was hit all the same, or the risk vanished
+  const here = (f: Fleet) => f.owner === p.id && f.orbiting === dec.planetId;
+  const fleet = game.fleets.find(f => f.id === dec.fleetId && here(f)) ?? game.fleets.find(here);
+  if (d.choice[choice].fleet && !fleet) return `Il faut une de vos flottes en orbite de ${planet.name} pour cela.`;
   const rng = new Rng(seedFromString(`${game.settings.seed}|dec|${dec.id}|${game.year}`));
-  const out = d.choice[choice].apply({ game, p, planet: game.planets[dec.planetId], a, fleet, rng });
+  const out = d.choice[choice].apply({ game, p, planet, a, fleet, rng });
   // the decision is taken between two turns: what it changed on the world (climate, minerals) is seen at once,
   // not at the next scan (3.3.6: the climate engine looked ineffective until then)
   revealPlanet(game, p, game.planets[dec.planetId], false);

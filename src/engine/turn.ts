@@ -76,6 +76,20 @@ const AUTO_WORDS: Record<string, [string, string]> = {
 /** 0.3.9.14: for the AI arena (scripts/ai-arena.ts): another AI may play some computers (true: it played this one). */
 export const aiHooks: { run?: (game: GameState, p: Player, rng: Rng) => boolean } = {};
 
+/** The research pool of the year from the resources given to research: relics, alliances, golden age. */
+export function researchPool(game: GameState, p: Player, resources: number): number {
+  return Math.floor(resources * researchFactor(p) * (1 + researchBonus(game, p.id)) * (inGoldenAge(game, p) ? 1 + GOLDEN_BONUS : 1));
+}
+
+/**
+ * 0.3.9.21: the research points of next year as the turn will count them (the pages applied the GR factor twice to
+ * last year's points, and none of the bonuses to the budget).
+ */
+export function researchPerYear(game: GameState, p: Player, budget: number): number {
+  const pts = Math.trunc(researchPool(game, p, budget) * raceSpec(p.race).researchFactor + 0.5);
+  return Math.max(pts, p.researchLastYear);
+}
+
 export function generateTurn(game: GameState) {
   const rng = new Rng(game.rng);
   startChronicle(game);
@@ -106,7 +120,7 @@ export function generateTurn(game: GameState) {
   for (const f of [...game.fleets]) if (game.fleets.includes(f)) processWaypointTask(game, f, rng);
   // 0.3.9.16: the troops landed (by hand during the orders, or by the tasks above) fight it out together
   resolveLandings(game);
-  runTankers(game);
+  runTankers(game, true);
 
   // ---- movement
   movePackets(game, rng, false);
@@ -163,7 +177,7 @@ export function generateTurn(game: GameState) {
   for (const p of game.players) {
     if (p.dead) continue;
     applyResearchGoal(game, p);
-    const events = doResearch(game, p, Math.floor((pools.get(p.id) ?? 0) * researchFactor(p) * (1 + researchBonus(game, p.id)) * (inGoldenAge(game, p) ? 1 + GOLDEN_BONUS : 1)), rng);
+    const events = doResearch(game, p, researchPool(game, p, pools.get(p.id) ?? 0), rng);
     researchMessages(game, p, events);
   }
   stealResearch(game, pools);
@@ -591,7 +605,8 @@ function repair(game: GameState) {
     if (f.waypoints.length > 1) rate = 0.01;
     else if (!pl) rate = 0.02;
     else if (pl.owner === f.owner) rate = 0.05;
-    else if (spec.bomber && pl.owner >= 0 && willAttack(game, owner, owner.battlePlans[0], pl.owner)) rate = 0;
+    // (0.3.9.21: the fleet's own battle plan, the one its bombing follows)
+    else if (spec.bomber && pl.owner >= 0 && willAttack(game, owner, owner.battlePlans.find(b => b.id === f.battlePlan) ?? owner.battlePlans[0], pl.owner)) rate = 0;
     else rate = 0.03;
     if (rate > 0) rate += spec.repairBonus;
     if (pl && pl.owner === f.owner && pl.starbase && !fought.has(pl.id)) rate += specOf(game, pl.starbase.designId).repairBonus;

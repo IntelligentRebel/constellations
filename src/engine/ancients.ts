@@ -8,7 +8,8 @@ import { Rng, seedFromString } from './rng';
 import { distance, fleetSpec } from './fleet';
 import { addChronicle } from './chronicle';
 
-export const secretOn = (game: GameState) => !!game.settings.ancientSecret && !!game.settings.crisis;
+// (0.3.9.21: the Seal is a megaproject: without that rule, the clues promised a victory production then cancelled)
+export const secretOn = (game: GameState) => !!game.settings.ancientSecret && !!game.settings.crisis && !!game.settings.megaprojects;
 export const CLUES_NEEDED = 6;
 export const SEAL_NEAR = 150;
 
@@ -47,7 +48,8 @@ export function anchorOf(game: GameState): Planet | undefined {
   if (breachKind(game) !== 'seed' || game.crisis?.planetId === undefined) return undefined;
   const b = game.planets[game.crisis.planetId];
   const rng = new Rng(seedFromString(game.settings.seed + '|anchor'));
-  const cands = game.planets.filter(p => !p.hidden && p.id !== b.id && distance(p, b) >= 120 && distance(p, b) <= 260);
+  // (0.3.9.21: a free world, as said: it could be an owned one, a homeworld even)
+  const cands = game.planets.filter(p => !p.hidden && p.id !== b.id && p.owner < 0 && !p.homeworld && distance(p, b) >= 120 && distance(p, b) <= 260);
   const pick = cands[rng.int(cands.length)];
   if (pick) game.breachSecret!.anchor = pick.id;
   return pick;

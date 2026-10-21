@@ -215,11 +215,23 @@ function launchRaid(game: GameState) {
   P.raids++; P.lastTarget = empire;
   P.nextRaid = game.year + interval - (consumed >= 200 ? 2 : 0);
   const eta = game.year + etaYears(game, f, target);
+  f.raid!.eta = eta;
   const victim = game.players[empire];
   victim.messages.push({ year: game.year, kind: 'warning', text: `Alerte pirate : un raid ${deBand(best.lair.name)} (${n} vaisseau${n > 1 ? 'x' : ''}) a quitté ${home.name}. Vos informateurs pensent qu'il vise ${target.name} (arrivée vers ${eta}).${consumed > 0 ? ' Quelqu\'un a payé pour ce raid.' : ''} Une flotte armée en orbite ou une station armée l'arrêteront ; des défenses planétaires limiteront le pillage.`, target: { kind: 'planet', id: target.id } });
-  if (consumed > 0) for (const [payer, by] of Object.entries(P.placed ?? {})) {
-    if (!(by[empire] > 0) || game.players[+payer].dead) continue;
-    game.players[+payer].messages.push({ year: game.year, kind: 'event', text: `Les pirates ont pris votre argent : un raid ${deBand(best.lair.name)} part contre les ${victim.name} (${target.name}).`, target: { kind: 'planet', id: target.id } });
+  // 0.3.9.21: only the payers whose money this raid used are told (it was everyone who ever paid against that empire),
+  // each for its share of what is left of its bounties
+  const left = Object.entries(P.placed ?? {}).map(([payer, by]) => ({ payer: +payer, n: (by[empire] ?? 0) - (P.spent?.[+payer]?.[empire] ?? 0) })).filter(x => x.n > 0);
+  const owed = left.reduce((a, x) => a + x.n, 0);
+  let toShare = consumed;
+  if (consumed > 0) for (const [k, x] of left.entries()) {
+    const take = k === left.length - 1 ? Math.min(x.n, toShare) : Math.min(x.n, toShare, Math.floor(consumed * x.n / owed));
+    if (take <= 0) continue;
+    toShare -= take;
+    const sp = (P.spent ??= {})[x.payer] ??= {};
+    sp[empire] = (sp[empire] ?? 0) + take;
+    const payer = x.payer;
+    if (game.players[payer].dead) continue;
+    game.players[payer].messages.push({ year: game.year, kind: 'event', text: `Les pirates ont pris votre argent : un raid ${deBand(best.lair.name)} part contre les ${victim.name} (${target.name}).`, target: { kind: 'planet', id: target.id } });
   }
 }
 
@@ -292,11 +304,18 @@ function runRaids(game: GameState) {
         P.treasure += r.loot + f.cargo.ironium + f.cargo.boranium + f.cargo.germanium;
         const lf = lairFleet(game, lairAt(game, home.id)!);
         // the raiders join the garrison while it has room, the others share the loot and leave
-        if (lf && shipsOf(lf) < garrisonCap(game)) {
-          for (const t of f.tokens) {
-            const same = lf.tokens.find(x => x.designId === t.designId);
-            if (same) { same.qty += t.qty; same.qtyDamaged += t.qtyDamaged; same.damage = Math.max(same.damage, t.damage); } else lf.tokens.push({ ...t });
-          }
+        // (0.3.9.21: up to the cap, ship by ship; the whole raid joined as soon as there was room for one)
+        let room = lf ? garrisonCap(game) - shipsOf(lf) : 0;
+        for (const t of f.tokens) {
+          if (room <= 0) break;
+          const q = Math.min(t.qty, room), qd = Math.min(t.qtyDamaged, q);
+          room -= q;
+          const same = lf!.tokens.find(x => x.designId === t.designId);
+          if (same) {
+            const total = same.damage * same.qtyDamaged + t.damage * qd;
+            same.qty += q; same.qtyDamaged += qd;
+            same.damage = same.qtyDamaged > 0 ? total / same.qtyDamaged : 0;
+          } else lf!.tokens.push({ ...t, qty: q, qtyDamaged: qd, damage: qd > 0 ? t.damage : 0 });
         }
         disband(game, f);
       } else if (f.waypoints.length < 2) sendTo(game, f, home);
@@ -305,7 +324,12 @@ function runRaids(game: GameState) {
     // the target changed hands or died out: the nearest world of the same empire, else home
     if (target.owner !== r.empire) {
       const alt = game.planets.filter(pl => pl.owner === r.empire).sort((a, b) => distance(a, f) - distance(b, f))[0];
-      if (alt && distance(alt, f) <= 250 && !victim.dead) { r.target = alt.id; sendTo(game, f, alt); } else goHome(game, f);
+      if (alt && distance(alt, f) <= 250 && !victim.dead) {
+        r.target = alt.id; sendTo(game, f, alt);
+        // 0.3.9.21: the informants tell where it turns (the map moved its warning there without a word)
+        r.eta = game.year + etaYears(game, f, alt);
+        victim.messages.push({ year: game.year, kind: 'warning', text: `Alerte pirate : ${target.name} ne vous appartenant plus, ${f.name} se détourne vers ${alt.name}, selon vos informateurs (arrivée vers ${r.eta}).`, target: { kind: 'planet', id: alt.id } });
+      } else goHome(game, f);
       continue;
     }
     // badly mauled: back to the lair

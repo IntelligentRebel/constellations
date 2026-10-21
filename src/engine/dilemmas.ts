@@ -53,7 +53,7 @@ export const DILEMMAS: DilemmaDef[] = [
     setup: (g, p, rng) => { const pl = colony(g, p, rng, x => x.mines > 0); return pl ? { planet: pl.id, kt: 1200 + rng.int(1200) } : null; },
     text: c => `Les mineurs de ${planetOf(c).name} ont trouvé un filon fabuleux. L'exploiter d'un coup rapporterait ${c.d.data!.kt} kt de chaque minerai, mais l'effondrement qui suivrait ruinerait les gisements pour des siècles.`,
     a: { label: 'Tout extraire', hint: c => `+${c.d.data!.kt} kt de chaque minerai, concentrations de ${planetOf(c).name} divisées par deux`, apply: c => { const pl = planetOf(c); for (const m of MINERALS) { pl.surface[m] += c.d.data!.kt as number; pl.conc[m] = Math.max(1, Math.round(pl.conc[m] / 2)); } return `Le filon de ${pl.name} est vidé : ${c.d.data!.kt} kt de chaque minerai, des gisements ruinés.`; } },
-    b: { label: 'Exploiter avec prudence', hint: () => 'concentrations +10 sur ce monde, rien de plus', apply: c => { const pl = planetOf(c); for (const m of MINERALS) pl.conc[m] = Math.min(100, pl.conc[m] + 10); return `Les ingénieurs de ${pl.name} exploitent le filon pas à pas : ses concentrations montent.`; } },
+    b: { label: 'Exploiter avec prudence', hint: () => 'concentrations +10 sur ce monde, rien de plus', apply: c => { const pl = planetOf(c); for (const m of MINERALS) pl.conc[m] = Math.max(pl.conc[m], Math.min(100, pl.conc[m] + 10)); return `Les ingénieurs de ${pl.name} exploitent le filon pas à pas : ses concentrations montent.`; } },
     ai: c => c.rng.chance(0.4) ? 'a' : 'b',
   },
   {
@@ -93,15 +93,15 @@ export const DILEMMAS: DilemmaDef[] = [
     setup: (g, p, rng) => { const pl = colony(g, p, rng, x => x.pop > 10000); return pl ? { planet: pl.id } : null; },
     text: c => `Sur ${planetOf(c).name}, une génération naît adaptée à son monde : plus robuste, plus féconde, mais différente. Une part de la population réclame qu'on « corrige » ces enfants.`,
     a: { label: 'Les accepter', hint: c => `${planetOf(c).name} gagne un cinquième de population, un peu de recherche en Biotechnologie`, apply: c => { const pl = planetOf(c); pl.pop = Math.round(pl.pop * 1.2 / 100) * 100; addResearch(c.game, c.p, 'biotechnology', levelShare(c, 'biotechnology', 0.1)); return `Les enfants de ${pl.name} grandissent libres : la colonie prospère.`; } },
-    b: { label: 'Les « corriger »', hint: () => 'un tiers d\'un niveau de Biotechnologie (les études médicales), au prix de la confiance', apply: c => { addResearch(c.game, c.p, 'biotechnology', levelShare(c, 'biotechnology', 0.33)); const pl = planetOf(c); pl.pop = Math.round(pl.pop * 0.95 / 100) * 100; return `Les généticiens interviennent sur ${pl.name} ; la colonie ne l'oubliera pas.`; } },
+    b: { label: 'Les « corriger »', hint: c => `un tiers d'un niveau de Biotechnologie (les études médicales), au prix de la confiance : ${planetOf(c).name} perd un vingtième de sa population`, apply: c => { addResearch(c.game, c.p, 'biotechnology', levelShare(c, 'biotechnology', 0.33)); const pl = planetOf(c); pl.pop = Math.round(pl.pop * 0.95 / 100) * 100; return `Les généticiens interviennent sur ${pl.name} ; la colonie ne l'oubliera pas.`; } },
     ai: c => c.rng.chance(0.7) ? 'a' : 'b',
   },
   {
     kind: 'triumph', title: 'Le triomphe',
     setup: (g, p, rng) => { if (!g.settings.veterans) return null; const fl = g.fleets.filter(f => f.owner === p.id && (f.xp ?? 0) >= 15 && f.tokens.length); return fl.length ? { fleet: fl[rng.int(fl.length)].id, kt: 150 + rng.int(150) } : null; },
     text: c => { const f = c.game.fleets.find(x => x.id === c.d.data!.fleet); return `L'amiral de ${f?.name ?? 'votre flotte la plus aguerrie'} réclame un triomphe pour ses équipages : défilés, médailles, et une coque neuve pour le vaisseau amiral.`; },
-    a: { label: 'Accorder le triomphe', hint: c => `+25 points d'expérience à la flotte, −${c.d.data!.kt} kt de chaque minerai sur votre capitale`, apply: c => { const f = c.game.fleets.find(x => x.id === c.d.data!.fleet); const cap = c.p.capital !== undefined ? c.game.planets[c.p.capital] : undefined; if (cap) for (const m of MINERALS) cap.surface[m] = Math.max(0, cap.surface[m] - (c.d.data!.kt as number)); if (!f) return 'La flotte n\'est plus : le triomphe devient un hommage.'; f.xp = (f.xp ?? 0) + 25; return `Le triomphe de ${f.name} galvanise ses équipages.`; } },
-    b: { label: 'Refuser', hint: () => 'la flotte perd 10 points d\'expérience (l\'amertume)', apply: c => { const f = c.game.fleets.find(x => x.id === c.d.data!.fleet); if (f) f.xp = Math.max(0, (f.xp ?? 0) - 10); return f ? `L'amiral de ${f.name} rentre dans le rang, amer.` : 'La flotte n\'est plus.'; } },
+    a: { label: 'Accorder le triomphe', hint: c => `+25 points d'expérience à la flotte, −${c.d.data!.kt} kt de chaque minerai sur votre capitale`, apply: c => { const f = c.game.fleets.find(x => x.id === c.d.data!.fleet && x.owner === c.p.id); const cap = c.p.capital !== undefined ? c.game.planets[c.p.capital] : undefined; if (cap) for (const m of MINERALS) cap.surface[m] = Math.max(0, cap.surface[m] - (c.d.data!.kt as number)); if (!f) return 'La flotte n\'est plus : le triomphe devient un hommage.'; f.xp = (f.xp ?? 0) + 25; return `Le triomphe de ${f.name} galvanise ses équipages.`; } },
+    b: { label: 'Refuser', hint: () => 'la flotte perd 10 points d\'expérience (l\'amertume)', apply: c => { const f = c.game.fleets.find(x => x.id === c.d.data!.fleet && x.owner === c.p.id); if (f) f.xp = Math.max(0, (f.xp ?? 0) - 10); return f ? `L'amiral de ${f.name} rentre dans le rang, amer.` : 'La flotte n\'est plus.'; } },
     ai: c => c.rng.chance(0.5) ? 'a' : 'b',
   },
 ];
@@ -147,7 +147,10 @@ export function settle(game: GameState, p: Player, id: number, choice: 'a' | 'b'
   if (!given) p.dilemmas = list.filter(x => x.id !== id);
   if (!def) return null;
   const rng = rngOf(game, p, 'settle' + d.id);
-  const text = def[choice].apply({ game, p, d, rng });
+  // 0.3.9.21: a dilemma about a world the empire has lost meanwhile no longer applies (its answers, the default one at
+  // the end included, struck the new owner's world or filled its stores)
+  const pl = typeof d.data?.planet === 'number' ? game.planets[d.data.planet as number] : undefined;
+  const text = pl && pl.owner !== p.id ? `${pl.name} n'est plus à vous : la question ne se pose plus.` : def[choice].apply({ game, p, d, rng });
   if (!p.ai) {
     p.messages.push({ year: game.year, kind: 'event', text: expired ? `${def.title} : faute de décision, « ${def[choice].label} » l'emporte. ${text}` : `${def.title} : ${text}`, target: { kind: 'colonies', id: 0 } });
     addChronicle(game, 'event', `${def.title} : les ${p.name} choisissent « ${def[choice].label} ».`, [p.id]);

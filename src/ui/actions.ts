@@ -9,6 +9,7 @@ import { planIntercept, applyIntercept, applyTraderMeet, type TraderOffer } from
 import { startRefuel, defaultTankerRange } from '../engine/refuel';
 import { safeGoto } from '../engine/ai';
 import { upgradeDesigns } from '../engine/upgrade';
+import { endOperation } from '../engine/operations';
 import type { ConstellationsRule } from '../engine/newgame';
 import { fleetSpec, estimateRoute, bestWarpForLeg } from '../engine/fleet';
 import { gateCheck } from '../engine/movement';
@@ -20,7 +21,7 @@ import { autoExplore, canAutoExplore, AUTO_EXPLORE } from '../engine/automation'
 import { canUseWormholes, WORMHOLE_NAV, specialReqText, specialLevelText } from '../engine/specials';
 import { wallAt, nearestOutside, regionOf, openFor } from '../engine/walls';
 import { pocketGate } from '../engine/secrets';
-import { exitOrder } from '../engine/borders';
+import { closersOf, exitOrder, routeEntries } from '../engine/borders';
 import { upperFirst } from '../engine/words';
 
 export function commandedFleet(): Fleet | undefined {
@@ -85,6 +86,18 @@ function retuneLeg(f: Fleet, i: number): LegState {
   if (i <= 0 || i >= f.waypoints.length || f.waypoints[i].warp >= 11) return 'ok';
   f.waypoints[i].warp = 0;
   return fixLegWarp(f, i);
+}
+
+/**
+ * 0.3.9.21: the route a drag of waypoint i would give, with the speeds the order will set (the preview showed the
+ * arrival at the old speed of the leg, then the order retuned it: another year).
+ */
+export function retunedRoute(f: Fleet, wps: Waypoint[], i: number, keepGate: boolean): Waypoint[] {
+  const tmp: Fleet = { ...f, waypoints: wps.map(w => ({ ...w })) };
+  // as the orders do: an inserted step, or a gate step dropped on another kind of target, flies at a speed again
+  if (tmp.waypoints[i] && (!keepGate || tmp.waypoints[i].warp < 11)) tmp.waypoints[i].warp = 0;
+  retuneLeg(tmp, i); retuneLeg(tmp, i + 1);
+  return tmp.waypoints;
 }
 
 /** Loud warning when a leg can only be flown at Warp 1 (or not at all with the fuel on board). */
@@ -519,6 +532,9 @@ export function queueAdd(planetId: number, kind: QueueKind, designId: number | u
 
 /** Adds an item to a planet's queue (no undo point, no redraw); the note says what was cut down or refused. */
 function queueAddTo(g: GameState, pl: Planet, kind: QueueKind, designId: number | undefined, qty: number, index?: number, megaId?: string, cultureId?: string, bountyOn?: number): { ok: boolean; note?: string } {
+  // 0.3.9.21: whole units, at least one, on a world of one's own (2.5 ships built half a ship)
+  qty = Math.floor(qty);
+  if (!(qty >= 1) || pl.owner !== g.human) return { ok: false };
   // 3.4: bounties, one line per target
   if (kind === 'bounty' || kind === 'spy') {
     const same = pl.queue.find(q => q.kind === kind && q.bountyOn === bountyOn);
@@ -576,7 +592,8 @@ export function applyTemplateMany(planetIds: number[], templateId: number, repla
 export function clearQueues(planetIds: number[]) {
   const g = store.game; if (!g) return;
   store.checkpoint();
-  for (const id of planetIds) g.planets[id].queue = [];
+  // (0.3.9.21: the minerals already put into the lines come back, as for one queue emptied)
+  for (const id of planetIds) { const pl = g.planets[id]; for (const it of pl.queue) { pl.surface.ironium += it.allocated.ironium; pl.surface.boranium += it.allocated.boranium; pl.surface.germanium += it.allocated.germanium; } pl.queue = []; }
   store.bump();
 }
 
@@ -610,7 +627,8 @@ export function queueSetQty(planetId: number, i: number, qty: number) {
   if (it) it.qty = Math.max(0, Math.round(qty));
   // 0.3.9.13: a refit takes at most the ships of its fleet the other refits do not already take
   if (it?.kind === 'refit' && it.qty > 0) { const room = refitRoom(g, g.planets[planetId], it); if (it.qty > room) { it.qty = Math.max(1, room); store.notify(`Vaisseaux à moderniser sur cette ligne : ${it.qty} au plus (les autres sont déjà en chantier ou n'existent pas).`); } }
-  if (it && it.qty === 0) queueRemove(planetId, i);
+  // (0.3.9.21: removed here, within the same undo point: queueRemove made a second one)
+  if (it && it.qty === 0) { const pl = g.planets[planetId]; pl.surface.ironium += it.allocated.ironium; pl.surface.boranium += it.allocated.boranium; pl.surface.germanium += it.allocated.germanium; pl.queue.splice(i, 1); }
   store.bump();
 }
 
@@ -627,6 +645,10 @@ export function queueClear(planetId: number) {
 
 export function transferPlanet(f: Fleet, planetId: number, key: TransportKey, amount: number) {
   const g = store.game; if (!g) return;
+  // 0.3.9.21: only a fleet of this game, at the planet (a cargo dialog left open over a turn, or over an undo, moved
+  // cargo across any distance, or into a copy of the game no longer played)
+  const pl = g.planets[planetId];
+  if (!pl || !g.fleets.includes(f) || !(f.orbiting === planetId || (Math.abs(f.x - pl.x) < 1 && Math.abs(f.y - pl.y) < 1))) return 0;
   store.checkpoint();
   const moved = transferWithPlanet(g, f, g.planets[planetId], key, amount);
   if (moved === 0) store.undo.pop();
@@ -636,6 +658,7 @@ export function transferPlanet(f: Fleet, planetId: number, key: TransportKey, am
 
 export function transferFleets(from: Fleet, to: Fleet, key: TransportKey, amount: number, by = to.owner) {
   const g = store.game; if (!g) return;
+  if (!g.fleets.includes(from) || !g.fleets.includes(to) || Math.abs(from.x - to.x) >= 1 || Math.abs(from.y - to.y) >= 1) return 0; // (0.3.9.21, as above)
   store.checkpoint();
   const moved = transferBetweenFleets(g, from, to, key, amount, by);
   if (moved === 0) store.undo.pop();
@@ -675,6 +698,7 @@ export function splitSingles(f: Fleet) {
 /** The merged fleet keeps the orders under way: its own, or else those of the fleet it absorbs. */
 export function merge(into: Fleet, from: Fleet) {
   const g = store.game; if (!g) return;
+  if (into.beaconOf !== undefined || from.beaconOf !== undefined) { store.notify('Une balise de souveraineté ne fusionne avec aucune flotte.'); return; }
   store.checkpoint();
   const busyBoth = hasOrders(into) && hasOrders(from);
   const name = from.name;
@@ -772,6 +796,8 @@ export function deleteDesign(d: ShipDesign) {
     for (const q of p.queue) if (!keep.includes(q)) { p.surface.ironium += q.allocated.ironium; p.surface.boranium += q.allocated.boranium; p.surface.germanium += q.allocated.germanium; }
     p.queue = keep;
   }
+  // 0.3.9.21: an operation that had it built ends (it would otherwise stall, its design gone)
+  for (const f of g.fleets) if (f.owner === me.id && f.op?.designId === d.id) endOperation(g, f);
   store.bump();
 }
 
@@ -797,14 +823,37 @@ export function dismantleBeacon(f: Fleet) {
 }
 
 /** Sends a fleet carrying a kit to set up a beacon at a planet. */
+/**
+ * 0.3.9.21: the years the beacon order would take, as sendBeacon plans it (speed the fuel allows, detours, stops);
+ * null when it cannot get there. The button counted a straight leg at the engines' ideal speed.
+ */
+export function beaconTrip(f: Fleet, planetId: number): number | null {
+  const g = store.game; if (!g) return null;
+  const pl = g.planets[planetId];
+  if (f.x === pl.x && f.y === pl.y) return 0;
+  const tmp: Fleet = { ...f, waypoints: [{ ...f.waypoints[0], x: f.x, y: f.y, task: 'none', transport: undefined, processed: true }] };
+  if (!safeGoto(g, tmp, { x: pl.x, y: pl.y, planetId: pl.id }, 'beacon', false)) return null;
+  const est = estimateRoute(g, tmp);
+  const last = est[est.length - 1];
+  return last && Number.isFinite(last.arrival) ? last.arrival : null;
+}
+
 export function sendBeacon(f: Fleet, planetId: number) {
   const g = store.game; if (!g) return;
   const pl = g.planets[planetId];
   store.checkpoint();
   if (f.x === pl.x && f.y === pl.y) { f.waypoints = [{ ...f.waypoints[0], task: 'beacon', processed: false }]; store.notify(`${f.name} posera la balise à ${pl.name} au prochain tour.`); store.bump(); return; }
+  // (0.3.9.21: a refused order leaves the route as it was: it was wiped, with its undo point removed)
+  const before = f.waypoints;
   f.waypoints = [{ ...f.waypoints[0], x: f.x, y: f.y, task: 'none', transport: undefined, processed: true }];
-  if (!safeGoto(g, f, { x: pl.x, y: pl.y, planetId: pl.id }, 'beacon', false)) { store.undo.pop(); store.notify(`${f.name} ne peut pas atteindre ${pl.name} avec son carburant.`); return; }
+  if (!safeGoto(g, f, { x: pl.x, y: pl.y, planetId: pl.id }, 'beacon', false)) {
+    f.waypoints = before; store.undo.pop();
+    const shut = closersOf(g, f.owner).length > 0 && routeEntries(g, f.owner, [{ ...before[0], x: f.x, y: f.y }, { x: pl.x, y: pl.y, target: 'planet', targetId: pl.id, warp: 5, task: 'beacon' }]).length > 0;
+    store.notify(shut ? `${f.name} ne peut pas atteindre ${pl.name} sans entrer dans un territoire fermé.` : `${f.name} ne peut pas atteindre ${pl.name} avec son carburant.`);
+    store.bump(); return;
+  }
   store.notify(`${f.name} part poser une balise à ${pl.name}.`);
+  warnSlowLegs(f, [1]); // (the trip may be long: at Warp 1 when the fuel would not last)
   store.bump();
 }
 

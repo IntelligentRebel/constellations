@@ -73,10 +73,10 @@ export function checkVictory(game: GameState): number | null {
     }
     if (v.production !== null && s.resources >= v.production * 1000) mask |= 16;
     if (v.capitalShips !== null && s.capital >= v.capitalShips) mask |= 32;
-    if (v.highestAfter !== null && years >= v.highestAfter && scores.every((x, i) => i === p.id || !x || x.score < s.score)) mask |= 64;
+    if (v.highestAfter !== null && years >= v.highestAfter && scores.every((x, i) => i === p.id || !x || game.players[i].dead || x.score < s.score)) mask |= 64; // (0.3.9.21: the dead no longer hold it back)
     p.victoryMet = mask;
     const n = countBits(mask);
-    if (n >= v.numCriteria && years >= v.minYears && victor === null) victor = p.id;
+    if (n >= Math.max(1, v.numCriteria) && years >= v.minYears && victor === null) victor = p.id; // (0.3.9.21: 0 criteria gave the game to the first empire)
   }
   // last player standing
   const alive = game.players.filter(p => !p.dead);

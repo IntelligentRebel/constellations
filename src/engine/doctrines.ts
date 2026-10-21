@@ -23,7 +23,7 @@ export const DOCTRINE_FORKS: DoctrineFork[] = [
   {
     id: 'propulsion', field: 'propulsion', level: 5, title: 'Doctrine de vol',
     a: { id: 'endurance', name: 'Endurance', effect: 'Carburant −20 %, réservoirs +25 %', detail: 'Vos moteurs consomment 20 % de carburant en moins et vos réservoirs contiennent 25 % de plus : flottes plus autonomes.' },
-    b: { id: 'speed', name: 'Vitesse tactique', effect: '+1 de vitesse en combat', detail: 'Tous vos vaisseaux armés se déplacent d\'une case de plus par round de combat : ils choisissent la distance.' },
+    b: { id: 'speed', name: 'Vitesse tactique', effect: '+1 de vitesse en combat', detail: 'Tous vos vaisseaux armés gagnent 1 point de vitesse de combat : une case de plus un round sur quatre (4 points font une case par round), de quoi choisir plus souvent la distance.' },
   },
   {
     id: 'construction', field: 'construction', level: 6, title: 'Philosophie de construction',

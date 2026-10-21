@@ -3,7 +3,7 @@
 import type { Fleet, GameState, Planet, Player, ShipDesign } from './types';
 import { refitCost } from './design';
 import { canBuildShip, isAuto, zeroCost } from './production';
-import { clampFleetHold, fleetSpec } from './fleet';
+import { cargoMass, clampFleetHold, fleetSpec } from './fleet';
 
 export const designOf = (game: GameState, id: number) => game.designs.find(d => d.id === id);
 
@@ -170,7 +170,19 @@ export function applyRefit(game: GameState, planet: Planet, item: { designId?: n
   if (dest) dest.qty += n; else f.tokens.push({ designId: item.designId!, qty: n, damage: 0, qtyDamaged: 0 });
   const d = designOf(game, item.designId!);
   if (d) d.built += n;
-  f.fuel = Math.min(f.fuel, fleetSpec(game, f).fuelCapacity);
+  const sp = fleetSpec(game, f);
+  f.fuel = Math.min(f.fuel, sp.fuelCapacity);
+  // 0.3.9.21: a smaller hold leaves what no longer fits on the world (it used to be lost), minerals first
+  let over = cargoMass(f.cargo) - sp.cargoCapacity;
+  for (const m of ['germanium', 'boranium', 'ironium'] as const) {
+    if (over <= 0) break;
+    const k = Math.min(f.cargo[m], over);
+    f.cargo[m] -= k; planet.surface[m] += k; over -= k;
+  }
+  if (over > 0 && f.cargo.colonists > 0) {
+    const k = Math.min(f.cargo.colonists, over);
+    f.cargo.colonists -= k; planet.pop += k * 100; over -= k;
+  }
   clampFleetHold(game, f);
   return f;
 }

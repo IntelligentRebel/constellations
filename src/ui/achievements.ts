@@ -22,7 +22,7 @@ const won = (g: GameState, me: Player, kind?: GameState['victoryKind']) => g.vic
 export const BASE_ICONS = 16;
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { id: 'colony', name: 'Hors du berceau', text: 'Fonder une première colonie.', test: (g, me) => own(g, me).length >= 2 },
+  { id: 'colony', name: 'Hors du berceau', text: 'Fonder une première colonie.', test: (g, me) => me.stats.planetsColonized >= 1 }, // (0.3.9.21: the second world of PP and IT, given at the start, is no colony founded)
   { id: 'worlds10', name: 'Dix mondes', text: 'Tenir dix mondes à la fois.', test: (g, me) => own(g, me).length >= 10 },
   { id: 'worlds50', name: 'Cinquante mondes', text: 'Tenir cinquante mondes à la fois.', unlocks: { icon: 16 + 5 }, test: (g, me) => own(g, me).length >= 50 },
   { id: 'contact5', name: 'Carrefour des peuples', text: 'Rencontrer cinq autres empires.', test: (g, me) => me.intel.met.filter(id => !g.players[id]?.monster).length >= 5 },

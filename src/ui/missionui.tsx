@@ -77,7 +77,7 @@ export function doBuild(g: GameState, o: BuildOption, p: Planet, kind: MissionKi
   const s = store;
   s.checkpoint();
   queueMission(g, o.planet, o.design, { kind, planetId: p.id, homeId: opts.homeId });
-  s.notify(`Construction ajoutée en tête de la file de ${o.planet.name} (${o.design.name}) : départ dans ≈ ${o.buildYears} an${o.buildYears > 1 ? 's' : ''}`);
+  s.notify(`Construction ajoutée à la file de ${o.planet.name}, avant les constructions automatiques (${o.design.name}) : départ dans ≈ ${o.buildYears} an${o.buildYears > 1 ? 's' : ''}`);
   s.bump();
   if (!o.reachable) s.open('warn', { title: 'Destination hors de portée', message: `Avec son carburant, ${o.design.name} ne pourra pas atteindre ${p.name} depuis ${o.planet.name} sans tomber en panne sèche : il restera à quai une fois construit, en attente d'ordres.`, actions: [{ label: 'Annuler la construction', run: () => s.undoLast() }, { label: 'Construire quand même', primary: true, run: () => {} }] });
 }
@@ -111,6 +111,8 @@ export function MissionButton({ g, p, m, short, label }: { g: GameState; p: Plan
   const word = short ? '' : ' ' + w.a;
   const haul = m.kind === 'haul';
   const guarded = !!store.me?.intel.planets[p.id]?.guardian && m.kind !== 'haul';
+  // a scout or an ark already on its way is enough; miners and shuttles may be several on one world
+  const oneOnly = m.kind === 'explore' || m.kind === 'colonize';
   // Constellations 3.3: no colony in another empire's territory
   const terr = m.kind === 'colonize' && store.me ? colonyBlocker(g, store.me, p, true) : null;
   const fb = m.kind === 'mine' && store.me ? miningBlocker(g, store.me, p, true) : null;
@@ -118,12 +120,13 @@ export function MissionButton({ g, p, m, short, label }: { g: GameState; p: Plan
   if (terr !== null) return <button class="primary mbtn" disabled title={`${p.name} est dans le territoire des ${g.players[terr].name} : on ne peut pas y fonder de colonie.`}>Territoire étranger<small>des {g.players[terr].name}</small></button>;
   if (guarded && (m.send[0] || m.build[0])) {
     const o = m.send[0], b = m.build[0];
-    return <button class="primary mbtn slow" disabled={!o && m.busy} onClick={() => guardedWarning(g, p, () => o ? doSend(g, o.fleet, p, m.kind, m.opts) : doBuild(g, b!, p, m.kind, m.opts))} title="Un gardien veille sur ce monde">{label ? label(!o) : o ? <>Envoyer{word}</> : <>Construire et envoyer{word}</>}<small>monde gardé !</small></button>;
+    return <button class="primary mbtn slow" disabled={o ? m.busy && oneOnly : m.busy} onClick={() => guardedWarning(g, p, () => o ? doSend(g, o.fleet, p, m.kind, m.opts) : doBuild(g, b!, p, m.kind, m.opts))} title="Un gardien veille sur ce monde">{label ? label(!o) : o ? <>Envoyer{word}</> : <>Construire et envoyer{word}</>}<small>monde gardé !</small></button>;
   }
   // 0.3.8: the only ready ship would crawl there for decades: building one at a shipyard nearby is sooner
   const quick = m.build.find(o => o.reachable && !o.slow);
   const sd = m.send[0] && !(m.send[0].slow && quick && !m.busy && quick.total < m.send[0].years) ? m.send[0] : undefined;
-  if (sd) return <button class={'primary mbtn' + (sd.slow ? ' slow' : '')} onClick={() => sd.slow ? slowWarning(sd.fleet.name, sd.years, sd.warp, () => doSend(g, sd.fleet, p, m.kind, m.opts)) : doSend(g, sd.fleet, p, m.kind, m.opts)} title={sd.slow ? `Trajet très lent : ${sd.fleet.name} est à ${fmt(distance(sd.fleet, p), 0)} al de ${p.name} et n'a pas assez de carburant pour y aller plus vite : ${sd.years} ans à Warp ${sd.warp}. « Options » pour un autre vaisseau, ou pour en construire un plus près.` : `${sd.fleet.name}, à ${fmt(distance(sd.fleet, p), 0)} al · Warp ${sd.warp}`}>{label ? label(false) : haul ? 'Créer la navette' : <>Envoyer{word}</>}<small>{sd.fleet.name} · {haul ? `1er chargement dans ${sd.years} a` : `${sd.years} a`}{sd.warp <= 1 ? ' · Warp 1 !' : sd.slow ? ` · Warp ${sd.warp} !` : ''}</small></button>;
+  // 0.3.9.21: as the build button, held back when a scout or an ark is already on its way or being built ("Options" adds another)
+  if (sd) return <button class={'primary mbtn' + (sd.slow ? ' slow' : '')} disabled={m.busy && oneOnly} onClick={() => sd.slow ? slowWarning(sd.fleet.name, sd.years, sd.warp, () => doSend(g, sd.fleet, p, m.kind, m.opts)) : doSend(g, sd.fleet, p, m.kind, m.opts)} title={m.busy && oneOnly ? 'Déjà prévu. « Options » permet d\'en ajouter un autre.' : sd.slow ? `Trajet très lent : ${sd.fleet.name} est à ${fmt(distance(sd.fleet, p), 0)} al de ${p.name} et n'a pas assez de carburant pour y aller plus vite : ${sd.years} ans à Warp ${sd.warp}. « Options » pour un autre vaisseau, ou pour en construire un plus près.` : `${sd.fleet.name}, à ${fmt(distance(sd.fleet, p), 0)} al · Warp ${sd.warp}`}>{label ? label(false) : haul ? 'Créer la navette' : <>Envoyer{word}</>}<small>{sd.fleet.name} · {haul ? `1er chargement dans ${sd.years} a` : `${sd.years} a`}{sd.warp <= 1 ? ' · Warp 1 !' : sd.slow ? ` · Warp ${sd.warp} !` : ''}</small></button>;
   const b = m.build[0] && m.build[0].reachable && !m.build[0].slow ? m.build[0] : quick ?? m.build[0];
   if (b) return <button class={'primary mbtn' + (b.slow || !b.reachable ? ' slow' : '')} disabled={m.busy} onClick={() => b.slow && !m.busy ? slowWarning(`${b.design.name}, construit à ${b.planet.name},`, b.travelYears, b.warp, () => doBuild(g, b, p, m.kind, m.opts)) : doBuild(g, b, p, m.kind, m.opts)} title={m.busy ? 'Déjà prévu. « Options » permet d\'en ajouter un autre.' : b.slow ? `Trajet très lent : ${b.travelYears} ans à Warp ${b.warp}, faute de carburant. « Options » pour un autre chantier ou modèle.` : !b.reachable ? 'Hors de portée avec son carburant' : `${b.design.name} construit à ${b.planet.name}`}>{label ? label(true) : haul ? 'Construire un cargo pour la navette' : <>Construire et envoyer{word}</>}<small>{label ? 'à construire · ' : ''}{b.planet.name} · ≈ {b.buildYears} + {b.travelYears} a{b.slow ? ` · Warp ${b.warp} !` : !b.reachable ? ' · hors de portée' : ''}</small></button>;
   return <button class="primary mbtn" disabled title={m.designs.length ? 'Aucune planète ne peut le construire : il faut une station avec chantier.' : `Aucun modèle de ${w.noneHint} : créez-en un dans Conception.`}>{w.none}</button>;

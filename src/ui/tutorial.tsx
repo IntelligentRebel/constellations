@@ -8,6 +8,7 @@ import { store, useStore, fmt, fmtPop } from './store';
 import type { Fleet, GameState, Planet, Player, TutorialState } from '../engine/types';
 import { tutorialGame } from '../engine/newgame';
 import { habitability, raceSpec } from '../engine/race';
+import { researchPerYear as researchPerYearOf } from '../engine/turn';
 import { fleetSpec, distance, estimateRoute } from '../engine/fleet';
 import { planetSpec } from '../engine/planet';
 import { estimateQueue } from '../engine/production';
@@ -59,6 +60,18 @@ const myFleets = () => game().fleets.filter(f => f.owner === game().human);
 const valueOf = (p: Planet) => { const i = me().intel.planets[p.id]; return i?.hab ? habitability(me().race, i.hab) : null; };
 const explored = (p: Planet | undefined) => !!p && me().intel.planets[p.id]?.year !== undefined;
 const heading = (f: Fleet, pid: number) => f.waypoints.some((w, k) => k > 0 && w.target === 'planet' && w.targetId === pid);
+/** 0.3.9.21: a ship of that mission is being built for that planet ("build and send"). */
+const queuedFor = (pid: number, kind: 'explore' | 'colonize') => missionStatus(game(), me(), pid).queued.some(q => q.kind === kind);
+/** What the mission button does: the best free ship goes, or one is built at the best shipyard and goes once built. */
+function sendOrBuild(pid: number, kind: 'explore' | 'colonize') {
+  const g = game();
+  const o = sendOptions(g, me(), pid, kind)[0];
+  const b = o ? undefined : buildOptions(g, me(), pid, kind).find(x => x.reachable);
+  if (!o && !b) return;
+  store.checkpoint();
+  if (o) sendFleet(g, o.fleet, pid, kind); else queueMission(g, b!.planet, b!.design, { kind, planetId: pid });
+  store.bump();
+}
 const commandedFleet = () => store.commanded?.kind === 'fleet' ? F(store.commanded.id) : undefined;
 const scoutDesign = () => missionDesigns(game(), me(), 'explore')[0];
 const arkDesign = () => missionDesigns(game(), me(), 'colonize')[0];
@@ -96,7 +109,7 @@ function nextColony(): Planet | undefined {
 function researchPerYear(): number {
   const g = game(), m = me();
   const budget = mine().reduce((a, p) => a + planetSpec(g, p, m).resourcesResearch, 0);
-  return Math.trunc(Math.max(budget, m.researchLastYear) * raceSpec(m.race).researchFactor + 0.5);
+  return researchPerYearOf(g, m, budget);
 }
 
 const years = (n: number) => `${n} an${n > 1 ? 's' : ''}`;
@@ -354,8 +367,9 @@ const EXPLORE: Chapter = {
           'Pour un monde déjà analysé, le même bloc propose d\'y envoyer une arche, ou un vaisseau de minage.',
         ],
         todo: `Envoyez un éclaireur vers ${rorqual.name}.`,
-        goal: () => myFleets().some(f => heading(f, rorqual.id)) || explored(rorqual),
-        doIt: () => { const o = sendOptions(g, me(), rorqual.id, 'explore')[0]; if (o) { store.checkpoint(); sendFleet(g, o.fleet, rorqual.id, 'explore'); store.bump(); } },
+        // 0.3.9.21: "build and send" (no scout free) counts too, and is what the button does then
+        goal: () => myFleets().some(f => heading(f, rorqual.id)) || explored(rorqual) || queuedFor(rorqual.id, 'explore'),
+        doIt: () => sendOrBuild(rorqual.id, 'explore'),
       },
     ];
   },
@@ -367,7 +381,7 @@ const COLONIZE: Chapter = {
     const g = game(), t = T(), hw = home();
     const igloo = P(t.colony)!, ark = F(t.arkFleet);
     const v = valueOf(igloo) ?? 0;
-    const arkGoing = () => myFleets().some(f => f.waypoints.some((w, k) => k > 0 && w.task === 'colonize')) || mine().length > 1;
+    const arkGoing = () => myFleets().some(f => f.waypoints.some((w, k) => k > 0 && w.task === 'colonize')) || mine().length > 1 || queuedFor(igloo.id, 'colonize');
     return [
       {
         id: 'habitability', title: 'Où vivre ?', target: '[data-tut=hab]',
@@ -394,7 +408,7 @@ const COLONIZE: Chapter = {
         ],
         todo: `Envoyez l'arche vers ${igloo.name}.`,
         goal: arkGoing,
-        doIt: () => { const o = sendOptions(g, me(), igloo.id, 'colonize')[0]; if (o) { store.checkpoint(); sendFleet(g, o.fleet, igloo.id, 'colonize'); store.bump(); } },
+        doIt: () => sendOrBuild(igloo.id, 'colonize'),
       },
       {
         id: 'colonists', title: 'Une colonie, ça grandit', target: '[data-tut=tab-map]',
@@ -451,7 +465,7 @@ const TURN: Chapter = {
         goal: () => mine().length > 1,
         doIt: () => {
           // an ark must be on its way (the chapter may have been opened from the list)
-          if (!myFleets().some(f => f.waypoints.some((w, k) => k > 0 && w.task === 'colonize'))) { const o = sendOptions(g, me(), igloo.id, 'colonize')[0]; if (o) sendFleet(g, o.fleet, igloo.id, 'colonize'); }
+          if (!myFleets().some(f => f.waypoints.some((w, k) => k > 0 && w.task === 'colonize')) && !queuedFor(igloo.id, 'colonize')) sendOrBuild(igloo.id, 'colonize');
           void store.endTurn(1);
         },
         turn: true,
@@ -492,7 +506,7 @@ const TURN: Chapter = {
         enter: () => { if (target) selectPlanet(target); },
         body: target ? [
           `${target.name} est analysée : valeur **${tv} %** pour les ${me().name}. Une excellente cible pour votre prochaine arche.`,
-          `Vous n'avez plus d'arche ? Le panneau propose **${L.buildArk}** : l'arche est ajoutée en tête de la file du meilleur chantier, et part seule pour ${target.name} une fois construite.`,
+          `Vous n'avez plus d'arche ? Le panneau propose **${L.buildArk}** : l'arche est ajoutée à la file du meilleur chantier, avant les constructions automatiques, et part seule pour ${target.name} une fois construite.`,
           'C\'est la boucle de base du jeu : **explorer, coloniser, développer**, et recommencer un peu plus loin.',
         ] : ['Aucun monde favorable n\'est encore connu. C\'est la boucle de base du jeu : **explorer, coloniser, développer**. Continuez d\'explorer, et envoyez une arche dès qu\'une planète verte apparaît.'],
         todo: target ? `Commandez une arche pour ${target.name}.` : undefined,
@@ -1160,6 +1174,8 @@ export function Tutorial() {
   targetNow.current = st?.target;
   // goals that the interface does not announce (a page's own state): checked twice a second
   useEffect(() => { if (!st?.goal) return; const id = setInterval(() => setCamTick(x => x + 1), 500); return () => clearInterval(id); }, [key]);
+  // 0.3.9.21: a card closed with its game (back to the welcome screen) sets its step up again when it comes back
+  useEffect(() => () => { entered = ''; }, []);
   // the setup of a step, once
   useEffect(() => {
     if (!t || t.hidden || !st || entered === key) return;

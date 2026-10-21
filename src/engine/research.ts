@@ -99,6 +99,10 @@ export function doResearch(game: GameState, player: Player, pool: number, rng?: 
   }
   let left = toSpend;
   let guard = 0;
+  // 0.3.9.21: the splash (GR) goes to every field but the one the year's budget was meant for: after a level, research
+  // had moved on, and the field just researched got its 15 % too while the new one got nothing
+  if (player.tech[player.researching] >= MAX_TECH) player.researching = lowestField(player) ?? player.researching;
+  const main = player.researching;
   while (left > 0 && guard++ < 50) {
     if (player.tech[player.researching] >= MAX_TECH) {
       const lf = lowestField(player);
@@ -116,7 +120,7 @@ export function doResearch(game: GameState, player: Player, pool: number, rng?: 
   }
   if (rs.researchSplash > 0) {
     const splash = Math.trunc(pool * rs.researchSplash + 0.5); // 0.3.8: 15 % of the whole budget, as in Stars! (125 % in all)
-    for (const f of FIELDS) if (f !== player.researching && player.tech[f] < MAX_TECH) {
+    for (const f of FIELDS) if (f !== main && player.tech[f] < MAX_TECH) {
       let l = splash, g = 0;
       while (l > 0 && g++ < 10 && player.tech[f] < MAX_TECH) l = spendOnce(game, player, f, l, events);
     }

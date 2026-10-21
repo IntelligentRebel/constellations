@@ -17,7 +17,7 @@ import { ReportsDialog } from './dialogs/reports';
 import { ResearchDialog } from './dialogs/research';
 import { DesignerDialog } from './dialogs/designer';
 import { RelationsDialog, HelpDialog } from './dialogs/misc';
-import { planetSpec, terraformedHabValue, maxPopulation } from '../engine/planet';
+import { planetSpec, terraformedHabValue, maxPopulation, prospectiveMaxPop } from '../engine/planet';
 import { habitability, raceSpec } from '../engine/race';
 import { fleetSpec, estimateRoute, cargoMass, distance } from '../engine/fleet';
 import { itemLabel, isAuto, estimateQueue, queueBottleneck, availableItems } from '../engine/production';
@@ -178,7 +178,9 @@ function BulkBar({ picked, all, setPicked }: { picked: number[]; all: number[]; 
     if (!it.disabled) { if (o) o.n++; else opts.set(k, { item: it, n: 1 }); } else if (!o) opts.set(k, { item: it, n: 0 });
   }
   const list = [...opts.entries()].filter(([, o]) => o.n > 0);
-  const cur = opts.get(key) ?? list[0]?.[1];
+  // 0.3.9.21: the item chosen, while some picked colony can still take it; otherwise the first one, shown as such
+  const k0 = list.some(([k]) => k === key) ? key : list[0]?.[0] ?? '';
+  const cur = k0 ? opts.get(k0) : undefined;
   const go = (atStart: boolean) => {
     if (!cur) return;
     const n = A.queueAddMany(picked, cur.item, qty, atStart);
@@ -186,7 +188,7 @@ function BulkBar({ picked, all, setPicked }: { picked: number[]; all: number[]; 
   };
   return <div class="bulk-bar">
     <b>{picked.length} colonie{picked.length > 1 ? 's' : ''}</b>
-    <select value={key || (list[0]?.[0] ?? '')} onChange={e => setKey((e.target as HTMLSelectElement).value)}>{list.map(([k, o]) => <option value={k}>{o.item.label}{o.n < picked.length ? ` (${o.n}/${picked.length})` : ''}</option>)}</select>
+    <select value={k0} onChange={e => setKey((e.target as HTMLSelectElement).value)}>{list.map(([k, o]) => <option value={k}>{o.item.label}{o.n < picked.length ? ` (${o.n}/${picked.length})` : ''}</option>)}</select>
     <Num value={qty} min={1} onChange={v => setQty(Math.max(1, v))} width={64} />
     <button class="primary small" disabled={!cur} onClick={() => go(false)}>Ajouter en fin de file</button>
     <button class="small" disabled={!cur} onClick={() => go(true)}>En tête</button>
@@ -207,7 +209,7 @@ export function ColoniesPage() {
     const sp = viewSpec(g, p, me);
     const est = p.queue.length ? viewQueue(g, p, 50) : [];
     const k = p.queue.findIndex(q => !isAuto(q.kind));
-    return { p, sp, est, cur: k >= 0 ? p.queue[k] : p.queue[0], years: k >= 0 ? est[k]?.lastYear ?? null : null, blocked: k >= 0 && !!est[k]?.blocked };
+    return { p, sp, est, cur: k >= 0 ? p.queue[k] : p.queue[0], years: k >= 0 ? est[k]?.lastYear ?? null : null, blocked: k >= 0 && !!est[k]?.blocked, dropped: k >= 0 && est[k]?.dropped !== undefined };
   });
   const tot = rows.reduce((a, r) => ({ pop: a.pop + r.p.pop, res: a.res + r.sp.resources, fe: a.fe + r.p.surface.ironium, bo: a.bo + r.p.surface.boranium, ge: a.ge + r.p.surface.germanium }), { pop: 0, res: 0, fe: 0, bo: 0, ge: 0 });
   const sel = s.selected;
@@ -220,13 +222,13 @@ export function ColoniesPage() {
     actions={<button onClick={() => s.open('templates')}>Modèles de production…</button>}>
     <BulkBar picked={live} all={rows.map(r => r.p.id)} setPicked={setPicked} />
     <SortTable csv="colonies" rows={rows} onRow={r => pickRow(r.p)} onDbl={r => s.focus({ kind: 'planet', id: r.p.id }, r.p)} isSel={r => sel?.kind === 'planet' && sel.id === r.p.id} initial="pop" initialDir={-1} cols={[
-      { key: 'pick', label: '✓', get: r => live.includes(r.p.id) ? 0 : 1, render: r => <input type="checkbox" class="pick" checked={live.includes(r.p.id)} onClick={e => { e.stopPropagation(); togglePick(r.p.id); }} aria-label={`Sélectionner ${r.p.name}`} /> },
+      { key: 'pick', label: '✓', csv: false, get: r => live.includes(r.p.id) ? 0 : 1, render: r => <input type="checkbox" class="pick" checked={live.includes(r.p.id)} onClick={e => { e.stopPropagation(); togglePick(r.p.id); }} aria-label={`Sélectionner ${r.p.name}`} /> },
       { key: 'name', label: 'Planète', get: r => r.p.name, render: r => <>{r.p.name}{r.p.homeworld ? <span class="tag">natal</span> : ''}{g.settings.distanceCost && r.p.regionalCapital ? <span class="tag">capitale rég.</span> : ''}{r.p.migration ? <span class="tag dim" title={r.p.migration.mode === 'out' ? `Émigration au-delà de ${r.p.migration.target} % de la population maximale` : `Immigration jusqu'à ${r.p.migration.target} % de la population maximale`}>{r.p.migration.mode === 'out' ? 'émigration' : 'immigration'}</span> : ''}{r.p.mineralPolicy ? <span class="tag dim">{r.p.mineralPolicy.mode === 'export' ? 'exporte' : 'importe'}</span> : ''}{r.p.starbase ? <span class="tag dim">station</span> : ''}</> },
       { key: 'hab', label: 'Habit.', num: true, get: r => r.sp.hab, render: r => <span class={r.sp.hab > 0 ? 'good' : 'bad'}>{r.sp.hab} %</span> },
       { key: 'pop', label: 'Population', num: true, get: r => r.p.pop, render: r => <span class={r.p.pop > r.sp.maxPop ? 'red' : ''}>{fmtPop(r.p.pop)}</span> },
       { key: 'res', label: 'R/an', num: true, get: r => r.sp.resources },
       ...(g.settings.distanceCost ? [{ key: 'eff', label: 'Rend.', num: true, get: (r: typeof rows[number]) => r.sp.efficiency.total, render: (r: typeof rows[number]) => <span class={r.sp.efficiency.total < 0.65 ? 'red' : r.sp.efficiency.total < 0.9 ? 'yellow' : ''} title={r.sp.efficiency.nearest ? `à ${Math.round(r.sp.efficiency.distance)} al de ${r.sp.efficiency.nearest.name}` : ''}>{pct(r.sp.efficiency.total)}</span> }] : []),
-      { key: 'prod', label: 'Production', get: r => r.years ?? (r.cur ? 999 : 1000), render: r => !r.cur ? <span class="red">file vide</span> : isAuto(r.cur.kind) ? <span class="muted">{itemLabel(g, r.cur)}</span> : <>{itemLabel(g, r.cur)}{r.cur.qty > 1 ? ` ×${r.cur.qty}` : ''} <span class={(r.blocked ? 'red small' : (r.years ?? 0) >= 5 ? 'yellow small' : 'muted small') + (r.blocked || (r.years ?? 0) >= 5 ? ' slow-why' : '')} title={r.blocked || (r.years ?? 0) >= 5 ? `${r.blocked ? 'Bloqué' : 'Ce qui le retarde'} : ${queueBottleneck(g, r.p, r.p.queue.indexOf(r.cur!), r.est).text}` : undefined}>· {r.blocked ? 'bloqué' : r.years === 1 ? 'cette année' : `${r.years} ans`}</span></> },
+      { key: 'prod', label: 'Production', get: r => r.years ?? (r.cur ? 999 : 1000), csv: r => !r.cur ? 'file vide' : `${itemLabel(g, r.cur)}${r.cur.qty > 1 ? ` ×${r.cur.qty}` : ''}${isAuto(r.cur.kind) ? '' : r.blocked ? ' (bloqué)' : r.dropped ? ' (sans objet)' : r.years === null ? ' (plus de 50 ans)' : r.years === 1 ? ' (cette année)' : ` (${r.years} ans)`}`, render: r => !r.cur ? <span class="red">file vide</span> : isAuto(r.cur.kind) ? <span class="muted">{itemLabel(g, r.cur)}</span> : <>{itemLabel(g, r.cur)}{r.cur.qty > 1 ? ` ×${r.cur.qty}` : ''} <span class={(r.blocked ? 'red small' : !r.dropped && (r.years ?? 99) >= 5 ? 'yellow small' : 'muted small') + (r.blocked || (!r.dropped && (r.years ?? 99) >= 5) ? ' slow-why' : '')} title={r.blocked || (!r.dropped && (r.years ?? 99) >= 5) ? `${r.blocked ? 'Bloqué' : 'Ce qui le retarde'} : ${queueBottleneck(g, r.p, r.p.queue.indexOf(r.cur!), r.est).text}` : undefined}>· {r.blocked ? 'bloqué' : r.dropped ? 'sans objet' : r.years === null ? 'plus de 50 ans' : r.years === 1 ? 'cette année' : `${r.years} ans`}</span></> },
       { key: 'mines', label: 'Mines', num: true, get: r => r.p.mines, render: r => <span class={r.p.mines > r.sp.maxMines ? 'red' : ''}>{r.p.mines}</span> },
       { key: 'fact', label: 'Usines', num: true, get: r => r.p.factories, render: r => <span class={r.p.factories > r.sp.maxFactories ? 'red' : ''}>{r.p.factories}</span> },
       { key: 'def', label: 'Déf.', num: true, get: r => r.p.defenses },
@@ -269,7 +271,7 @@ export function PlannerPage() {
     const tf = terraformedHabValue(me, { ...pl, hab: pi.hab!, baseHab: pi.baseHab ?? pi.hab! });
     const { d: nd, ref } = rangeDistance(range, mine, pl);
     const near = ref as Planet | null;
-    const maxPop = val > 0 ? maxPopulation(g, me, { ...pl, hab: pi.hab! }, val) : 0;
+    const maxPop = val > 0 ? prospectiveMaxPop(g, me, { ...pl, hab: pi.hab! }, val) : 0;
     const owner = pi.owner;
     const conc = pi.conc ? pi.conc.ironium + pi.conc.boranium + pi.conc.germanium : -1;
     const free = owner === undefined || owner < 0;
@@ -528,8 +530,8 @@ export function FleetsPage() {
       { key: 'loc', label: 'Position', get: r => r.f.orbiting >= 0 ? g.planets[r.f.orbiting].name : `(${Math.round(r.f.x)}, ${Math.round(r.f.y)})` },
       { key: 'mission', label: 'Mission', get: r => r.mi.label, render: r => <span class={r.mi.id === 'idle' ? 'yellow' : ''}>{r.mi.id === 'idle' ? 'Sans ordre' : r.mi.label}</span> },
       { key: 'dest', label: 'Destination', get: r => r.f.waypoints.length > 1 ? wpName(g, me.id, r.f.waypoints[r.f.waypoints.length - 1]) : '' , render: r => r.f.waypoints.length > 1 ? wpName(g, me.id, r.f.waypoints[r.f.waypoints.length - 1]) : <span class="muted">·</span> },
-      { key: 'eta', label: 'Arrivée', num: true, get: r => r.est.length ? r.est[r.est.length - 1].arrival : 0, render: r => r.est.length ? <>{g.year + r.est[r.est.length - 1].arrival}{r.est.every(l => l.ok) ? '' : <span class="red" title="Carburant insuffisant"> ⚠</span>}</> : <span class="muted">·</span> },
-      { key: 'fuel', label: 'Carburant', num: true, get: r => r.sp.fuelCapacity ? r.f.fuel / r.sp.fuelCapacity : 0, render: r => <div class="fuelcell"><span>{fmt(r.f.fuel)} / {fmt(r.sp.fuelCapacity)} mg</span><i><b style={{ width: (r.sp.fuelCapacity ? Math.min(100, r.f.fuel / r.sp.fuelCapacity * 100) : 0) + '%' }} class={r.f.fuel < r.sp.fuelCapacity * 0.2 ? 'low' : ''} /></i></div> },
+      { key: 'eta', label: 'Arrivée', num: true, get: r => r.est.length ? r.est[r.est.length - 1].arrival : 0, csv: r => r.est.length ? g.year + r.est[r.est.length - 1].arrival : '', render: r => r.est.length ? <>{g.year + r.est[r.est.length - 1].arrival}{r.est.every(l => l.ok) ? '' : <span class="red" title="Carburant insuffisant"> ⚠</span>}</> : <span class="muted">·</span> },
+      { key: 'fuel', label: 'Carburant', num: true, get: r => r.sp.fuelCapacity ? r.f.fuel / r.sp.fuelCapacity : 0, csv: r => Math.round(r.f.fuel), render: r => <div class="fuelcell"><span>{fmt(r.f.fuel)} / {fmt(r.sp.fuelCapacity)} mg</span><i><b style={{ width: (r.sp.fuelCapacity ? Math.min(100, r.f.fuel / r.sp.fuelCapacity * 100) : 0) + '%' }} class={r.f.fuel < r.sp.fuelCapacity * 0.2 ? 'low' : ''} /></i></div> },
       { key: 'cargo', label: 'Soute', num: true, get: r => cargoMass(r.f.cargo), render: r => r.sp.cargoCapacity ? `${fmt(cargoMass(r.f.cargo))} / ${fmt(r.sp.cargoCapacity)}` : '—' },
       { key: 'power', label: 'Attaque', num: true, get: r => r.sp.powerRating },
     ]} />

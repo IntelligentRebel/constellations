@@ -6,7 +6,7 @@ import { store, useStore, fmt, fmtPop, fmtGrowth, pct, MINERAL_COLORS } from './
 import { HabBar, HullImg, Row, Num, Bar, WarpBar, Cost } from './components';
 import type { Fleet, GameState, Planet, Player, WaypointTask } from '../engine/types';
 import { habitability, habString, HAB_NAMES, raceSpec } from '../engine/race';
-import { planetSpec, terraformRemaining, maxPopulation } from '../engine/planet';
+import { planetSpec, terraformRemaining, maxPopulation, prospectiveMaxPop } from '../engine/planet';
 import { fleetSpec, estimateRoute, canPassThrough } from '../engine/fleet';
 import { viewRoute, viewSpec, viewFleet, viewQueue, viewMemo } from './memo';
 import { canUseWormholes, WORMHOLE_NAV, specialReqText, specialLevelText } from '../engine/specials';
@@ -310,10 +310,11 @@ function ProdBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const est = p.queue.length ? viewQueue(g, p, 50) : [];
   const firstManual = p.queue.findIndex(q => !isAuto(q.kind));
   const summary = p.queue.length === 0 ? <span class="warn">vide</span>
-    : firstManual >= 0 ? <>{itemLabel(g, p.queue[firstManual])}{p.queue[firstManual].qty > 1 ? ` ×${p.queue[firstManual].qty}` : ''} · {est[firstManual]?.blocked ? 'bloqué' : est[firstManual]?.lastYear ? yearsLabel(est[firstManual].lastYear!) : '…'}</> : 'automatique';
+    : firstManual >= 0 ? <>{itemLabel(g, p.queue[firstManual])}{p.queue[firstManual].qty > 1 ? ` ×${p.queue[firstManual].qty}` : ''} · {est[firstManual]?.dropped !== undefined ? 'sans objet' : est[firstManual]?.blocked ? 'bloqué' : est[firstManual]?.lastYear ? yearsLabel(est[firstManual].lastYear!) : '…'}</> : 'automatique';
   const eta = (i: number) => {
     const it = p.queue[i], e = est[i];
     if (isAuto(it.kind)) return maxBuildable(g, p, it.kind) === 0 ? 'terminé' : 'chaque année';
+    if (e?.dropped !== undefined) return <span class="muted">sans objet</span>;
     if (e?.blocked) return <span class="red slow-why" title={`Bloqué : ${queueBottleneck(g, p, i, est).text}`}>bloqué</span>;
     if (e?.lastYear && e.lastYear >= 5) return <span class="yellow slow-why" title={`Ce qui le retarde : ${queueBottleneck(g, p, i, est).text}`}>{yearsLabel(e.lastYear)}</span>;
     return e?.lastYear ? yearsLabel(e.lastYear) : '…';
@@ -367,7 +368,7 @@ function OtherPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
       </Blk>}
       <Blk cls="rows">
         {owned && <Row k="Population" v={`≈ ${fmtPop(intel.pop ?? 0)} hab.`} />}
-        {!owned && val !== null && val > 0 && intel.hab && <Row k="Population maximale" v={`${fmtPop(maxPopulation(g, me, { ...p, hab: intel.hab }, val))} hab.`} />}
+        {!owned && val !== null && val > 0 && intel.hab && <Row k="Population maximale" v={`${fmtPop(prospectiveMaxPop(g, me, { ...p, hab: intel.hab }, val))} hab.`} />}
         {owned && intel.defenses !== undefined && <Row k="Défenses" v={fmt(intel.defenses)} />}
         {intel.starbaseName && <Row k="Station" v={intel.starbaseDesign !== undefined ? <button class="lnk" title="Voir ce qu'on sait de ce modèle" onClick={() => store.open('designView', { designId: intel.starbaseDesign, planetId: p.id })}>{intel.starbaseName}</button> : intel.starbaseName} />}
       </Blk>
@@ -534,7 +535,7 @@ function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
       <div class="btns">
         <button class="small" onClick={() => s.open('split', { fleetId: f.id })} disabled={spec.ships < 2}>Séparer…</button>
         <button class="small" onClick={() => A.splitAll(f)} disabled={f.tokens.length < 2}>Un modèle par flotte</button>
-        <button class="small" onClick={() => s.open('merge', { fleetId: f.id })} disabled={!others.length}>Fusionner…</button>
+        <button class="small" onClick={() => s.open('merge', { fleetId: f.id })} disabled={!others.some(o => o.beaconOf === undefined)}>Fusionner…</button>
         <button class="small" onClick={() => A.splitSingles(f)} disabled={spec.ships < 2} title="Une flotte par vaisseau, chacune avec les ordres actuels">Un vaisseau par flotte</button>
       </div>
     </Blk>
@@ -543,7 +544,7 @@ function OwnShips({ g, me, f }: { g: GameState; me: Player; f: Fleet }) {
     <CrewBlock g={g} f={f} />
     <RefitBlock g={g} me={me} f={f} />
     {others.length > 0 && <Blk title={`Autres flottes ici (${others.length})`}>
-      <ul class="orbit">{others.map(o => <li><button class="lnk" onClick={() => s.select({ kind: 'fleet', id: o.id })}>{o.name}</button><button class="small" onClick={() => A.merge(f, o)}>Absorber</button><button class="small" onClick={() => s.open('cargo', { fleetId: f.id, otherId: o.id })}>Transférer</button></li>)}</ul>
+      <ul class="orbit">{others.map(o => <li><button class="lnk" onClick={() => s.select({ kind: 'fleet', id: o.id })}>{o.name}</button>{o.beaconOf === undefined && <button class="small" onClick={() => A.merge(f, o)}>Absorber</button>}<button class="small" onClick={() => s.open('cargo', { fleetId: f.id, otherId: o.id })}>Transférer</button></li>)}</ul>
     </Blk>}
   </div>;
 }

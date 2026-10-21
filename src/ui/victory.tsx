@@ -75,7 +75,7 @@ export function VictoryRace() {
     const after = 2400 + v.highestAfter;
     const scores = rivals.map(p => ({ p, f: fact(p, 'score') })).filter(x => x.f.v !== null);
     const lead = Math.max(0, ...scores.map(x => x.f.v!));
-    blocks.push({ title: VICTORY_LABELS[6].replace('{highestAfter}', String(v.highestAfter)), note: g.year < after ? `Compte à partir de ${after}.` : undefined, lines: rivals.map(p => { const f = fact(p, 'score'); return { p, v: f.v, node: f.node, progress: f.v === null || !lead ? null : f.v / lead, met: g.year >= after && f.v !== null && f.v >= lead }; }) });
+    blocks.push({ title: VICTORY_LABELS[6].replace('{highestAfter}', String(v.highestAfter)), note: g.year < after ? `Compte à partir de ${after}.` : undefined, lines: rivals.map(p => { const f = fact(p, 'score'); return { p, v: f.v, node: f.node, progress: f.v === null || !lead ? null : f.v / lead, met: g.year >= after && f.v !== null && scores.every(x => x.p === p || x.f.v! < f.v!) }; }) }); // (0.3.9.21: strictly first, as the engine counts it)
   }
   const portal = g.settings.megaprojects ? portalThreat(g) : null;
   const myPortal = g.planets.flatMap(pl => pl.owner === me.id ? pl.queue.filter(q => q.kind === 'mega' && q.megaId === 'portal').map(q => ({ pl, q })) : [])[0];

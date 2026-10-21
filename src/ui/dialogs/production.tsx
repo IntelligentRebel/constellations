@@ -4,7 +4,7 @@ import { SPY_UNIT, SPY_MAX, SPY_CAP, SPY_DECAY, AGENCY_COST, spyGain } from '../
 import { useState } from 'preact/hooks';
 import { store, useStore, fmt, fmtPeople } from '../store';
 import { Modal, Cost, Row, Num, HullImg, PlanetImg } from '../components';
-import { availableItems, unitCost, itemLabel, isAuto, estimateQueue, maxBuildable, applyTemplate, QUEUE_LABELS, queueBottleneck } from '../../engine/production';
+import { availableItems, unitCost, itemLabel, isAuto, estimateQueue, maxBuildable, applyTemplate, QUEUE_LABELS, queueBottleneck, newTemplateId } from '../../engine/production';
 import { CULTURE_BUILDING, PATRONAGE, reqText, type CultureBuildingId } from '../../engine/culture';
 import { planetSpec } from '../../engine/planet';
 import { designSpec, designCost } from '../../engine/design';
@@ -137,7 +137,7 @@ export function ProductionDialog({ planetId }: { planetId: number }) {
         </select>
         {tplName === null ? <button onClick={() => setTplName(`Modèle ${me.templates.length + 1}`)}>Enregistrer comme modèle</button> : <>
           <input id="tpl-name" value={tplName} onInput={e => setTplName((e.target as HTMLInputElement).value)} style={{ width: '150px' }} />
-          <button onClick={() => { if (tplName.trim()) { s.checkpoint(); me.templates.push({ id: Math.max(0, ...me.templates.map(t => t.id)) + 1, name: tplName.trim(), items: planet.queue.filter(q => !['ship', 'starbase', 'refit', 'mega', 'capital', 'culture', 'bounty', 'spy', 'agency'].includes(q.kind)).map(q => ({ kind: q.kind, designId: q.designId, qty: q.qty })) }); s.notify('Modèle enregistré'); setTplName(null); s.bump(); } }}>Enregistrer</button>
+          <button onClick={() => { if (tplName.trim()) { s.checkpoint(); me.templates.push({ id: newTemplateId(g), name: tplName.trim(), items: planet.queue.filter(q => !['ship', 'starbase', 'refit', 'mega', 'capital', 'culture', 'bounty', 'spy', 'agency'].includes(q.kind)).map(q => ({ kind: q.kind, designId: q.designId, qty: q.qty })) }); s.notify('Modèle enregistré'); setTplName(null); s.bump(); } }}>Enregistrer</button>
         </>}
         <button class="primary" data-tut="prod-ok" onClick={() => s.close('production')}>OK</button>
       </>}>
@@ -172,7 +172,7 @@ export function ProductionDialog({ planetId }: { planetId: number }) {
                 return <tr class={cls} data-tut={'q-' + i} onClick={() => setSelQueue(i)}>
                   <td title={itemTip(g, me, it)}>{itemLabel(g, it)}{it.mission && <span class="tag">{it.mission.kind === 'logistics' ? 'réseau logistique' : `${it.mission.kind === 'colonize' ? 'colonise' : it.mission.kind === 'mine' ? 'fore' : it.mission.kind === 'haul' ? 'navette' : 'explore'} ${g.planets[it.mission.planetId].name}`}</span>}{it.kind === 'starbase' && planet.starbase && planet.starbase.designId !== it.designId && <span class="tag">mise à niveau</span>}{it.kind === 'mega' ? <span class="tag mega">{Math.floor(megaProgress(it) * 100)} %</span> : it.allocated.resources + it.allocated.ironium > 0 && <span class="muted small"> (entamé)</span>}</td>
                   <td><Num value={it.qty} min={0} onChange={v => A.queueSetQty(planet.id, i, v)} width={64} />{isAuto(it.kind) && <span class="muted small">/an</span>}</td>
-                  <td class="small">{isAuto(it.kind) ? (maxBuildable(g, planet, it.kind) === 0 ? 'terminé' : 'chaque année') : e?.blocked ? <span class="red slow-why" title={`Bloqué : ${queueBottleneck(g, planet, i, est).text || 'rien ne le retient, sinon la file'}`}>bloqué ?</span> : e?.lastYear ? (e.lastYear >= SLOW ? <span class="yellow slow-why" title={`Ce qui le retarde : ${queueBottleneck(g, planet, i, est).text}`}>{e.lastYear} ans ?</span> : e.lastYear === 1 ? 'cette année' : `${e.lastYear} ans`) : '…'}</td>
+                  <td class="small">{isAuto(it.kind) ? (maxBuildable(g, planet, it.kind) === 0 ? 'terminé' : 'chaque année') : e?.dropped !== undefined ? <span class="muted" title="Plus rien à construire : la production retirera cette ligne de la file quand elle l'atteindra.">sans objet</span> : e?.blocked ? <span class="red slow-why" title={`Bloqué : ${queueBottleneck(g, planet, i, est).text || 'rien ne le retient, sinon la file'}`}>bloqué ?</span> : e?.lastYear ? (e.lastYear >= SLOW ? <span class="yellow slow-why" title={`Ce qui le retarde : ${queueBottleneck(g, planet, i, est).text}`}>{e.lastYear} ans ?</span> : e.lastYear === 1 ? 'cette année' : `${e.lastYear} ans`) : '…'}</td>
                   <td class="pq-arrows" onClick={ev => ev.stopPropagation()}>
                     <button class="ar" title="Tout en haut" disabled={i === 0} onClick={() => { A.queueMove(planet.id, i, 0); setSelQueue(0); }}>⤒</button>
                     <button class="ar" title="Monter" disabled={i === 0} onClick={() => { A.queueMove(planet.id, i, i - 1); setSelQueue(i - 1); }}>↑</button>
@@ -205,7 +205,7 @@ export function ProductionDialog({ planetId }: { planetId: number }) {
           <Row k="Extraction / an" v={<Cost c={{ ...spec.mining, resources: 0 }} />} />
           {qi && queueCostSel && <><h4>Ligne sélectionnée</h4><Row k={`${itemLabel(g, qi)} · coût`} v={<Cost c={queueCostSel} />} />
             {qi.kind === 'mega' && <Row k="Déjà investi" v={<><Cost c={qi.allocated} /> <span class="muted small">({Math.floor(megaProgress(qi) * 100)} % ; les ressources investies sont perdues si vous le retirez)</span></>} />}
-            {!isAuto(qi.kind) && est[selQueue] && <Row k="Achèvement" v={est[selQueue].blocked ? 'pas avant 80 ans au rythme actuel' : `${est[selQueue].firstYear === est[selQueue].lastYear ? '' : `premier dans ${est[selQueue].firstYear} a, `}tout dans ${est[selQueue].lastYear} a`} />}
+            {!isAuto(qi.kind) && est[selQueue] && <Row k="Achèvement" v={est[selQueue].dropped !== undefined ? 'sans objet : plus rien à construire, la ligne sera retirée de la file' : est[selQueue].blocked ? 'pas avant 80 ans au rythme actuel' : `${est[selQueue].firstYear === est[selQueue].lastYear ? '' : `premier dans ${est[selQueue].firstYear} a, `}tout dans ${est[selQueue].lastYear} a`} />}
             {!isAuto(qi.kind) && est[selQueue] && (est[selQueue].blocked || (est[selQueue].lastYear ?? 0) >= SLOW) && <SlowWhy planetId={planet.id} index={selQueue} est={est} />}</>}
           <label class="chk"><input type="checkbox" checked={planet.leftoverOnly} onChange={e => { s.checkpoint(); planet.leftoverOnly = (e.target as HTMLInputElement).checked; s.bump(); }} /> Seulement les ressources restantes vont à la recherche</label>
         </div>

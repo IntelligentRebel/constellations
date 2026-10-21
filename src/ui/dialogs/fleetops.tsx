@@ -64,8 +64,8 @@ export function CargoDialog({ fleetId, planetId, otherId }: { fleetId: number; p
               <td class="cx-btn">
                 <button title="Tout prendre" onClick={() => move(k, 1e9)} disabled={oh === null}>«</button>
                 <button title="Prendre" onClick={e => move(k, amt(e as unknown as MouseEvent))} disabled={oh === null}>‹</button>
-                <button title="Donner" onClick={e => move(k, -amt(e as unknown as MouseEvent))} disabled={have(k) <= 0 || (!planet && !other)}>›</button>
-                <button title="Tout donner" onClick={() => move(k, -have(k))} disabled={have(k) <= 0 || (!planet && !other)}>»</button>
+                <button title="Donner" onClick={e => move(k, -amt(e as unknown as MouseEvent))} disabled={have(k) <= 0 || (!planet && !other) || (k === 'fuel' && !!planet)}>›</button>
+                <button title="Tout donner" onClick={() => move(k, -have(k))} disabled={have(k) <= 0 || (!planet && !other) || (k === 'fuel' && !!planet)}>»</button>
               </td>
               <td>{oh === null ? <span class="muted">—</span> : k === 'colonists' ? fmtPop(oh * 100) : `${fmt(oh)} ${k === 'fuel' ? 'mg' : 'kt'}`}</td>
             </tr>;
@@ -110,9 +110,10 @@ export function MergeDialog({ fleetId }: { fleetId: number }) {
   const s = useStore();
   const g = s.game!, me = s.me!;
   const f = g.fleets.find(x => x.id === fleetId);
+  const [sel, setSel] = useState<Record<number, boolean>>({}); // (0.3.9.21: before the early return, hooks keep their order)
   if (!f) return null;
-  const others = g.fleets.filter(x => x !== f && x.owner === me.id && x.x === f.x && x.y === f.y);
-  const [sel, setSel] = useState<Record<number, boolean>>({});
+  // a sovereignty beacon is a fort, not a ship: it merges with nothing
+  const others = g.fleets.filter(x => x !== f && x.owner === me.id && x.x === f.x && x.y === f.y && x.beaconOf === undefined);
   return (
     <Modal title={`Fusionner avec ${f.name}`} onClose={() => s.close('merge')} width={520} footer={<>
       <span class="sp" /><button onClick={() => s.close('merge')}>Annuler</button>

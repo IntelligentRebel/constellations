@@ -90,8 +90,11 @@ export function runNemesis(game: GameState) {
       const ai = game.players[cur.ai];
       const n = own(game, ai.id);
       cur.peak = Math.max(cur.peak, n);
-      const capitalLost = ai.capital !== undefined && game.planets[ai.capital]?.owner !== ai.id;
-      if (cur.peak >= 3 && (n <= Math.floor(cur.peak * 0.4) || (capitalLost && n < cur.peak))) {
+      // (0.3.9.21: the capital it had when it swore: by now updateCapitals has moved the capital to a world it holds;
+      // and the 60 % clause alone needs a sizeable empire at its peak)
+      const swornCap = cur.capital ?? ai.capital;
+      const capitalLost = swornCap !== undefined && game.planets[swornCap]?.owner !== ai.id;
+      if ((cur.peak >= 3 && n <= Math.floor(cur.peak * 0.4)) || (capitalLost && n < cur.peak)) {
         cur.broken = game.year;
         if (ai.grudges) ai.grudges[h.id] = 0;
         h.messages.push({ year: game.year, kind: 'diplomacy', text: `Les ${ai.name} sont brisés. Leur haine s'éteint avec leur puissance : ils accepteront désormais de négocier la paix.`, target: { kind: 'player', id: ai.id } });
@@ -116,7 +119,7 @@ export function runNemesis(game: GameState) {
       if (g >= bg && own(game, ai.id) >= 2) { bg = g; best = ai; }
     }
     if (!best) continue;
-    list.push({ of: h.id, ai: best.id, since: game.year, peak: own(game, best.id), said: game.year });
+    list.push({ of: h.id, ai: best.id, since: game.year, peak: own(game, best.id), said: game.year, capital: best.capital });
     if (best.aiState) best.aiState.lastDesignYear = -100; // it studies your warships and redraws its own
     h.messages.push({ year: game.year, kind: 'diplomacy', text: `Les ${best.name} ont juré votre perte. Trop de leurs vaisseaux et de leurs mondes vous doivent leur fin : désormais, ils vous combattront dès qu'ils le pourront, viseront vos mondes les plus faibles et refuseront toute paix tant que leur empire ne sera pas brisé (60 % des mondes qu'ils tenaient, ou leur capitale).`, target: { kind: 'player', id: best.id } });
     for (const o of game.players) if (o.id !== h.id && !o.monster && !o.dead && !o.ai && o.intel.met.includes(best.id)) o.messages.push({ year: game.year, kind: 'diplomacy', text: `Les ${best.name} ont juré la perte des ${h.name}.`, target: { kind: 'player', id: best.id } });

@@ -21,9 +21,16 @@ function stateAt(rec: BattleRecord, step: number) {
   for (const t of rec.tokens) st.set(t.id, { x: t.x, y: t.y, qty: t.qty, shields: t.shields * t.qty, damage: t.damage, qtyDamaged: t.qtyDamaged, gone: false });
   let round = 0;
   let last: BattleAction | null = null;
-  for (let i = 0; i <= step && i < rec.actions.length; i++) {
+  // 0.3.9.21: at the last phase, the bookkeeping that follows it too (the final losses and shields were never shown)
+  let end = step;
+  if (step >= 0) {
+    let k = rec.actions.length - 1;
+    while (k >= 0 && rec.actions[k].t === 'state') k--;
+    if (step >= k) end = rec.actions.length - 1;
+  }
+  for (let i = 0; i <= end && i < rec.actions.length; i++) {
     const a = rec.actions[i];
-    last = a;
+    if (a.t !== 'state' || i <= step) last = a;
     if (a.t === 'round') round = a.round;
     else if (a.t === 'move') { const s = st.get(a.id)!; s.x = a.x; s.y = a.y; }
     else if (a.t === 'leave') { st.get(a.id)!.gone = true; }
@@ -42,7 +49,7 @@ function ShipCard({ g, me, tok, st, onClose }: { g: GameState; me: Player; tok: 
   // grouped by component (a design often carries the same weapon in several slots)
   const weapons: NonNullable<typeof sp>['weapons'] = [];
   for (const w of sp?.weapons ?? []) { const x = weapons.find(y => y.part === w.part); if (x) x.qty += w.qty; else weapons.push({ ...w }); }
-  const perShip = weapons.reduce((a, w) => a + w.power * w.qty * (w.torpedo ? w.accuracy + (1 - w.accuracy) * sp!.torpedoBonus : sp!.beamBonus), 0);
+  const perShip = weapons.reduce((a, w) => a + w.power * w.qty * (w.torpedo ? w.accuracy + (1 - w.accuracy) * sp!.torpedoBonus : 1) /* 0.3.9.21: beam power already has the capacitors */, 0);
   const parts = new Map<string, number>();
   for (const x of d?.slots ?? []) parts.set(x.part, (parts.get(x.part) ?? 0) + x.qty);
   const open = () => { s.close('battle'); s.goTab('design', { designId: tok.designId }); };

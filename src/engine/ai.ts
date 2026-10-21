@@ -26,7 +26,7 @@ import { swornAgainst, isNemesis, counterPurpose } from './nemesis';
 import { actOf } from './acts';
 import { dangerAt } from './cataclysms';
 import { aiCan, aiOff } from './aiskill';
-import { busy, aiRefits, aiStations, aiDefend, hubsOf, toHub, mergeAtHubs, mineralRich, mineralShort, researchBoost, warCounter, idleColonyShip, baseRole } from './ai4';
+import { busy, aiRefits, aiStations, aiDefend, aiUnblock, hubsOf, toHub, mergeAtHubs, mineralRich, mineralShort, researchBoost, warCounter, idleColonyShip, baseRole } from './ai4';
 import { pendingRefit } from './refit';
 import { seenMight, seenDesign, seenCoverage, knownScore } from './aiknow';
 
@@ -74,6 +74,7 @@ export function runAI(game: GameState, p: Player, rng: Rng) {
   aiRefits(game, p);
   aiStations(game, p);
   production(game, p, rng);
+  aiUnblock(game, p);
   fleets(game, p, rng);
 }
 
@@ -508,7 +509,9 @@ function fleets(game: GameState, p: Player, rng: Rng) {
     if (!f.purpose && game.designs.find(d => d.id === f.tokens[0]?.designId)?.purpose === 'tanker') f.purpose = 'tanker';
     let role = f.purpose ?? (spec.colonizer ? 'colonizer' : spec.bomber ? 'bomber' : lays && !spec.hasWeapons ? 'minelayer' : spec.hasWeapons ? 'warship' : spec.cargoCapacity > 0 ? 'freighter' : spec.scanRange >= 0 ? 'scout' : 'other');
     if (role === 'other' && lays) role = 'minelayer';
-    if (role === 'freighter' && spec.colonizer) role = 'colonizer';
+    // (0.3.9.21: only for a fleet without a purpose yet: a colony ship turned freighter to put idle colonists to use
+    // was turned back the next year, again and again)
+    if (!f.purpose && role === 'freighter' && spec.colonizer) role = 'colonizer';
     f.purpose = role;
     if (role === 'freighter' || role === 'minelayer' || role === 'tanker') continue; // handled below
     if ((role === 'warship' || role === 'bomber') && st.phase === 'war' && (st.targetPlayer !== undefined || st.crisisTarget !== undefined)) continue; // handled below
@@ -527,11 +530,15 @@ function fleets(game: GameState, p: Player, rng: Rng) {
         delete st.colonyTargets[tPlanet.id]; tPlanet = undefined;
         if (f.waypoints.length > 1) f.waypoints = [{ ...f.waypoints[0], x: f.x, y: f.y, task: 'none', transport: undefined, processed: true }];
       }
+      // (0.3.9.21: an empty one gives its world up and goes home to reload: it tried to colonize there every year,
+      // holding the claim that kept every other ark away)
+      if (tPlanet && f.cargo.colonists <= 0 && f.orbiting === tPlanet.id) { delete st.colonyTargets[tPlanet.id]; claimed.delete(tPlanet.id); tPlanet = undefined; }
       if (f.orbiting >= 0 && tPlanet && f.orbiting === tPlanet.id && game.planets[f.orbiting].owner < 0) {
         f.waypoints = [{ ...f.waypoints[0], task: 'colonize', processed: false }];
         continue;
       }
-      if (!idle && tPlanet) continue;
+      // (a colony ship under way on another errand, refuelling or unloading, is not sent elsewhere every year)
+      if (!idle && (tPlanet || f.waypoints[f.waypoints.length - 1].task !== 'colonize')) continue;
       // load colonists if empty and at own planet
       if (f.cargo.colonists === 0 && f.orbiting >= 0 && game.planets[f.orbiting].owner === p.id) {
         const pl = game.planets[f.orbiting];
@@ -861,7 +868,11 @@ function troopFleets(game: GameState, p: Player) {
     if (!targets.length && !prep) continue;
     if (!here || here.owner !== p.id) {
       const src = homes.filter(h => canRefuelAt(game, p, h)).sort((a, b) => surplusOf(b) - surplusOf(a))[0];
-      if (src) travel(game, f, { x: src.x, y: src.y, planetId: src.id });
+      // (0.3.9.21: out of reach in a decent time, it crawls to its nearest dock: it stayed there forever, colonists aboard)
+      if (src && travel(game, f, { x: src.x, y: src.y, planetId: src.id }) === 'none') {
+        const dock = nearestDock(game, p, f);
+        if (dock && distance(dock, f) > 0) safeGoto(game, f, { x: dock.x, y: dock.y, planetId: dock.id }, 'none', false);
+      }
       continue;
     }
     for (const o of freighters()) if (o !== f && o.orbiting === f.orbiting && game.fleets.includes(o)) mergeFleets(game, f, o);
@@ -877,7 +888,7 @@ function troopFleets(game: GameState, p: Player) {
         f.waypoints[1].transport = { colonists: { action: 'unloadAll', amount: 0 } };
         st.troopClaims[t.planet.id] = f.id;
         targets.splice(targets.indexOf(t), 1);
-      }
+      } else if (r === 'none' && f.cargo.colonists > 0) transferWithPlanet(game, f, here, 'colonists', -f.cargo.colonists); // (0.3.9.21: not kept in the hold for years)
       continue;
     }
     if (prep) {

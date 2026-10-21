@@ -28,6 +28,7 @@ import { TECHS, hasTech } from './tech';
 import { addDesign } from './newgame';
 import { fleetSpec } from './fleet';
 import { govBonus } from './governors';
+import { resetPlanetPolicies } from './empire';
 
 export const RADIUS_MAX = 180;
 export const CORE_RADIUS = 2;
@@ -133,6 +134,27 @@ export function territoryOwner(game: GameState, at: { x: number; y: number }, sr
 /** 0.3.9.10: the sources of territory a player knows of (closed borders, borders.ts). */
 export function knownSources(game: GameState, viewer: Player) { return sources(game, viewer); }
 
+/**
+ * 0.3.9.21: everything a territory computed from these sources depends on, for the caches (a sum of a few fields let
+ * two different states share a key: owners swapped, a radius grown while another shrank).
+ */
+export function sourcesKey(srcs: Source[]): string {
+  // two independent 32-bit hashes over the exact bits of every field (a string of them all ran to 14 KB in a settled
+  // galaxy, and was built and hashed again at each lookup)
+  let h1 = 0x811c9dc5, h2 = 0x9e3779b9;
+  const mix = (v: number) => {
+    F64[0] = v;
+    for (let i = 0; i < 2; i++) {
+      const w = U32[i];
+      h1 = Math.imul(h1 ^ w, 0x01000193);
+      h2 = Math.imul(h2 ^ w, 0x5bd1e995); h2 ^= h2 >>> 15;
+    }
+  };
+  for (const s of srcs) { mix(s.owner); mix(s.id); mix(s.x); mix(s.y); mix(s.r); mix(s.beacon ? 1 : 0); }
+  return `${srcs.length}:${(h1 >>> 0).toString(36)}:${(h2 >>> 0).toString(36)}`;
+}
+const F64 = new Float64Array(1), U32 = new Uint32Array(F64.buffer);
+
 /** Territory as a player sees it (colonies they know of). */
 export function knownTerritoryOwner(game: GameState, viewer: Player, at: { x: number; y: number }): number {
   return territoryOwner(game, at, sources(game, viewer));
@@ -149,7 +171,7 @@ export function colonyBlocker(game: GameState, player: Player, pl: Planet, known
 let gridCache: { key: string; grid: Int16Array; cols: number; rows: number; cell: number } | null = null;
 export function territoryGrid(game: GameState, viewer: Player): { grid: Int16Array; cols: number; rows: number; cell: number } {
   const srcs = sources(game, viewer);
-  const key = `${game.settings.seed}|${game.year}|${viewer.id}|${srcs.length}|${srcs.reduce((a, s) => a + s.r * 7 + s.owner * 13 + s.id, 0).toFixed(1)}`;
+  const key = `${game.width}|${game.height}|${sourcesKey(srcs)}`;
   if (gridCache && gridCache.key === key) return gridCache;
   const cell = Math.max(3, Math.round(Math.max(game.width, game.height) / 260));
   const cols = Math.ceil(game.width / cell), rows = Math.ceil(game.height / cell);
@@ -172,7 +194,7 @@ export interface TerritoryField { cols: number; rows: number; cell: number; owne
 let fieldCache: TerritoryField | null = null;
 export function territoryField(game: GameState, viewer: Player): TerritoryField {
   const srcs = sources(game, viewer);
-  const key = `${game.settings.seed}|${game.year}|${viewer.id}|${srcs.length}|${srcs.reduce((a, s) => a + s.r * 7 + s.owner * 13 + s.id, 0).toFixed(1)}`;
+  const key = `${game.width}|${game.height}|${sourcesKey(srcs)}`;
   if (fieldCache && fieldCache.key === key) return fieldCache;
   const cell = Math.max(2, Math.round(Math.max(game.width, game.height) / 320));
   const cols = Math.ceil(game.width / cell), rows = Math.ceil(game.height / cell);
@@ -262,7 +284,7 @@ function turnOver(game: GameState, pl: Planet, to: number) {
   seizeArchives(game, to, from.id, pl);
   pl.owner = to;
   pl.queue = [];
-  pl.regionalCapital = undefined; pl.migration = undefined; pl.mineralPolicy = undefined;
+  resetPlanetPolicies(pl); // (0.3.9.21: everything of the former owner, the sector seat and the routes included)
   pl.colonizedYear = game.year; pl.conqueredYear = undefined;
   pl.culture = (pl.culture ?? 0) * 0.5;
   pl.cultureOwner = to;

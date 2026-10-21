@@ -11,7 +11,7 @@ import { scannersOf, estimateTrajectory } from '../engine/scan';
 import { traderPositions } from '../engine/intercept';
 import { minefieldsOnLeg } from '../engine/movement';
 import { specOf } from '../engine/design';
-import { addWaypoint, commandedFleet, moveWaypoint, insertWaypoint, markIntercept, intercept as interceptFleet, setPatrolRange } from './actions';
+import { addWaypoint, commandedFleet, moveWaypoint, insertWaypoint, markIntercept, intercept as interceptFleet, setPatrolRange, retunedRoute } from './actions';
 import { defaultTankerRange } from '../engine/refuel';
 import { planetSprite } from './art';
 import { canUseWormholes } from '../engine/specials';
@@ -28,7 +28,7 @@ import { cultureOn, territoryField, type TerritoryField } from '../engine/cultur
 import { closersOf } from '../engine/borders';
 import { densityAt, isRegion } from '../engine/shape';
 import { cloudJob, layoutCloudLabels, type CloudRaster } from './clouds';
-import { wallAt, openFor } from '../engine/walls';
+import { wallAt, openFor, shapeKey } from '../engine/walls';
 import { upperFirst } from '../engine/words';
 import { radarContacts } from '../engine/radar';
 import { drawCataclysms, cataclysmTip } from './catamap';
@@ -128,7 +128,7 @@ const cachedScanners = (game: GameState, me: Player) => viewScanners(game, me);
 let glow: { key: string; cv: HTMLCanvasElement } | null = null;
 export function galaxyGlow(game: GameState): HTMLCanvasElement | null {
   if (!game.shape || isRegion(game.shape.kind)) return null;
-  const key = game.settings.seed + '|' + game.shape.seed + '|' + game.width;
+  const key = shapeKey(game); // (0.3.9.21: the shape itself: two shapes of one seed shared their glow)
   if (glow?.key === key) return glow.cv;
   const N = 220;
   const cv = document.createElement('canvas'); cv.width = N; cv.height = N;
@@ -155,7 +155,7 @@ const cloudsReady = new Set<() => void>();
 export function cloudLayer(game: GameState): { cv: HTMLCanvasElement; labels: CloudRaster['labels'] } | null {
   const p = game.shape;
   if (!p?.walls?.length) return null;
-  const key = game.settings.seed + '|' + p.seed + '|' + game.width + '|' + p.walls.length;
+  const key = shapeKey(game); // (0.3.9.21: the clouds themselves: another shape of the same seed showed these clouds)
   if (clouds?.key === key) return clouds.cv ? clouds as { cv: HTMLCanvasElement; labels: CloudRaster['labels'] } : null;
   const N = Math.round(Math.max(700, Math.min(1200, game.width * 0.7)));
   const job = cloudJob(game, N)!;
@@ -226,6 +226,7 @@ export function MapView() {
   const [menu, setMenu] = useState<{ x: number; y: number; items: Hit[]; wx: number; wy: number } | null>(null);
   const drag = useRef<{ x: number; y: number; cx: number; cy: number; moved: boolean; ruler?: { x: number; y: number } } | null>(null);
   const routeDrag = useRef<{ h: RouteHandle; fleet: number; sx: number; sy: number; moved: boolean } | null>(null);
+  const previewCache = useRef<{ key: string; arr: number | undefined } | null>(null);
   const [dragPt, setDragPt] = useState<{ x: number; y: number; snap: boolean; track?: TrackSnap } | null>(null);
   const [hoverHandle, setHoverHandle] = useState<RouteHandle | null>(null);
   const lastClick = useRef<{ x: number; y: number; i: number }>({ x: -1, y: -1, i: 0 });
@@ -509,7 +510,9 @@ export function MapView() {
       if (seen) { const a = toScreen(seen.x, seen.y); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(pt.x, pt.y); ctx.stroke(); }
       ctx.setLineDash([]);
       ctx.fillStyle = '#f0a060'; ctx.font = 'bold 11px system-ui';
-      ctx.fillText(f.raid!.phase === 'siege' ? 'Raid pirate !' : `Raid vers ${game.year + etaYears(game, f, t)}`, pt.x + pulse + 3, pt.y + 14);
+      // 0.3.9.21: the arrival worked out from where it is only when it is seen; otherwise the year the informants gave
+      const eta = seen ? game.year + etaYears(game, f, t) : f.raid!.eta;
+      ctx.fillText(f.raid!.phase === 'siege' ? 'Raid pirate !' : eta !== undefined ? `Raid vers ${Math.max(game.year + 1, eta)}` : 'Raid annoncé', pt.x + pulse + 3, pt.y + 14);
     }
     // 3.4: the waves of the crisis heading for my worlds
     if (game.crisis?.phase === 'active') for (const f of waves(game)) {
@@ -649,7 +652,10 @@ export function MapView() {
         const wps = f.waypoints.map(w => ({ ...w }));
         const moved = { ...(rd.h.kind === 'wp' ? wps[i] : (wps[i] ?? wps[wps.length - 1])), x: Math.round(dragPt.x), y: Math.round(dragPt.y), target: 'space' as const, targetId: undefined, task: rd.h.kind === 'wp' ? wps[i].task : 'none' as const, stop: dragPt.track ? true : undefined };
         if (rd.h.kind === 'wp') wps[i] = moved; else wps.splice(i, 0, moved);
-        const arr = estimateRoute(game, f, wps)[i - 1]?.arrival;
+        // 0.3.9.21: at the speeds the order will give the legs (cached while the point stays on the same spot)
+        const pk = `${f.id}|${i}|${rd.h.kind}|${moved.x}|${moved.y}|${s.version}`;
+        if (previewCache.current?.key !== pk) previewCache.current = { key: pk, arr: estimateRoute(game, f, retunedRoute(f, wps, i, rd.h.kind === 'wp' && (dragPt.snap ? 'planet' : 'space') === f.waypoints[i].target))[i - 1]?.arrival };
+        const arr = previewCache.current.arr;
         const lines = [`${fmt(distance(a, dragPt), 0)} al${arr !== undefined && Number.isFinite(arr) ? ` · arrivée ${game.year + arr}` : ''}`];
         let col = '#ffffff';
         if (dragPt.track && arr !== undefined) {
@@ -818,7 +824,8 @@ export function MapView() {
     if (pointers.current.size === 2) {
       const st = pinchState(); const w = toWorld(st.cx, st.cy);
       pinch.current = { d: st.d, zoom: s.camera.zoom, wx: w.x, wy: w.y };
-      drag.current = null; if (press.current) { clearTimeout(press.current.timer); press.current = null; }
+      // 0.3.9.21: a waypoint grabbed by the first finger is let go (lifting one finger after the pinch moved it)
+      drag.current = null; routeDrag.current = null; setDragPt(null); if (press.current) { clearTimeout(press.current.timer); press.current = null; }
       return;
     }
     if (e.button === 0 && e.shiftKey && e.altKey) { const w = snapPoint(p.x, p.y); measure.current = w; setRuler({ a: w, b: w, la: w.label }); return; }
@@ -889,7 +896,7 @@ export function MapView() {
   const onPointerUp = (e: PointerEvent) => {
     pointers.current.delete(e.pointerId);
     if (press.current) { clearTimeout(press.current.timer); press.current = null; }
-    if (pinch.current) { if (pointers.current.size < 2) pinch.current = null; drag.current = null; return; }
+    if (pinch.current) { if (pointers.current.size < 2) pinch.current = null; drag.current = null; routeDrag.current = null; return; }
     if (measure.current) { measure.current = null; setTimeout(() => setRuler(null), 2500); return; }
     const rd = routeDrag.current;
     let fromHandle = false;
@@ -952,6 +959,9 @@ export function MapView() {
     const after = { x: (q.x - size.w / 2) / nz + s.camera.x, y: (q.y - size.h / 2) / nz + s.camera.y };
     s.setCamera({ x: s.camera.x + before.x - after.x, y: s.camera.y + before.y - after.y, zoom: nz });
   };
+  // 0.3.9.21: what "Aller ici" aims at, as Maj+clic does: a planet, a wormhole, another fleet, a trader; else the point
+  // clicked (it took the first thing listed: the centre of a minefield far away, or the commanded fleet itself)
+  const menuTarget = (items: Hit[]) => items.find(x => x.ref.kind === 'planet') ?? items.find(x => x.ref.kind === 'wormhole') ?? items.find(x => x.ref.kind === 'fleet' && x.ref.id !== s.commanded?.id) ?? items.find(x => x.ref.kind === 'trader');
   const onContext = (e: MouseEvent) => {
     e.preventDefault();
     const q = local(e);
@@ -1017,8 +1027,8 @@ export function MapView() {
         <div class="ctx-menu" style={{ left: menu.x + 'px', top: menu.y + 'px' }}>
           {menu.items.map(it => <button onClick={() => { setMenu(null); s.select(it.ref); }}>{it.label}</button>)}
           {s.commanded?.kind === 'fleet' && s.selected?.kind === 'fleet' && <>
-            <button class="hl" onClick={() => { setMenu(null); const t = menu.items.find(x => x.ref.kind === 'planet') ?? menu.items[0]; resetStepSession(); routeClick(t ? t.ref : { kind: 'space', id: -1, x: Math.round(menu.wx), y: Math.round(menu.wy) }, t ? { x: t.x, y: t.y } : { x: Math.round(menu.wx), y: Math.round(menu.wy) }, false); }}>Aller ici</button>
-            {(commandedFleet()?.waypoints.length ?? 0) > 1 && <button class="hl" onClick={() => { setMenu(null); const t = menu.items.find(x => x.ref.kind === 'planet') ?? menu.items[0]; routeClick(t ? t.ref : { kind: 'space', id: -1, x: Math.round(menu.wx), y: Math.round(menu.wy) }, t ? { x: t.x, y: t.y } : { x: Math.round(menu.wx), y: Math.round(menu.wy) }, true); }}>Ajouter une étape ici</button>}
+            <button class="hl" onClick={() => { setMenu(null); const t = menuTarget(menu.items); resetStepSession(); routeClick(t ? t.ref : { kind: 'space', id: -1, x: Math.round(menu.wx), y: Math.round(menu.wy) }, t ? { x: t.x, y: t.y } : { x: Math.round(menu.wx), y: Math.round(menu.wy) }, false); }}>Aller ici</button>
+            {(commandedFleet()?.waypoints.length ?? 0) > 1 && <button class="hl" onClick={() => { setMenu(null); const t = menuTarget(menu.items); routeClick(t ? t.ref : { kind: 'space', id: -1, x: Math.round(menu.wx), y: Math.round(menu.wy) }, t ? { x: t.x, y: t.y } : { x: Math.round(menu.wx), y: Math.round(menu.wy) }, true); }}>Ajouter une étape ici</button>}
           </>}
           {s.commanded?.kind === 'fleet' && menu.items.filter(it => it.ref.kind === 'fleet' && s.me!.intel.fleets.some(fi => fi.id === it.ref.id)).slice(0, 3).map(it => <button class="hl" onClick={() => { setMenu(null); interceptFleet(it.ref.id); }} title="Calcule le point de rencontre et le recalcule chaque année">Intercepter : {it.label.length > 34 ? it.label.slice(0, 33) + '…' : it.label}</button>)}
           {menu.items.length === 0 && s.commanded?.kind !== 'fleet' && <div class="muted small">Rien ici</div>}

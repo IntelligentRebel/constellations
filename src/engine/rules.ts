@@ -19,7 +19,7 @@ import { clearGreenhouse } from './greenhouse';
 
 export const RULE_INFO: Record<ConstellationsRule, { name: string; text: string; /** only at the creation of a game */ creationOnly?: boolean }> = {
   randomResearch: { name: 'Percées aléatoires', text: 'Les temps de recherche sont estimés, pas exacts : une percée peut arriver en avance ou se faire attendre.' },
-  fuzzyTechTree: { name: 'Arbre technologique variable', text: 'Chaque partie décale en secret le niveau requis de chaque technologie (±2).' },
+  fuzzyTechTree: { name: 'Arbre technologique variable', text: 'Chaque partie décale en secret le niveau requis de chaque technologie (±2).', creationOnly: true },
   terrain: { name: 'Terrain', text: 'Nébuleuses (scanners divisés par deux, Warp 6 maximum), tempêtes ioniques dérivantes (boucliers divisés par deux) et amas denses (riches, Warp 5 maximum).' },
   distanceCost: { name: 'Coût de la taille', text: 'Le rendement baisse loin de la capitale et des capitales régionales ; un monde conquis met une génération à produire pleinement ; perdre la capitale désorganise l\'empire.' },
   logistics: { name: 'Réseau logistique', text: 'Politiques migratoires et minières : des convois automatiques, réels et interceptables, déplacent colons et minerais.' },

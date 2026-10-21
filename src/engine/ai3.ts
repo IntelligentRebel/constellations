@@ -214,7 +214,7 @@ function aiBeacons(game: GameState, p: Player) {
     if (hp * pow < strength * 3) continue;
     for (const f of group) {
       const home = f.waypoints[0];
-      if (!safeGoto(game, f, { x: b.x, y: b.y, planetId: b.beaconOf }, 'none', false) || !decentLeg(game, f)) f.waypoints = [home];
+      if (!safeGoto(game, f, { x: b.x, y: b.y, planetId: b.beaconOf }, 'none', true) || !decentLeg(game, f)) f.waypoints = [home]; // (0.3.9.21: with the fuel to come back)
     }
     return; // one at a time
   }
@@ -253,7 +253,7 @@ function aiGuardians(game: GameState, p: Player) {
     for (const f of fleets.slice(1)) mergeFleets(game, lead, f);
     const pl = game.planets[target.planetId];
     const home = lead.waypoints[0];
-    if (!safeGoto(game, lead, { x: pl.x, y: pl.y, planetId: pl.id }, 'none', false) || !decentLeg(game, lead)) { lead.waypoints = [home]; continue; }
+    if (!safeGoto(game, lead, { x: pl.x, y: pl.y, planetId: pl.id }, 'none', true) || !decentLeg(game, lead)) { lead.waypoints = [home]; continue; } // (0.3.9.21: with the fuel to come back: sent one way, they stayed stranded for decades)
     return; // one hunt at a time
   }
 }
@@ -308,7 +308,7 @@ function aiPirates(game: GameState, p: Player) {
       for (const f of fleets.slice(1)) mergeFleets(game, lead, f);
       const pl = game.planets[lair.planetId];
       const home = lead.waypoints[0];
-      if (!safeGoto(game, lead, { x: pl.x, y: pl.y, planetId: pl.id }, 'none', false) || !decentLeg(game, lead)) { lead.waypoints = [home]; continue; }
+      if (!safeGoto(game, lead, { x: pl.x, y: pl.y, planetId: pl.id }, 'none', true) || !decentLeg(game, lead)) { lead.waypoints = [home]; continue; } // (0.3.9.21: with the fuel to come back: sent one way, they stayed stranded for decades)
       break;
     }
   }

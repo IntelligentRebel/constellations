@@ -336,10 +336,13 @@ async function main() {
     check((me.golden?.inspiration ?? 0) > 0 && !inGoldenAge(g, me), `inspiration gathers (${me.golden?.inspiration.toFixed(1)})`);
     me.golden!.inspiration = GOLDEN_FIRST;
     runGoldenAges(g);
-    check(inGoldenAge(g, me) && me.golden!.until === g.year + 9 && me.golden!.next > GOLDEN_FIRST, `a golden age of ten years (until ${me.golden!.until}), the next asks for more (${me.golden!.next})`);
+    check(inGoldenAge(g, me) && me.golden!.until === g.year + 10 && me.golden!.next > GOLDEN_FIRST, `a golden age of ten years (until ${me.golden!.until}), the next asks for more (${me.golden!.next})`);
     const during = planetSpec(g, hw, me).resources;
     check(during >= Math.floor(before * 1.15) - 1 && during > before, `15 % more resources (${before} → ${during})`);
+    // (0.3.9.21: ten productions, from next year to the year + 10)
     g.year += 10;
+    check(inGoldenAge(g, me), 'still on for the tenth production');
+    g.year += 1;
     check(!inGoldenAge(g, me), 'over after ten years');
   }
 

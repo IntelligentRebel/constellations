@@ -52,7 +52,7 @@ export function cataclysmTip(game: GameState, at: { x: number; y: number }): str
       const left = (c.at ?? game.year) - game.year;
       return [`Supernova annoncée pour ${c.at}`, d <= SN_RADIUS ? `Dans le souffle (${SN_RADIUS} al) : mondes, populations et flottes seront anéantis.` : `Dans les retombées (${SN_FALLOUT} al) : moitié de la population et des défenses, radiations, flottes endommagées.`, left > 1 ? `Dans ${left} ans.` : 'L\'an prochain.'];
     }
-    if (c.kind === 'blackhole' && d <= BH_REACH) return ['Trou noir errant', `À moins de ${BH_CORE} al, ce qui passe est perdu ; jusqu'à ${BH_REACH} al, populations et coques sont arrachées.`, `Il dérive de ${Math.round(Math.hypot(c.vx ?? 0, c.vy ?? 0))} al par an.`];
+    if (c.kind === 'blackhole' && d <= BH_REACH) return ['Trou noir errant', `Chaque année, à ${BH_CORE} al ou moins : les flottes sont perdues, les mondes perdent la moitié de leur population et 30 % de leurs installations (avalés sous 4 al). Jusqu'à ${BH_REACH} al : 15 % de la population, 10 % des défenses, coques endommagées.`, `Il dérive de ${Math.round(Math.hypot(c.vx ?? 0, c.vy ?? 0))} al par an.`];
   }
   return null;
 }

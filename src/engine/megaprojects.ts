@@ -111,7 +111,8 @@ export function megaBlocker(game: GameState, planet: Planet, id: MegaId, ignoreQ
     const why = sealBlocker(game, planet);
     if (why) return why;
     if (game.victor !== null) return 'la partie est déjà gagnée';
-    if (planet.pop < m.minPop) return `il faut ${people(game, m.minPop)} habitants`;
+    // (0.3.9.21: in production, a world fallen below the population pauses its project, see runProduction)
+    if (!ignoreQueue && planet.pop < m.minPop) return `il faut ${people(game, m.minPop)} habitants`;
     if (!ignoreQueue && game.planets.some(p => p.owner === planet.owner && p.queue.some(q => q.kind === 'mega' && q.megaId === 'seal'))) return 'déjà en chantier';
     return null;
   }
@@ -119,7 +120,7 @@ export function megaBlocker(game: GameState, planet: Planet, id: MegaId, ignoreQ
   if (!megaVisible(player, m)) return 'inconnu de vos scientifiques';
   const miss = techMissing(player, m);
   if (miss) return `technologie : ${miss}`;
-  if (planet.pop < m.minPop) return `il faut ${people(game, m.minPop)} habitants`;
+  if (!ignoreQueue && planet.pop < m.minPop) return `il faut ${people(game, m.minPop)} habitants`;
   if (hasMega(planet, id)) return 'déjà construit ici';
   // 0.3.9: the acts hold the great works back
   const act = actOf(game);

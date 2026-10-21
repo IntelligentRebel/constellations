@@ -7,6 +7,7 @@ import type { Cargo, Fleet, GameState, MinefieldType, Planet, Player, ShipToken,
 import { specOf, type DesignSpec, cloakPercent, isScoutDesign } from './design';
 import { raceSpec } from './race';
 import { hasRelic } from './relics';
+import { hasDoctrine } from './doctrines';
 
 export interface FleetSpec {
   mass: number; // ships + cargo
@@ -53,6 +54,18 @@ export interface FleetSpec {
 export type TokenSpecs = { token: ShipToken; spec: DesignSpec }[];
 export function tokenSpecs(game: GameState, fleet: Fleet): TokenSpecs {
   return fleet.tokens.map(t => ({ token: t, spec: specOf(game, t.designId) }));
+}
+
+/**
+ * 0.3.9.21: every ship of a token takes `perShip` damage (without dying of it): the stack's damage is the average of
+ * its ships'. Adding the blow to the token's damage and calling every ship damaged gave each ship the damage of the
+ * few already hit.
+ */
+export function damageEvery(t: ShipToken, armor: number, perShip: number) {
+  if (t.qty <= 0) return;
+  const total = (t.qtyDamaged > 0 ? t.damage * Math.min(t.qtyDamaged, t.qty) : 0) + perShip * t.qty;
+  t.damage = Math.min(Math.max(1, armor - 1), total / t.qty);
+  t.qtyDamaged = t.qty;
 }
 
 export function cargoMass(c: Cargo): number { return c.ironium + c.boranium + c.germanium + c.colonists; }
@@ -105,7 +118,8 @@ export function fleetSpec(game: GameState, fleet: Fleet): FleetSpec {
   }
   const spec: FleetSpec = {
     mass: massEmpty + cm, massEmpty, cargoCapacity: cargoCap, fuelCapacity: fuelCap, scanRange: scan, scanRangePen: pen,
-    cloakPercent: cloakPercent(cloakU), idealSpeed: ideal, freeSpeed: free, maxSafeSpeed: maxSafe, hasEngines,
+    // 0.3.9.21: the Guerre électronique doctrine (+10 % cloak) as on the design sheet
+    cloakPercent: hasDoctrine(owner, 'ewar') && ts.length ? Math.min(98, cloakPercent(cloakU) + 10) : cloakPercent(cloakU), idealSpeed: ideal, freeSpeed: free, maxSafeSpeed: maxSafe, hasEngines,
     hasWeapons, bomber, colonizer, orbitalConstruction: orbital, miningRate: mining, terraformRate: terra, mineLaying: lay, mineSweep: sweep,
     armor, shields, ships, powerRating: power, fuelGeneration: fuelGen, repairBonus: repair, canStealFleet: stealF, canStealPlanet: stealP,
     tachyons: tach, movement, estimatedRange: 0, purposeIcon: fleetIcon(ts.map(x => x.spec)), scout: ts.length > 0 && ts.every(x => { const d = game.designs.find(dd => dd.id === x.token.designId); return !!d && isScoutDesign(d, x.spec); }), canJump, decoyMass, decoys, beaconKits: kits,
@@ -284,7 +298,7 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
     // cargo changes at previous waypoint (approximate)
     if (!(i === 1 && waypoints[0].processed)) cargo = applyTransportEstimate(cargo, waypoints[i - 1], spec.cargoCapacity);
     const dist = distance(pos, wp);
-    const warp = wp.warp;
+    const warp = wp.warp > 0 && wp.warp < 11 ? Math.max(1, Math.min(10, Math.round(wp.warp))) : wp.warp; // (as the movement phase reads it)
     const pass = isPassThrough(waypoints, i);
     let legFuel = 0, outOfFuel = false, arrival: number;
     const yearEnds: { x: number; y: number }[] = [];
@@ -302,15 +316,29 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
         const total = distance(cur, wp);
         let d = Math.min(total, speed * budget);
         if (total - d < 1) d = total;
+        // (0.3.9.21: as the movement does: a fleet that has the fuel for the whole leg is topped up if rounding leaves it short)
+        const enough = fuelForYear(game, fleet, w, total, cargo, ts) <= fuel;
         const f = fuelForYear(game, fleet, w, d, cargo, ts) - fuelGenerated(game, fleet, w, d, ts);
         legFuel += Math.max(0, f);
         fuel -= Math.max(0, f);
         if (f < 0) fuel = Math.min(spec.fuelCapacity, fuel - f);
         if (fuel < 0) outOfFuel = true;
-        if (d >= total) { budget -= Math.min(budget, total / speed); break; }
+        if (d >= total) {
+          budget -= Math.min(budget, total / speed);
+          // 0.3.9.21: a waypoint flown through just as the year ends is where the fleet stands that year end (the year
+          // went missing from the year-end positions: the interceptions planned from them were a year off)
+          if (pass && budget <= 1e-9) {
+            yearEnds.push({ x: Math.round(wp.x), y: Math.round(wp.y) });
+            if (spec.fuelGeneration > 0) fuel = Math.min(spec.fuelCapacity, fuel + spec.fuelGeneration);
+          }
+          break;
+        }
         cur = { x: Math.round(cur.x + (wp.x - cur.x) / total * d), y: Math.round(cur.y + (wp.y - cur.y) / total * d) };
         budget = 0;
         yearEnds.push(cur);
+        if (enough && !outOfFuel) { const need = fuelForYear(game, fleet, w, distance(cur, wp), cargo, ts); if (need > fuel) fuel = Math.min(spec.fuelCapacity, need); }
+        // and, at the end of every year, what fuel transports and anti-matter generators make
+        if (spec.fuelGeneration > 0) fuel = Math.min(spec.fuelCapacity, fuel + spec.fuelGeneration);
       }
       arrival = year + (budget < 1 ? 1 : 0);
     } else arrival = year + (budget < 1 ? 1 : 0);
@@ -319,6 +347,7 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
     const fuelArrive = Math.max(0, fuel);
     let refuelled = false;
     if (!outOfFuel && !pass && canRefuelAt(game, owner, planet)) { fuel = spec.fuelCapacity; refuelled = true; }
+    else if (!pass && Number.isFinite(arrival) && spec.fuelGeneration > 0) fuel = Math.min(spec.fuelCapacity, Math.max(0, fuel) + spec.fuelGeneration);
     res.push({ index: i, dist, years: Number.isFinite(arrival) ? arrival - prevArrival : Infinity, fuel: legFuel, fuelAfter: Math.max(0, fuel), fuelArrive, refuelled, ok: !outOfFuel, outOfFuel, arrival, pass, yearEnds });
     if (Number.isFinite(arrival)) prevArrival = arrival;
     if (outOfFuel) fuel = 0;

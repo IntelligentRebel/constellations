@@ -171,7 +171,8 @@ export function coalitionMind(a: Player | undefined, leader: Player | undefined)
 export function rallyAgainst(game: GameState, of: number, other: number, min = 0.25): number | undefined {
   const hg = hegemon(game, of);
   if (!hg || hg.t < min || hg.id === of || hg.id === other || !coalitionMind(game.players[of], game.players[hg.id])) return undefined;
-  if (statusOf(game, other, hg.id) === 'alliance') return undefined;
+  // (0.3.9.21: nor when `of` is allied with it: it rallied others against its own ally)
+  if (statusOf(game, other, hg.id) === 'alliance' || statusOf(game, of, hg.id) === 'alliance') return undefined;
   return hg.id;
 }
 /** The empire running away with the game, if any (as `by` sees the scores). */
@@ -263,7 +264,7 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   // easy one never against a human), in proportion to its lead: the others draw closer to each other, even those who
   // dislike one another (not one that has sworn the other's ruin)
   const hg = a.ai ? hegemon(game, of) : undefined;
-  if (hg && hg.id !== of && coalitionMind(a, game.players[hg.id])) {
+  if (hg && hg.id !== of && coalitionMind(a, game.players[hg.id]) && statusOf(game, of, hg.id) !== 'alliance') {
     if (hg.id === about) add('Votre avance les pousse à s\'unir contre vous', -40 * hg.t);
     else if (statusOf(game, about, hg.id) !== 'alliance' && !isNemesis(game, of, about)) add(`Rival commun : les ${name(game, hg.id)}`, 50 * hg.t);
   }
@@ -343,7 +344,10 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
   const st = statusOf(game, ai, from);
   if (!st) return firm('pas de diplomatie');
   const op = opinion(game, ai, from).total;
-  const sweet = minerals > 0 ? (payer === from ? minerals / 40 : -minerals / 40) : 0;
+  // (0.3.9.21: what can really change hands: minerals offered to an empire without a world, or beyond the payer's
+  // richest world, were weighed in the answer and never paid)
+  const paid = minerals > 0 ? transferable(game, payer ?? from, payer === from ? ai : from, minerals) : 0;
+  const sweet = paid > 0 ? (payer === from ? paid / 40 : -paid / 40) : 0;
   const fmtOp = `opinion ${op > 0 ? '+' : ''}${op}`;
   switch (kind) {
     case 'peace': {
@@ -435,6 +439,13 @@ function richest(game: GameState, id: number): { pl: Planet; total: number } | u
 export interface Transfer { moved: number; parts: Record<'ironium' | 'boranium' | 'germanium', number>; from?: Planet; to?: Planet }
 let lastTransfer: Transfer = { moved: 0, parts: { ironium: 0, boranium: 0, germanium: 0 } };
 
+/** 0.3.9.21: what `transferMinerals` would move (0 when the receiver has no world to receive them). */
+export function transferable(game: GameState, from: number, to: number, kt: number): number {
+  const src = richest(game, from);
+  const dst = capitalOf(game, game.players[to]) ?? game.planets.find(pl => pl.owner === to);
+  return src && dst && kt > 0 ? Math.min(kt, src.total) : 0;
+}
+
 /** Moves minerals from the giver's richest world to the receiver's capital; returns what was moved. */
 export function transferMinerals(game: GameState, from: number, to: number, kt: number): number {
   const src = richest(game, from);
@@ -466,7 +477,9 @@ function tellTransfer(game: GameState, t: Transfer, giver: number, receiver: num
 export function declareWar(game: GameState, a: number, b: number, why?: string) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status === 'war') return;
-  const treaty = pr.status === 'alliance' || pr.trade !== undefined || pr.research !== undefined;
+  // (0.3.9.21: treaties broken by the attacker in the year before count as broken by the war: cancelling them first
+  // avoided the betrayal)
+  const treaty = pr.status === 'alliance' || pr.trade !== undefined || pr.research !== undefined || (pr.broken?.by === a && game.year - pr.broken.year <= 1);
   acquaint(game, a, b);
   const embassy = pr.embassy !== undefined;
   pr.status = 'war'; pr.since = game.year; pr.wars++; pr.losses = {}; pr.lossValue = {}; pr.planets = {}; pr.trade = undefined; pr.research = undefined; pr.embassy = undefined;
@@ -542,6 +555,7 @@ export function cancel(game: GameState, a: number, b: number, kind: 'trade' | 'r
   if (!pr) return;
   if (kind === 'alliance') { if (pr.status !== 'alliance') return; pr.status = 'peace'; pr.since = game.year; } else { if (pr[kind] === undefined) return; pr[kind] = undefined; }
   remember(game, b, a, 'broken', kind === 'embassy' ? -5 : -10, 1);
+  if (kind !== 'embassy') pr.broken = { by: a, year: game.year };
   if (kind === 'embassy') {
     log(game, a, b, `Les ${name(game, a)} ferment les ambassades qui les liaient aux ${name(game, b)}.`);
     tell(game, b, `Les ${name(game, a)} ferment les ambassades entre vos deux empires.`, a);
@@ -641,6 +655,7 @@ export function answer(game: GameState, id: number, yes: boolean) {
   const p = d.proposals.find(x => x.id === id);
   if (!p) return;
   d.proposals = d.proposals.filter(x => x !== p);
+  if (game.players[p.from]?.dead || game.players[p.to]?.dead) return; // (0.3.9.21: an empire destroyed meanwhile signs nothing)
   if (yes) {
     // (a tribute waiting for its answer is not blocked by its own three years)
     if (p.kind === 'tribute' ? game.players[p.from].dead : proposalBlocker(game, p.from, p.to, p.kind) && !(p.kind === 'peace' && statusOf(game, p.from, p.to) === 'war')) return;
@@ -722,11 +737,13 @@ export function runDiplomacy(game: GameState) {
   const d = D(game);
   const rng = new Rng(seedFromString(`${game.settings.seed}|diplo|${game.year}`));
   // expired proposals: a refusal
-  for (const p of d.proposals.filter(x => x.expires < game.year)) {
+  // (0.3.9.21: in its year of expiry, as shown: the last orders that could answer were those of that year; it stayed a
+  // year longer)
+  for (const p of d.proposals.filter(x => x.expires <= game.year)) {
     remember(game, p.from, p.to, p.kind === 'tribute' ? 'demand' : 'refused', p.kind === 'tribute' ? -10 : -5, 1);
     tell(game, p.to, p.kind === 'tribute' ? `Les ${name(game, p.from)} exigeaient de vous un tribut : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : p.kind === 'borders' ? `Les ${name(game, p.from)} vous demandaient d'ouvrir vos frontières à leurs vaisseaux : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : `Les ${name(game, p.from)} vous proposaient ${KIND_NAMES[p.kind]} : faute de réponse de votre part, la proposition a expiré.`, p.from);
   }
-  d.proposals = d.proposals.filter(x => x.expires >= game.year && !game.players[x.from].dead && !game.players[x.to].dead);
+  d.proposals = d.proposals.filter(x => x.expires > game.year && !game.players[x.from].dead && !game.players[x.to].dead);
   d.memory = d.memory.filter(m => memValue(game, m) !== 0);
   const crisis = game.crisis?.phase === 'active';
   for (const p of game.players) {

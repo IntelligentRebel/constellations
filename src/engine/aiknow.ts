@@ -12,7 +12,10 @@ export interface SeenMight { hp: number; pow: number; bomber: boolean }
 /** What a ship of this hull is probably worth, as if the other empire had built it with the observer's technology. */
 const hullCache = new Map<string, SeenMight>();
 function hullGuess(game: GameState, p: Player, hullName: string): SeenMight {
-  const key = `${game.year}:${p.id}:${hullName}`;
+  // (0.3.9.21: what the guess is made of: the observer's technology and race, in this game; the year and the player id
+  // alone let another game, or the same year before a level, answer)
+  const t = p.tech;
+  const key = `${game.settings.seed}:${p.id}:${t.energy},${t.weapons},${t.propulsion},${t.construction},${t.electronics},${t.biotechnology}:${p.race.prt}${(p.race.lrts ?? []).join('')}:${p.doctrines ? JSON.stringify(p.doctrines) : ''}:${(p.acquiredTechs ?? []).join(',')}:${game.settings.fuzzyTechTree ? 'f' : ''}:${hullName}`; // (0.3.9.21: a part from the trader, the shifted tree, change the guess too)
   const known = hullCache.get(key);
   if (known) return known;
   if (hullCache.size > 2000) hullCache.clear();

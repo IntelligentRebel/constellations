@@ -14,6 +14,8 @@ export const SOURCES: Record<string, { de: string; tags: string[] }> = {
   sarcophagus: { de: 'du sarcophage', tags: ['device'] }, climate: { de: 'du moteur climatique', tags: ['device'] },
   storm: { de: 'du nuage d\'ions', tags: ['nature'] }, well: { de: 'du puits de deutérium', tags: ['nature'] }, crystals: { de: 'des cristaux chantants', tags: ['nature'] }, vein: { de: 'du filon', tags: ['nature'] },
   builders: { de: 'des ruines', tags: ['ruins'] }, seers: { de: 'de l\'observatoire', tags: ['ruins'] }, gardens: { de: 'des jardins', tags: ['ruins'] }, navigators: { de: 'du vieux port', tags: ['ruins'] },
+  // 0.3.9.21: the hidden stars' studies (they fell back on the laboratory's sentences)
+  timing: { de: 'du pulsar', tags: ['nature'] }, horizon: { de: 'du trou noir', tags: ['nature'] }, enclave: { de: 'de l\'enclave', tags: ['crewed', 'device'] }, echo: { de: 'de l\'écho', tags: ['nature'] }, drift: { de: 'de la dérive', tags: ['nature'] },
   library: { de: 'de la bibliothèque', tags: ['ruins'] }, catacombs: { de: 'des catacombes', tags: ['ruins'] }, vault: { de: 'du sanctuaire', tags: ['ruins'] }, fragment: { de: 'du fragment', tags: ['ruins'] }, charts: { de: 'des archives', tags: ['ruins'] },
 };
 
@@ -66,6 +68,8 @@ export const STORIES: Story[] = [
   { f: 'propulsion', t: ['ruins'], s: 'les cartes gravées {de} indiquent des couloirs gravitationnels où l\'on vole plus vite pour le même effort' },
   { f: 'propulsion', t: ['ruins'], s: 'les quais {de} gardent les ancrages d\'un système de lancement par catapulte, que vos ingénieurs adaptent au départ de vos vaisseaux' },
   { f: 'propulsion', t: ['ruins'], s: 'les registres {de} notent des temps de voyage impossibles avec vos moteurs ; les recalculer révèle une astuce d\'accélération progressive' },
+  // 0.3.9.21: propulsion had no sentence for a phenomenon
+  { f: 'propulsion', t: ['nature'], s: 'les mesures {de} montrent comment l\'espace se courbe autour d\'une masse en mouvement ; vos motoristes en tirent une poussée plus économe' },
   // ---------------------------------------------------------------- Construction
   { f: 'construction', t: ['device'], s: 'les soudures {de} n\'ont pas bougé en mille ans ; vos chantiers adoptent leur procédé de fusion à froid' },
   { f: 'construction', t: ['device'], s: 'des nanomachines inertes trouvées au fond {de} assemblaient le métal atome par atome ; on en comprend enfin le principe' },

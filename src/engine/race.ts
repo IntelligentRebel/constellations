@@ -1,5 +1,5 @@
 // Races: primary/lesser racial traits, habitability, advantage points, derived race spec.
-import type { Field, Hab, LRT, PRT, Race, ResearchCostLevel, TechLevels } from './types';
+import type { Field, Hab, LeftoverSpend, LRT, PRT, Race, ResearchCostLevel, TechLevels } from './types';
 import { FIELDS } from './types';
 
 export interface TraitInfo { code: string; name: string; desc: string }
@@ -67,6 +67,47 @@ export const PREDEFINED_LABELS: Record<string, string> = { Humanoid: 'Terrien', 
 
 export function cloneRace(r: Race): Race {
   return JSON.parse(JSON.stringify(r));
+}
+
+/**
+ * 0.3.9.21: a race read from outside (an imported file, the browser's saved races) held to what the wizard allows:
+ * known traits, whole values within the wizard's bounds (a popEfficiency of 7.01 used to save some 800 points), a hab
+ * range inside 0..100. Returns an error for what is not a race at all.
+ */
+export function sanitizeRace(raw: unknown): Race | string {
+  if (!raw || typeof raw !== 'object') return 'ce n\'est pas une race';
+  const x = raw as Record<string, any>;
+  if (!PRT_LIST.includes(x.prt)) return `type principal inconnu (${String(x.prt)})`;
+  if (!Array.isArray(x.habLow) || !Array.isArray(x.habHigh)) return 'ce n\'est pas une race';
+  const r = baseRace();
+  const int = (v: unknown, lo: number, hi: number, d: number) => Number.isFinite(+(v as number)) && v !== null && v !== '' ? Math.max(lo, Math.min(hi, Math.round(+(v as number)))) : d;
+  const str = (v: unknown, d: string) => typeof v === 'string' && v.trim() ? v.trim().slice(0, 40) : d;
+  r.name = str(x.name, r.name); r.pluralName = str(x.pluralName, r.name);
+  r.prt = x.prt;
+  r.lrts = [...new Set((Array.isArray(x.lrts) ? x.lrts : []).filter((l: unknown) => LRT_LIST.includes(l as LRT)))] as LRT[];
+  if (r.lrts.includes('OBRM') && r.lrts.includes('ARM')) r.lrts = r.lrts.filter(l => l !== 'ARM');
+  for (let i = 0; i < 3; i++) {
+    const lo = int(x.habLow[i], 0, 100, 15), hi = int(x.habHigh[i], 0, 100, 85);
+    r.habLow[i] = Math.min(lo, hi); r.habHigh[i] = Math.max(lo, hi);
+    r.immune[i] = Array.isArray(x.immune) && x.immune[i] === true;
+  }
+  r.growthRate = int(x.growthRate, 1, 20, r.growthRate);
+  r.popEfficiency = int(x.popEfficiency, 7, 25, r.popEfficiency);
+  r.factoryOutput = int(x.factoryOutput, 5, 15, r.factoryOutput);
+  r.factoryCost = int(x.factoryCost, 5, 25, r.factoryCost);
+  r.numFactories = int(x.numFactories, 5, 25, r.numFactories);
+  r.factoriesCostLess = x.factoriesCostLess === true;
+  r.mineOutput = int(x.mineOutput, 5, 25, r.mineOutput);
+  r.mineCost = int(x.mineCost, 2, 15, r.mineCost);
+  r.numMines = int(x.numMines, 5, 25, r.numMines);
+  for (const f of Object.keys(r.researchCost) as Field[]) {
+    const v = x.researchCost?.[f];
+    r.researchCost[f] = v === 'extra' || v === 'less' ? v : 'standard';
+  }
+  r.techsStartHigh = x.techsStartHigh === true;
+  r.leftover = (['surfaceMinerals', 'mines', 'factories', 'defenses', 'mineralConcentrations'] as LeftoverSpend[]).includes(x.leftover) ? x.leftover : 'surfaceMinerals';
+  r.icon = int(x.icon, 0, 999, 0);
+  return r;
 }
 
 export function habCenter(race: Race): Hab {

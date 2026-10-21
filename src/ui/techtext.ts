@@ -49,7 +49,7 @@ export function secondaryLines(t: TechData): string[] {
   if (has('torpedoJamming')) out.push(`Brouillage : ${pc(st.torpedoJamming!)} de chances de dévier chaque torpille ennemie.`);
   if (has('torpedoBonus')) out.push(`+${pc(st.torpedoBonus!)} de précision pour les torpilles du vaisseau.`);
   if (has('initiativeBonus')) out.push(`+${st.initiativeBonus} d'initiative : le vaisseau tire plus tôt.`);
-  if (has('movementBonus')) out.push(`Manœuvre : +${String(st.movementBonus).replace('.', ',')} case${st.movementBonus! > 1 ? 's' : ''} de déplacement par round de combat${st.movementBonus! < 1 ? ' (en moyenne)' : ''}.`);
+  if (has('movementBonus')) out.push(`Manœuvre : +${String(st.movementBonus).replace('.', ',')} point${st.movementBonus! > 1 ? 's' : ''} de vitesse de combat (4 points font une case de plus par round).`);
   if (has('fuelBonus')) out.push(`Réservoir : +${st.fuelBonus} mg de carburant.`);
   if (has('cargoBonus')) out.push(`Soute : +${st.cargoBonus} kt de cargaison.`);
   if (has('miningRate')) out.push(`Foreuse : taux de minage ${st.miningRate} sur un monde libre.`);
@@ -94,7 +94,7 @@ export function partBrief(t: TechData, long = false): string {
   if (st.smart) bits.push('bombe intelligente');
   if (st.killRate) bits.push(`tue ${st.killRate} %`);
   if (st.structureDestroyRate) bits.push(`${st.structureDestroyRate} installations`);
-  if (st.unterraformRate) bits.push(`dégrade l'environnement de ${st.unterraformRate}/an`);
+  if (st.unterraformRate) bits.push(`défait le terraformement de ${st.unterraformRate}/an`);
   if (st.miningRate) bits.push(`minage ${st.miningRate}`);
   if (st.mineLayingRate) bits.push(`${st.mineLayingRate} ${MINE_SHORT[st.minefieldType ?? ''] ?? 'mines'}/an`);
   if (st.torpedoBonus) bits.push(`+${Math.round(st.torpedoBonus * 100)} % précision`);

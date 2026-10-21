@@ -78,7 +78,9 @@ export async function checkForUpdate(force = false): Promise<ReleaseInfo[] | nul
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=30`, { headers: { Accept: 'application/vnd.github+json' } });
     if (!r.ok) return null;
     const list = parseReleases(await r.json());
-    writeCache({ checked: Date.now(), releases: list.filter(x => cmpVersion(x.version, VERSION) > 0).slice(0, 20) });
+    // (0.3.9.21: every recent release, not only those newer than this copy: an older copy opened from the same folder
+    // within the day read the cache and believed itself up to date; publish() keeps the newer ones)
+    writeCache({ checked: Date.now(), releases: list.slice(0, 20) });
     publish(list);
     return newer;
   } catch { return null; } finally { checking = false; }

@@ -4,8 +4,8 @@ import { viewFleet } from './memo';
 import type { GameState, Planet, Player } from '../engine/types';
 import { store, useStore, fmt } from './store';
 import { useSorted } from './components';
-import { ANOMALIES, anomalyAt, currentRate, defOf, finished, fragmentsNeeded, knownAnomalies, pointsNeeded, studyBlocker, studyingFleets, vaultOf, anomaliesOn, decide } from '../engine/anomalies';
-import { GUARDIAN_KINDS, guardianStrength, guardianAt, isMonster } from '../engine/guardians';
+import { ANOMALIES, anomalyAt, currentRate, defOf, finished, fragmentsNeeded, knownAnomalies, pointsNeeded, studyBlockerSeen, studyingFleets, vaultOf, anomaliesOn, decide, isStudying } from '../engine/anomalies';
+import { GUARDIAN_KINDS, guardianAt, isMonster } from '../engine/guardians';
 import { navyOf } from '../engine/guardians';
 import { shareOf } from '../engine/words';
 import type { Guardian, GuardianReport as Report } from '../engine/types';
@@ -14,6 +14,7 @@ import { LairBlock, BreachBlock } from './factions';
 import { RELICS, type RelicId } from '../engine/relics';
 import { ORIGIN } from '../engine/origins';
 import { fleetSpec, distance } from '../engine/fleet';
+import { hasOrders } from '../engine/tasks';
 import { sendOptions, sendFleet, buildOptions, queueMission } from '../engine/missions';
 import { slowWarning } from './missionui';
 import { SECRET_INFO, secretOfPlanet, probeFleets, sealFleets, PROBE_NEED, OPEN_NEED, SLING_RANGE } from '../engine/secrets';
@@ -77,7 +78,8 @@ function GuardianBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const kind = GUARDIAN_KINDS[gk];
   const live = guardianAt(g, p.id);
   const seenYear = me.intel.planets[p.id].guardianYear;
-  const str = live ? guardianStrength(g, live) : 0;
+  // 0.3.9.21: the force your crews measured, not the guardian's real one (it heals, grows: that is not known from afar)
+  const str = live ? me.intel.guardianReports?.[live.id]?.strength ?? 0 : 0;
   const mine = yourStrength(g, me);
   const ratio = mine && str ? mine.v / str : 0;
   return <section class="blk guardian">
@@ -97,7 +99,7 @@ function AnomalyBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const need = pointsNeeded(a);
   const have = a.progress[me.id] ?? 0;
   const rate = currentRate(g, me, a);
-  const block = studyBlocker(g, me, a);
+  const block = studyBlockerSeen(g, me, a);
   const here = studyingFleets(g, me, a);
   const years = rate > 0 ? Math.ceil((need - have) / rate) : 0;
   const rivals = g.players.filter(o => o.id !== me.id && (a.progress[o.id] ?? 0) > 0).length;
@@ -126,11 +128,12 @@ const currentRateIf = (g: GameState, me: Player) => { let r = 2 + Math.floor(me.
 
 /** 0.3.7: sends the nearest idle ship with a scanner to a point (the zone where to sound a cloud). */
 function sendScanner(g: GameState, me: Player, at: { x: number; y: number }, what: string) {
-  const cands = g.fleets.filter(f => f.owner === me.id && f.waypoints.length <= 1 && !f.auto && viewFleet(g, f).hasEngines && (viewFleet(g, f).scanRange > 0 || viewFleet(g, f).scanRangePen > 0)).sort((a, b) => distance(a, at) - distance(b, at));
+  const cands = g.fleets.filter(f => f.owner === me.id && !hasOrders(f) && !isStudying(g, f) && viewFleet(g, f).hasEngines && (viewFleet(g, f).scanRange > 0 || viewFleet(g, f).scanRangePen > 0)).sort((a, b) => distance(a, at) - distance(b, at));
   const f = cands[0];
   if (!f) { store.notify('Aucun vaisseau équipé d\'un scanner n\'est libre.'); return; }
   store.checkpoint();
-  f.waypoints = [f.waypoints[0], { x: Math.round(at.x), y: Math.round(at.y), target: 'space', warp: viewFleet(g, f).idealSpeed || 5, task: 'none' }];
+  f.waypoints = [{ ...f.waypoints[0], x: f.x, y: f.y, task: 'none', transport: undefined, processed: true }, { x: Math.round(at.x), y: Math.round(at.y), target: 'space', warp: viewFleet(g, f).idealSpeed || 5, task: 'none' }];
+  f.repeat = false; f.route = undefined;
   store.notify(`${f.name} part ${what}`);
   store.bump();
 }
@@ -224,9 +227,9 @@ export function DiscoveriesSection({ g, me }: { g: GameState; me: Player }) {
   const near = (pl: Planet) => own.length ? Math.min(...own.map(o => distance(o, pl))) : 0;
   const rows = known.map(a => {
     const d = defOf(a), pl = g.planets[a.planetId];
-    const status = finished(a) ? (a.doneBy === me.id ? 'faite' : 'perdue') : studyBlocker(g, me, a) ? 'bloquée' : currentRate(g, me, a) > 0 ? 'en cours' : 'à étudier';
+    const status = finished(a) ? (a.doneBy === me.id ? 'faite' : 'perdue') : studyBlockerSeen(g, me, a) ? 'bloquée' : currentRate(g, me, a) > 0 ? 'en cours' : 'à étudier';
     // the colour from the state itself: the status is translated, a literal compared with it is not
-    const cls = finished(a) ? (a.doneBy === me.id ? '' : 'muted') : studyBlocker(g, me, a) ? 'yellow' : currentRate(g, me, a) > 0 ? 'green' : '';
+    const cls = finished(a) ? (a.doneBy === me.id ? '' : 'muted') : studyBlockerSeen(g, me, a) ? 'yellow' : currentRate(g, me, a) > 0 ? 'green' : '';
     return { a, d, pl, status, cls, pct: finished(a) ? 1 : (a.progress[me.id] ?? 0) / pointsNeeded(a), dist: near(pl) };
   }).sort((x, y) => Number(finished(x.a)) - Number(finished(y.a)) || x.dist - y.dist);
   const { sorted, th } = useSorted(rows, [

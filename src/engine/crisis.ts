@@ -17,6 +17,7 @@ import { ensureFaction, factionDesign, topTech, spawnFleet, sendTo, empires, fle
 import { availableParts, type Purpose } from './design';
 import { TECHS, HULLS, partFitsSlot } from './tech';
 import { addChronicle } from './chronicle';
+import { resetPlanetPolicies } from './empire';
 
 export const crisisOn = (game: GameState) => !!game.settings.crisis;
 export const crisisActive = (game: GameState) => crisisOn(game) && game.crisis?.phase === 'active';
@@ -168,6 +169,9 @@ function openBreach(game: GameState) {
     const victim = game.players[pl.owner];
     victim.messages.push({ year: game.year, kind: 'population', text: `La Brèche s'ouvre sur ${pl.name} : la colonie est anéantie.`, target: { kind: 'planet', id: pl.id } });
     pl.owner = -1; pl.pop = 0; pl.queue = []; pl.starbase = null; pl.defenses = 0;
+    // 0.3.9.21: everything a colony leaves on its world goes with it (its scanner, where its ships went...)
+    pl.scanner = false; pl.route = undefined; pl.packetTarget = undefined; pl.conqueredYear = undefined; resetPlanetPolicies(pl);
+    victim.stats.planetsLost = (victim.stats.planetsLost ?? 0) + 1;
   }
   const tech = Math.min(26, Math.round(topTech(game) + NEXUS_TECH));
   const d = warDesign(game, owner, tech), b = bulwarkDesign(game, owner, tech);
@@ -233,6 +237,7 @@ function launchWave(game: GameState) {
   sendTo(game, f, target);
   const w = Math.max(4, Math.min(10, fleetSpec(game, f).idealSpeed || 6));
   const eta = game.year + Math.max(1, Math.ceil(distance(from, target) / (w * w)));
+  f.raid!.eta = eta;
   const victim = game.players[target.owner];
   for (const p of empires(game)) p.messages.push({
     year: game.year, kind: p.id === victim.id ? 'warning' : 'event',
@@ -256,6 +261,7 @@ function harvest(game: GameState, f: Fleet, pl: Planet) {
     victim.messages.push({ year: game.year, kind: 'combat', text: `${pl.name} a été moissonnée par la ${f.name} : il n'y reste personne.`, target: { kind: 'planet', id: pl.id } });
     victim.stats.planetsLost = (victim.stats.planetsLost ?? 0) + 1;
     pl.owner = -1; pl.pop = 0; pl.queue = []; pl.defenses = 0; pl.scanner = false; pl.starbase = null; pl.route = undefined; pl.packetTarget = undefined;
+    pl.conqueredYear = undefined; resetPlanetPolicies(pl); // (0.3.9.21: a harvested regional capital stayed one, with no owner)
     return;
   }
   victim.messages.push({ year: game.year, kind: 'combat', text: `La ${f.name} moissonne ${pl.name} : ${people(game, killed)} colons enlevés${facts + mines ? `, ${facts} usine${facts > 1 ? 's' : ''} et ${mines} mine${mines > 1 ? 's' : ''} détruite${facts + mines > 1 ? 's' : ''}` : ''}.`, target: { kind: 'planet', id: pl.id } });
@@ -280,6 +286,10 @@ function steerWaves(game: GameState) {
     if (!next) continue;
     r.empire = next.owner; r.target = next.id; r.since = game.year;
     sendTo(game, f, next);
+    // 0.3.9.21: the new victim is warned as the first was (the pages showed the new target without a word)
+    const w = Math.max(4, Math.min(10, fleetSpec(game, f).idealSpeed || 6));
+    r.eta = game.year + Math.max(1, Math.ceil(distance(f, next) / (w * w)));
+    game.players[next.owner].messages.push({ year: game.year, kind: 'warning', text: `La ${f.name} des Moissonneurs se tourne vers ${next.name} (arrivée vers ${r.eta}).`, target: { kind: 'planet', id: next.id } });
   }
 }
 

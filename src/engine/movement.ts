@@ -22,12 +22,24 @@ const MINE_STATS: Record<string, { maxSpeed: number; chanceOfHit: number; minDam
   standard: RULES_RAW.minefieldStats.Standard, heavy: RULES_RAW.minefieldStats.Heavy, speedBump: RULES_RAW.minefieldStats.SpeedBump,
 };
 
+/**
+ * 0.3.9.21: do the mines of `owner` spare this player's fleets? The rule the movement applies (the field's owner calls
+ * them friends, or, with diplomacy, they are not at war): the warnings used the player's own view of the owner, and
+ * kept quiet about fields that struck.
+ */
+function minesSpare(game: GameState, owner: number, player: Player): boolean {
+  const mo = game.players[owner];
+  if (!mo) return false;
+  if (mo.relations[player.id] === 'friend') return true;
+  return diplomacyOn(game) && !mo.monster && !player.monster && statusOf(game, owner, player.id) !== 'war';
+}
+
 /** Known foreign minefields crossed by the segment a→b, with the warp above which they become dangerous. */
 export function minefieldsOnLeg(game: GameState, player: Player, a: { x: number; y: number }, b: { x: number; y: number }): { id: number; owner: number; type: string; safeWarp: number }[] {
   const rs = raceSpec(player.race);
   const res: { id: number; owner: number; type: string; safeWarp: number }[] = [];
   for (const m of Object.values(player.intel.minefields)) {
-    if (m.owner === player.id || player.relations[m.owner] === 'friend') continue;
+    if (m.owner === player.id || minesSpare(game, m.owner, player)) continue;
     const r = Math.sqrt(m.mines);
     const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
     const t = l2 > 0 ? Math.max(0, Math.min(1, ((m.x - a.x) * dx + (m.y - a.y) * dy) / l2)) : 0;
@@ -48,7 +60,7 @@ export function minefieldSpans(game: GameState, player: Player, a: { x: number; 
   if (L === 0) return [];
   const spans: { t0: number; t1: number; safe: number }[] = [];
   for (const m of Object.values(player.intel.minefields)) {
-    if (m.owner === player.id || player.relations[m.owner] === 'friend') continue;
+    if (m.owner === player.id || minesSpare(game, m.owner, player)) continue;
     const safe = MINE_STATS[m.type].maxSpeed + rs.mineSafeWarpBonus;
     if (warp <= safe) continue;
     const r = Math.sqrt(m.mines) + margin;
@@ -149,7 +161,8 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
   const closed = borderObstacles(game, f.owner);
   if (hasWalls(game) || closed || f.waypoints.some(w => w.detour)) {
     const kept = f.waypoints.filter((w, i) => i === 0 || !w.detour);
-    f.waypoints = withDetours(game, kept, w => targetPosition(game, w, f.owner), f.owner, closed).list;
+    // (0.3.9.21: from where the fleet is: waypoint 0 can still name the wormhole it came out of, or a fleet since gone)
+    f.waypoints = withDetours(game, kept, w => w === kept[0] ? { x: f.x, y: f.y } : targetPosition(game, w, f.owner), f.owner, closed).list;
   }
   let borderStop = false;
   const trail = [{ x: f.x, y: f.y }];
@@ -160,7 +173,8 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
     const target = targetPosition(game, wp, f.owner);
     wp.x = target.x; wp.y = target.y;
     if (wp.warp >= 11) break; // a gate jump starts a new year
-    let warp = Math.max(1, wp.warp || spec.idealSpeed || 1);
+    // (0.3.9.21: a whole Warp from 1 to 10: a typed 7.5 found no line in the fuel tables, and flew for nothing)
+    let warp = Math.max(1, Math.min(10, Math.round(wp.warp || spec.idealSpeed || 1)));
     if (f.fuel <= 0 && spec.freeSpeed > 0 && warp > spec.freeSpeed) {
       // empty tank: free speed only (user request: immediately drop to warp 1 / free speed)
       warp = Math.max(1, spec.freeSpeed);
@@ -182,8 +196,11 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
     const gotEnoughFuel = fuelForYear(game, f, warp, total) <= f.fuel;
     const fuelBefore = f.fuel;
     const cost = fuelForYear(game, f, warp, dist);
-    if (cost > f.fuel) {
-      const frac = f.fuel / cost;
+    // (0.3.9.21: what the ramscoops gather on the way counts, as in the route's estimate: a fleet with a scoop and a
+    // thirsty ship was declared dry and crawled at Warp 1 with a tank filling up)
+    const gen = fuelGenerated(game, f, warp, dist);
+    if (cost - gen > f.fuel) {
+      const frac = f.fuel / (cost - gen);
       dist = dist * frac;
       f.fuel = 0;
       f.outOfFuel = true;
@@ -316,8 +333,13 @@ function arrive(game: GameState, f: Fleet) {
   // shift waypoints
   f.waypoints.shift();
   f.waypoints[0] = { ...f.waypoints[0], x: f.x, y: f.y, processed: false };
+  appendRepeat(game, f);
+  if (planet && canRefuelAt(game, owner, planet)) f.fuel = fleetSpec(game, f).fuelCapacity;
+}
+
+/** Repeat orders: at the end of the route, the whole route again (skipping the point the fleet is on). */
+function appendRepeat(game: GameState, f: Fleet) {
   if (f.waypoints.length === 1 && f.repeat && f.route && f.route.length > 1) {
-    // repeat orders: append the whole route again (skipping the point we are on)
     const loop = f.route.map(w => ({ ...w, transport: w.transport ? { ...w.transport } : undefined, processed: false }));
     while (loop.length && loop[0].x === f.x && loop[0].y === f.y) loop.shift();
     // the route's starting point was recorded with warp 0: give it a real speed
@@ -325,7 +347,6 @@ function arrive(game: GameState, f: Fleet) {
     for (const w of loop) if (!(w.warp > 0)) w.warp = ideal;
     f.waypoints.push(...loop);
   }
-  if (planet && canRefuelAt(game, owner, planet)) f.fuel = fleetSpec(game, f).fuelCapacity;
 }
 
 /**
@@ -415,6 +436,11 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   }
   const dist = distance(src, dst);
   const rs = raceSpec(owner.race);
+  // 0.3.9.21: a jump the gate refuses is refused before anything is unloaded, and the fleet then leaves at its ideal
+  // speed, as the route panel says (it dropped its cargo first, then stayed, trying again every year)
+  const safeRange = sg.safeRange, safeMass = Math.min(sg.safeMass, dg.safeMass);
+  if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al) ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return; }
+  if (safeMass < 1e9 && f.tokens.some(t => specOf(game, t.designId).mass > safeMass * 5)) { msg(game, owner, `${f.name} : un vaisseau est trop lourd pour la porte ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return; }
   // cargo: only IT may gate cargo (others dump it on the source planet; 0.3.9.17: at a friend's gate too, where the
   // colonists cannot be left: then the fleet does not jump)
   if (!rs.canGateCargo && cargoMass(f.cargo) > 0) {
@@ -431,12 +457,6 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
     const host = src.owner !== owner.id && src.owner >= 0 ? game.players[src.owner] : undefined;
     if (host && !host.monster) host.messages.push({ year: game.year, kind: 'fleet', text: `Une flotte des ${owner.name} a laissé ${kt} kt de minerais sur ${src.name} avant de franchir votre porte.`, target: { kind: 'planet', id: src.id } });
   }
-  const safeRange = sg.safeRange, safeMass = Math.min(sg.safeMass, dg.safeMass);
-  if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al).`, f); return; }
-  for (const t of f.tokens) {
-    const s = specOf(game, t.designId);
-    if (safeMass < 1e9 && s.mass > safeMass * 5) { msg(game, owner, `${f.name} : un vaisseau est trop lourd pour la porte.`, f); return; }
-  }
   // overgating damage / loss
   for (const t of f.tokens) {
     const s = specOf(game, t.designId);
@@ -452,7 +472,8 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
         let lost = 0;
         for (let i = 0; i < t.qty; i++) if (rng.chance(p)) lost++;
         t.qty -= lost;
-        if (lost) msg(game, owner, `${lost} vaisseau(x) de ${f.name} se sont perdus dans le vide en franchissant la porte.`, f);
+        t.qtyDamaged = Math.min(t.qtyDamaged, t.qty); // (0.3.9.21: the damaged ships counted were among those lost too)
+        if (lost) { owner.stats.shipsLost += lost; msg(game, owner, `${lost} vaisseau(x) de ${f.name} se sont perdus dans le vide en franchissant la porte.`, f); }
       }
       const perShip = Math.round(total * s.armor);
       if (t.qty > 0 && perShip > 0) {
@@ -460,7 +481,7 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
         const damaged = t.qtyDamaged > 0 ? t.damage : 0;
         if (damaged > 0 && damaged + perShip >= s.armor) {
           const lost = Math.min(t.qty, t.qtyDamaged);
-          t.qty -= lost; t.qtyDamaged = 0; t.damage = 0;
+          t.qty -= lost; t.qtyDamaged = 0; t.damage = 0; owner.stats.shipsLost += lost;
           msg(game, owner, `${lost} vaisseau(x) de ${f.name}, déjà endommagé(s), n'ont pas survécu au passage de la porte.`, f);
           if (t.qty > 0) { t.damage = Math.min(s.armor - 1, perShip); t.qtyDamaged = t.qty; }
         } else {
@@ -472,6 +493,7 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   }
   f.tokens = f.tokens.filter(t => t.qty > 0);
   if (!f.tokens.length) { game.fleets.splice(game.fleets.indexOf(f), 1); return; }
+  clampFleetHold(game, f);
   // 0.3.9.17 (help, Damage Repair): no repairs in the year a fleet goes through a stargate
   f.gatedYear = game.year;
   f.heading = { x: (dst.x - src.x) / (dist || 1), y: (dst.y - src.y) / (dist || 1) };
@@ -480,6 +502,7 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   f.orbiting = dst.id;
   f.waypoints.shift();
   f.waypoints[0] = { ...f.waypoints[0], x: f.x, y: f.y, processed: false };
+  appendRepeat(game, f); // (0.3.9.21: a repeated route whose last leg is a jump went on only once)
 }
 
 /**
@@ -768,7 +791,8 @@ export function launchPacket(game: GameState, planet: Planet, cargo: { ironium: 
   if (!s.driver) return;
   const existing = game.packets.find(k => k.sourceId === planet.id && k.newThisTurn);
   if (existing) { existing.cargo.ironium += cargo.ironium; existing.cargo.boranium += cargo.boranium; existing.cargo.germanium += cargo.germanium; return; }
-  const warp = Math.min(planet.packetWarp, s.driver.safeSpeed + 3);
+  // (0.3.9.21: whole, and at least Warp 5: a typed -16 or 6.5 flew without decay or gave NaN minerals)
+  const warp = Math.max(5, Math.min(Math.round(planet.packetWarp) || 5, s.driver.safeSpeed + 3));
   game.packets.push({ id: game.nextId++, owner: planet.owner, x: planet.x, y: planet.y, targetId: planet.packetTarget, warp, safeWarp: s.driver.safeSpeed, cargo: { ...cargo }, newThisTurn: true, sourceId: planet.id });
 }
 

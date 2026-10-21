@@ -432,7 +432,10 @@ export function autoDesign(player: Player, hullName: string, purpose: Purpose, n
   const fits = (t: TechData, types: string[]) => partFitsSlot(t, types, h.name);
   const slots: DesignSlot[] = [];
   let hasScanner = false, hasColony = false, hasGate = false, hasDriver = false, beams = 0, torps = 0;
-  const engine = h.starbase ? null : bestEngine(parts.filter(p => fits(p, ['Engine'])), h.name, purpose);
+  // 0.3.9.21: no radiating engine on a colony ship of a race the radiation kills (its colonists died on the way, 18 %
+  // a year, and the ship reached its world empty)
+  const radOk = player.race.immune[2] || raceSpec(player.race).habCenter[2] >= 85;
+  const engine = h.starbase ? null : bestEngine(parts.filter(p => fits(p, ['Engine']) && (radOk || purpose !== 'colonizer' || !p.engine?.radiating)), h.name, purpose);
   const starbase = h.starbase;
   const pickFor = (types: string[], tagOrder: string[], scoreFn?: (t: TechData) => number) => {
     for (const tag of tagOrder) {

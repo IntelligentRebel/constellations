@@ -14,6 +14,7 @@ import { UpdateDialog } from './update';
 import { ChronicleDialog, AchievementsDialog } from '../chronicle';
 import { PbemDialog } from '../pbemui';
 import * as PB from '../../engine/pbem';
+import { sanitizeRace } from '../../engine/race';
 import { DilemmaDialog } from '../destiny';
 import { BattleDialog } from './battle';
 import { CargoDialog, SplitDialog, MergeDialog } from './fleetops';
@@ -102,7 +103,8 @@ function ImportDialog({ kind, onRace }: { kind?: 'game' | 'race'; onRace?: (r: a
   const load = (raw: string) => {
     try {
       const g = JSON.parse(raw);
-      if (kind === 'race') { if (!g.prt || !g.habLow) throw new Error('ce n\'est pas une race'); store.close('import'); saveRace(g); onRace?.(g); store.notify('Race importée'); return; }
+      // 0.3.9.21: held to what the wizard allows (an unknown type used to break the new game dialog for good)
+      if (kind === 'race') { const r = sanitizeRace(g); if (typeof r === 'string') throw new Error(r); store.close('import'); saveRace(r); onRace?.(r); store.notify('Race importée'); return; }
       // 0.3.9: a turn file opens the turn; an orders file goes to the hosted game open here
       if (g.format === PB.TURN_FORMAT || g.format === PB.ORDERS_FORMAT) {
         const r = PB.readPbem(raw)!;

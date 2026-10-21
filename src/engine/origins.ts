@@ -104,6 +104,7 @@ export function applyOrigins(game: GameState) {
         addFleetOf(game, p, 'colonizer', home); addFleetOf(game, p, 'colonizer', home);
         const c = raceSpec(p.race).habCenter;
         p.doomDir = [0, 1, 2].map(i => p.race.immune[i] ? 0 : c[i] >= 50 ? -1 : 1) as [number, number, number];
+        p.doomWorld = home.id;
         break;
       }
       case 'relicWorld': {
@@ -210,7 +211,9 @@ export const DOOM_START = 2430;
 export const DOOM_FLOOR = -30;
 
 function doom(game: GameState, p: Player) {
-  const home = game.planets.find(pl => pl.homeworld && (pl.owner === p.id || pl.id === p.capital)) ?? (p.capital !== undefined ? game.planets[p.capital] : undefined);
+  // (0.3.9.21: the doomed world itself: once it was left or lost, the new capital drifted, or a homeworld conquered from
+  // another empire)
+  const home = p.doomWorld !== undefined ? game.planets[p.doomWorld] : game.planets.find(pl => pl.homeworld && (pl.owner === p.id || pl.id === p.capital)) ?? (p.capital !== undefined ? game.planets[p.capital] : undefined);
   if (!home) return;
   if (game.year === DOOM_START - 10 && home.owner === p.id && !p.ai) p.messages.push({ year: game.year, kind: 'warning', text: `Vos astronomes sont formels : dans dix ans, le climat de ${home.name} commencera à se dégrader, et rien ne l'arrêtera. Préparez de nouveaux foyers.`, target: { kind: 'planet', id: home.id } });
   if (game.year < DOOM_START) return;

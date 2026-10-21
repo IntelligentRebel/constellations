@@ -180,7 +180,9 @@ export function checkGuardians(game: GameState, rng: Rng) {
       const pts = Math.round(researchCost(game, p, field) * (0.3 + 0.3 * g.tier));
       const story = researchStory(game, p, field, pts, 'guardian', rng);
       p.finds = { anomalies: 0, chapters: 0, guardians: 0, ...p.finds }; p.finds.guardians++;
-      let text = `${theGuardian(g.kind, true)} de ${pl.name} est ${destroyed(g.kind)}. Vos équipes fouillent ses restes : ${story}. ${kind.fem ? 'Elle' : 'Il'} gardait ${Math.round(400 * g.tier)} kt de chaque minerai, restés à la surface.`;
+      // (0.3.9.21: what really lies on the surface: the hoard told was not always there, nor of that size)
+      const kt = Math.min(pl.surface.ironium, pl.surface.boranium, pl.surface.germanium);
+      let text = `${theGuardian(g.kind, true)} de ${pl.name} est ${destroyed(g.kind)}. Vos équipes fouillent ses restes : ${story}.${kt >= 100 ? ` ${kind.fem ? 'Elle' : 'Il'} gardait au moins ${Math.round(kt)} kt de chaque minerai, restés à la surface.` : ''}`;
       if (id === g.killedBy) {
         const chance = [0, 0.2, 0.5, 1][g.tier];
         const relic = rng.chance(chance) ? missingRelic(p, rng.int(100), g.kind === 'warden' ? [] : ['heart']) : null;
@@ -271,15 +273,17 @@ export function guardianWarnings(game: GameState) {
       if (!kindId && !lair) continue;
       const key = `g${f.id}:${last.targetId}`;
       if (p.intel.warned[key] !== undefined) continue;
-      p.intel.warned[key] = game.year;
       // 3.4: a pirate lair, the Breach
       if (!kindId) {
         const breach = lair === 'crisis';
+        // (0.3.9.21: not marked as warned during the omens, or the warning never came once the Nexus is there)
         if (breach && game.crisis?.phase !== 'active') continue;
+        p.intel.warned[key] = game.year;
         p.messages.push({ year: game.year, kind: 'warning', text: `${f.name} se dirige vers ${game.planets[last.targetId].name}, ${breach ? 'gardée par le Nexus des Moissonneurs' : 'repaire de pirates'}. Elle sera attaquée dès son arrivée.`, target: { kind: 'fleet', id: f.id } });
         continue;
       }
       const kind = GUARDIAN_KINDS[kindId];
+      p.intel.warned[key] = game.year;
       p.messages.push({ year: game.year, kind: 'warning', text: `${f.name} se dirige vers ${game.planets[last.targetId].name}, gardée par ${theGuardian(kindId)} (palier ${kind?.tier ?? '?'}). Elle sera attaquée dès son arrivée.`, target: { kind: 'fleet', id: f.id } });
     }
   }

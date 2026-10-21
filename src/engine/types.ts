@@ -299,12 +299,39 @@ export interface PbemState {
   /** host: fingerprints of the state the turn files were made from, and the orders received (player → year) */
   base?: PbemBase;
   received?: Record<number, number>;
+  /**
+   * 0.3.9.21: host, this year: what each player's orders did to objects that are not theirs (minerals, cargo, wrecks:
+   * as differences), the wrecks they created, and where their ids had got to. A file sent again first takes back
+   * what the one before it did, and another player's changes to their objects are kept when theirs are taken.
+   */
+  applied?: Record<number, PbemApplied>;
+  /** 0.3.9.21, host: the proposals answered or withdrawn this year (a file sent again must not bring them back) */
+  gone?: number[];
+  /**
+   * 0.3.9.21, in a turn file: what the merges made before it already put in it (each player's differences then, and
+   * the fingerprints of the free worlds, the pairs and the stories as they were), so that its orders count them once
+   */
+  contains?: PbemContains;
   /** player: whose turn this is, the save slot of the host when it lives in the same browser, year of the orders sent */
   player?: number;
   hostSlot?: string;
   sent?: number;
 }
+export interface PbemContains { applied: Record<number, PbemApplied>; /** the texts of the player's reports of the year then */ msgs?: string[]; surface: Record<number, Minerals>; holds: Record<number, { cargo: Cargo; fuel: number }>; salvage: Record<number, Minerals>; free: Record<number, string>; pairs: Record<string, string>; chains: Record<number, string>; proposals: number[] }
+export interface PbemApplied {
+  planets: Record<number, Minerals>;
+  fleets: Record<number, { cargo: Cargo; fuel: number }>;
+  salvage: Record<number, Minerals>;
+  created: number[];
+  nextId: number;
+  /** the player's own reports of the year in that file (a file sent again replaces them) */
+  msgs?: string[];
+}
 export interface PbemBase {
+  /** 0.3.9.21: the minerals of each world, the holds of each fleet and the wrecks, when the turn files were made */
+  surface?: Record<number, Minerals>;
+  holds?: Record<number, { cargo: Cargo; fuel: number }>;
+  salvage?: Record<number, Minerals>;
   nextId: number;
   planets: Record<number, string>;
   fleets: Record<number, string>;
@@ -362,6 +389,8 @@ export interface RaidOrder {
   loot: number;
   /** pirates: the lair the raid comes from (planet id) */
   home?: number;
+  /** 0.3.9.21: the arrival year announced to the victim (what the pages show of a raid or a wave not seen) */
+  eta?: number;
 }
 
 export interface DesignSlot { slot: number; part: string; qty: number }
@@ -663,6 +692,8 @@ export interface Player {
   origin?: string;
   /** Constellations 3.2: doomed homeworld, direction of the drift of each habitability axis */
   doomDir?: [number, number, number];
+  /** 0.3.9.21 (origin "doomed world"): the world that is doomed, whoever holds it now */
+  doomWorld?: number;
   /** Constellations 3.2: relics owned (permanent bonuses) */
   relics?: string[];
   /** Constellations 3.2: fragments of the Ancients' map found */
@@ -1095,6 +1126,8 @@ export interface Cataclysm {
 
 /** 0.3.9: a computer empire that has sworn to destroy a human one. */
 export interface Nemesis {
+  /** 0.3.9.21: its capital when it swore (losing it breaks it: the capital had moved by then, and never counted) */
+  capital?: number;
   /** the human empire */
   of: number;
   /** the computer empire */
@@ -1151,6 +1184,8 @@ export interface PirateState {
   bounty: Record<number, number>;
   /** bounties placed by each empire on each other (placer -> target -> R), for the placer's eyes only */
   placed?: Record<number, Record<number, number>>;
+  /** 0.3.9.21: what of each placer's bounties the raids have used (placer -> target -> R) */
+  spent?: Record<number, Record<number, number>>;
   /** what they have plundered and been paid (makes the raids bigger) */
   treasure: number;
   nextRaid: number;
@@ -1182,6 +1217,8 @@ export interface DiploPair {
   planets?: Record<number, number>;
   /** 0.3.7: year of the last tribute demanded, by the empire that demanded it (one every three years) */
   tribute?: Record<number, number>;
+  /** 0.3.9.21: the last treaty (alliance, trade, research) broken, by whom and when: a war declared just after is a betrayal all the same */
+  broken?: { by: number; year: number };
 }
 /** What an empire remembers of another (decays with time). */
 export interface DiploMemory { by: number; about: number; kind: 'war' | 'betrayal' | 'dishonor' | 'gift' | 'demand' | 'broken' | 'conquest' | 'assimilation' | 'ally' | 'refused' | 'spying' | 'choice'; value: number; year: number; decay: number }

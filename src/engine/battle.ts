@@ -14,6 +14,7 @@ import { shieldFactorAt } from './terrain';
 import { resetPlanetPolicies } from './empire';
 import { veteransOn, rankOf, rankBonus, battleExperience, logFleet } from './veterans';
 import { battleGrudges } from './nemesis';
+import { foughtWith } from './techtrade';
 
 // 0.3.9.15: the starting squares depend on how many empires take part (one formation per count, as in Stars!; more than
 // the largest formation share its squares)
@@ -228,11 +229,13 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   // 0.3.9.16 (Stars!, "Guts of the battle engine"): an empire with ships (armed or not) under orders to attack another one
   // present makes itself a legitimate target of that one, which fires back whatever its own orders say
   const orders = new Set<string>();
+  // 0.3.9.21: the station fights with the plan it has in the battle (armed first), also when deciding whether to open fire
+  const stationPlan = (owner: number): BattlePlan => ({ ...game.players[owner].battlePlans[0], primary: 'armed' as TargetClass, secondary: 'any' as TargetClass, tactic: 'maximizeDamage' as const });
   for (const f of fleets) {
     const plan = planFor(game, f.owner, f.battlePlan);
     for (const o of owners) if (o !== f.owner && hostile(f.owner, o, plan)) orders.add(`${f.owner}>${o}`);
   }
-  if (planet?.starbase && specOf(game, planet.starbase.designId).hasWeapons) for (const o of owners) if (o !== planet.owner && hostile(planet.owner, o, game.players[planet.owner].battlePlans[0])) orders.add(`${planet.owner}>${o}`);
+  if (planet?.starbase && specOf(game, planet.starbase.designId).hasWeapons) for (const o of owners) if (o !== planet.owner && hostile(planet.owner, o, stationPlan(planet.owner))) orders.add(`${planet.owner}>${o}`);
   const enemyOf = (a: number, b: number, plan: BattlePlan) => hostile(a, b, plan) || (plan.primary !== 'none' && orders.has(`${b}>${a}`));
   let anyAttack = false;
   for (const f of fleets) {
@@ -246,7 +249,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   // an armed station can open fire on enemies in orbit (help, Starbases)
   if (!anyAttack && planet?.starbase) {
     const sbSpec = specOf(game, planet.starbase.designId);
-    const plan = game.players[planet.owner].battlePlans[0];
+    const plan = stationPlan(planet.owner);
     if (sbSpec.hasWeapons && owners.some(o => hostile(planet.owner, o, plan))) anyAttack = true;
   }
   if (!anyAttack) return null;
@@ -298,7 +301,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     const spec = specOf(game, planet.starbase.designId);
     const d = game.designs.find(x => x.id === planet.starbase!.designId)!;
     const pos = startPos.get(planet.owner)!;
-    const plan = { ...game.players[planet.owner].battlePlans[0], primary: 'armed' as TargetClass, secondary: 'any' as TargetClass, tactic: 'maximizeDamage' as const };
+    const plan = stationPlan(planet.owner);
     tokens.push({
       rec: { id: nextTokenId++, owner: planet.owner, fleetId: -1, planetId: planet.id, designId: d.id, designName: d.name, hull: d.hull, qty: 1, armor: spec.armor, shields: spec.shields, damage: planet.starbase.damage, qtyDamaged: planet.starbase.damage > 0 ? 1 : 0, x: pos.x, y: pos.y, initiative: spec.initiative, movement: 0, starbase: true },
       owner: planet.owner, fleet: null, planet, designId: d.id, spec, qty: 1, armor: spec.armor, shieldsPerShip: spec.shields, stackShields: spec.shields,
@@ -614,16 +617,18 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     if (f.tokens.length) clampFleetHold(game, f);
   }
   // Constellations 3: convoys of the logistics network lost to raiders (any freighter counts for the raiders)
+  // 0.3.9.21: the raiders are those that destroyed ships of that empire here, not every armed empire present
+  const killersOf = (victim: number) => owners.filter(r => r !== victim && (killsBy[r]?.[victim] ?? 0) > 0);
   for (const f of fleets) {
     if (f.tokens.length || !freighters.has(f)) continue;
     if (f.auto !== 'logistics') {
-      for (const r of owners) if (r !== f.owner && tokens.some(t => t.owner === r && t.spec.hasWeapons)) game.players[r].stats.convoysDestroyed = (game.players[r].stats.convoysDestroyed ?? 0) + 1;
+      for (const r of killersOf(f.owner)) game.players[r].stats.convoysDestroyed = (game.players[r].stats.convoysDestroyed ?? 0) + 1;
       continue;
     }
     const o = game.players[f.owner];
     const st = o.logStats ?? (o.logStats = { colonists: 0, minerals: 0, lostColonists: 0, lostMinerals: 0, convoysLost: 0, trips: 0 });
     st.convoysLost++; st.lostColonists += f.cargo.colonists * 100; st.lostMinerals += f.cargo.ironium + f.cargo.boranium + f.cargo.germanium;
-    const raiders = owners.filter(r => r !== f.owner && tokens.some(t => t.owner === r && t.spec.hasWeapons));
+    const raiders = killersOf(f.owner);
     for (const r of raiders) game.players[r].stats.convoysDestroyed = (game.players[r].stats.convoysDestroyed ?? 0) + 1;
     const lostTxt = f.cargo.colonists ? `${people(game, f.cargo.colonists * 100)} colons perdus` : f.cargo.ironium + f.cargo.boranium + f.cargo.germanium ? `${f.cargo.ironium + f.cargo.boranium + f.cargo.germanium} kt de minerais perdus` : 'il voyageait à vide';
     o.messages.push({ year: game.year, kind: 'combat', text: `Convoi intercepté : ${f.name} a été détruit${raiders.length ? ` par les ${game.players[raiders[0]].name}` : ''} (${lostTxt}).`, target: { kind: 'battle', id: record.id } });
@@ -660,9 +665,14 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
   // knowledge & messages
   const where = planet ? planet.name : `l'espace profond (${Math.round(x)}, ${Math.round(y)})`;
   // 0.3.9: the crews that survived learn; the unarmed ones remember
+  // 0.3.9.21: a fleet that neither fired nor was fired at (a bystander at peace with everyone) was not in the battle
+  const engaged = new Set<number>();
+  for (const a of actions) if (a.t === 'fire') { engaged.add(a.id); engaged.add(a.target); }
   if (vets) for (const f of fleets) {
     if (!f.tokens.length) continue;
-    const lost = tokens.filter(t => t.fleet === f).reduce((a, t) => a + t.rec.qty - t.qty, 0);
+    const mine = tokens.filter(t => t.fleet === f);
+    if (!mine.some(t => engaged.has(t.rec.id))) continue;
+    const lost = mine.reduce((a, t) => a + t.rec.qty - t.qty, 0);
     if (f.tokens.some(t => specOf(game, t.designId).hasWeapons)) battleExperience(game, f, killsOf.get(f) ?? 0, lost, where);
     else logFleet(game, f, lost ? `Prise dans la bataille de ${where} : ${lost} vaisseau${lost > 1 ? 'x' : ''} perdu${lost > 1 ? 's' : ''}.` : `Prise dans la bataille de ${where}, sans perte.`);
   }
@@ -673,9 +683,11 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     for (const t of tokens) if (t.owner !== o) learnDesign(p, game, t.designId, true);
     const ours = tokens.filter(t => t.owner === o);
     const lostOurs = ours.reduce((a, t) => a + (t.rec.qty - t.qty), 0);
-    const lostTheirs = tokens.filter(t => t.owner !== o).reduce((a, t) => a + (t.rec.qty - t.qty), 0);
+    // 0.3.9.21: the losses of those it fought, and the ships it destroyed itself (not an ally's losses, nor its kills)
+    const foes = foughtWith(record, o);
+    const lostTheirs = tokens.filter(t => foes.has(t.owner)).reduce((a, t) => a + (t.rec.qty - t.qty), 0);
     p.messages.push({ year: game.year, kind: 'battle', text: `Bataille à ${where} : ${lostOurs} de vos vaisseaux détruits, ${lostTheirs} vaisseaux adverses détruits.`, target: { kind: 'battle', id: record.id } });
-    p.stats.shipsDestroyed += lostTheirs;
+    p.stats.shipsDestroyed += Object.values(killsBy[o] ?? {}).reduce((a, k) => a + k, 0);
   }
   return record;
 }
@@ -717,7 +729,9 @@ export function simulateBattle(game: GameState, me: number, sideA: SimSide[], si
       planet = { ...JSON.parse(JSON.stringify(game.planets[0])), id: 0, name: 'la station', owner: station.side, x: 0, y: 0, starbase: { designId: d.id, damage: 0 }, pop: 0, queue: [], defenses: 0, megaprojects: [] } as Planet;
     }
     const g: GameState = {
-      ...game, settings: { ...game.settings, terrain: false }, terrain: [], year: game.year, diplomacy: undefined, crisis: undefined, pirates: undefined, players: [JSON.parse(JSON.stringify(pa)), JSON.parse(JSON.stringify(pb))],
+      // (0.3.9.21: a chronicle and secrets of its own: the real game's chronicle got a "first contact" per run, and a
+      // pulsar near the origin halved the shields of the simulation)
+      ...game, settings: { ...game.settings, terrain: false }, terrain: [], year: game.year, diplomacy: undefined, crisis: undefined, pirates: undefined, chronicle: undefined, secrets: undefined, guardians: [], nemeses: [], players: [JSON.parse(JSON.stringify(pa)), JSON.parse(JSON.stringify(pb))],
       fleets: [fa, fb].filter(f => f.tokens.length), designs, planets: planet ? [planet] : [], battles: [], salvage: [], nextId: 10_000_000,
     };
     if (planet) stationCost = specOf(g, planet.starbase!.designId).cost.resources;

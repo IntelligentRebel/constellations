@@ -282,7 +282,9 @@ export function updateDossiers(game: GameState, refresh = false) {
     const d = dossierOf(o, t.id);
     d.lines = lines;
     d.level = Math.max(0, Math.min(100, sum(lines)));
-    if (!o.ai) learn(game, o, t, d, refresh);
+    // (0.3.9.21: the computers learn too, quietly: their estimates of the others (knownScore, the coalition against a
+    // leader, the research race of a war) read these facts, which they never had)
+    learn(game, o, t, d, refresh || !!o.ai);
   }
   if (refresh) return;
   // 5. decay
@@ -304,7 +306,7 @@ function learn(game: GameState, o: Player, t: Player, d: Dossier, quiet = false)
       d.facts[f.key] = { v, err: Math.round(err * 100), year: game.year };
     }
     const s = d.facts.score;
-    if (s && s.year === game.year) {
+    if (s && s.year === game.year && !o.ai) {
       const h = d.history ??= [];
       if (h[h.length - 1]?.year !== game.year) h.push({ year: game.year, v: s.v, err: s.err });
       if (h.length > 400) h.shift();

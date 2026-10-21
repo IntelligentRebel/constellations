@@ -78,8 +78,9 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
       break;
     }
     case 'Bomb': {
-      if (st.smart) lines.push(`Bombe intelligente : elle tue ${st.killRate} % de la population par an sans toucher aux installations ; son effet dépend de l'hostilité de la planète pour ses habitants.`);
-      else if (st.unterraformRate) lines.push(`Bombe de reterraformation : elle dégrade l'environnement de la planète de ${st.unterraformRate} point(s) par an, vers ce qui est le pire pour son propriétaire.`);
+      // 0.3.9.21: as the bombing does it (no effect of the planet's hostility; the retro bomb undoes terraforming)
+      if (st.smart) lines.push(`Bombe intelligente : elle tue ${st.killRate} % de la population par an sans toucher aux installations. Les défenses planétaires l'arrêtent deux fois moins bien qu'une bombe ordinaire ; seules, les bombes intelligentes ne tuent jamais les 100 derniers colons.`);
+      else if (st.unterraformRate) lines.push(`Bombe régressive : elle défait le terraformement de la planète, de ${st.unterraformRate} point(s) par an et par bombe, en ramenant son environnement vers ce qu'il était à l'origine. Elle ne tue personne et ne détruit rien.`);
       else lines.push(`Bombe orbitale : chaque année, elle tue ${st.killRate ?? 0} % de la population (au moins ${fmtPeople(st.minKillRate ?? 0)} colons) et détruit ${st.structureDestroyRate ?? 0} installations. Les défenses planétaires en arrêtent une partie.`);
       if (st.killRate) stats.push(['Population tuée', `${st.killRate} %/an`]);
       if (st.structureDestroyRate) stats.push(['Installations', `${st.structureDestroyRate}/an`]);
@@ -152,7 +153,8 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
       if (st.cargoBonus) lines.push(`Soute supplémentaire : +${st.cargoBonus} kt de cargaison (minerais ou colons).`);
       if (st.fuelBonus) lines.push(`Réservoir supplémentaire : +${st.fuelBonus} mg de carburant, donc plus d'autonomie.`);
       if (st.fuelGeneration) lines.push(`Produit ${st.fuelGeneration} mg de carburant par an.`);
-      if (st.movementBonus) lines.push(`Propulseur de manœuvre : +${String(st.movementBonus).replace('.', ',')} case${st.movementBonus > 1 ? 's' : ''} de déplacement par round de combat${st.movementBonus < 1 ? ' (en moyenne)' : ''}.`);
+      // 0.3.9.21: in points of battle speed (4 points make one more square a round), not squares: the text said 4× too much
+      if (st.movementBonus) lines.push(`Propulseur de manœuvre : +${String(st.movementBonus).replace('.', ',')} point${st.movementBonus > 1 ? 's' : ''} de vitesse de combat (4 points font une case de plus par round ; 1 point, une case de plus un round sur quatre).`);
       if (st.cloakUnits) lines.push(`Camouflage : ${st.cloakUnits} unités${st.cloakUnarmedOnly ? ', seulement sur un vaisseau sans armes' : ''}. Un vaisseau camouflé n'est repéré qu'à une fraction de la portée des scanners ennemis.`);
       if (st.torpedoBonus || st.initiativeBonus) lines.push(`Ordinateur de combat : ${st.initiativeBonus ? `+${st.initiativeBonus} d'initiative (tire plus tôt)` : ''}${st.initiativeBonus && st.torpedoBonus ? ', ' : ''}${st.torpedoBonus ? `+${pc(st.torpedoBonus)} de précision des torpilles` : ''}.`);
       if (st.torpedoJamming) lines.push(`Brouilleur : ${pc(st.torpedoJamming)} de chances de dévier chaque torpille ennemie.`);

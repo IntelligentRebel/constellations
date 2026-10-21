@@ -2,7 +2,7 @@
 import { pendingRefit } from '../engine/refit';
 import { LangPicker } from './langpick';
 import { useEffect, useState } from 'preact/hooks';
-import { store, useStore, useChannel, fmt, fmtPop, INSPECTOR_TABS, type TabId } from './store';
+import { store, useStore, useChannel, fmt, fmtPop, fmtGrowth, INSPECTOR_TABS, type TabId } from './store';
 import { viewSpec, viewFleet } from './memo';
 import { CenterPage, fitGalaxy } from './pages';
 import { Sidebar } from './sidebar';
@@ -66,7 +66,7 @@ function Header() {
     <UpdateBadge />
     <div class="hstats" data-tut="hstats">
       <button onClick={() => s.goTab('colonies')}><b>{planets.length}</b><small>colonie{planets.length > 1 ? 's' : ''}</small></button>
-      <button onClick={() => s.goTab('colonies')} title={`Croissance prévue l'an prochain : ${growth >= 0 ? '+' : ''}${fmtPop(growth)} habitants (${growthPct.toFixed(1).replace('.', ',')} %)`}><b>{fmtPop(pop)}</b><small>habitants <span class={growth >= 0 ? 'hgood' : 'hbad'}>{growth >= 0 ? '+' : ''}{fmtPop(growth)}/an</span></small></button>
+      <button onClick={() => s.goTab('colonies')} title={`Croissance prévue l'an prochain : ${fmtGrowth(growth)} habitants (${growthPct.toFixed(1).replace('.', ',')} %)`}><b>{fmtPop(pop)}</b><small>habitants <span class={growth >= 0 ? 'hgood' : 'hbad'}>{fmtGrowth(growth)}/an</span></small></button>
       <button onClick={() => s.goTab('research')} title={`${me.researchPct} % des ressources vont à la recherche (réglable dans l'onglet Recherche)`}><b>{fmt(res)}</b><small>ressources/an · <span class="hacc">{me.researchPct} % recherche</span></small></button>
       <button onClick={() => s.goTab('fleets')}><b>{fmt(ships)}</b><small>vaisseaux</small></button>
       <ResearchStat />
@@ -213,6 +213,8 @@ function useKeyboard() {
       const typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
       if (e.key === 'Escape' && s.dialogs.length) { s.close(); e.preventDefault(); return; }
       if (!s.game || s.handoff) return;
+      // (0.3.9.21: a key a control has already handled, the speed gauge for one, is not a shortcut too)
+      if (e.defaultPrevented) return;
       const fk: Record<string, () => void> = {
         F1: () => s.goTab('guide'), F2: () => s.open('techBrowser'), F3: () => s.goTab('colonies'), F4: () => s.goTab('design'), F5: () => s.goTab('research'),
         F6: () => s.open('battlePlans'), F7: () => s.goTab('diplomacy'), F8: () => s.open('raceView'), F9: () => s.endTurn(1), F10: () => s.open('score'), F12: () => s.endTurn(10),
@@ -282,10 +284,12 @@ function useKeyboard() {
           else { const p = g.planets.find(x => x.owner === me.id); if (p) { s.select({ kind: 'planet', id: p.id }); s.center(p.x, p.y); } }
           break;
         }
-        case 'Delete': case 'Backspace': if (s.commanded?.kind === 'fleet' && s.waypointIndex > 0) { A.deleteWaypoint(s.waypointIndex); e.preventDefault(); } break;
+        // (0.3.9.21: where the route is shown, and on a step that exists: after a turn the index could point past it)
+        case 'Delete': case 'Backspace': if (INSPECTOR_TABS.includes(s.tab) && s.commanded?.kind === 'fleet' && s.waypointIndex > 0 && A.commandedFleet()?.waypoints[s.waypointIndex]) { A.deleteWaypoint(s.waypointIndex); e.preventDefault(); } break;
         case ',': case '.': {
           const f = A.commandedFleet();
-          if (f && s.waypointIndex > 0) A.setWarp(s.waypointIndex, Math.max(1, Math.min(10, f.waypoints[s.waypointIndex].warp + (e.key === '.' ? 1 : -1))));
+          const w = f?.waypoints[s.waypointIndex];
+          if (INSPECTOR_TABS.includes(s.tab) && f && w && s.waypointIndex > 0 && w.warp < 11) A.setWarp(s.waypointIndex, Math.max(1, Math.min(10, w.warp + (e.key === '.' ? 1 : -1))));
           break;
         }
         case '+': case '=': s.setCamera({ ...s.camera, zoom: Math.min(12, s.camera.zoom * 1.25) }); break;
@@ -372,7 +376,7 @@ function Handoff() {
       <h2 style={{ color: me.color }}>Au tour des {me.name}</h2>
       <p class="muted">Les autres joueurs ne doivent pas regarder l'écran.</p>
       <ul class="handoff-list">{humans.map(h => <li class={h === me.id ? 'cur' : done.includes(h) ? 'done' : ''}><span class="dot" style={{ background: g.players[h].color }} />{g.players[h].name}<span class="muted small">{h === me.id ? 'à vous de jouer' : done.includes(h) ? 'ordres donnés' : 'en attente'}</span></li>)}</ul>
-      <button class="primary big" onClick={() => { s.handoff = false; s.bump(); }}>Afficher mon empire</button>
+      <button class="primary big" onClick={() => { s.handoff = false; if (s.me) s.achievements(s.me); s.bump(); }}>Afficher mon empire</button>
     </div>
   </div>;
 }

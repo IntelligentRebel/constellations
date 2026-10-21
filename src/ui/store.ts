@@ -146,8 +146,21 @@ class Store {
     const tut = this.game?.tutorial;
     this.game = JSON.parse(s);
     if (tut && this.game) this.game.tutorial = tut;
+    // 0.3.9.21: the game played is a new object: the colours follow it, an open question about the old one goes, the
+    // route step chosen stays within the route, and the undo itself is saved (it was not: reloaded, the order was back)
+    if (this.game) applyPrefs(this.game);
+    this.dialogs = this.dialogs.filter(d => !['confirm', 'warn', 'cargo', 'split', 'merge'].includes(d.kind));
+    this.clampWaypoint();
+    this.dirty = true; this.autosaveSoon();
     this.notify('Action annulée');
     this.bump();
+  }
+
+  /** 0.3.9.21: the route step chosen exists (after a turn or an undo the route may be shorter: the keys , and . threw) */
+  clampWaypoint() {
+    const c = this.commanded;
+    const f = c?.kind === 'fleet' ? this.game?.fleets.find(x => x.id === c.id) : undefined;
+    this.waypointIndex = f ? Math.max(0, Math.min(this.waypointIndex, f.waypoints.length - 1)) : 0;
   }
 
   setGame(g: GameState, keepCamera = false) {
@@ -163,6 +176,10 @@ class Store {
     const me = g.players[g.human];
     const hw = g.planets.find(p => p.owner === me.id && p.homeworld) ?? g.planets.find(p => p.owner === me.id);
     if (hw) { this.commanded = { kind: 'planet', id: hw.id }; this.selected = { kind: 'planet', id: hw.id }; if (!keepCamera) this.camera = { x: hw.x, y: hw.y, zoom: 1.4 }; }
+    // 0.3.9.21: an empire without a world (an ark, the diaspora) keeps nothing of the game before: those ids were the
+    // objects of another empire here, which a click then gave orders to
+    else { this.commanded = null; this.selected = null; }
+    this.waypointIndex = 0; this.wpMode = false; this.todoKey = null; this.view.designFilter = null;
     // 0.3.9: a game played by turn files has no hand-over screen (each player plays at home)
     this.handoff = !g.pbem && this.humans().length > 1;
     try { moodNow(g, me); } catch { /* ignore */ }
@@ -178,7 +195,8 @@ class Store {
   /** all save slots, most recent first */
   slots: SaveSlot[] = [];
   private saveTimer = 0;
-  private saveSeq = 0;
+  /** 0.3.9.21: one sequence per game (saving one game, then another at once, dropped the first one's save) */
+  private saveSeqs: Record<string, number> = {};
 
   private readIndex(): SaveSlot[] {
     try { const a = JSON.parse(localStorage.getItem(INDEX_KEY) ?? '[]'); return Array.isArray(a) ? a : []; } catch { return []; }
@@ -200,12 +218,12 @@ class Store {
     g.id ??= Math.random().toString(36).slice(2, 10);
     clearTimeout(this.saveTimer);
     const json = JSON.stringify(g);
-    const seq = ++this.saveSeq;
+    const seq = this.saveSeqs[g.id] = (this.saveSeqs[g.id] ?? 0) + 1;
     this.dirty = false;
     // 0.3.6.7: and a backup file of this turn, in the folder the player chose
     backupSoon(g, json);
     void packSave(json).then(data => {
-      if (seq !== this.saveSeq) return; // a newer save superseded this one
+      if (seq !== this.saveSeqs[g.id!]) return; // a newer save of this game superseded this one
       const key = GAME_KEY + g.id;
       let list = this.readIndex().filter(x => x.id !== g.id);
       for (let attempt = 0; attempt < 4; attempt++) {
@@ -218,11 +236,14 @@ class Store {
           this.writeIndex(list.slice(0, MAX_SLOTS));
           return;
         } catch {
-          // storage full: drop the oldest other game and retry
+          // storage full: drop the oldest other game and retry (0.3.9.21: the list follows each removal, and no game
+          // is removed for a save that cannot fit even in the whole storage)
+          if (data.length > 4_800_000) break;
           list.sort((a, b) => b.updated - a.updated);
           const victim = list.pop();
           if (!victim) break;
           try { localStorage.removeItem(GAME_KEY + victim.id); } catch { /* ignore */ }
+          this.writeIndex([...list]);
         }
       }
       this.notify('Sauvegarde locale impossible (stockage plein) : exportez la partie.');
@@ -273,13 +294,14 @@ class Store {
     try { localStorage.removeItem(GAME_KEY + id); } catch { /* ignore */ }
     this.writeIndex(this.readIndex().filter(x => x.id !== id));
     if (this.saved?.id === id) this.saved = null;
-    void this.loadSaved();
+    // (0.3.9.21: without bringing the game just deleted back from the backup folder)
+    void this.loadSaved(false);
   }
 
   /** 0.3.6.7: the backup file the last game came back from (when the browser had lost it) */
   restoredFrom: string | null = null;
 
-  async loadSaved(): Promise<GameState | null> {
+  async loadSaved(restore = true): Promise<GameState | null> {
     // one-time migration of the single save used by earlier versions
     try {
       const legacy = localStorage.getItem(SAVE_KEY);
@@ -313,7 +335,7 @@ class Store {
     for (const sl of this.slots) { const g = await this.readSlot(sl.id); if (g) { this.saved = g; break; } }
     // 0.3.6.7: nothing in the browser: the last backup file, when the folder is allowed
     await initBackup();
-    if (!this.saved && backup.status === 'ok') await this.restoreLatestBackup();
+    if (restore && !this.saved && backup.status === 'ok') await this.restoreLatestBackup();
     this.bump();
     return this.saved ?? null;
   }
@@ -366,6 +388,10 @@ class Store {
     this.commanded = hw ? { kind: 'planet', id: hw.id } : null;
     this.selected = this.commanded;
     if (hw) this.camera = { x: hw.x, y: hw.y, zoom: 1.4 };
+    // 0.3.9.21: nothing of the previous player's view: the design filter (it hid all the next one's fleets), the mood
+    // of the music (it told what the previous one had seen)
+    this.view.designFilter = null; this.waypointIndex = 0; this.todoKey = null;
+    try { moodNow(g, g.players[id]); } catch { /* ignore */ }
     this.handoff = true;
   }
 
@@ -421,14 +447,18 @@ class Store {
       this.commanded = hw ? { kind: 'planet', id: hw.id } : null;
     }
     if (this.selected?.kind === 'fleet' && !this.game.fleets.some(f => f.id === this.selected!.id) && !this.me?.intel.fleets.some(f => f.id === this.selected!.id)) this.selected = this.commanded;
+    this.clampWaypoint();
+    // 0.3.9.21: the dialogs bound to a place (cargo, split, merge) close: left open, they moved cargo over any distance
+    this.dialogs = this.dialogs.filter(d => !['cargo', 'split', 'merge', 'confirm', 'warn'].includes(d.kind));
     this.busy = false;
     if (P) prepareTurn(this.game);
     const after = this.humans();
     if (humans.length > 1 && after.length) this.switchTo(after[0]);
-    this.save();
-    try { afterTurn(this.game, listener, before); } catch { /* sound is never worth an error */ }
-    if (!P) this.achievements(listener);
+    // (0.3.9.21: in hot seat, the year's sounds and achievements were the last player's, heard and shown by the next)
     if (this.game.victor !== null && !this.game.victoryAnnounced) { this.game.victoryAnnounced = true; this.open('gameOver'); }
+    this.save();
+    if (humans.length <= 1) try { afterTurn(this.game, listener, before); } catch { /* sound is never worth an error */ }
+    if (!P && humans.length <= 1) this.achievements(listener);
     if (this.me?.dead && !after.length) this.open('gameOver');
     this.bump();
   }
@@ -491,7 +521,9 @@ export const fmt = (n: number, digits = 0) => (Number.isFinite(n) ? numberFormat
  * A population (in the rules' colonists). 3.6: when the game shows populations in millions (a colonist stands for a
  * thousand people), compactly: "25 M", "1,02 Md".
  */
-export const fmtPop = (n: number) => {
+export const fmtPop = (n: number): string => {
+  // (0.3.9.21: a negative number, a loss, rounds toward zero as a gain does, and keeps its unit)
+  if (n < 0) return '-' + fmtPop(-n);
   if (!store.game || popScale(store.game) === 1) return fmt(Math.floor(n / 100) * 100);
   const v = n * popScale(store.game);
   if (v >= 1e9) return `${fmt(v / 1e9, v < 1e10 ? 2 : 1)} Md`;

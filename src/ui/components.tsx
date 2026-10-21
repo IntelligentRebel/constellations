@@ -105,7 +105,18 @@ export function Cost(props: { c: { ironium: number; boranium: number; germanium:
 
 export function Num(props: { value: number; min?: number; max?: number; step?: number; onChange: (v: number) => void; width?: number }) {
   return <input type="number" class="num" value={props.value} min={props.min} max={props.max} step={props.step ?? 1} style={{ width: (props.width ?? 70) + 'px' }}
-    onChange={e => { const v = +(e.target as HTMLInputElement).value; if (Number.isFinite(v)) props.onChange(v); }} />;
+    onChange={e => {
+      // 0.3.9.21: what is typed is held to the field's bounds, and whole when the step is (the browser checks neither
+      // for a typed value: 2.5 ships, a Warp of -16 or 7.5 got through)
+      const el = e.target as HTMLInputElement;
+      let v = +el.value;
+      if (!Number.isFinite(v) || el.value.trim() === '') { el.value = String(props.value); return; }
+      if (Number.isInteger(props.step ?? 1)) v = Math.round(v);
+      if (props.min !== undefined) v = Math.max(props.min, v);
+      if (props.max !== undefined) v = Math.min(props.max, v);
+      if (String(v) !== el.value) el.value = String(v);
+      props.onChange(v);
+    }} />;
 }
 
 export function Row(props: { k: ComponentChildren; v: ComponentChildren; cls?: string; title?: string }) {

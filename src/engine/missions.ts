@@ -9,6 +9,8 @@ import { safeGoto } from './ai';
 import { raceSpec } from './race';
 import { capitalOf as empireCapital } from './empire';
 import { joinNetwork } from './logistics';
+import { hasOrders } from './tasks';
+import { isStudying } from './anomalies';
 
 export type MissionKind = 'colonize' | 'explore' | 'mine' | 'haul' | 'logistics';
 /** homeId: for a mineral shuttle ('haul'), the planet where the minerals are delivered (default: the capital). */
@@ -20,11 +22,13 @@ export function isPureScout(sp: FleetSpec): boolean {
   return sp.hasEngines && sp.scanRange > 0 && sp.scout;
 }
 
-const idle = (f: Fleet) => f.waypoints.length <= 1 && !f.auto;
+// 0.3.9.21: a fleet with a standing order (remote mining, patrol, minelaying, refuelling…) or studying an anomaly is
+// not free (the mission buttons took them off their work)
+const idle = (game: GameState, f: Fleet) => !hasOrders(f) && !isStudying(game, f);
 
 /** Fleets that could carry out the mission right now. */
 function candidates(game: GameState, p: Player, kind: MissionKind): Fleet[] {
-  const own = game.fleets.filter(f => f.owner === p.id && idle(f));
+  const own = game.fleets.filter(f => f.owner === p.id && idle(game, f));
   if (kind === 'colonize') {
     return own.filter(f => {
       const sp = fleetSpec(game, f);

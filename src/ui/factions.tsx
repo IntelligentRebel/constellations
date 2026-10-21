@@ -134,16 +134,17 @@ export function CrisisSection({ g, me }: { g: GameState; me: Player }) {
   const mine = me.intel.fleets.filter(fi => g.players[fi.owner]?.faction === 'crisis' && fi.id !== C.nexusFleetId);
   const atMe = waves(g).filter(w => w.raid!.empire === me.id);
   const navy = navyStrength(g, me.id), nx = nexusStrength(g);
-  const helpers = g.fleets.filter(f => !g.players[f.owner].monster && bp && f.x === bp.x && f.y === bp.y && f.tokens.length);
+  // 0.3.9.21: the empires seen there (your scanners), not all those present
+  const helperOwners = bp ? [...new Set([...g.fleets.filter(f => f.owner === me.id && f.x === bp.x && f.y === bp.y && f.tokens.length).map(f => f.owner), ...me.intel.fleets.filter(fi => fi.owner >= 0 && !g.players[fi.owner]?.monster && fi.x === bp.x && fi.y === bp.y).map(fi => fi.owner)])] : [];
   return <div class="small">
     <div class="alert strong">La Brèche est ouverte à <button class="lnk" onClick={go}>{bp?.name}</button> : {C.wave} vague{C.wave > 1 ? 's' : ''} déjà sortie{C.wave > 1 ? 's' : ''}, la prochaine vers {C.nextWave}</div>
-    {atMe.map(w => { const t = g.planets[w.raid!.target]; return <div class="alert">{w.name} ({w.tokens.reduce((a, x) => a + x.qty, 0)} vaisseaux) fond sur <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: t.id }, t)}>{t.name}</button></div>; })}
+    {atMe.map(w => { const t = g.planets[w.raid!.target]; const seen = me.intel.fleets.find(fi => fi.id === w.id); const n = seen ? seen.count ?? seen.tokens?.reduce((a, x) => a + x.qty, 0) : undefined; return <div class="alert">{w.name}{n !== undefined ? ` (${seen!.uncertain ? '≈ ' : ''}${n} vaisseaux)` : ''} fond sur <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: t.id }, t)}>{t.name}</button>{!seen && w.raid!.eta !== undefined ? ` (arrivée annoncée vers ${w.raid!.eta})` : ''}</div>; })}
     <div class="emp-kpis">
       <div><small>Le Nexus</small><b>{nexusFleet(g)?.tokens.reduce((a, t) => a + t.qty, 0) ?? 0} vaisseaux</b><small>répare 30 % par an</small></div>
       <div><small>Votre marine entière</small><b class={navy >= nx * STRIKE ? 'green' : navy >= nx * STRIKE * 0.5 ? 'yellow' : 'red'}>{nx > 0 ? `${Math.round(Math.sqrt(navy / (nx * STRIKE)) * 100)} %` : '–'}</b><small>de ce qu'il faut pour l'abattre</small></div>
       <div><small>Vagues repérées</small><b>{mine.length}</b></div>
     </div>
-    {helpers.length > 0 && <p>En ce moment à la Brèche : {[...new Set(helpers.map(f => f.owner))].map(o => g.players[o].name).join(', ')}.</p>}
+    {helperOwners.length > 0 && <p>En ce moment à la Brèche, à votre connaissance : {helperOwners.map(o => g.players[o].name).join(', ')}.</p>}
     <p class="muted">Les vagues visent surtout l'empire en tête, sinon le plus proche de la Brèche, et passent de monde en monde en bombardant. À la Brèche, les empires ne se combattent pas entre eux : plusieurs flottes peuvent frapper ensemble. Celui qui a le plus de vaisseaux sur place quand le Nexus tombe remporte la partie.</p>
   </div>;
 }

@@ -34,7 +34,8 @@ export function runGoldenAges(game: GameState) {
     if (g.inspiration < g.next) continue;
     g.inspiration = 0;
     g.count++;
-    g.until = game.year + GOLDEN_YEARS - 1;
+    // (0.3.9.21: the age starts after this year's production: ten productions, from next year to `until`; it gave nine)
+    g.until = game.year + GOLDEN_YEARS;
     g.next = Math.round(g.next * GOLDEN_GROWTH);
     p.messages.unshift({ year: game.year, kind: 'event', text: `Un âge d'or commence ! Vos mondes rayonnent : jusqu'en ${g.until}, ${Math.round(GOLDEN_BONUS * 100)} % de ressources et de recherche en plus.`, target: { kind: 'colonies', id: 0 } });
     for (const o of game.players) if (o !== p && !o.monster && !o.dead && o.intel.met.includes(p.id)) o.messages.push({ year: game.year, kind: 'diplomacy', text: `Les ${p.name} entrent dans un âge d'or.`, target: { kind: 'player', id: p.id } });

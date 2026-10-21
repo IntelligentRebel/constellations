@@ -128,9 +128,32 @@ const pathCache = new Map<string, { x: number; y: number }[] | null>();
 
 export const hasWalls = (game: Pick<GameState, 'shape'>) => !!game.shape?.walls?.length;
 
+/**
+ * 0.3.9.21: the clouds are a feature of the map: beyond its edges (where the hidden cluster lies) there are none. The
+ * clouds at the edge of a nursery reached past it, over the cluster's worlds and its wormhole, and trapped fleets there.
+ */
+const offMap = (game: Geo, x: number, y: number) => x < 0 || y < 0 || x > game.width || y > game.height;
+
+/** 0.3.9.21: what the clouds of a map are made of, for the caches (games of the same seed and size, other shapes). */
+const shapeKeys = new WeakMap<object, string>();
+export function shapeKey(game: Geo): string {
+  const p = game.shape;
+  if (!p) return 'none';
+  let k = shapeKeys.get(p);
+  if (k === undefined) {
+    const full = `${p.kind}|${p.seed}|${game.width}|${game.height}|` + (p.walls ?? []).map(w => w.lobes.map(l => `${l.x.toFixed(4)},${l.y.toFixed(4)},${l.r.toFixed(4)}`).join(';')).join('/') + '|' + JSON.stringify(p.passes ?? []);
+    // a short key (the routes are cached under it): FNV-1a of the whole description, and its length
+    let h = 0x811c9dc5;
+    for (let i = 0; i < full.length; i++) { h ^= full.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    k = `${p.kind}|${p.seed}|${game.width}x${game.height}|${(h >>> 0).toString(36)}${full.length.toString(36)}`;
+    shapeKeys.set(p, k);
+  }
+  return k;
+}
+
 /** Is this map point inside a dark cloud (for this empire: the way into a veiled star it found is open)? */
 export function inWall(game: Geo, x: number, y: number, who?: number): boolean {
-  if (!game.shape?.walls?.length) return false;
+  if (!game.shape?.walls?.length || offMap(game, x, y)) return false;
   const R = game.width / 2;
   if (cloudDepth(game.shape, (x - R) / R, (y - game.height / 2) / R) <= 0) return false;
   return who === undefined || !openFor(game, who, x, y);
@@ -139,14 +162,16 @@ export function inWall(game: Geo, x: number, y: number, who?: number): boolean {
 /** The dark cloud at a point (for messages and the map), if any. */
 export function wallAt(game: Geo, x: number, y: number): string | null {
   const p = game.shape;
-  if (!p?.walls?.length) return null;
+  if (!p?.walls?.length || offMap(game, x, y)) return null;
   const R = game.width / 2, c = cloudAt(p, (x - R) / R, (y - game.height / 2) / R);
   return c.depth > 0 && c.wi >= 0 ? cloudName(p.walls[c.wi]) : null;
 }
 
 function gridOf(game: Geo): Grid | null {
   if (!game.shape?.walls?.length) return null;
-  const key = `${game.shape.seed}|${game.width}|${game.shape.walls.length}|${game.shape.passes?.length ?? 0}`;
+  // (0.3.9.21: the clouds themselves, not only their number: two games of one seed and size, other shapes, shared a
+  // grid, and a turn depended on the game played before it)
+  const key = shapeKey(game);
   if (grid?.key === key) return grid;
   // fine enough to see the narrow passes (0.3.6.8: a third finer than before)
   const cell = gridCell(game);
@@ -193,7 +218,7 @@ export function wallStop(game: Geo, a: { x: number; y: number }, b: { x: number;
   if (!segmentBlocked(game, a, b) && !inWall(game, b.x, b.y, who)) return null;
   const R = game.width / 2, H = game.height / 2;
   const open = lanesOf(game, who).length > 0;
-  const depth = (x: number, y: number) => open && openFor(game, who, x, y) ? -1 : cloudDepth(game.shape!, (x - R) / R, (y - H) / R);
+  const depth = (x: number, y: number) => offMap(game, x, y) || (open && openFor(game, who, x, y)) ? -1 : cloudDepth(game.shape!, (x - R) / R, (y - H) / R);
   const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
   const n = Math.max(1, Math.ceil(len / 1.5));
   let free = { x: a.x, y: a.y };
@@ -384,7 +409,8 @@ export function withDetours(game: GameState, wps: Waypoint[], posOf: (w: Waypoin
     let w = wps[i];
     let at = posOf(w);
     if (w.target === 'space' && inWall(game, at.x, at.y, who)) { at = clampOutside(game, prev, at, who); w = { ...w, x: at.x, y: at.y }; }
-    const pts = w.detour ? [] : routePoints(game, prev, at, who, extra) ?? [];
+    // (0.3.9.21: never around a jump through a stargate: the detour points took its Warp 11, and the jump never came)
+    const pts = w.detour || w.warp >= 11 ? [] : routePoints(game, prev, at, who, extra) ?? [];
     for (const q of pts) list.push({ x: q.x, y: q.y, target: 'space', warp: w.warp, task: 'none', detour: true });
     list.push(w);
     map.push(list.length - 1);

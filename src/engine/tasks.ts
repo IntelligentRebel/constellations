@@ -1,4 +1,5 @@
 // Waypoint tasks: transport, colonize, scrap, merge, lay mines, patrol, route, transfer, refuel (see refuel.ts); invasions.
+import { seenDesign } from './aiknow';
 import { shareOf, people } from './words';
 import { atWar, worldTaken } from './diplomacy';
 import { seizeArchives } from './espionage';
@@ -43,7 +44,8 @@ export function transferWithPlanet(game: GameState, f: Fleet, planet: Planet, ke
       if (!canRefuelAt(game, owner, planet)) return 0;
       const a = Math.min(amount, cap - f.fuel); f.fuel += a; return a;
     }
-    const a = Math.min(-amount, f.fuel); f.fuel -= a; return -a;
+    // 0.3.9.21: a planet has no tanks: the fuel "given" to it was simply lost
+    return 0;
   }
   if (amount > 0) {
     if (key === 'colonists' && planet.owner !== f.owner) return 0;
@@ -485,6 +487,9 @@ export function splitFleet(game: GameState, f: Fleet, parts: { designId: number;
   owner.fleetNum++;
   const nf: Fleet = {
     ...JSON.parse(JSON.stringify(f)), id: game.nextId++, num: owner.fleetNum, tokens: [], cargo: { ironium: 0, boranium: 0, germanium: 0, colonists: 0 }, fuel: 0, customName: false, route: undefined, repeat: false,
+    // 0.3.9.21: the fleet split off stays put, with none of the standing orders of the other (it chased the pursued
+    // fleet, ran the logistics job, led the operation)
+    pursue: undefined, refuelFor: undefined, refuelYear: undefined, tankerPost: undefined, meetTrader: undefined, auto: undefined, job: undefined, op: undefined, joinOp: undefined, aiGuard: undefined,
   };
   for (const p of parts) {
     const t = f.tokens.find(x => x.designId === p.designId);
@@ -530,7 +535,8 @@ export function splitIntoSingles(game: GameState, f: Fleet): Fleet[] {
 export function transferFleet(game: GameState, f: Fleet, to: number) {
   const from = game.players[f.owner];
   const recipient = game.players[to];
-  if (!recipient || recipient.dead) return;
+  // (0.3.9.21: never to itself: « — » in the list gave the fleet to empire 0, or to its own owner, colonists lost)
+  if (!recipient || recipient.dead || to === f.owner) return;
   for (const t of f.tokens) {
     const d = game.designs.find(x => x.id === t.designId)!;
     let copy = game.designs.find(x => x.owner === to && x.alien && x.name === d.name && x.hull === d.hull && JSON.stringify(x.slots) === JSON.stringify(d.slots));
@@ -539,6 +545,9 @@ export function transferFleet(game: GameState, f: Fleet, to: number) {
   }
   f.owner = to;
   f.borderExit = undefined;
+  // (0.3.9.21: and none of its former owner's standing orders)
+  f.pursue = undefined; f.refuelFor = undefined; f.refuelYear = undefined; f.tankerPost = undefined; f.meetTrader = undefined;
+  f.auto = undefined; f.job = undefined; f.op = undefined; f.joinOp = undefined; f.aiGuard = undefined; f.repeat = false; f.route = undefined;
   recipient.fleetNum++;
   f.num = recipient.fleetNum;
   f.waypoints = [{ x: f.x, y: f.y, target: f.orbiting >= 0 ? 'planet' : 'space', targetId: f.orbiting >= 0 ? f.orbiting : undefined, warp: 0, task: 'none', processed: true }];
@@ -608,9 +617,11 @@ export function processWaypointTask(game: GameState, f: Fleet, rng: Rng) {
 export function seenStrength(game: GameState, me: Player, fleetId: number): number | null {
   const fi = me.intel.fleets.find(x => x.id === fleetId);
   if (!fi || !fi.tokens || fi.uncertain) return null;
-  const real = game.fleets.find(x => x.id === fleetId);
-  const probe: Fleet = { ...(real ?? { id: fleetId, owner: fi.owner, num: 0, name: '', x: fi.x, y: fi.y, orbiting: -1, cargo: { ironium: 0, boranium: 0, germanium: 0, colonists: 0 }, fuel: 0, waypoints: [], repeat: false, battlePlan: 0, heading: null, lastWarp: 0, age: 0 }), tokens: fi.tokens.map(t => ({ designId: t.designId, qty: t.qty, damage: 0, qtyDamaged: 0 })) } as Fleet;
-  return fleetStrength(game, probe);
+  // 0.3.9.21: as far as this empire knows the designs (exact for those met in battle or read inside, a guess from the
+  // hull otherwise): the real designs were weighed, giving away the weapons of a design seen only from outside
+  let hp = 0, pow = 0;
+  for (const t of fi.tokens) { const g = seenDesign(game, me, t.designId); hp += g.hp * t.qty; pow += g.pow * t.qty; }
+  return Math.max(1, hp) * Math.max(1, pow);
 }
 /** 3.6: an interception that would obviously end in a massacre: the target is this many times stronger. */
 export const HOPELESS = 2.5;
@@ -637,8 +648,9 @@ function patrol(game: GameState, f: Fleet) {
     best = { id: fi.id, d, x: fi.x, y: fi.y };
   }
   if (best && f.waypoints.length === 1) {
-    f.waypoints.push({ x: best.x, y: best.y, target: 'fleet', targetId: best.id, warp: wp.patrolWarp ?? (fleetSpec(game, f).idealSpeed || 6), task: 'none', chase: true });
-    f.waypoints.push({ x: wp.x, y: wp.y, target: wp.target, targetId: wp.targetId, warp: wp.patrolWarp ?? (fleetSpec(game, f).idealSpeed || 6), task: 'patrol', patrolRange: range, patrolWarp: wp.patrolWarp });
+    const pw = Math.max(1, Math.min(10, Math.round(wp.patrolWarp ?? (fleetSpec(game, f).idealSpeed || 6))));
+    f.waypoints.push({ x: best.x, y: best.y, target: 'fleet', targetId: best.id, warp: pw, task: 'none', chase: true });
+    f.waypoints.push({ x: wp.x, y: wp.y, target: wp.target, targetId: wp.targetId, warp: pw, task: 'patrol', patrolRange: range, patrolWarp: wp.patrolWarp });
   }
 }
 
@@ -727,7 +739,7 @@ export function processMineLaying(game: GameState) {
     if (total <= 0) continue;
     if (wp?.task === 'layMines' && f.waypoints.length === 1) {
       layMines(game, f, false);
-      if (wp.layYears && wp.layYears > 0) { wp.layYears--; if (wp.layYears === 0) { wp.task = 'none'; wp.processed = true; } }
+      if (wp.layYears && wp.layYears > 0) { wp.layYears = Math.max(0, Math.ceil(wp.layYears) - 1); if (wp.layYears === 0) { wp.task = 'none'; wp.processed = true; } }
     } else if (f.waypoints.length > 1 && f.waypoints[1].task === 'layMines' && raceSpec(game.players[f.owner].race).minefieldMoveFactor > 0) {
       layMines(game, f, true);
     }

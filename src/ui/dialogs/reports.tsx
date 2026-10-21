@@ -15,13 +15,14 @@ import type { FactKey, Player, ScoreEntry } from '../../engine/types';
 import { intelOn } from '../../engine/espionage';
 import { DossierBlock, IntelLevel, known, scoresOpen } from '../intel';
 
-export interface Col<T> { key: string; label: string; get: (r: T) => number | string; render?: (r: T) => ComponentChildren; num?: boolean; minerals?: (r: T) => { ironium: number; boranium: number; germanium: number } }
+export interface Col<T> { key: string; label: string; get: (r: T) => number | string; render?: (r: T) => ComponentChildren; num?: boolean; minerals?: (r: T) => { ironium: number; boranium: number; germanium: number }; /** 0.3.9.21: the value exported (the sort key is not always one: years from now, a fraction), or false to leave the column out */ csv?: ((r: T) => number | string) | false }
 
-function toCsv<T>(cols: Col<T>[], rows: T[]): string {
+function toCsv<T>(all: Col<T>[], rows: T[]): string {
+  const cols = all.filter(c => c.csv !== false);
   const cell = (v: number | string) => typeof v === 'number' ? String(v).replace('.', ',') : /[;"\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
   // semicolons and a BOM so spreadsheets in French locales open it directly
   const head = cols.flatMap(c => c.minerals ? ['Ironium', 'Boranium', 'Germanium'].map(m => `${c.label} ${m}`) : [c.label]);
-  const line = (r: T) => cols.flatMap(c => { if (!c.minerals) return [cell(c.get(r))]; const m = c.minerals(r); return [m.ironium, m.boranium, m.germanium].map(cell); });
+  const line = (r: T) => cols.flatMap(c => { if (!c.minerals) return [cell(c.csv ? c.csv(r) : c.get(r))]; const m = c.minerals(r); return [m.ironium, m.boranium, m.germanium].map(cell); });
   return '\ufeff' + [head.map(cell).join(';'), ...rows.map(r => line(r).join(';'))].join('\r\n');
 }
 

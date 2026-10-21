@@ -144,6 +144,9 @@ async function main() {
     const me = g.players[g.human];
     const enemy = g.players.find(p => !p.monster && p.id !== me.id)!;
     me.relations[enemy.id] = 'enemy';
+    // (0.3.9.21: at war with its owner, as the warnings now follow the rule the mines strike by)
+    const DIP = await import('../src/engine/diplomacy');
+    if (g.diplomacy) DIP.declareWar(g, enemy.id, me.id);
     store.game = g;
     const hw = g.planets.find(p => p.owner === me.id && p.homeworld)!;
     const f = g.fleets.find(x => x.owner === me.id && x.orbiting === hw.id)!;
@@ -163,8 +166,6 @@ async function main() {
     check(minefieldSpans(g, me, w[0], w[1], w[1].warp).length === 0 && minefieldSpans(g, me, w[1], w[2], w[2].warp).length === 0 && minefieldSpans(g, me, w[2], w[3], w[3].warp).length === 0, 'no leg is dangerous any more');
     check(store.waypointIndex === 3, 'the destination stays selected');
     // and the flight: through the field at Warp 4, at war with its owner, without a stop at the new waypoints
-    const DIP = await import('../src/engine/diplomacy');
-    if (g.diplomacy) DIP.declareWar(g, enemy.id, me.id);
     f.fuel = 1e6;
     let hit = false, years = 0;
     while (years < 40 && !(f.x === dest.x && f.y === dest.y)) { generateTurn(g); years++; f.fuel = 1e6; if (me.messages.some(m => m.text.includes('heurté un champ de mines'))) hit = true; if (!g.fleets.includes(f)) break; }

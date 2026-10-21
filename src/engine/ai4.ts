@@ -5,7 +5,7 @@
 // against the enemy's fleet, colony ships with nowhere to go are put to use, and worlds that sit on years of minerals
 // stop building mines.
 import type { Field, Fleet, GameState, Planet, Player, ShipDesign } from './types';
-import { FIELDS } from './types';
+import { FIELDS, MINERALS } from './types';
 import { aiCan, aiOff } from './aiskill';
 import { pendingRefit, refitTargets, refitFree, refitUnitCost, queueRefit, refitBlocker } from './refit';
 import { designSpec, specOf, starbaseUpgradeCost } from './design';
@@ -14,7 +14,7 @@ import { fleetSpec, distance, canRefuelAt } from './fleet';
 import { fleetStrength } from './factions';
 import { estimateTrajectory } from './scan';
 import { mergeFleets, transferWithPlanet } from './tasks';
-import { zeroCost, isAuto } from './production';
+import { zeroCost, isAuto, unitCost } from './production';
 import { raceSpec } from './race';
 import { etaYears } from './pirates';
 import { researchCost } from './research';
@@ -183,7 +183,13 @@ export function hubsOf(game: GameState, p: Player): Planet[] {
 export function toHub(game: GameState, p: Player, f: Fleet, hubs: Planet[]) {
   if (!hubs.length) return;
   const hub = [...hubs].sort((a, b) => distance(a, f) - distance(b, f))[0];
-  if (f.orbiting !== hub.id) travel(game, f, { x: hub.x, y: hub.y, planetId: hub.id });
+  if (f.orbiting === hub.id) return;
+  // 0.3.9.21: a fleet that cannot reach any hub in a decent time crawls to its nearest dock, however long it takes
+  // (stranded far from home, it was left idle forever: travel() refuses a crawl of more than twelve years)
+  if (travel(game, f, { x: hub.x, y: hub.y, planetId: hub.id }) === 'none' && !(f.orbiting >= 0 && canRefuelAt(game, p, game.planets[f.orbiting]))) {
+    const dock = game.planets.filter(pl => canRefuelAt(game, p, pl)).sort((a, b) => distance(a, f) - distance(b, f))[0];
+    if (dock && distance(dock, f) > 0) safeGoto(game, f, { x: dock.x, y: dock.y, planetId: dock.id }, 'none', false);
+  }
 }
 
 /** At each hub, the idle warships make one fleet, the idle bombers another. */
@@ -223,7 +229,10 @@ export function aiDefend(game: GameState, p: Player) {
     if (m.pow <= 0 && !m.bomber) continue;
     const strength = Math.max(1, m.hp) * Math.max(1, m.pow);
     const tr = estimateTrajectory(p, fi.id, 2);
-    const ahead = tr?.ahead[tr.ahead.length - 1];
+    // 0.3.9.21: the computers keep no tracks (only the humans' are drawn): from the heading and the speed seen, as a
+    // scanner shows them; the course two years ahead was never known, and a fleet coming at a world went unnoticed
+    const v = fi.heading && fi.warp && fi.warp < 11 ? fi.warp ** 2 : 0;
+    const ahead = tr?.ahead[tr.ahead.length - 1] ?? (v && fi.heading ? { x: fi.x + fi.heading.x * v * 2, y: fi.y + fi.heading.y * v * 2 } : undefined);
     let target: Planet | undefined, bd = Infinity;
     for (const pl of mine) {
       const d = Math.min(distance(pl, fi), ahead ? distance(pl, ahead) + 10 : Infinity);
@@ -366,4 +375,29 @@ export function idleColonyShip(game: GameState, p: Player, f: Fleet): boolean {
   if (!safeGoto(game, f, { x: room.x, y: room.y, planetId: room.id }, 'transport', false)) return true;
   f.waypoints[1].transport = { colonists: { action: 'unloadAll', amount: 0 } };
   return true;
+}
+
+/**
+ * 0.3.9.21: a computer world whose queue is held for good by a line it cannot pay (a mineral it neither has nor mines
+ * in fifteen years: a station, a fort, defenses put at the head of the queue) gives the line up, its minerals back.
+ * Production stops at the first line it cannot pay: behind it the automatic factories and mines never ran, for
+ * decades, on worlds of hundreds of thousands of colonists.
+ */
+export function aiUnblock(game: GameState, p: Player) {
+  for (const pl of game.planets) {
+    if (pl.owner !== p.id) continue;
+    const i = pl.queue.findIndex(q => !isAuto(q.kind));
+    if (i < 0) continue;
+    const it = pl.queue[i];
+    if (it.kind === 'mega') continue; // (paced on purpose, a share a year)
+    const c = unitCost(game, pl, p, it);
+    const sp = planetSpec(game, pl, p);
+    const stuck = MINERALS.some(m => {
+      const short = c[m] - pl.surface[m] - it.allocated[m];
+      return c[m] > 0 && short > 0 && (sp.mining[m] <= 0 || short / sp.mining[m] > 15);
+    });
+    if (!stuck) continue;
+    for (const m of MINERALS) pl.surface[m] += it.allocated[m];
+    pl.queue.splice(i, 1);
+  }
 }

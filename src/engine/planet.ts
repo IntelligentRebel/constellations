@@ -24,10 +24,23 @@ export function maxPopulation(game: GameState, player: Player, planet: Planet, h
   if (rs.livesOnStarbases && planet.owner === player.id) {
     if (!planet.starbase) return 0;
     const spec = starbaseSpec(game, planet);
-    return roundTo100Floor((spec?.maxPop ?? 0) * rs.maxPopFactor);
+    // (0.3.9.21: the Arcologies doctrine counts for the races living on their stations too)
+    return roundTo100Floor((spec?.maxPop ?? 0) * rs.maxPopFactor * (hasDoctrine(player, 'arcology') ? 1.1 : 1));
   }
   const h = Math.max(hab, rs.minHabFloor);
   return roundTo100Floor(MAX_POP * h * rs.maxPopFactor * (hasDoctrine(player, 'arcology') ? 1.1 : 1) / 100);
+}
+
+/**
+ * 0.3.9.21: the population a world not yours yet would hold once settled. For a race living on its stations, that of
+ * the best station it can build there (the pages counted it as a planet-dweller's, from the habitability).
+ */
+export function prospectiveMaxPop(game: GameState, player: Player, planet: Planet, hab = planetHab(player, planet)): number {
+  const rs = raceSpec(player.race);
+  if (!rs.livesOnStarbases) return maxPopulation(game, player, planet, hab);
+  let best = 0;
+  for (const d of game.designs) if (d.owner === player.id && d.starbase && !d.deleted && !d.alien && d.purpose !== 'beacon') best = Math.max(best, designSpec(player, d).maxPop);
+  return roundTo100Floor(best * rs.maxPopFactor * (hasDoctrine(player, 'arcology') ? 1.1 : 1));
 }
 
 /** Yearly population change for the planet owner (may be negative). */
@@ -160,11 +173,14 @@ export function terraformOneStep(player: Player, planet: Planet): boolean {
   const curHab = habitability(player.race, planet.hab);
   for (let i = 0; i < 3; i++) {
     if (player.race.immune[i] || ab[i] <= 0) continue;
-    if (Math.abs(planet.terraformed[i]) >= ab[i] && Math.sign(center[i] - planet.hab[i]) === Math.sign(planet.terraformed[i])) continue;
+    // 0.3.9.21: what was used is measured as terraformRemaining measures it (the world now against its own
+    // environment): a packet or an event that moved the world without counting it made every click fail, paid each year
+    const used = planet.hab[i] - planet.baseHab[i];
+    if (Math.abs(used) >= ab[i] && Math.sign(center[i] - planet.hab[i]) === Math.sign(used)) continue;
     const diff = center[i] - planet.hab[i];
     if (diff === 0) continue;
     const dir = Math.sign(diff);
-    const next = planet.terraformed[i] + dir;
+    const next = used + dir;
     if (Math.abs(next) > ab[i]) continue;
     const lo = player.race.habLow[i], hi = player.race.habHigh[i];
     const red = planet.hab[i] < lo || planet.hab[i] > hi;
@@ -175,8 +191,8 @@ export function terraformOneStep(player: Player, planet: Planet): boolean {
     if (score > bestScore) { bestScore = score; bestI = i; bestDir = dir; }
   }
   if (bestI < 0) return false;
-  planet.terraformed[bestI] += bestDir;
   planet.hab[bestI] = Math.max(0, Math.min(100, planet.hab[bestI] + bestDir));
+  planet.terraformed[bestI] = planet.hab[bestI] - planet.baseHab[bestI];
   return true;
 }
 
@@ -291,7 +307,7 @@ export function applyMining(planet: Planet, output: Minerals, numMines: number) 
     if (planet.mineYears[m] > rollover) {
       const newConc = Math.max(1, conc - Math.trunc(planet.mineYears[m] / rollover));
       planet.mineYears[m] = newConc === 1 ? 0 : planet.mineYears[m] % rollover;
-      planet.conc[m] = planet.homeworld ? Math.max(newConc, 0) : newConc;
+      planet.conc[m] = planet.homeworld ? Math.max(newConc, 30) : newConc; // (0.3.9.21: the floor of a homeworld, as mining uses it)
     }
   }
 }

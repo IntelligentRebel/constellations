@@ -8,7 +8,7 @@ import { ORIGIN_WINS } from '../../engine/originwins';
 import { habitability, raceSpec, PRT_INFO } from '../../engine/race';
 import { terraformedHabValue } from '../../engine/planet';
 import { fleetSpec, distance, travelYears } from '../../engine/fleet';
-import { QUEUE_LABELS, isAuto, TEMPLATE_CHAIN } from '../../engine/production';
+import { QUEUE_LABELS, isAuto, TEMPLATE_CHAIN, newTemplateId, forgetTemplate } from '../../engine/production';
 import { VERSION } from '../version';
 import { CONSTELLATIONS_RULES } from '../../engine/newgame';
 import { RULE_INFO } from '../../engine/rules';
@@ -146,7 +146,7 @@ export function TemplatesDialog() {
       <div class="bp">
         <div>
           <ul class="list">{me.templates.map((x, i) => <li class={i === sel ? 'sel' : ''} onClick={() => setSel(i)}>{x.name}{me.defaultTemplate === x.id ? ' ★' : ''}</li>)}</ul>
-          <button onClick={() => { s.checkpoint(); me.templates.push({ id: Math.max(0, ...me.templates.map(x => x.id)) + 1, name: 'Nouveau modèle', items: [] }); setSel(me.templates.length - 1); s.bump(); }}>Nouveau</button>
+          <button onClick={() => { s.checkpoint(); me.templates.push({ id: newTemplateId(g), name: 'Nouveau modèle', items: [] }); setSel(me.templates.length - 1); s.bump(); }}>Nouveau</button>
           {/* 3.6: the chain of the three default templates */}
           {TEMPLATE_CHAIN.every(c => me.templates.some(x => x.id === c.from) && me.templates.some(x => x.id === c.to)) && <div class="tpl-chain">
             <label class="chk"><input type="checkbox" checked={me.tplChain !== false} onChange={e => { s.checkpoint(); me.tplChain = (e.target as HTMLInputElement).checked; s.bump(); }} /> Faire évoluer les colonies d'un modèle à l'autre</label>
@@ -160,7 +160,7 @@ export function TemplatesDialog() {
           <select onChange={e => { const k = (e.target as HTMLSelectElement).value as QueueKind; if (k) { s.checkpoint(); t.items.push({ kind: k, qty: isAuto(k) ? 50 : 1 }); s.bump(); } (e.target as HTMLSelectElement).value = ''; }}><option value="">Ajouter un élément…</option>{kinds.map(k => <option value={k}>{QUEUE_LABELS[k]}</option>)}</select>
           <div class="btns">
             <button onClick={() => { s.checkpoint(); for (const p of g.planets.filter(p => p.owner === me.id)) for (const it of t.items) if (!p.queue.some(q => q.kind === it.kind)) p.queue.push({ ...it, allocated: { ironium: 0, boranium: 0, germanium: 0, resources: 0 } }); s.notify('Modèle appliqué à toutes vos planètes (sans doublons)'); s.bump(); }}>Appliquer à toutes mes planètes</button>
-            <button class="danger" onClick={() => { s.checkpoint(); me.templates.splice(sel, 1); setSel(0); s.bump(); }}>Supprimer</button>
+            <button class="danger" onClick={() => { s.checkpoint(); forgetTemplate(g, me, t.id); setSel(0); s.bump(); }}>Supprimer</button>
           </div>
         </div>}
       </div>
@@ -327,18 +327,21 @@ export function SettingsDialog() {
   const s = useStore();
   const g = s.game!;
   const set = g.settings;
+  // 0.3.9.21: in a game by turn files, only the host changes the rules (a player's copy sent them nowhere, and the
+  // objects the rule brought in broke the host's year)
+  const pbemPlayer = g.pbem?.role === 'player';
   return <Modal title="Paramètres de la partie" onClose={() => s.close('settings')} width={560}>
     <Row k="Nom" v={<input value={g.name} onInput={e => { g.name = (e.target as HTMLInputElement).value; s.bump(); }} />} />
     <Row k="Univers" v={`${set.size} · ${g.planets.length} planètes · ${g.width} al`} />
     <Row k="Graine" v={set.seed} />
     {/* 3.6: an option can be added during a game, never taken away */}
-    <label class={'chk' + (set.anonymousContacts ? ' locked' : '')} title={set.anonymousContacts ? LOCKED : undefined}><input type="checkbox" checked={set.anonymousContacts} disabled={set.anonymousContacts} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.anonymousContacts = true; s.bump(); }} /> Contacts anonymes hors scanner pénétrant (effet au prochain tour)</label>
+    <label class={'chk' + (set.anonymousContacts ? ' locked' : '')} title={set.anonymousContacts ? LOCKED : undefined}><input type="checkbox" checked={set.anonymousContacts} disabled={set.anonymousContacts || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.anonymousContacts = true; s.bump(); }} /> Contacts anonymes hors scanner pénétrant (effet au prochain tour)</label>
     {/* 3.6: display only, changes nothing to the rules: either way, any time */}
     <label class="chk"><input type="checkbox" checked={set.popUnits === 'millions'} onChange={e => { if ((e.target as HTMLInputElement).checked) set.popUnits = 'millions'; else delete set.popUnits; s.bump(); }} /> Populations en millions <span class="muted small">(un colon des règles = mille habitants ; affichage seulement, les nouveaux rapports suivent)</span></label>
-    <label class={'chk' + (set.publicScores ? ' locked' : '')} title={set.publicScores ? LOCKED : undefined}><input type="checkbox" checked={set.publicScores} disabled={set.publicScores} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.publicScores = true; s.bump(); }} /> Scores publics</label>
+    <label class={'chk' + (set.publicScores ? ' locked' : '')} title={set.publicScores ? LOCKED : undefined}><input type="checkbox" checked={set.publicScores} disabled={set.publicScores || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.publicScores = true; s.bump(); }} /> Scores publics</label>
     <h4>Règles de Constellations</h4>
     <p class="small muted">Décochées, la partie suit les règles de Stars! d'origine. En cours de partie, on peut en ajouter (effet immédiat : une règle activée en route prépare ce qu'il faut, terrain, objectifs, capitales), mais plus en retirer.</p>
-    <div class="rules-list">{CONSTELLATIONS_RULES.map(k => { const on = !!(set as any)[k]; return <label class={'chk rule' + (on ? ' locked' : '')} title={on ? LOCKED : undefined}><input type="checkbox" checked={on} disabled={RULE_INFO[k].creationOnly || on} onChange={e => { if ((e.target as HTMLInputElement).checked) A.toggleRule(k, true); }} /> <span class="rule-txt"><b>{RULE_INFO[k].name}</b><small class="muted">{RULE_INFO[k].text}{RULE_INFO[k].creationOnly ? ' (ne se choisit qu\'à la création de la partie)' : ''}</small></span></label>; })}</div>
+    <div class="rules-list">{CONSTELLATIONS_RULES.map(k => { const on = !!(set as any)[k]; return <label class={'chk rule' + (on ? ' locked' : '')} title={on ? LOCKED : undefined}><input type="checkbox" checked={on} disabled={RULE_INFO[k].creationOnly || on || pbemPlayer} onChange={e => { if ((e.target as HTMLInputElement).checked) A.toggleRule(k, true); }} /> <span class="rule-txt"><b>{RULE_INFO[k].name}</b><small class="muted">{RULE_INFO[k].text}{RULE_INFO[k].creationOnly ? ' (ne se choisit qu\'à la création de la partie)' : ''}</small></span></label>; })}</div>
   </Modal>;
 }
 

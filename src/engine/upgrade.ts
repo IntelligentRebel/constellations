@@ -34,7 +34,8 @@ export function betterPart(t: TechData, old: TechData): boolean {
     case 'Shield': return (a.shield ?? 0) > (b.shield ?? 0);
     case 'MineRobot': return (a.miningRate ?? 0) > (b.miningRate ?? 0);
     case 'MineLayer': return a.minefieldType === b.minefieldType && (a.mineLayingRate ?? 0) > (b.mineLayingRate ?? 0);
-    case 'Bomb': return !!a.smart === !!b.smart && t.rank > old.rank;
+    // 0.3.9.21: a Retro Bomb (it un-terraforms, kills no one) is not a better ordinary bomb
+    case 'Bomb': return !!a.smart === !!b.smart && !!a.unterraformRate === !!b.unterraformRate && t.rank > old.rank;
     case 'Mechanical':
       if (t.tags.includes('FuelTank')) return (a.fuelBonus ?? 0) > (b.fuelBonus ?? 0);
       if (t.tags.includes('CargoPod')) return (a.cargoBonus ?? 0) > (b.cargoBonus ?? 0);
@@ -105,7 +106,7 @@ export function upgradeDesigns(game: GameState, p: Player, partName: string, onl
       const types = h.slots[s.slot - 1]?.types ?? [];
       return old && plan.replaced.includes(old.name) && partFitsSlot(t, types, h.name) ? { ...s, part: t.name } : { ...s };
     });
-    const nd = addDesign(game, { id: -1, owner: p.id, name: nextDesignName(game, p, d.name), hull: d.hull, slots, starbase: d.starbase, purpose: d.purpose, role: d.role, built: 0 });
+    const nd = addDesign(game, { id: -1, owner: p.id, name: nextDesignName(game, p, d.name), hull: d.hull, slots, starbase: d.starbase, purpose: d.purpose, role: d.role, scout: d.scout, built: 0 });
     d.deleted = true;
     // what was being built (or refitted to) the old design now follows the new one
     for (const pl of game.planets) {
@@ -113,6 +114,12 @@ export function upgradeDesigns(game: GameState, p: Player, partName: string, onl
       for (const q of pl.queue) if ((q.kind === 'ship' || q.kind === 'starbase' || q.kind === 'refit') && q.designId === d.id) q.designId = nd.id;
     }
     for (const tp of p.templates ?? []) for (const it of tp.items) if (it.designId === d.id) it.designId = nd.id;
+    // 0.3.9.21: the operations that had it built, and the refit orders that aimed at it, follow too
+    for (const f of game.fleets) {
+      if (f.owner !== p.id) continue;
+      if (f.op?.designId === d.id) f.op.designId = nd.id;
+      for (const wp of f.waypoints) if (wp.refitTo) for (const k of Object.keys(wp.refitTo)) if (wp.refitTo[+k] === d.id) wp.refitTo[+k] = nd.id;
+    }
     done.push({ from: d, to: nd, replaced: plan.replaced });
   }
   return done;

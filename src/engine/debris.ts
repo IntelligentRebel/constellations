@@ -6,6 +6,7 @@ import { Rng, seedFromString } from './rng';
 import { TECHS, HULLS, hasTech, mainField, FIELD_NAMES } from './tech';
 import { addResearch, researchCost } from './research';
 import { tl } from '../data/labels';
+import { foughtWith } from './techtrade';
 
 export const debrisOn = (game: GameState) => !!game.settings.debris;
 /** Odds per enemy ship destroyed (at most DEBRIS_MAX), share of the next level's cost gained. */
@@ -34,8 +35,10 @@ export function studyDebris(game: GameState) {
       if (!p || p.monster || p.dead || !holders.has(pid)) continue;
       let wrecks = 0;
       const parts = new Map<string, number>();
+      // 0.3.9.21: only the wrecks of those it fought (not an ally's, nor those of a fight between two others)
+      const foes = foughtWith(b, pid);
       for (const [owner, designs] of lost) {
-        if (owner === pid) continue;
+        if (owner === pid || !foes.has(owner)) continue;
         for (const [did, n] of designs) {
           wrecks += n;
           const d = game.designs.find(x => x.id === did);
