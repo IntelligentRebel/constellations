@@ -692,40 +692,40 @@
   "key": "constellations-{0}-{1}.json",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:46 prop:file"
+   "ui/app.tsx:47 prop:file"
   ]
  },
  {
   "key": "true",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:64 attr:aria-hidden",
-   "ui/app.tsx:91 attr:aria-hidden",
+   "ui/app.tsx:65 attr:aria-hidden",
+   "ui/app.tsx:92 attr:aria-hidden",
    "ui/chronicle.tsx:102 attr:aria-hidden",
-   "ui/dialogs/index.tsx:75 attr:aria-hidden"
+   "ui/dialogs/index.tsx:76 attr:aria-hidden"
   ]
  },
  {
   "key": "hgood",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:70 attr:class"
+   "ui/app.tsx:71 attr:class"
   ]
  },
  {
   "key": "hbad",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:70 attr:class"
+   "ui/app.tsx:71 attr:class"
   ]
  },
  {
   "key": "smooth",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:111 prop:behavior",
    "ui/app.tsx:112 prop:behavior",
-   "ui/app.tsx:116 prop:behavior",
+   "ui/app.tsx:113 prop:behavior",
+   "ui/app.tsx:117 prop:behavior",
    "ui/nav.tsx:18 prop:behavior"
   ]
  },
@@ -733,15 +733,15 @@
   "key": "tab",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:177 attr:class"
+   "ui/app.tsx:178 attr:class"
   ]
  },
  {
   "key": " on",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:177",
-   "ui/app.tsx:184",
+   "ui/app.tsx:178",
+   "ui/app.tsx:185",
    "ui/chronicle.tsx:128",
    "ui/chronicle.tsx:192"
   ]
@@ -750,7 +750,7 @@
   "key": "ghost",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:184 attr:class",
+   "ui/app.tsx:185 attr:class",
    "ui/components.tsx:34 attr:class",
    "ui/pages.tsx:60 attr:class"
   ]
@@ -759,14 +759,14 @@
   "key": "app tab-",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:320"
+   "ui/app.tsx:334"
   ]
  },
  {
   "key": "cur",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:381 attr:class",
+   "ui/app.tsx:396 attr:class",
    "ui/dialogs/research.tsx:64"
   ]
  },
@@ -774,7 +774,7 @@
   "key": "done",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:381 attr:class",
+   "ui/app.tsx:396 attr:class",
    "ui/dialogs/production.tsx:171",
    "ui/empire.tsx:202 attr:class",
    "ui/empire.tsx:218 attr:class"
@@ -1126,7 +1126,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/backups.tsx:45 attr:class",
-   "ui/dialogs/index.tsx:75 attr:class",
+   "ui/dialogs/index.tsx:76 attr:class",
    "ui/dialogs/prefs.tsx:25 attr:class",
    "ui/tutorial.tsx:1276 attr:class"
   ]
@@ -1310,7 +1310,7 @@
   "key": "race-{0}.json",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:50 prop:file",
+   "ui/dialogs/index.tsx:51 prop:file",
    "ui/dialogs/newgame.tsx:98 prop:file"
   ]
  },
@@ -1318,7 +1318,7 @@
   "key": "dv",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:53 attr:key"
+   "ui/dialogs/index.tsx:54 attr:key"
   ]
  },
  {
@@ -2121,6 +2121,13 @@
   ]
  },
  {
+  "key": "adresse",
+  "kind": "str",
+  "refs": [
+   "ui/pbemui.tsx:147 attr:placeholder"
+  ]
+ },
+ {
   "key": "post",
   "kind": "str",
   "refs": [
@@ -2339,14 +2346,14 @@
   "key": "big tut-start",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:79 attr:class"
+   "ui/welcome.tsx:80 attr:class"
   ]
  },
  {
   "key": " primary",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:79"
+   "ui/welcome.tsx:80"
   ]
  }
 ]

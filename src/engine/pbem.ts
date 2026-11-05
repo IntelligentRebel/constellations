@@ -101,7 +101,7 @@ export function turnFile(g: GameState, pid: number, hostSlot?: string): PbemFile
     proposals: (g.diplomacy?.proposals ?? []).map(p => p.id),
     msgs: g.players[pid].messages.filter(m => m.year === g.year).map(m => m.text),
   };
-  copy.pbem = { role: 'player', hostId: P.hostId, turn: g.year, player: pid, hostSlot, contains };
+  copy.pbem = { role: 'player', hostId: P.hostId, turn: g.year, player: pid, hostSlot, contains, hostEmail: P.hostEmail };
   // the other humans' reports are theirs
   for (const o of copy.players) if (o.id !== pid && !o.ai && !o.monster) o.messages = [];
   delete (copy as { id?: string }).id;

@@ -1280,3 +1280,7 @@ a.btn.ghost { background: transparent; }
 .update-banner { margin: 12px auto 0; padding: 8px 12px; border: 1px solid var(--accent); border-radius: 8px; background: rgba(79, 214, 227, .08); font-size: 13px; text-align: center; }
 .upd-badge { margin-left: 8px; padding: 1px 7px; font-size: 11px; border-color: var(--accent); color: var(--accent); background: transparent; }
 .ng-pbem { margin: 0 0 10px; padding: 8px 10px; border: 1px solid var(--line2); border-radius: 6px; }
+.pbem-shared { margin: 10px 0; padding: 8px 10px; border: 1px solid var(--line2); border-radius: 6px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.pbem-shared p { margin: 0; }
+.pbem-mail { width: 190px; max-width: 100%; }
+.btns.col { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }

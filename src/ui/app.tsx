@@ -1,5 +1,6 @@
 // Application shell: header with the empire's numbers, top tabs, sidebar, center page, selection panel.
 import { pendingRefit } from '../engine/refit';
+import { syncShared, dropOrders } from './shared';
 import { LangPicker } from './langpick';
 import { useEffect, useState } from 'preact/hooks';
 import { resetStepSession } from './map';
@@ -76,7 +77,7 @@ function Header() {
     <div class="sp" />
     <SoundToggle />
     <div class="hyear" data-tut="year">{actsOn(g) ? <ActChip /> : <small>Année</small>}<b>{g.year}</b>{s.dirty && <span class="dirty" title="Ordres modifiés depuis la dernière sauvegarde automatique">•</span>}</div>
-    {g.pbem?.role === 'player' ? <button class="primary next" onClick={() => s.open('pbem')} title="Enregistrer le fichier de vos ordres pour l'hôte">{g.pbem.sent === g.pbem.turn ? 'Ordres envoyés' : 'Envoyer mes ordres'}</button>
+    {g.pbem?.role === 'player' ? <button class="primary next" onClick={() => void dropOrders(g).then(ok => { if (!ok) s.open('pbem'); })} title="Enregistrer le fichier de vos ordres pour l'hôte">{g.pbem.sent === g.pbem.turn ? 'Ordres envoyés' : 'Envoyer mes ordres'}</button>
       : g.pbem?.role === 'host' ? <button class="primary next" disabled={s.busy} onClick={() => s.open('pbem')} title="Fichiers de tour, ordres reçus, génération de l'année">{s.busy ? 'Calcul…' : `Hôte · ordres ${PB.pbemHumans(g).length - PB.missingOrders(g).length}/${PB.pbemHumans(g).length}`}</button>
       : <button class="primary next" data-tut="next" disabled={s.busy} onClick={() => s.endTurn(1)} title="Générer l'année suivante (Entrée ou F9)">{s.busy ? 'Calcul…' : <>Tour suivant <kbd>Entrée</kbd></>}</button>}
   </header>;
@@ -305,6 +306,19 @@ function useKeyboard() {
   }, []);
 }
 
+/** 0.3.9.25: a game by turn files with a shared folder: the files come and go every ten seconds. */
+function SharedSync() {
+  const s = useStore();
+  const id = s.game?.pbem?.hostId, role = s.game?.pbem?.role;
+  useEffect(() => {
+    if (!id) return;
+    void syncShared();
+    const t = window.setInterval(() => void syncShared(), 10000);
+    return () => window.clearInterval(t);
+  }, [id, role, s.game?.year]);
+  return null;
+}
+
 export function App() {
   const s = useStore();
   useKeyboard();
@@ -327,6 +341,7 @@ export function App() {
         {withInspector && <Inspector />}
       </div>
       <Dialogs />
+      <SharedSync />
       {s.game.tutorial && !s.game.tutorial.hidden && <Tutorial />}
       <ActCard />
       <Toast />

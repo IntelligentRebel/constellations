@@ -316,6 +316,13 @@ export interface PbemState {
   player?: number;
   hostSlot?: string;
   sent?: number;
+  /** 0.3.9.25, host: each player's e-mail address, its own (put in the turn files), generate as soon as every order is in */
+  emails?: Record<number, string>;
+  hostEmail?: string;
+  autoGen?: boolean;
+  /** 0.3.9.25, host: the turn whose files are in the shared folder, and the orders files read there (name → date, year) */
+  sharedTurn?: number;
+  sharedSeen?: Record<string, { mod: number; year: number }>;
 }
 export interface PbemContains { applied: Record<number, PbemApplied>; /** the texts of the player's reports of the year then */ msgs?: string[]; surface: Record<number, Minerals>; holds: Record<number, { cargo: Cargo; fuel: number }>; salvage: Record<number, Minerals>; free: Record<number, string>; pairs: Record<string, string>; chains: Record<number, string>; proposals: number[] }
 export interface PbemApplied {

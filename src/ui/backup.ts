@@ -56,6 +56,11 @@ async function idb<T>(mode: IDBTransactionMode, f: (s: IDBObjectStore) => IDBReq
   });
 }
 
+/** 0.3.9.25: the same little store, for the shared folders of games played by turn files. */
+export const kvGet = <T>(key: string) => idb<T | undefined>('readonly', s => s.get(key));
+export const kvPut = (key: string, v: unknown) => idb('readwrite', s => s.put(v, key));
+export const kvDel = (key: string) => idb('readwrite', s => s.delete(key));
+
 async function permitted(h: Handle, ask: boolean): Promise<boolean> {
   try {
     if (!h.queryPermission) return true;

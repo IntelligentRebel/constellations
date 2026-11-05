@@ -1,5 +1,6 @@
 // Opening screen.
 import { useEffect, useRef } from 'preact/hooks';
+import { sharedSupported, joinShared } from './shared';
 import { store, useStore } from './store';
 import { importGame } from './app';
 import { quickGame } from '../engine/newgame';
@@ -80,6 +81,7 @@ export function Welcome() {
           <button class="big" onClick={() => { renewFolder(); s.open('newGame'); }}>Nouvelle partie…</button>
           <button class="big" onClick={() => { renewFolder(); s.setGame(quickGame(undefined, 'Small', 3, 'standard', undefined, { shape: 'arm', popUnits: 'millions' })); s.notify('Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)'); }}>Partie rapide</button>
           <button onClick={() => { renewFolder(); s.open('newGame', { pbem: true }); }} title="Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».">Multijoueur par fichiers (PBEM)…</button>
+          {sharedSupported() && <button onClick={() => { renewFolder(); void joinShared(); }} title="L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.">Rejoindre une partie (dossier partagé)…</button>}
           <button onClick={importGame}>Importer une partie…</button>
           <button onClick={() => s.open('raceWizard', { standalone: true })}>Assistant de race…</button>
           <button onClick={() => s.open('help')}>Guide du joueur</button>

@@ -8053,7 +8053,7 @@
   "kind": "str",
   "refs": [
    "engine/espionage.ts:27 prop:label",
-   "ui/app.tsx:155 prop:label",
+   "ui/app.tsx:156 prop:label",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/reports.tsx:62 prop:label"
   ]
@@ -9920,7 +9920,7 @@
   "kind": "str",
   "refs": [
    "engine/newgame.ts:400 prop:name",
-   "ui/welcome.tsx:81 jsx"
+   "ui/welcome.tsx:82 jsx"
   ]
  },
  {
@@ -9928,7 +9928,7 @@
   "kind": "str",
   "refs": [
    "engine/newgame.ts:414",
-   "ui/app.tsx:164 prop:label",
+   "ui/app.tsx:165 prop:label",
    "ui/tutorial.tsx:1252 jsx",
    "ui/tutorial.tsx:1265 attr:aria-label"
   ]
@@ -16416,7 +16416,7 @@
   "key": "Carte",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/tutorial.tsx:123 prop:map"
   ]
  },
@@ -16424,7 +16424,7 @@
   "key": "Carte galactique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/pages.tsx:115 jsx"
   ]
  },
@@ -16432,7 +16432,7 @@
   "key": "Colonies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/reports.tsx:170 prop:label",
    "ui/sidebar.tsx:124 attr:title"
@@ -16442,14 +16442,14 @@
   "key": "Vos colonies (F3)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Planificateur de colonies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/pages.tsx:290 attr:title",
    "ui/tutorial.tsx:123 prop:planner"
   ]
@@ -16458,14 +16458,14 @@
   "key": "Mondes analysés classés par habitabilité, envoi d'arches (C)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Planificateur de minage",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/pages.tsx:369 attr:title",
    "ui/tutorial.tsx:126 prop:mining"
   ]
@@ -16474,14 +16474,14 @@
   "key": "Mondes libres classés par richesse minérale, envoi de vaisseaux de minage (X)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/dialogs/reports.tsx:171 prop:label",
    "ui/sidebar.tsx:135 jsx",
    "ui/tutorial.tsx:126 prop:fleets"
@@ -16491,7 +16491,7 @@
   "key": "Vos flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/pages.tsx:521 attr:title"
   ]
  },
@@ -16499,7 +16499,7 @@
   "key": "Empire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35",
+   "ui/app.tsx:36",
    "ui/dialogs/battle.tsx:62 attr:k",
    "ui/dialogs/misc.tsx:69 jsx",
    "ui/dialogs/misc.tsx:210 jsx"
@@ -16509,14 +16509,14 @@
   "key": "Administration, réseau logistique, mégaprojets, objectifs secrets, doctrines",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:35"
+   "ui/app.tsx:36"
   ]
  },
  {
   "key": "Conception",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36",
+   "ui/app.tsx:37",
    "ui/dialogs/designer.tsx:56 attr:title",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/tutorial.tsx:124 prop:design"
@@ -16526,14 +16526,14 @@
   "key": "Conception de vaisseaux et de stations (F4)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36"
+   "ui/app.tsx:37"
   ]
  },
  {
   "key": "Recherche",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36",
+   "ui/app.tsx:37",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/dialogs/race.tsx:68 jsx",
    "ui/dialogs/race.tsx:163 jsx"
@@ -16543,14 +16543,14 @@
   "key": "Recherche (F5)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36"
+   "ui/app.tsx:37"
   ]
  },
  {
   "key": "Diplomatie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36",
+   "ui/app.tsx:37",
    "ui/dialogs/misc.tsx:66 attr:title",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/diplomacy.tsx:147 attr:title"
@@ -16560,14 +16560,14 @@
   "key": "Relations avec les empires rencontrés (F7)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:36"
+   "ui/app.tsx:37"
   ]
  },
  {
   "key": "Rapports",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:37",
+   "ui/app.tsx:38",
    "ui/dialogs/reports.tsx:61 attr:title",
    "ui/tutorial.tsx:124 prop:reports"
   ]
@@ -16576,14 +16576,14 @@
   "key": "Rapports de l'année, batailles, score",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:37"
+   "ui/app.tsx:38"
   ]
  },
  {
   "key": "Guide",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:37",
+   "ui/app.tsx:38",
    "ui/dialogs/misc.tsx:270 call:map",
    "ui/tutorial.tsx:124 prop:guide"
   ]
@@ -16592,29 +16592,29 @@
   "key": "Guide du joueur (F1)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:37"
+   "ui/app.tsx:38"
   ]
  },
  {
   "key": "Exporter la partie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:46 prop:title"
+   "ui/app.tsx:47 prop:title"
   ]
  },
  {
   "key": "{0}, année {1}.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:46 prop:note"
+   "ui/app.tsx:47 prop:note"
   ]
  },
  {
   "key": "À propos",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:63 attr:title",
-   "ui/app.tsx:165 prop:label",
+   "ui/app.tsx:64 attr:title",
+   "ui/app.tsx:166 prop:label",
    "ui/dialogs/misc.tsx:176 prop:label"
   ]
  },
@@ -16622,35 +16622,35 @@
   "key": "Constellations",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:65 jsx"
+   "ui/app.tsx:66 jsx"
   ]
  },
  {
   "key": "colonie{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:69 jsx"
+   "ui/app.tsx:70 jsx"
   ]
  },
  {
   "key": "Croissance prévue l'an prochain : {0} habitants ({1} %)",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:70 attr:title"
+   "ui/app.tsx:71 attr:title"
   ]
  },
  {
   "key": "habitants {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:70 jsx"
+   "ui/app.tsx:71 jsx"
   ]
  },
  {
   "key": "{0}/an",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:70 jsx",
+   "ui/app.tsx:71 jsx",
    "ui/inspector.tsx:157 jsx"
   ]
  },
@@ -16658,98 +16658,98 @@
   "key": "{0} % des ressources vont à la recherche (réglable dans l'onglet Recherche)",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:71 attr:title"
+   "ui/app.tsx:72 attr:title"
   ]
  },
  {
   "key": "ressources/an · {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:71 jsx"
+   "ui/app.tsx:72 jsx"
   ]
  },
  {
   "key": "{0} % recherche",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:71 jsx"
+   "ui/app.tsx:72 jsx"
   ]
  },
  {
   "key": "vaisseaux",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:72 jsx"
+   "ui/app.tsx:73 jsx"
   ]
  },
  {
   "key": "Année",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:78 jsx"
+   "ui/app.tsx:79 jsx"
   ]
  },
  {
   "key": "Ordres modifiés depuis la dernière sauvegarde automatique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:78 attr:title"
+   "ui/app.tsx:79 attr:title"
   ]
  },
  {
   "key": "Enregistrer le fichier de vos ordres pour l'hôte",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:79 attr:title"
+   "ui/app.tsx:80 attr:title"
   ]
  },
  {
   "key": "Ordres envoyés",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:79 jsx"
+   "ui/app.tsx:80 jsx"
   ]
  },
  {
   "key": "Envoyer mes ordres",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:79 jsx"
+   "ui/app.tsx:80 jsx"
   ]
  },
  {
   "key": "Fichiers de tour, ordres reçus, génération de l'année",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:80 attr:title"
+   "ui/app.tsx:81 attr:title"
   ]
  },
  {
   "key": "Hôte · ordres {0}/{1}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:80 jsx"
+   "ui/app.tsx:81 jsx"
   ]
  },
  {
   "key": "Générer l'année suivante (Entrée ou F9)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:81 attr:title"
+   "ui/app.tsx:82 attr:title"
   ]
  },
  {
   "key": "Tour suivant {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:81 jsx"
+   "ui/app.tsx:82 jsx"
   ]
  },
  {
   "key": "Entrée",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:81 jsx",
+   "ui/app.tsx:82 jsx",
    "ui/dialogs/misc.tsx:180 jsx"
   ]
  },
@@ -16757,218 +16757,218 @@
   "key": "Couper le son (réglages : menu ⋯, Affichage et son)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:90 attr:title"
+   "ui/app.tsx:91 attr:title"
   ]
  },
  {
   "key": "Activer le son",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:90 attr:title"
+   "ui/app.tsx:91 attr:title"
   ]
  },
  {
   "key": "Dilemme{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:110 jsx"
+   "ui/app.tsx:111 jsx"
   ]
  },
  {
   "key": "À trancher avant {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:110 attr:title"
+   "ui/app.tsx:111 attr:title"
   ]
  },
  {
   "key": "Décision à prendre{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:111 jsx"
+   "ui/app.tsx:112 jsx"
   ]
  },
  {
   "key": "Une découverte attend votre décision",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:111 attr:title"
+   "ui/app.tsx:112 attr:title"
   ]
  },
  {
   "key": "Doctrine à choisir{0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:112 jsx"
+   "ui/app.tsx:113 jsx"
   ]
  },
  {
   "key": "{0} : {1} ou {2}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:112 call:map"
+   "ui/app.tsx:113 call:map"
   ]
  },
  {
   "key": "Portail des {0} : {1} %",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:113 jsx"
+   "ui/app.tsx:114 jsx"
   ]
  },
  {
   "key": "Les {0} construisent le Portail de l'Ascension sur {1}. Achevé, il leur donne la victoire.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:113 attr:title"
+   "ui/app.tsx:114 attr:title"
   ]
  },
  {
   "key": "En exil depuis {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:114 jsx"
+   "ui/app.tsx:115 jsx"
   ]
  },
  {
   "key": "Votre peuple vit à bord de ses arches : fondez une colonie pour refonder l'empire.",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:114 attr:title"
+   "ui/app.tsx:115 attr:title"
   ]
  },
  {
   "key": "Némésis : {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:115 jsx"
+   "ui/app.tsx:116 jsx"
   ]
  },
  {
   "key": "Les {0} ont juré votre perte en {1} : pas de paix tant que leur empire n'est pas brisé.",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:115 attr:title"
+   "ui/app.tsx:116 attr:title"
   ]
  },
  {
   "key": "Âge d'or jusqu'en {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:116 jsx"
+   "ui/app.tsx:117 jsx"
   ]
  },
  {
   "key": "+15 % de ressources et de recherche sur tout l'empire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:116 attr:title"
+   "ui/app.tsx:117 attr:title"
   ]
  },
  {
   "key": "Désorganisé jusqu'en {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:117 jsx"
+   "ui/app.tsx:118 jsx"
   ]
  },
  {
   "key": "Capitale perdue : rendement de tout l'empire réduit",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:117 attr:title"
+   "ui/app.tsx:118 attr:title"
   ]
  },
  {
   "key": "Recherche en cours : {0}, vers le niveau {1}{2}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:133 attr:title"
+   "ui/app.tsx:134 attr:title"
   ]
  },
  {
   "key": ". Technologie ciblée : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:133"
+   "ui/app.tsx:134"
   ]
  },
  {
   "key": "vers niv. {0} · {1} %",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:134 jsx"
+   "ui/app.tsx:135 jsx"
   ]
  },
  {
   "key": "Cible : {0} · ≈ {1} %",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:136 jsx"
+   "ui/app.tsx:137 jsx"
   ]
  },
  {
   "key": "Recherche · aucune technologie ciblée",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:136 jsx"
+   "ui/app.tsx:137 jsx"
   ]
  },
  {
   "key": "Générer 5 années",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:144 prop:label"
+   "ui/app.tsx:145 prop:label"
   ]
  },
  {
   "key": "Générer 10 années",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:145 prop:label"
+   "ui/app.tsx:146 prop:label"
   ]
  },
  {
   "key": "Sauvegarder maintenant",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:146 prop:label"
+   "ui/app.tsx:147 prop:label"
   ]
  },
  {
   "key": "Partie sauvegardée dans ce navigateur",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:146 call:notify"
+   "ui/app.tsx:147 call:notify"
   ]
  },
  {
   "key": "Sauvegardes de secours…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:147 prop:label"
+   "ui/app.tsx:148 prop:label"
   ]
  },
  {
   "key": "Nouvelle partie…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:148 prop:label",
-   "ui/welcome.tsx:80 jsx"
+   "ui/app.tsx:149 prop:label",
+   "ui/welcome.tsx:81 jsx"
   ]
  },
  {
   "key": "Retour à l'accueil",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:149 prop:label"
+   "ui/app.tsx:150 prop:label"
   ]
  },
  {
   "key": "Ma race",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:150 prop:label",
+   "ui/app.tsx:151 prop:label",
    "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
@@ -16976,15 +16976,15 @@
   "key": "Assistant de race…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:151 prop:label",
-   "ui/welcome.tsx:84 jsx"
+   "ui/app.tsx:152 prop:label",
+   "ui/welcome.tsx:86 jsx"
   ]
  },
  {
   "key": "Plans de bataille…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:152 prop:label",
+   "ui/app.tsx:153 prop:label",
    "ui/dialogs/misc.tsx:66 jsx",
    "ui/diplomacy.tsx:147 jsx"
   ]
@@ -16993,7 +16993,7 @@
   "key": "Modèles de production…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:153 prop:label",
+   "ui/app.tsx:154 prop:label",
    "ui/pages.tsx:222 jsx"
   ]
  },
@@ -17001,7 +17001,7 @@
   "key": "Catalogue des technologies",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:154 prop:label",
+   "ui/app.tsx:155 prop:label",
    "ui/dialogs/misc.tsx:270 call:map"
   ]
  },
@@ -17009,7 +17009,7 @@
   "key": "Course à la victoire",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:156 prop:label",
+   "ui/app.tsx:157 prop:label",
    "ui/dialogs/misc.tsx:273 call:map",
    "ui/victory.tsx:138 attr:title"
   ]
@@ -17018,7 +17018,7 @@
   "key": "Chronique",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:157 prop:label",
+   "ui/app.tsx:158 prop:label",
    "ui/chronicle.tsx:141 attr:title",
    "ui/chronicle.tsx:170 call:esc"
   ]
@@ -17027,21 +17027,21 @@
   "key": "Partie par fichiers…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:159 prop:label"
+   "ui/app.tsx:160 prop:label"
   ]
  },
  {
   "key": "Rechercher un objet…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:160 prop:label"
+   "ui/app.tsx:161 prop:label"
   ]
  },
  {
   "key": "Paramètres de la partie",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:161 prop:label",
+   "ui/app.tsx:162 prop:label",
    "ui/dialogs/misc.tsx:333 attr:title",
    "ui/dialogs/race.tsx:167 jsx"
   ]
@@ -17050,22 +17050,22 @@
   "key": "Affichage et son…",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:162 prop:label",
-   "ui/welcome.tsx:86 jsx"
+   "ui/app.tsx:163 prop:label",
+   "ui/welcome.tsx:88 jsx"
   ]
  },
  {
   "key": "Raccourcis clavier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:163 prop:label"
+   "ui/app.tsx:164 prop:label"
   ]
  },
  {
   "key": "Ouvrir le tutoriel ? Il se joue dans une partie à part ; celle-ci reste enregistrée dans ce navigateur.",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:164 call:ask",
+   "ui/app.tsx:165 call:ask",
    "ui/dialogs/misc.tsx:179 call:ask"
   ]
  },
@@ -17073,7 +17073,7 @@
   "key": "Ouvrir le tutoriel",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:164 call:ask",
+   "ui/app.tsx:165 call:ask",
    "ui/dialogs/misc.tsx:179 call:ask",
    "ui/dialogs/misc.tsx:179 jsx"
   ]
@@ -17082,21 +17082,21 @@
   "key": "Colonies et flottes",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:175 attr:title"
+   "ui/app.tsx:176 attr:title"
   ]
  },
  {
   "key": "propositions en attente de votre réponse",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:177 attr:title"
+   "ui/app.tsx:178 attr:title"
   ]
  },
  {
   "key": "↶ Annuler",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:180 jsx",
+   "ui/app.tsx:181 jsx",
    "ui/tutorial.tsx:126 prop:undo"
   ]
  },
@@ -17104,14 +17104,14 @@
   "key": "Annuler le dernier ordre (Ctrl+Z)",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:180 attr:title"
+   "ui/app.tsx:181 attr:title"
   ]
  },
  {
   "key": "Exporter",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:181 jsx",
+   "ui/app.tsx:182 jsx",
    "ui/dialogs/newgame.tsx:98 jsx",
    "ui/inspector.tsx:293 jsx",
    "ui/tutorial.tsx:126 prop:exportBtn"
@@ -17121,14 +17121,14 @@
   "key": "Enregistrer la partie dans un fichier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:181 attr:title"
+   "ui/app.tsx:182 attr:title"
   ]
  },
  {
   "key": "Importer",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:182 jsx",
+   "ui/app.tsx:183 jsx",
    "ui/inspector.tsx:293 jsx"
   ]
  },
@@ -17136,65 +17136,65 @@
   "key": "Charger une partie depuis un fichier",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:182 attr:title"
+   "ui/app.tsx:183 attr:title"
   ]
  },
  {
   "key": "Plus",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:184 attr:title"
+   "ui/app.tsx:185 attr:title"
   ]
  },
  {
   "key": "Exporter la partie…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:186 jsx"
+   "ui/app.tsx:187 jsx"
   ]
  },
  {
   "key": "Importer une partie…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:187 jsx",
-   "ui/welcome.tsx:83 jsx"
+   "ui/app.tsx:188 jsx",
+   "ui/welcome.tsx:85 jsx"
   ]
  },
  {
   "key": "Partie sauvegardée",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:225 call:notify"
+   "ui/app.tsx:226 call:notify"
   ]
  },
  {
   "key": "Aucune flotte sans ordre",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:279 call:notify"
+   "ui/app.tsx:280 call:notify"
   ]
  },
  {
   "key": "Génération de l'année {0}…",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:333 jsx"
+   "ui/app.tsx:348 jsx"
   ]
  },
  {
   "key": "Acte {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:347 attr:aria-label",
-   "ui/app.tsx:349 jsx"
+   "ui/app.tsx:362 attr:aria-label",
+   "ui/app.tsx:364 jsx"
   ]
  },
  {
   "key": "Continuer",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:355 jsx",
+   "ui/app.tsx:370 jsx",
    "ui/dialogs/misc.tsx:317 jsx"
   ]
  },
@@ -17202,71 +17202,71 @@
   "key": "Acte {0} : {1}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:366 call:filter"
+   "ui/app.tsx:381 call:filter"
   ]
  },
  {
   "key": "Année · acte {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:367 jsx"
+   "ui/app.tsx:382 jsx"
   ]
  },
  {
   "key": "Année {0} · partie à {1} joueurs",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:378 jsx"
+   "ui/app.tsx:393 jsx"
   ]
  },
  {
   "key": "Au tour des {0}",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:379 jsx"
+   "ui/app.tsx:394 jsx"
   ]
  },
  {
   "key": "Les autres joueurs ne doivent pas regarder l'écran.",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:380 jsx"
+   "ui/app.tsx:395 jsx"
   ]
  },
  {
   "key": "à vous de jouer",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:381 jsx"
+   "ui/app.tsx:396 jsx"
   ]
  },
  {
   "key": "ordres donnés",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:381 jsx"
+   "ui/app.tsx:396 jsx"
   ]
  },
  {
   "key": "en attente",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:381 jsx",
-   "ui/pbemui.tsx:88 jsx"
+   "ui/app.tsx:396 jsx",
+   "ui/pbemui.tsx:146 jsx"
   ]
  },
  {
   "key": "Afficher mon empire",
   "kind": "jsx",
   "refs": [
-   "ui/app.tsx:382 jsx"
+   "ui/app.tsx:397 jsx"
   ]
  },
  {
   "key": "Nouvelle version disponible : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/app.tsx:391 attr:title"
+   "ui/app.tsx:406 attr:title"
   ]
  },
  {
@@ -19140,7 +19140,8 @@
   "key": "Changer de dossier…",
   "kind": "str",
   "refs": [
-   "ui/dialogs/backups.tsx:45 jsx"
+   "ui/dialogs/backups.tsx:45 jsx",
+   "ui/pbemui.tsx:88 jsx"
   ]
  },
  {
@@ -20527,7 +20528,7 @@
    "ui/dialogs/designer.tsx:436 jsx",
    "ui/dialogs/fleetops.tsx:92 jsx",
    "ui/dialogs/fleetops.tsx:119 jsx",
-   "ui/dialogs/index.tsx:81 jsx"
+   "ui/dialogs/index.tsx:82 jsx"
   ]
  },
  {
@@ -21046,28 +21047,28 @@
   "key": "Race enregistrée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:50 prop:title"
+   "ui/dialogs/index.tsx:51 prop:title"
   ]
  },
  {
   "key": "La race est aussi mémorisée dans ce navigateur (liste des races de « Nouvelle partie »). Conservez ce texte pour la réutiliser ailleurs : « Nouvelle partie » puis « Importer une race ».",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:50 prop:note"
+   "ui/dialogs/index.tsx:51 prop:note"
   ]
  },
  {
   "key": "Confirmation",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:81 attr:title"
+   "ui/dialogs/index.tsx:82 attr:title"
   ]
  },
  {
   "key": "Confirmer",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:81 jsx",
+   "ui/dialogs/index.tsx:82 jsx",
    "ui/store.ts:364"
   ]
  },
@@ -21075,120 +21076,120 @@
   "key": "Télécharger le fichier",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:90 jsx"
+   "ui/dialogs/index.tsx:91 jsx"
   ]
  },
  {
   "key": "Copié",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:92 jsx"
+   "ui/dialogs/index.tsx:93 jsx"
   ]
  },
  {
   "key": "Copier le texte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:92 jsx"
+   "ui/dialogs/index.tsx:93 jsx"
   ]
  },
  {
   "key": "Vous pouvez aussi copier ce texte dans un fichier .json : il se réimporte par « Importer » ou en le collant.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:96 jsx"
+   "ui/dialogs/index.tsx:97 jsx"
   ]
  },
  {
   "key": "Race importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:107 call:notify"
+   "ui/dialogs/index.tsx:108 call:notify"
   ]
  },
  {
   "key": "fichier de tour ou d'ordres endommagé",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:111"
+   "ui/dialogs/index.tsx:112"
   ]
  },
  {
   "key": "Tour {0} des {1} : donnez vos ordres, puis envoyez-les.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:112 call:notify"
+   "ui/dialogs/index.tsx:113 call:notify"
   ]
  },
  {
   "key": "ouvrez d'abord la partie hébergée (écran d'accueil, sauvegardes), puis importez ces ordres",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:114"
+   "ui/dialogs/index.tsx:115"
   ]
  },
  {
   "key": "Ordres des {0} reçus.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:118 call:notify",
-   "ui/pbemui.tsx:19 call:push"
+   "ui/dialogs/index.tsx:119 call:notify",
+   "ui/pbemui.tsx:20 call:push"
   ]
  },
  {
   "key": "Partie importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:123 call:notify"
+   "ui/dialogs/index.tsx:124 call:notify"
   ]
  },
  {
   "key": "Contenu invalide : ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:124 call:setErr"
+   "ui/dialogs/index.tsx:125 call:setErr"
   ]
  },
  {
   "key": "Importer une race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:126 attr:title"
+   "ui/dialogs/index.tsx:127 attr:title"
   ]
  },
  {
   "key": "Importer une partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:126 attr:title"
+   "ui/dialogs/index.tsx:127 attr:title"
   ]
  },
  {
   "key": "Choisir un fichier…{0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:127 jsx"
+   "ui/dialogs/index.tsx:128 jsx"
   ]
  },
  {
   "key": "Importer le texte collé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:128 jsx"
+   "ui/dialogs/index.tsx:129 jsx"
   ]
  },
  {
   "key": "Choisissez un fichier exporté, ou collez son contenu ci-dessous.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:130 jsx"
+   "ui/dialogs/index.tsx:131 jsx"
   ]
  },
  {
   "key": "Collez ici le texte de la sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:131 attr:placeholder"
+   "ui/dialogs/index.tsx:132 attr:placeholder"
   ]
  },
  {
@@ -21692,7 +21693,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:175 attr:title",
-   "ui/welcome.tsx:85 jsx"
+   "ui/welcome.tsx:87 jsx"
   ]
  },
  {
@@ -33914,210 +33915,416 @@
   "key": "{0} : ce n'est pas un fichier d'ordres de Constellations.",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:17 call:push"
+   "ui/pbemui.tsx:18 call:push"
   ]
  },
  {
   "key": "Copiez ce texte dans un fichier portant ce nom.",
   "kind": "str",
   "refs": [
-   "ui/pbemui.tsx:27 prop:note"
+   "ui/pbemui.tsx:28 prop:note"
   ]
  },
  {
   "key": "Vous jouez les {0} pour {1}. Envoyez vos ordres avec le bouton de fin de tour.",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:36 call:notify"
+   "ui/pbemui.tsx:37 call:notify"
   ]
  },
  {
   "key": "La partie hébergée n'est plus dans ce navigateur : envoyez le fichier d'ordres.",
   "kind": "str",
   "refs": [
-   "ui/pbemui.tsx:43 call:notify"
+   "ui/pbemui.tsx:44 call:notify"
   ]
  },
  {
   "key": "Ordres refusés : {0}.",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:47 call:notify"
+   "ui/pbemui.tsx:48 call:notify"
   ]
  },
  {
   "key": "Ordres des {0} remis à l'hôte.",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:52 call:notify"
+   "ui/pbemui.tsx:53 call:notify"
   ]
  },
  {
-  "key": "Vos ordres pour {0}",
-  "kind": "tpl",
-  "refs": [
-   "ui/pbemui.tsx:66 attr:title"
-  ]
- },
- {
-  "key": "Vos ordres de {0} sont partis. Vous pouvez encore les modifier et renvoyer le fichier : seul le dernier reçu compte.",
-  "kind": "tpl",
-  "refs": [
-   "ui/pbemui.tsx:67 jsx"
-  ]
- },
- {
-  "key": "Vous jouez les {0} pour {1}. Une fois vos ordres donnés, enregistrez le fichier d'ordres et envoyez-le à l'hôte de la partie.",
-  "kind": "tpl",
-  "refs": [
-   "ui/pbemui.tsx:67 jsx"
-  ]
- },
- {
-  "key": "Enregistrer le fichier d'ordres",
+  "key": "Dossier partagé (Dropbox, Google Drive, OneDrive…) : il demande Chrome ou Edge sur ordinateur, avec la page du jeu ouverte directement (pas depuis un autre site).",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:69 jsx"
+   "ui/pbemui.tsx:74 jsx"
   ]
  },
  {
-  "key": "Remettre les ordres à l'hôte (ce navigateur)",
+  "key": "Dossier partagé",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:70 jsx"
+   "ui/pbemui.tsx:78 jsx"
   ]
  },
  {
-  "key": "Le tour suivant arrivera sous la forme d'un nouveau fichier de tour : ouvrez-le avec le bouton « Importer » (barre des onglets) ou « Importer une partie… » (écran d'accueil). Il remplace la sauvegarde de ce tour.",
-  "kind": "jsx",
-  "refs": [
-   "ui/pbemui.tsx:72 jsx"
-  ]
- },
- {
-  "key": "Partie par fichiers · {0}",
-  "kind": "tpl",
-  "refs": [
-   "ui/pbemui.tsx:78 attr:title"
-  ]
- },
- {
-  "key": "Importer des ordres…{0}",
-  "kind": "jsx",
-  "refs": [
-   "ui/pbemui.tsx:79 jsx"
-  ]
- },
- {
-  "key": "{0} empires n'ont pas envoyé d'ordres : ils garderont ceux de l'an dernier.",
-  "kind": "tpl",
-  "refs": [
-   "ui/pbemui.tsx:81 jsx"
-  ]
- },
- {
-  "key": "Un empire n'a pas envoyé d'ordres : il gardera ceux de l'an dernier.",
+  "key": "Choisissez un dossier synchronisé sur votre ordinateur (Dropbox, Google Drive, OneDrive…) et partagez-le avec les joueurs. Le jeu y dépose les fichiers de tour et y relève les ordres tout seul.",
   "kind": "str",
   "refs": [
-   "ui/pbemui.tsx:81 jsx"
+   "ui/pbemui.tsx:80 jsx"
   ]
  },
  {
-  "key": "Générer quand même",
+  "key": "Si l'hôte a partagé un dossier avec vous (Dropbox, Google Drive, OneDrive…), choisissez-le ici : vos ordres y partiront et votre tour suivant s'ouvrira tout seul.",
+  "kind": "str",
+  "refs": [
+   "ui/pbemui.tsx:80 jsx"
+  ]
+ },
+ {
+  "key": "Choisir le dossier partagé…",
   "kind": "jsx",
   "refs": [
    "ui/pbemui.tsx:81 jsx"
   ]
  },
  {
-  "key": "Attendre",
-  "kind": "jsx",
-  "refs": [
-   "ui/pbemui.tsx:81 jsx"
-  ]
- },
- {
-  "key": "Générer l'année {0}",
+  "key": "Le navigateur demande votre accord pour reprendre le dossier « {0} ».",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:82 jsx"
+   "ui/pbemui.tsx:83 jsx"
   ]
  },
  {
-  "key": "Ce navigateur héberge la partie. Chaque année, envoyez à chaque joueur son fichier de tour ; il donne ses ordres chez lui et vous renvoie un fichier d'ordres ; importez-les, puis générez l'année. Vous pouvez jouer votre propre empire ici (« Jouer ici »), comme les autres : la partie hébergée reste dans sa sauvegarde. Ne donnez pas d'ordres directement dans la partie hébergée : les fichiers d'ordres des joueurs remplacent ce qui y change.",
+  "key": "Autoriser le dossier",
   "kind": "jsx",
   "refs": [
    "ui/pbemui.tsx:84 jsx"
   ]
  },
  {
+  "key": "Dossier « {0} » : les fichiers de tour y sont déposés, les ordres relevés toutes les 10 secondes.",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:86 jsx"
+  ]
+ },
+ {
+  "key": "Dossier « {0} » : vos ordres y partent, votre tour suivant s'ouvrira tout seul.",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:86 jsx"
+  ]
+ },
+ {
+  "key": "{0} Générer l'année dès que tous les ordres sont arrivés",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:87 jsx"
+  ]
+ },
+ {
+  "key": "Rejoindre une partie",
+  "kind": "str",
+  "refs": [
+   "ui/pbemui.tsx:96 attr:title"
+  ]
+ },
+ {
+  "key": "Choisissez votre empire :",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:97 jsx"
+  ]
+ },
+ {
+  "key": "Vos ordres pour {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:120 attr:title"
+  ]
+ },
+ {
+  "key": "Vos ordres de {0} sont partis. Vous pouvez encore les modifier et renvoyer le fichier : seul le dernier reçu compte.",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:121 jsx"
+  ]
+ },
+ {
+  "key": "Vous jouez les {0} pour {1}. Une fois vos ordres donnés, enregistrez le fichier d'ordres et envoyez-le à l'hôte de la partie.",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:121 jsx"
+  ]
+ },
+ {
+  "key": "Déposer mes ordres dans le dossier partagé",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:123 jsx"
+  ]
+ },
+ {
+  "key": "Enregistrer le fichier d'ordres",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:124 jsx"
+  ]
+ },
+ {
+  "key": "Envoyer par e-mail à l'hôte",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:125 jsx"
+  ]
+ },
+ {
+  "key": "Remettre les ordres à l'hôte (ce navigateur)",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:126 jsx"
+  ]
+ },
+ {
+  "key": "Le tour suivant arrivera sous la forme d'un nouveau fichier de tour : ouvrez-le avec le bouton « Importer » (barre des onglets) ou « Importer une partie… » (écran d'accueil). Il remplace la sauvegarde de ce tour.",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:129 jsx"
+  ]
+ },
+ {
+  "key": "Partie par fichiers · {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:135 attr:title"
+  ]
+ },
+ {
+  "key": "Importer des ordres…{0}",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:136 jsx"
+  ]
+ },
+ {
+  "key": "{0} empires n'ont pas envoyé d'ordres : ils garderont ceux de l'an dernier.",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:138 jsx"
+  ]
+ },
+ {
+  "key": "Un empire n'a pas envoyé d'ordres : il gardera ceux de l'an dernier.",
+  "kind": "str",
+  "refs": [
+   "ui/pbemui.tsx:138 jsx"
+  ]
+ },
+ {
+  "key": "Générer quand même",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:138 jsx"
+  ]
+ },
+ {
+  "key": "Attendre",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:138 jsx"
+  ]
+ },
+ {
+  "key": "Générer l'année {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/pbemui.tsx:139 jsx"
+  ]
+ },
+ {
+  "key": "Ce navigateur héberge la partie. Chaque année, envoyez à chaque joueur son fichier de tour ; il donne ses ordres chez lui et vous renvoie un fichier d'ordres ; importez-les, puis générez l'année. Vous pouvez jouer votre propre empire ici (« Jouer ici »), comme les autres : la partie hébergée reste dans sa sauvegarde. Ne donnez pas d'ordres directement dans la partie hébergée : les fichiers d'ordres des joueurs remplacent ce qui y change.",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:141 jsx"
+  ]
+ },
+ {
   "key": "Ordres de {0}",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:85 jsx"
+   "ui/pbemui.tsx:143 jsx"
+  ]
+ },
+ {
+  "key": "E-mail",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:143 jsx",
+   "ui/pbemui.tsx:148 jsx"
   ]
  },
  {
   "key": "reçus",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:88 jsx"
+   "ui/pbemui.tsx:146 jsx"
+  ]
+ },
+ {
+  "key": "Enregistre le fichier de tour et prépare le message (il reste à y joindre le fichier)",
+  "kind": "str",
+  "refs": [
+   "ui/pbemui.tsx:148 attr:title"
   ]
  },
  {
   "key": "Fichier de tour",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:89 jsx"
+   "ui/pbemui.tsx:148 jsx"
   ]
  },
  {
   "key": "Jouer ici",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:89 jsx"
+   "ui/pbemui.tsx:148 jsx"
+  ]
+ },
+ {
+  "key": "Votre adresse (pour que les joueurs vous répondent) : {0}",
+  "kind": "jsx",
+  "refs": [
+   "ui/pbemui.tsx:150 jsx"
   ]
  },
  {
   "key": "Les fichiers contiennent toute la partie : jouez entre personnes de confiance. Un empire sans ordres pour l'année garde ceux de l'an dernier (ses flottes poursuivent leur route, ses files continuent).",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:92 jsx"
+   "ui/pbemui.tsx:152 jsx"
   ]
  },
  {
   "key": "Partie par fichiers",
   "kind": "str",
   "refs": [
-   "ui/pbemui.tsx:100 attr:title"
+   "ui/pbemui.tsx:160 attr:title"
   ]
  },
  {
   "key": "Héberger cette partie",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:101 jsx"
+   "ui/pbemui.tsx:161 jsx"
   ]
  },
  {
   "key": "Chacun joue chez soi, comme dans Stars! par courrier : ce navigateur héberge la partie, envoie à chaque joueur humain son fichier de tour et reçoit ses ordres.",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:102 jsx"
+   "ui/pbemui.tsx:162 jsx"
   ]
  },
  {
   "key": "Il faut au moins deux joueurs humains : créez une partie avec des adversaires humains (onglet Adversaires de la nouvelle partie).",
   "kind": "jsx",
   "refs": [
-   "ui/pbemui.tsx:103 jsx"
+   "ui/pbemui.tsx:163 jsx"
   ]
  },
  {
   "key": "{0} empires joueront par fichiers : {1}.",
   "kind": "tpl",
   "refs": [
-   "ui/pbemui.tsx:104 jsx"
+   "ui/pbemui.tsx:164 jsx"
+  ]
+ },
+ {
+  "key": "Fichiers de tour de {0} déposés dans le dossier partagé.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:94 call:notify"
+  ]
+ },
+ {
+  "key": "Ordres des {0} refusés : {1}.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:106 call:notify"
+  ]
+ },
+ {
+  "key": "Ordres des {0} reçus (dossier partagé).",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:106 call:notify"
+  ]
+ },
+ {
+  "key": "Le tour {0} est arrivé sans vos ordres de {1} : l'hôte a généré l'année sans eux. À vous de jouer.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:126 call:notify"
+  ]
+ },
+ {
+  "key": "Le tour {0} est arrivé : à vous de jouer.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:126 call:notify"
+  ]
+ },
+ {
+  "key": "Ordres de {0} déposés dans le dossier partagé : l'hôte les recevra tout seul.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:142 call:notify"
+  ]
+ },
+ {
+  "key": "Aucun fichier de tour dans ce dossier : l'hôte doit d'abord y déposer les tours (fenêtre de la partie par fichiers).",
+  "kind": "str",
+  "refs": [
+   "ui/shared.ts:161 call:notify"
+  ]
+ },
+ {
+  "key": "Tour {0} des {1} : donnez vos ordres, puis « Envoyer mes ordres » les dépose dans le dossier partagé.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:168 call:notify"
+  ]
+ },
+ {
+  "key": "Constellations · {0} · {1} · {2}",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:181 call:mail",
+   "ui/shared.ts:190 call:mail"
+  ]
+ },
+ {
+  "key": "Voici ton tour {0} de la partie « {1} » (les {2}) : le fichier {3}, joint à ce message. Ouvre-le dans Constellations avec « Importer une partie… », donne tes ordres, puis renvoie-moi le fichier d'ordres avec le bouton « Envoyer mes ordres ».",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:181 call:mail"
+  ]
+ },
+ {
+  "key": "{0} est enregistré dans vos téléchargements : joignez-le au message.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:182 call:notify",
+   "ui/shared.ts:191 call:notify"
+  ]
+ },
+ {
+  "key": "Voici mes ordres {0} pour la partie « {1} » (les {2}) : le fichier {3}, joint à ce message.",
+  "kind": "tpl",
+  "refs": [
+   "ui/shared.ts:190 call:mail"
   ]
  },
  {
@@ -39201,246 +39408,260 @@
   "key": "Aucune sauvegarde de secours dans ce dossier",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:25 call:notify"
+   "ui/welcome.tsx:26 call:notify"
   ]
  },
  {
   "key": "Pas de sauvegardes de secours dans cette page intégrée à un autre site : ouvrez index.html directement pour en avoir, ou exportez vos parties.",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:27 jsx"
+   "ui/welcome.tsx:28 jsx"
   ]
  },
  {
   "key": "Pas de sauvegardes de secours dans ce navigateur (seuls Chrome et Edge peuvent écrire dans un dossier) : exportez vos parties.",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:28 jsx"
+   "ui/welcome.tsx:29 jsx"
   ]
  },
  {
   "key": "Partie retrouvée dans la sauvegarde de secours « {0} ».",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:30 jsx"
+   "ui/welcome.tsx:31 jsx"
   ]
  },
  {
   "key": "Sauvegardes de secours : les 5 derniers tours de chaque partie dans « {0} ». {1}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:32 jsx"
   ]
  },
  {
   "key": "Voir les sauvegardes",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:31 jsx"
+   "ui/welcome.tsx:32 jsx"
   ]
  },
  {
   "key": "Sauvegardes de secours dans « {0} » : le navigateur demande votre accord. {1}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:32 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Autoriser",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:32 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Autoriser et reprendre la dernière partie",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:32 jsx"
+   "ui/welcome.tsx:33 jsx"
   ]
  },
  {
   "key": "Aucun dossier de sauvegardes de secours.",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:33 jsx"
+   "ui/welcome.tsx:34 jsx"
   ]
  },
  {
   "key": "Aucune partie dans ce navigateur.",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:33 jsx"
+   "ui/welcome.tsx:34 jsx"
   ]
  },
  {
   "key": "Choisir un dossier…",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:33 jsx"
+   "ui/welcome.tsx:34 jsx"
   ]
  },
  {
   "key": "Reprendre depuis un dossier de sauvegardes…",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:33 jsx"
+   "ui/welcome.tsx:34 jsx"
   ]
  },
  {
   "key": "En savoir plus",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:33 jsx"
+   "ui/welcome.tsx:34 jsx"
   ]
  },
  {
   "key": "Nouvelle version {0} disponible (vous avez la {1}).",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:41 jsx"
+   "ui/welcome.tsx:42 jsx"
   ]
  },
  {
   "key": "Voir les nouveautés et la télécharger",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:41 jsx"
+   "ui/welcome.tsx:42 jsx"
   ]
  },
  {
   "key": "✦ Constellations",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:72 jsx"
+   "ui/welcome.tsx:73 jsx"
   ]
  },
  {
   "key": "Stratégie spatiale au tour par tour",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:73 jsx"
+   "ui/welcome.tsx:74 jsx"
   ]
  },
  {
   "key": "Continuer · {0} ({1})",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:75 jsx"
+   "ui/welcome.tsx:76 jsx"
   ]
  },
  {
   "key": "✦ Tutoriel{0}",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:77 jsx",
-   "ui/welcome.tsx:79 jsx"
+   "ui/welcome.tsx:78 jsx",
+   "ui/welcome.tsx:80 jsx"
   ]
  },
  {
   "key": "Reprendre le tutoriel là où vous l'aviez laissé",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:77 attr:title"
+   "ui/welcome.tsx:78 attr:title"
   ]
  },
  {
   "key": "reprendre où vous en étiez",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:77 jsx"
+   "ui/welcome.tsx:78 jsx"
   ]
  },
  {
   "key": "Recommencer le tutoriel",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:78 jsx"
+   "ui/welcome.tsx:79 jsx"
   ]
  },
  {
   "key": "Apprendre à jouer, pas à pas, dans une vraie partie",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:79 attr:title"
+   "ui/welcome.tsx:80 attr:title"
   ]
  },
  {
   "key": "apprendre à jouer pas à pas",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:79 jsx"
+   "ui/welcome.tsx:80 jsx"
   ]
  },
  {
   "key": "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:81 call:notify"
+   "ui/welcome.tsx:82 call:notify"
   ]
  },
  {
   "key": "Multijoueur par fichiers (PBEM)…",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:82 jsx"
+   "ui/welcome.tsx:83 jsx"
   ]
  },
  {
   "key": "Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:82 attr:title"
+   "ui/welcome.tsx:83 attr:title"
+  ]
+ },
+ {
+  "key": "Rejoindre une partie (dossier partagé)…",
+  "kind": "jsx",
+  "refs": [
+   "ui/welcome.tsx:84 jsx"
+  ]
+ },
+ {
+  "key": "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.",
+  "kind": "str",
+  "refs": [
+   "ui/welcome.tsx:84 attr:title"
   ]
  },
  {
   "key": "Succès ({0} sur {1})",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:87 jsx"
+   "ui/welcome.tsx:89 jsx"
   ]
  },
  {
   "key": "Autres parties de ce navigateur",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:90 jsx"
+   "ui/welcome.tsx:92 jsx"
   ]
  },
  {
   "key": "Partie illisible",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:92 call:notify"
+   "ui/welcome.tsx:94 call:notify"
   ]
  },
  {
   "key": " · {0} joueurs",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:93 jsx"
+   "ui/welcome.tsx:95 jsx"
   ]
  },
  {
   "key": "Supprimer cette sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:94 attr:title"
+   "ui/welcome.tsx:96 attr:title"
   ]
  },
  {
   "key": "Supprimer définitivement la partie « {0} » ({1}) de ce navigateur ?",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:94 call:ask"
+   "ui/welcome.tsx:96 call:ask"
   ]
  },
  {
   "key": "Tout se déroule dans votre navigateur, hors ligne. Sauvegarde automatique locale (huit parties au plus).",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:99 jsx"
+   "ui/welcome.tsx:101 jsx"
   ]
  },
  {
@@ -39561,7 +39782,7 @@
   "key": "niveau max",
   "kind": "str",
   "refs": [
-   "ui/app.tsx:134 jsx"
+   "ui/app.tsx:135 jsx"
   ]
  },
  {
@@ -39619,7 +39840,7 @@
   "key": "format inconnu",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:121"
+   "ui/dialogs/index.tsx:122"
   ]
  },
  {

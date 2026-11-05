@@ -12,7 +12,7 @@ import { VictoryDialog } from '../victory';
 import { PrefsDialog } from './prefs';
 import { UpdateDialog } from './update';
 import { ChronicleDialog, AchievementsDialog } from '../chronicle';
-import { PbemDialog } from '../pbemui';
+import { PbemDialog, JoinSharedDialog } from '../pbemui';
 import * as PB from '../../engine/pbem';
 import { sanitizeRace } from '../../engine/race';
 import { DilemmaDialog } from '../destiny';
@@ -28,7 +28,7 @@ import { BattlePlansDialog, RelationsDialog, FindDialog, TemplatesDialog, HelpDi
 export function Dialogs() {
   const s = useStore();
   return <>{s.dialogs.map(d => {
-    if (!s.game && !['newGame', 'raceWizard', 'about', 'help', 'import', 'export', 'confirm', 'backups', 'prefs', 'achievements', 'update'].includes(d.kind)) return null;
+    if (!s.game && !['newGame', 'raceWizard', 'about', 'help', 'import', 'export', 'confirm', 'backups', 'prefs', 'achievements', 'update', 'joinShared'].includes(d.kind)) return null;
     switch (d.kind) {
       case 'production': return <ProductionDialog planetId={d.data?.planetId} />;
       case 'research': return <ResearchDialog />;
@@ -43,6 +43,7 @@ export function Dialogs() {
       case 'achievements': return <AchievementsDialog />;
       case 'dilemma': return <DilemmaDialog id={d.data?.id} />;
       case 'pbem': return <PbemDialog />;
+      case 'joinShared': return <JoinSharedDialog data={d.data} />;
       case 'battle': return <BattleDialog battleId={d.data?.battleId} />;
       case 'cargo': return <CargoDialog fleetId={d.data?.fleetId} planetId={d.data?.planetId} otherId={d.data?.otherId} />;
       case 'split': return <SplitDialog fleetId={d.data?.fleetId} />;
