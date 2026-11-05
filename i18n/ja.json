@@ -3312,6 +3312,7 @@
 "Humain":"人間",
 "Aléatoire":"ランダム",
 "Ordinateur {0}":"コンピューター（{0}）",
+"Humain (chez lui, par fichiers)":"人間（自宅で、ターンファイル）",
 "Humain (même appareil)":"人間（同一デバイス）",
 "Ajouter un adversaire":"対戦相手を追加",
 "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.":"ConstellationsはStars!のルールに、以下のルールを追加します。すべて初期設定で有効です。チェックを外すと元のゲームに戻ります（「ゲーム」タブで「Stars!に近い体験」にチェックを入れても同じです）。ゲーム中（ゲーム設定）は、ルールを追加することはできますが、取り除くことはできません。起源は開始時に選びます。",

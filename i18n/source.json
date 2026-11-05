@@ -23689,8 +23689,15 @@
   ]
  },
  {
+  "key": "Humain (chez lui, par fichiers)",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:161 jsx"
+  ]
+ },
+ {
   "key": "Humain (même appareil)",
-  "kind": "jsx",
+  "kind": "str",
   "refs": [
    "ui/dialogs/newgame.tsx:161 jsx"
   ]

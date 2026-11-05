@@ -158,7 +158,7 @@ export function NewGameDialog() {
               <td>{o.diff === 'human'
                 ? <select value={o.hrace ?? 'Humanoid'} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, hrace: (e.target as HTMLSelectElement).value }; setOpponents(arr); }}>{PREDEFINED_ORDER.map(k => <option value={k}>{PREDEFINED_LABELS[k]}</option>)}{saved.map(r => <option value={'saved:' + r.name}>{r.name}</option>)}</select>
                 : <select value={o.race} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, race: +(e.target as HTMLSelectElement).value }; setOpponents(arr); }}><option value={-1}>Aléatoire</option>{AI_RACES.map((r, k) => { const rr = r(); return <option value={k}>{rr.pluralName} ({rr.prt})</option>; })}</select>}</td>
-              <td><select value={o.diff} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, diff: (e.target as HTMLSelectElement).value as Opp['diff'] }; setOpponents(arr); }}>{(Object.keys(DIFF) as AIDifficulty[]).map(k => <option value={k} title={DIFF_TIP[k]}>Ordinateur {DIFF[k].toLowerCase()}</option>)}<option value="human">Humain (même appareil)</option></select></td>
+              <td><select value={o.diff} onChange={e => { const arr = [...opponents]; arr[i] = { ...o, diff: (e.target as HTMLSelectElement).value as Opp['diff'] }; setOpponents(arr); }}>{(Object.keys(DIFF) as AIDifficulty[]).map(k => <option value={k} title={DIFF_TIP[k]}>Ordinateur {DIFF[k].toLowerCase()}</option>)}<option value="human">{byFiles ? 'Humain (chez lui, par fichiers)' : 'Humain (même appareil)'}</option></select></td>
               <td><button class="link" onClick={() => setOpponents(opponents.filter((_, k) => k !== i))} disabled={opponents.length <= 1}>✕</button></td></tr>)}
           </tbody>
         </table>

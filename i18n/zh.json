@@ -3312,6 +3312,7 @@
 "Humain":"人类",
 "Aléatoire":"随机",
 "Ordinateur {0}":"电脑（{0}）",
+"Humain (chez lui, par fichiers)":"人类（在自己家里，通过回合文件）",
 "Humain (même appareil)":"人类（同一设备）",
 "Ajouter un adversaire":"添加对手",
 "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.":"Constellations 在 Stars! 的规则之上新增了这些规则。默认全部启用；取消勾选即可恢复原版游戏（或在“游戏”标签页中勾选“接近 Stars! 的体验”）。游戏进行中（游戏设置）可以添加规则，但不能再移除；起源需在开局时选定。",

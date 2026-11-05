@@ -3312,6 +3312,7 @@
 "Humain":"Человек",
 "Aléatoire":"Случайно",
 "Ordinateur {0}":"Компьютер {0}",
+"Humain (chez lui, par fichiers)":"Человек (у себя, по файлам ходов)",
 "Humain (même appareil)":"Человек (то же устройство)",
 "Ajouter un adversaire":"Добавить противника",
 "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.":"Constellations добавляет к правилам Stars! свои собственные. По умолчанию все они включены; снимите флажки, чтобы вернуться к оригинальной игре (или отметьте «Близко к Stars!» на вкладке «Партия»). В ходе партии (Параметры партии) правила можно добавлять, но нельзя убирать; происхождение выбирается в начале.",

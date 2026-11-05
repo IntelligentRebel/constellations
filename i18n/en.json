@@ -3312,6 +3312,7 @@
 "Humain":"Human",
 "Aléatoire":"Random",
 "Ordinateur {0}":"Computer ({0})",
+"Humain (chez lui, par fichiers)":"Human (at home, by turn files)",
 "Humain (même appareil)":"Human (same device)",
 "Ajouter un adversaire":"Add an opponent",
 "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.":"Constellations adds these rules to those of Stars!. All of them are active by default; uncheck them to get the original game back (or check “Experience close to Stars!” in the Game tab). During a game (Game settings), rules can be added but no longer removed; origins are chosen at the start.",
