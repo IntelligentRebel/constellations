@@ -15,7 +15,7 @@ import { raceSpec } from './race';
 import { RULES_RAW } from '../data/rules-raw';
 import { willAttack } from './battle';
 import { planetSpec } from './planet';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 import { borderObstacles, trespass, leaveNow } from './borders';
 
 const MINE_STATS: Record<string, { maxSpeed: number; chanceOfHit: number; minDamagePerFleet: number; damagePerEngine: number; minDamagePerFleetRS: number; damagePerEngineRS: number; minDecay: number; sweepFactor?: number }> = {
@@ -154,7 +154,9 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
   if (f.waypoints[1].warp >= 11) {
     const wp = f.waypoints[1], t = targetPosition(game, wp, f.owner);
     wp.x = t.x; wp.y = t.y;
-    gateFleet(game, rng, f, wp); return;
+    // (0.3.9.22: a jump refused leaves at once at the ideal speed, as the route panel says: it waited a year)
+    if (gateFleet(game, rng, f, wp)) return;
+    if (!(f.waypoints[1]?.warp > 0 && f.waypoints[1].warp < 11)) return;
   }
   // 3.6: around the dark clouds (the detour is recomputed every year: targets move, orders change)
   // 0.3.9.10: and around the territories whose borders are closed to the owner
@@ -163,6 +165,8 @@ function moveFleet(game: GameState, rng: Rng, f: Fleet) {
     const kept = f.waypoints.filter((w, i) => i === 0 || !w.detour);
     // (0.3.9.21: from where the fleet is: waypoint 0 can still name the wormhole it came out of, or a fleet since gone)
     f.waypoints = withDetours(game, kept, w => w === kept[0] ? { x: f.x, y: f.y } : targetPosition(game, w, f.owner), f.owner, closed).list;
+    // (0.3.9.22: a route left with only its detour points, its destination deleted, threw here every year)
+    if (f.waypoints.length < 2) { f.heading = null; return; }
   }
   let borderStop = false;
   const trail = [{ x: f.x, y: f.y }];
@@ -419,7 +423,8 @@ export function gateCheck(game: GameState, f: Fleet, i: number): GateCheck {
 /** For the checks. */
 export const gateFleetForTests = (game: GameState, rng: Rng, f: Fleet, wp: Waypoint) => gateFleet(game, rng, f, wp);
 
-function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
+/** Jumps through a stargate; false when the jump is refused (the waypoint then has the fleet's ideal speed). */
+function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint): boolean {
   const owner = game.players[f.owner];
   const src = f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
   const dst = wp.target === 'planet' && wp.targetId !== undefined ? game.planets[wp.targetId] : undefined;
@@ -432,22 +437,22 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   if (!sg || !dg || !src || !dst) {
     msg(game, owner, `${f.name} ne peut pas utiliser de porte stellaire : il faut une porte au départ et à l'arrivée.`, f);
     wp.warp = fleetSpec(game, f).idealSpeed || 5;
-    return;
+    return false;
   }
   const dist = distance(src, dst);
   const rs = raceSpec(owner.race);
   // 0.3.9.21: a jump the gate refuses is refused before anything is unloaded, and the fleet then leaves at its ideal
   // speed, as the route panel says (it dropped its cargo first, then stayed, trying again every year)
   const safeRange = sg.safeRange, safeMass = Math.min(sg.safeMass, dg.safeMass);
-  if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al) ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return; }
-  if (safeMass < 1e9 && f.tokens.some(t => specOf(game, t.designId).mass > safeMass * 5)) { msg(game, owner, `${f.name} : un vaisseau est trop lourd pour la porte ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return; }
+  if (safeRange < 1e9 && dist > safeRange * 5) { msg(game, owner, `${f.name} : destination trop lointaine pour la porte (portée ${safeRange} al) ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return false; }
+  if (safeMass < 1e9 && f.tokens.some(t => specOf(game, t.designId).mass > safeMass * 5)) { msg(game, owner, `${f.name} : un vaisseau est trop lourd pour la porte ; la flotte part à sa vitesse idéale.`, f); wp.warp = fleetSpec(game, f).idealSpeed || 5; return false; }
   // cargo: only IT may gate cargo (others dump it on the source planet; 0.3.9.17: at a friend's gate too, where the
   // colonists cannot be left: then the fleet does not jump)
   if (!rs.canGateCargo && cargoMass(f.cargo) > 0) {
     if (src.owner !== owner.id && f.cargo.colonists > 0) {
       msg(game, owner, `${f.name} ne peut pas franchir la porte de ${src.name} avec des colons à bord : seules les races Maîtrise des portails (IT) font passer une cargaison, et ces colons ne peuvent pas descendre sur une planète qui n'est pas à vous.`, f);
       wp.warp = fleetSpec(game, f).idealSpeed || 5;
-      return;
+      return false;
     }
     const kt = cargoMass(f.cargo);
     for (const m of MINERALS) { src.surface[m] += f.cargo[m]; f.cargo[m] = 0; }
@@ -492,7 +497,7 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
     }
   }
   f.tokens = f.tokens.filter(t => t.qty > 0);
-  if (!f.tokens.length) { game.fleets.splice(game.fleets.indexOf(f), 1); return; }
+  if (!f.tokens.length) { game.fleets.splice(game.fleets.indexOf(f), 1); return true; }
   clampFleetHold(game, f);
   // 0.3.9.17 (help, Damage Repair): no repairs in the year a fleet goes through a stargate
   f.gatedYear = game.year;
@@ -503,6 +508,7 @@ function gateFleet(game: GameState, rng: Rng, f: Fleet, wp: Waypoint) {
   f.waypoints.shift();
   f.waypoints[0] = { ...f.waypoints[0], x: f.x, y: f.y, processed: false };
   appendRepeat(game, f); // (0.3.9.21: a repeated route whose last leg is a jump went on only once)
+  return true;
 }
 
 /**
@@ -859,7 +865,7 @@ function packetArrive(game: GameState, rng: Rng, k: Packet, planet: Planet) {
     const po = game.players[planet.owner];
     po.messages.push({ year: game.year, kind: 'packet', text: `Un paquet de minerais non intercepté a frappé ${planet.name} : ${people(game, killed)} colons tués, ${defLost} défenses détruites.`, target: { kind: 'planet', id: planet.id } });
     if (k.owner !== planet.owner) owner.messages.push({ year: game.year, kind: 'packet', text: `Votre paquet a frappé ${planet.name} : ${people(game, killed)} colons tués.`, target: { kind: 'planet', id: planet.id } });
-    if (planet.pop <= 0) { planet.pop = 0; planet.owner = -1; planet.queue = []; planet.starbase = null; resetPlanetPolicies(planet); }
+    if (planet.pop <= 0) { planet.pop = 0; planet.owner = -1; clearQueue(planet); planet.starbase = null; resetPlanetPolicies(planet); }
   } else if (planet.owner === k.owner || planet.owner < 0) {
     owner.messages.push({ year: game.year, kind: 'packet', text: `Un paquet de ${weight} kt est arrivé sur ${planet.name}.`, target: { kind: 'planet', id: planet.id } });
   }

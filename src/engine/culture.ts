@@ -28,7 +28,7 @@ import { TECHS, hasTech } from './tech';
 import { addDesign } from './newgame';
 import { fleetSpec } from './fleet';
 import { govBonus } from './governors';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 
 export const RADIUS_MAX = 180;
 export const CORE_RADIUS = 2;
@@ -92,7 +92,7 @@ export function cultureGain(game: GameState, pl: Planet): { total: number; pop: 
 // ---------------------------------------------------------------- influence and territory
 
 /** Colonies (with their radius) that project culture, optionally restricted to what a player knows. */
-interface Source { x: number; y: number; r: number; owner: number; id: number; beacon?: boolean }
+export interface Source { x: number; y: number; r: number; owner: number; id: number; beacon?: boolean }
 function sources(game: GameState, viewer?: Player): Source[] {
   const out: Source[] = [];
   for (const pl of game.planets) {
@@ -123,13 +123,36 @@ export function influenceAt(game: GameState, at: { x: number; y: number }, srcs 
 
 /** Who holds a point of space (−1: nobody). A colonized world always holds its core. */
 export function territoryOwner(game: GameState, at: { x: number; y: number }, srcs = sources(game)): number {
-  for (const s of srcs) if (Math.hypot(s.x - at.x, s.y - at.y) <= CORE_RADIUS) return s.owner;
+  // 0.3.9.22: the same sums as influenceAt, without a map per point, and the distance only for sources whose square
+  // around the point could reach it (the distance is never less than either side of the triangle)
+  const ax = at.x, ay = at.y;
+  for (const s of srcs) {
+    const dx = s.x - ax, dy = s.y - ay;
+    if (dx <= CORE_RADIUS && dx >= -CORE_RADIUS && dy <= CORE_RADIUS && dy >= -CORE_RADIUS && Math.hypot(dx, dy) <= CORE_RADIUS) return s.owner;
+  }
+  const os = INF_OWNERS, vs = INF_VALUES;
+  let n = 0;
+  for (const s of srcs) {
+    const dx = s.x - ax, dy = s.y - ay, r = s.r;
+    if (dx >= r || -dx >= r || dy >= r || -dy >= r) continue;
+    const d = Math.hypot(dx, dy);
+    if (d >= r) continue;
+    let i = 0;
+    while (i < n && os[i] !== s.owner) i++;
+    if (i === n) { os[n] = s.owner; vs[n] = 0; n++; }
+    vs[i] = vs[i] + (r - d);
+  }
   let best = -1, bi = 0, tie = false;
-  for (const [o, v] of influenceAt(game, at, srcs)) {
-    if (v > bi + 1e-9) { best = o; bi = v; tie = false; } else if (Math.abs(v - bi) <= 1e-9) tie = true;
+  for (let i = 0; i < n; i++) {
+    const v = vs[i];
+    if (v > bi + 1e-9) { best = os[i]; bi = v; tie = false; } else if (Math.abs(v - bi) <= 1e-9) tie = true;
   }
   return tie ? -1 : best;
 }
+const INF_OWNERS: number[] = [], INF_VALUES: number[] = [];
+
+/** 0.3.9.22: the sources of territory (all of them, or those a viewer knows), to pass to several lookups in a row. */
+export function cultureSources(game: GameState, viewer?: Player): Source[] { return sources(game, viewer); }
 
 /** 0.3.9.10: the sources of territory a player knows of (closed borders, borders.ts). */
 export function knownSources(game: GameState, viewer: Player) { return sources(game, viewer); }
@@ -161,9 +184,10 @@ export function knownTerritoryOwner(game: GameState, viewer: Player, at: { x: nu
 }
 
 /** Can this player found a colony on the planet? (null: yes; otherwise the empire whose territory it is) */
-export function colonyBlocker(game: GameState, player: Player, pl: Planet, known = false): number | null {
+export function colonyBlocker(game: GameState, player: Player, pl: Planet, known = false, srcs?: Source[]): number | null {
   if (!cultureOn(game)) return null;
-  const o = known ? knownTerritoryOwner(game, player, pl) : territoryOwner(game, pl);
+  // (srcs: the sources of the same knowledge, when the caller asks for many planets in a row)
+  const o = srcs ? territoryOwner(game, pl, srcs) : known ? knownTerritoryOwner(game, player, pl) : territoryOwner(game, pl);
   return o >= 0 && o !== player.id ? o : null;
 }
 
@@ -283,7 +307,7 @@ function turnOver(game: GameState, pl: Planet, to: number) {
   worldTaken(game, from.id, to, 'assimilation');
   seizeArchives(game, to, from.id, pl);
   pl.owner = to;
-  pl.queue = [];
+  clearQueue(pl);
   resetPlanetPolicies(pl); // (0.3.9.21: everything of the former owner, the sector seat and the routes included)
   pl.colonizedYear = game.year; pl.conqueredYear = undefined;
   pl.culture = (pl.culture ?? 0) * 0.5;
@@ -309,9 +333,11 @@ function turnOver(game: GameState, pl: Planet, to: number) {
 /** Yearly: culture gathered, then assimilation of the worlds under foreign influence. */
 export function runCulture(game: GameState) {
   if (!cultureOn(game)) return;
-  if (game.planets.some(pl => pl.owner >= 0 && pl.cultureOwner === undefined)) initCulture(game);
+  // (0.3.9.22: only a game that never had the rule: a world of a hidden star, brought in without it, recomputed the
+  // culture of the whole galaxy the year it was settled, patronage and history lost)
+  if (!game.planets.some(pl => pl.cultureOwner !== undefined)) initCulture(game);
   for (const pl of game.planets) {
-    if (pl.cultureOwner !== pl.owner) {
+    if ((pl.cultureOwner ?? -1) !== pl.owner) {
       // the world changed hands during the year
       if (pl.owner < 0) { pl.culture = 0; pl.assim = undefined; pl.cultureGrace = undefined; }
       else if (pl.conqueredYear === game.year) { pl.culture = (pl.culture ?? 0) * 0.5; pl.cultureGrace = game.year + GRACE_CONQUEST; pl.assim = undefined; }
@@ -380,19 +406,24 @@ export function beaconAt(game: GameState, planetId: number): Fleet | undefined {
   return game.fleets.find(f => f.beaconOf === planetId && f.tokens.length > 0);
 }
 
-/** Why a fleet could not set up a beacon at this planet (null: it can). */
-export function beaconBlocker(game: GameState, f: Fleet, pl: Planet): string | null {
+/**
+ * Why a fleet could not set up a beacon at this planet (null: it can). 0.3.9.22: known = as its owner knows the place
+ * (the interface): its owner, guardian, lair, beacon and territory as last seen; the turn reads the truth.
+ */
+export function beaconBlocker(game: GameState, f: Fleet, pl: Planet, known = false): string | null {
   const p = game.players[f.owner];
   if (!cultureOn(game)) return 'la règle « Culture et territoires » n\'est pas active';
   if (fleetSpec(game, f).beaconKits <= 0) return 'aucun kit de balise à bord';
-  if (pl.owner >= 0) return 'la planète est déjà colonisée';
-  if (game.guardians?.some(g => g.alive && g.planetId === pl.id)) return 'un gardien veille sur ce monde';
+  const pi = p.intel.planets[pl.id];
+  if (known ? (pi?.owner ?? -1) >= 0 : pl.owner >= 0) return 'la planète est déjà colonisée';
+  if (known ? !!pi?.guardian : game.guardians?.some(g => g.alive && g.planetId === pl.id)) return 'un gardien veille sur ce monde';
   // 3.4: a pirate lair, the Breach of the crisis
-  if (game.fleets.some(x => x.immobile && x.orbiting === pl.id && x.tokens.length > 0 && game.players[x.owner]?.faction)) return game.crisis?.planetId === pl.id ? 'la Brèche des Moissonneurs s\'ouvre ici' : 'un repaire pirate occupe ce monde';
+  if (known ? !!pi?.lair : game.fleets.some(x => x.immobile && x.orbiting === pl.id && x.tokens.length > 0 && game.players[x.owner]?.faction)) return game.crisis?.planetId === pl.id ? 'la Brèche des Moissonneurs s\'ouvre ici' : 'un repaire pirate occupe ce monde';
   if (game.crisis?.planetId === pl.id && game.crisis.phase === 'omen') return 'la Brèche des Moissonneurs va s\'ouvrir ici';
   const b = beaconAt(game, pl.id);
-  if (b) return b.owner === f.owner ? 'votre balise y est déjà' : `une balise des ${game.players[b.owner].name} s'y dresse déjà`;
-  const o = colonyBlocker(game, p, pl);
+  const bSeen = b && (!known || b.owner === f.owner || p.intel.fleets.some(x => x.id === b.id && x.owner === b.owner)) ? b : undefined;
+  if (bSeen) return bSeen.owner === f.owner ? 'votre balise y est déjà' : `une balise des ${game.players[bSeen.owner].name} s'y dresse déjà`;
+  const o = colonyBlocker(game, p, pl, known);
   if (o !== null) return `la planète est dans le territoire des ${game.players[o].name}`;
   const have = game.fleets.filter(x => x.owner === p.id && x.beaconOf !== undefined).length;
   const max = beaconAllowance(game, p);

@@ -10,6 +10,8 @@ import { planetSpec } from './planet';
 import { safeGoto } from './ai';
 import { specOf } from './design';
 import { capitalOf } from './empire';
+import { hasOrders } from './tasks';
+import { isStudying } from './anomalies';
 
 export const logisticsOn = (game: GameState) => !!game.settings.logistics;
 export const DEFAULT_OUT = 50;
@@ -321,5 +323,6 @@ export function networkFleets(game: GameState, player: Player): Fleet[] {
 
 /** Ships able to join the network that are doing nothing. */
 export function idleFreighters(game: GameState, player: Player): Fleet[] {
-  return game.fleets.filter(f => f.owner === player.id && !f.auto && f.waypoints.length <= 1 && !f.repeat && canServe(game, f) && !f.purpose);
+  // (0.3.9.22: idle as the missions say: one with an order at its own world, an interception or a wait was taken off it)
+  return game.fleets.filter(f => f.owner === player.id && !hasOrders(f) && !isStudying(game, f) && canServe(game, f) && !f.purpose);
 }

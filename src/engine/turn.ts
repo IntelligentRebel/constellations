@@ -1,4 +1,5 @@
 // Turn generation: the Stars! order of events, adapted.
+import { withinTurn } from './scope';
 import { people } from './words';
 import type { Fleet, GameState, Planet, Player, QueueItem } from './types';
 import { FIELDS, MINERALS } from './types';
@@ -22,14 +23,14 @@ import { runAutomation, threatWarnings } from './automation';
 import { SPECIALS, hasSpecial, ensureSpecialShift } from './specials';
 import { TECH_DATA } from '../data/techs';
 import { HULL_DATA } from '../data/hulls';
-import { hasTech, FIELD_NAMES, effReq } from './tech';
+import { hasTech, FIELD_NAMES, effReq, ruleOffTech } from './tech';
 import { resolveGoal, goalReached } from './goals';
 import { tl } from '../data/labels';
 import { applyBuiltMission } from './missions';
 import { randomHab, randomConcentrations } from './universe';
 import { moveTraders, meetTraders, spawnTraders, traderHails } from './trader';
 import { driftStorms } from './terrain';
-import { resetPlanetPolicies, updateCapitals, ADMIN_RADIUS } from './empire';
+import { resetPlanetPolicies, updateCapitals, ADMIN_RADIUS, clearQueue } from './empire';
 import { hasDoctrine, doctrineNews, pendingIds } from './doctrines';
 import { hasMega, megaNews } from './megaprojects';
 import { runLogistics, crowdingAdvice } from './logistics';
@@ -86,11 +87,15 @@ export function researchPool(game: GameState, p: Player, resources: number): num
  * last year's points, and none of the bonuses to the budget).
  */
 export function researchPerYear(game: GameState, p: Player, budget: number): number {
-  const pts = Math.trunc(researchPool(game, p, budget) * raceSpec(p.race).researchFactor + 0.5);
-  return Math.max(pts, p.researchLastYear);
+  // (0.3.9.22: what the turn will spend, never last year's: cut to 0 %, the page still showed last year's points)
+  return Math.trunc(researchPool(game, p, budget) * raceSpec(p.race).researchFactor + 0.5);
 }
 
 export function generateTurn(game: GameState) {
+  withinTurn(() => generateTurnIn(game));
+}
+
+function generateTurnIn(game: GameState) {
   const rng = new Rng(game.rng);
   startChronicle(game);
   // 0.3.9.10: what diplomacy tells at the start of the year (a war declared by a computer, its proposals, an expired
@@ -99,7 +104,7 @@ export function generateTurn(game: GameState) {
   runDiplomacy(game);
   for (const p of game.players) if (p.ai && !p.dead && !aiHooks.run?.(game, p, rng)) runAI(game, p, rng);
   const early = game.players.map((p, i) => p.messages.slice(told[i]).filter(m => m.kind === 'diplomacy'));
-  const techBefore = game.players.map(p => new Set(availableTechNames(p)));
+  const techBefore = game.players.map(p => new Set(availableTechNames(p, game)));
   const levelsBefore = game.players.map(p => ({ ...p.tech }));
   ensureSpecialShift(game);
   thinArtifacts(game);
@@ -110,8 +115,8 @@ export function generateTurn(game: GameState) {
   for (const p of game.players) p.messages = (early[p.id] ?? []).map(m => ({ ...m, year: game.year }));
   game.battles = [];
   for (const f of game.fleets) f.age++;
-  for (const p of game.planets) p.bonusResources = 0;
-  secretBonus(game);
+  // (0.3.9.22: the resources given to a world (a Dyson swarm, ships taken apart by UR) are set at the end of the year
+  // for the next one, and spent by its production: those of ships scrapped on arrival were wiped before they could be)
 
   refuelFactions(game);
 
@@ -167,6 +172,7 @@ export function generateTurn(game: GameState) {
     }
   }
   stuckWarnings(game);
+  for (const p of game.planets) p.bonusResources = 0;
   for (const [pid, agg] of autoBuilt) {
     const order = ['factory', 'mine', 'defense', 'terraform', 'alchemy', 'packet'];
     const parts = order.filter(k => agg.counts[k]).map(k => `${agg.counts[k]} ${AUTO_WORDS[k][agg.counts[k] > 1 ? 1 : 0]}`);
@@ -225,12 +231,14 @@ export function generateTurn(game: GameState) {
   // ---- waypoint 1 tasks (arrivals)
   for (const f of [...game.fleets]) if (game.fleets.includes(f)) processWaypointTask(game, f, rng);
   resolveLandings(game);
-  mergeArrivingMiners(game);
   runStudies(game, rng);
   runSecrets(game, rng);
   runRefuels(game);
   runTankers(game);
   remoteMining(game, false);
+  // (0.3.9.22: after the mining: merged before it, a miner that had just arrived mined that very year with the
+  // fleet it joined)
+  mergeArrivingMiners(game);
   decayMinefields(game);
   processMineLaying(game);
   sweepMines(game);
@@ -262,6 +270,8 @@ export function generateTurn(game: GameState) {
   chaseChecks(game);
   patrolFuel(game);
   runAutomation(game);
+  // (0.3.9.22: the swarm's resources for next year's production, before the score and the reports count them, as they did)
+  secretBonus(game);
   checkObjectives(game);
   for (const p of game.players) {
     if (p.dead) continue;
@@ -288,7 +298,7 @@ export function generateTurn(game: GameState) {
   // newly available technology
   game.players.forEach((p, i) => {
     if (p.dead) return;
-    const now = availableTechNames(p);
+    const now = availableTechNames(p, game);
     const fresh = now.filter(n => !techBefore[i].has(n));
     if (fresh.includes('Sovereignty Beacon')) ensureBeaconCarrier(game, p);
     if (fresh.length) {
@@ -337,8 +347,8 @@ function applyResearchGoal(game: GameState, p: Player) {
   if (best) p.researching = best;
 }
 
-export function availableTechNames(p: Player): string[] {
-  return [...TECH_DATA, ...HULL_DATA].filter(t => hasTech(p, t)).map(t => t.name);
+export function availableTechNames(p: Player, game?: GameState): string[] {
+  return [...TECH_DATA, ...HULL_DATA].filter(t => (!game || !ruleOffTech(game, t)) && hasTech(p, t)).map(t => t.name);
 }
 
 function researchMessages(game: GameState, p: Player, events: ResearchEvent[]) {
@@ -429,7 +439,7 @@ function onBuild(game: GameState, planet: Planet, player: Player, item: QueueIte
 }
 
 export function emptyPlanet(planet: Planet) {
-  planet.owner = -1; planet.pop = 0; planet.queue = []; planet.mines = planet.mines; planet.defenses = 0; planet.scanner = false;
+  planet.owner = -1; planet.pop = 0; clearQueue(planet); planet.mines = planet.mines; planet.defenses = 0; planet.scanner = false;
   planet.starbase = null; planet.route = undefined; planet.packetTarget = undefined;
   planet.conqueredYear = undefined; resetPlanetPolicies(planet);
 }

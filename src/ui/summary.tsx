@@ -5,7 +5,7 @@ import { raidNote } from './factions';
 import { useState } from 'preact/hooks';
 import { store, useStore, fmt, fmtPop, fmtGrowth, MINERAL_COLORS } from './store';
 import { pendingForks } from '../engine/doctrines';
-import { portalThreat } from '../engine/megaprojects';
+import { portalThreat, rivalPortal } from '../engine/megaprojects';
 import { Bar, HabBar, PlanetImg, HullImg, Row } from './components';
 import type { GameState, Player } from '../engine/types';
 import { habitability, habString, HAB_NAMES, raceSpec } from '../engine/race';
@@ -42,7 +42,7 @@ export function SummaryPane() {
       if (!w) return null;
       return <div class="summary"><h3>{g.wormholes.find(x => x.id === w.id)?.sealed ? 'Trou de ver scellé' : 'Trou de ver'}</h3><Row k="Position" v={`(${Math.round(w.x)}, ${Math.round(w.y)})`} /><Row k="Stabilité" v={STABILITY_LABELS[w.stability ?? ''] ?? 'inconnue'} />
         <Row k="Sortie" v={w.destId !== undefined && me.intel.wormholes[w.destId] ? `(${Math.round(me.intel.wormholes[w.destId].x)}, ${Math.round(me.intel.wormholes[w.destId].y)})` : 'inconnue : franchissez-le pour la découvrir'} />
-        <Row k="Traversée" v={canUseWormholes(me) ? 'possible' : <span class="red">verrouillée</span>} />
+        <Row k="Traversée" v={g.wormholes.find(x => x.id === w.id)?.sealed ? <span class="red">impossible : scellé</span> : canUseWormholes(me) ? 'possible' : <span class="red">verrouillée</span>} />
         {!canUseWormholes(me) && <p class="small">Il faut la technologie « {WORMHOLE_NAV.name} » ({specialReqText(WORMHOLE_NAV)}) pour y entrer. D'ici là, une flotte peut s'en approcher mais pas le franchir.</p>}
         <SealBlock g={g} me={me} wormholeId={w.id} />
         <p class="small muted">Traverser un trou de ver ne coûte aucun carburant.{g.wormholes.find(x => x.id === w.id)?.fixed ? '' : ' Ses extrémités dérivent chaque année ; les plus instables peuvent se déplacer brusquement.'}</p></div>;
@@ -294,8 +294,7 @@ export function TodoBar() {
   const all = viewMemo('todo:' + me.id, g, () => todoItems(g, me));
   // decisions, doctrines and proposals have their own alerts in the header: the chips are for fleets and colonies
   const groups = (['scouts', 'colo', 'cargo', 'fuel', 'queue'] as const).map(id => ({ id, list: all.filter(x => x.group === id) })).filter(x => x.list.length);
-  const portal = g.settings.megaprojects ? portalThreat(g) : null;
-  const rival = portal && portal.owner !== me.id && portal.announced > 0 ? portal : null;
+  const rival = g.settings.megaprojects ? rivalPortal(g, me) : null;
   if (!all.length && !rival) return null;
   return <div class="todo" data-tut="todo">
     {all.length > 0 && <button class="small primary todo-next" onClick={() => nextTodo(1)} title="Passer à la chose suivante à traiter (T ; Maj+T : précédente)">À traiter : <b>{all.length}</b> <kbd>T</kbd></button>}

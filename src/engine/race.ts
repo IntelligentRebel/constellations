@@ -1,4 +1,5 @@
 // Races: primary/lesser racial traits, habitability, advantage points, derived race spec.
+import { inTurn, turnEpoch } from './scope';
 import type { Field, Hab, LeftoverSpend, LRT, PRT, Race, ResearchCostLevel, TechLevels } from './types';
 import { FIELDS } from './types';
 
@@ -340,14 +341,28 @@ export interface RaceSpec {
 
 const zeroTech = (): TechLevels => ({ energy: 0, weapons: 0, propulsion: 0, construction: 0, electronics: 0, biotechnology: 0 });
 
-const specCache = new WeakMap<Race, { key: string; spec: RaceSpec }>();
+const specCache = new WeakMap<Race, { copy: unknown; spec: RaceSpec; epoch: number }>();
+
+/**
+ * 0.3.9.22: the spec stays valid while the race holds the same values as when it was computed, compared leaf by leaf
+ * with a copy (the JSON of the race at every call, tens of thousands of times a turn, cost more than the spec).
+ */
+function sameValue(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const ka = Object.keys(a), kb = Object.keys(b);
+  if (ka.length !== kb.length) return false;
+  for (let i = 0; i < ka.length; i++) { const k = ka[i]; if (k !== kb[i] || !sameValue((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k])) return false; }
+  return true;
+}
 
 export function raceSpec(race: Race): RaceSpec {
-  const key = JSON.stringify(race);
   const c = specCache.get(race);
-  if (c && c.key === key) return c.spec;
+  // (during a turn, checked once: see scope.ts)
+  if (c && ((c.epoch === turnEpoch() && inTurn()) || sameValue(race, c.copy))) { c.epoch = turnEpoch(); return c.spec; }
   const spec = computeRaceSpec(race);
-  specCache.set(race, { key, spec });
+  specCache.set(race, { copy: structuredClone(race), spec, epoch: turnEpoch() });
   return spec;
 }
 

@@ -73,11 +73,14 @@ export function NewGameDialog() {
     else s.notify('Nouvelle partie créée. Bonne chance !');
   };
   const pts = advantagePoints(race);
+  // 0.3.9.22: an opponent played by a human with a race over budget (an imported or saved one) is refused too
+  const humanRace = (o: typeof opponents[number]) => { const key = o.hrace ?? 'Humanoid'; return key.startsWith('saved:') ? saved.find(x => x.name === key.slice(6)) : PREDEFINED_RACES[key]?.(); };
+  const badOpp = opponents.some(o => o.diff === 'human' && (() => { const r = humanRace(o); return !!r && advantagePoints(r) < 0; })());
   return (
     <Modal title="Nouvelle partie" wide onClose={() => s.close('newGame')} footer={<>
       <span class="muted small">{planetCount(settings.size, settings.density)} planètes · {opponents.length + 1} joueurs</span><span class="sp" />
       <button onClick={() => s.close('newGame')}>Annuler</button>
-      <button class="primary" disabled={pts < 0} onClick={start}>Commencer la partie</button>
+      <button class="primary" disabled={pts < 0 || badOpp} title={badOpp ? 'La race d\'un adversaire humain dépasse son budget de points' : undefined} onClick={start}>Commencer la partie</button>
     </>}>
       <Tabs tabs={[{ id: 'simple' as const, label: 'Partie' }, { id: 'advanced' as const, label: 'Options avancées' }, { id: 'rules' as const, label: 'Règles Constellations' }, { id: 'players' as const, label: `Adversaires (${opponents.length})` }, { id: 'victory' as const, label: 'Conditions de victoire' }]} value={tab} onChange={setTab} />
       {tab === 'simple' && <ClassicPreset settings={settings} set={set} />}

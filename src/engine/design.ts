@@ -1,12 +1,12 @@
 // Ship & starbase designs: derived specs, costs and an automatic designer.
 import type { HullData, TechData } from '../data/types';
-import type { Cost, DesignSlot, GameState, MinefieldType, Player, Race, ShipDesign, TechLevels } from './types';
+import type { Cost, DesignSlot, GameState, LRT, MinefieldType, Player, Race, ShipDesign, TechLevels } from './types';
 import { HULLS, TECHS, hasTech, hull as getHull, partFitsSlot, playerCost, tech as getTech } from './tech';
 import { raceSpec } from './race';
 import { RULES_RAW } from '../data/rules-raw';
 import { hasDoctrine } from './doctrines';
 
-type Owner = { tech: TechLevels; race: Race; doctrines?: Record<string, 'a' | 'b'> };
+type Owner = { tech: TechLevels; race: Race; doctrines?: Record<string, 'a' | 'b'>; techShift?: Record<string, number> };
 
 /**
  * Constellations 3.6: the battle role a design takes when none is chosen: artillery when most of its expected damage
@@ -201,11 +201,66 @@ const raceKeys = new WeakMap<object, number>();
 let raceSeq = 0;
 const raceKey = (r: object) => { let k = raceKeys.get(r); if (k === undefined) { k = ++raceSeq; raceKeys.set(r, k); } return k; };
 
+/**
+ * 0.3.9.22: the last spec of each design object, with everything its key is made of (building the key string took a
+ * tenth of a late-game turn: the same designs are asked for thousands of times a year). A hit needs the same hull,
+ * slots, tech levels, race traits and doctrines as when it was computed, compared field by field.
+ */
+interface DesignMemo {
+  spec: DesignSpec; hull: string; starbase: boolean; slots: DesignSlot[]; slotsCopy: { slot: number; part: string; qty: number }[];
+  t: number[]; race: Race; prt: string; lrts: LRT[]; doctrines: object | undefined; doctrinesKey: string;
+  shift: object | undefined; shiftSig: string;
+}
+/**
+ * 0.3.9.22: the shifts of the hidden tech tree for the hull and parts of a design (they move the levels at which a
+ * part gets cheaper): left out of the memo, a look of the interface at a rival's design with another owner made the
+ * engine's next turn depend on it. The shifts of parts never change once the game is made (only special techs are
+ * added later, at the start of a turn).
+ */
+const shiftSig = (player: Owner, design: { hull: string; slots: DesignSlot[] }) => {
+  const sh = player.techShift; if (!sh) return '';
+  let k = String(sh[design.hull] ?? '');
+  for (const s of design.slots) k += ',' + (sh[s.part] ?? '');
+  return k;
+};
+const designMemo = new WeakMap<object, DesignMemo>();
+const doctrinesKeys = new WeakMap<object, string>();
+// (a doctrines record is never changed in place: choosing one makes a new record, see doctrines.ts)
+const doctrinesKey = (d: object | undefined) => { if (!d) return ''; let k = doctrinesKeys.get(d); if (k === undefined) { k = JSON.stringify(d); doctrinesKeys.set(d, k); } return k; };
+function memoHolds(m: DesignMemo, player: Owner, design: { hull: string; slots: DesignSlot[]; starbase: boolean }): boolean {
+  const t = player.tech, r = player.race;
+  if (m.hull !== design.hull || m.starbase !== design.starbase) return false;
+  if (t.energy !== m.t[0] || t.weapons !== m.t[1] || t.propulsion !== m.t[2] || t.construction !== m.t[3] || t.electronics !== m.t[4] || t.biotechnology !== m.t[5]) return false;
+  if (r !== m.race || r.prt !== m.prt) return false;
+  const lr = r.lrts ?? [];
+  if (lr.length !== m.lrts.length) return false;
+  for (let i = 0; i < lr.length; i++) if (lr[i] !== m.lrts[i]) return false;
+  if (player.doctrines !== m.doctrines && doctrinesKey(player.doctrines) !== m.doctrinesKey) return false;
+  const sl = design.slots, c = m.slotsCopy;
+  if (sl.length !== c.length) return false;
+  for (let i = 0; i < sl.length; i++) { const a = sl[i], b = c[i]; if (a.slot !== b.slot || a.part !== b.part || a.qty !== b.qty) return false; }
+  if (player.techShift !== m.shift && shiftSig(player, design) !== m.shiftSig) return false;
+  return true;
+}
+
 export function designSpec(player: Owner, design: { hull: string; slots: DesignSlot[]; starbase: boolean }): DesignSpec {
+  const m = designMemo.get(design);
+  if (m && memoHolds(m, player, design)) return m.spec;
+  const s = designSpecByKey(player, design);
+  const t = player.tech;
+  designMemo.set(design, {
+    spec: s, hull: design.hull, starbase: design.starbase, slots: design.slots, slotsCopy: design.slots.map(x => ({ slot: x.slot, part: x.part, qty: x.qty })),
+    t: [t.energy, t.weapons, t.propulsion, t.construction, t.electronics, t.biotechnology], race: player.race, prt: player.race.prt, lrts: [...(player.race.lrts ?? [])],
+    doctrines: player.doctrines, doctrinesKey: doctrinesKey(player.doctrines), shift: player.techShift, shiftSig: shiftSig(player, design),
+  });
+  return s;
+}
+
+function designSpecByKey(player: Owner, design: { hull: string; slots: DesignSlot[]; starbase: boolean }): DesignSpec {
   const t = player.tech;
   let sk = '';
   for (const s of design.slots) sk += s.slot + ':' + s.part + ':' + s.qty + ',';
-  const key = design.hull + '|' + sk + '|' + t.energy + ',' + t.weapons + ',' + t.propulsion + ',' + t.construction + ',' + t.electronics + ',' + t.biotechnology + '|' + raceKey(player.race) + player.race.prt + (player.race.lrts ?? []).join('') + '|' + (player.doctrines ? JSON.stringify(player.doctrines) : '');
+  const key = design.hull + '|' + sk + '|' + t.energy + ',' + t.weapons + ',' + t.propulsion + ',' + t.construction + ',' + t.electronics + ',' + t.biotechnology + '|' + raceKey(player.race) + player.race.prt + (player.race.lrts ?? []).join('') + '|' + (player.doctrines ? JSON.stringify(player.doctrines) : '') + '|' + shiftSig(player, design);
   const c = specCache.get(key);
   if (c) return c;
   const s = computeSpec(player, design);
@@ -356,6 +411,12 @@ function computeSpec(player: Owner, design: { hull: string; slots: DesignSlot[];
 // 0.3.9.20: where each design sits in game.designs (checked on every use, rebuilt when the list has moved)
 const designIndex = new WeakMap<ShipDesign[], Map<number, number>>();
 export function getDesign(game: GameState, id: number): ShipDesign {
+  const d = findDesign(game, id);
+  if (!d) throw new Error('design ' + id);
+  return d;
+}
+/** 0.3.9.22: the design with this id, or undefined (as game.designs.find, through the index). */
+export function findDesign(game: GameState, id: number): ShipDesign | undefined {
   const list = game.designs;
   let idx = designIndex.get(list);
   let i = idx?.get(id);
@@ -365,9 +426,7 @@ export function getDesign(game: GameState, id: number): ShipDesign {
     designIndex.set(list, idx);
     i = idx.get(id);
   }
-  const d = i === undefined ? undefined : list[i];
-  if (!d) throw new Error('design ' + id);
-  return d;
+  return i === undefined ? undefined : list[i];
 }
 
 /**

@@ -13,6 +13,9 @@ export function UpgradeDialog({ part }: { part: string }) {
   const [off, setOff] = useState<Record<number, boolean>>({});
   const close = () => s.close('upgrade');
   const chosen = plans.filter(p => !off[p.design.id]);
+  // (0.3.9.22: the names as the upgrade gives them, one after the other: two designs of one family got the same one)
+  const given: string[] = [];
+  const preview = new Map(chosen.map(p => { const n = nextDesignName(g, me, p.design.name, given); given.push(n); return [p.design.id, n] as const; }));
   const ships = (id: number) => g.fleets.filter(f => f.owner === me.id).reduce((a, f) => a + f.tokens.filter(t => t.designId === id).reduce((b, t) => b + t.qty, 0), 0)
     + g.planets.filter(p => p.owner === me.id && p.starbase?.designId === id).length;
   const queued = (id: number) => g.planets.filter(p => p.owner === me.id).reduce((a, p) => a + p.queue.filter(q => (q.kind === 'ship' || q.kind === 'starbase') && q.designId === id).reduce((b, q) => b + q.qty, 0), 0);
@@ -32,7 +35,7 @@ export function UpgradeDialog({ part }: { part: string }) {
           return <tr class={'go' + (on ? '' : ' off')} onClick={flip}>
             <td><input type="checkbox" checked={on} onClick={e => e.stopPropagation()} onChange={flip} aria-label={`Mettre à jour ${p.design.name}`} /></td>
             <td><span class="hz-name"><HullImg hull={p.design.hull} color={me.color} w={30} /><span>{p.design.name}{p.design.starbase ? <span class="tag dim">station</span> : ''}</span></span></td>
-            <td>{on ? nextDesignName(g, me, p.design.name) : <span class="muted">inchangé</span>}</td>
+            <td>{on ? preview.get(p.design.id) : <span class="muted">inchangé</span>}</td>
             <td class="small">{p.replaced.map(x => tl(x)).join(', ')} → {tl(part)}</td>
             <td class="num">{fmt(ships(p.design.id))}</td>
             <td class="num">{queued(p.design.id) || <span class="muted">0</span>}</td>

@@ -10,13 +10,17 @@ import { capitalOf } from '../engine/empire';
 import * as DIP from '../engine/diplomacy';
 import * as A from './actions';
 
+const HIDDEN_WEIGHT = new Set(['worlds', 'fleets']);
+
 /** Figures are open to all (public scores, game over), or the rule is off. */
 export const scoresOpen = (g: GameState) => g.settings.publicScores || g.victor !== null;
 
 export function IntelLevel({ me, pid }: { me: Player; pid: number }) {
   const d = me.intel.dossiers?.[pid];
   const v = d?.level ?? 0;
-  const tip = d?.lines.length ? `Renseignement ${v}/100 :\n${d.lines.map(l => `${l.label} ${l.value > 0 ? '+' : ''}${l.value}`).join('\n')}` : 'Renseignement 0/100 : aucune source cette année';
+  // (0.3.9.22: the weight of the worlds and ships watched is not shown: it is measured against their real numbers,
+  // which it gave away)
+  const tip = d?.lines.length ? `Renseignement ${v}/100 :\n${d.lines.map(l => HIDDEN_WEIGHT.has(l.key) ? l.label : `${l.label} ${l.value > 0 ? '+' : ''}${l.value}`).join('\n')}` : 'Renseignement 0/100 : aucune source cette année';
   return <span class="intel-lvl" title={tip}><span class="intel-bar"><i style={{ width: `${v}%` }} /></span><b class={v >= 60 ? 'green' : v >= 30 ? 'yellow' : 'muted'}>{v}</b></span>;
 }
 
@@ -115,7 +119,7 @@ export function DossierBlock({ pid }: { pid: number }) {
   return <div class="dossier">
     <div class="dossier-head"><b>Renseignement</b> <IntelLevel me={me} pid={pid} /><span class="small muted">/100</span>
       {next ? <span class="small muted"> · prochain palier à {next.at} : {next.what}</span> : <span class="small green"> · rien ne vous échappe</span>}</div>
-    {d?.lines.length ? <div class="diplo-why">{d.lines.map(l => <span class="chip small">{l.label} <b class={l.value >= 0 ? 'green' : 'red'}>{l.value > 0 ? '+' : ''}{l.value}</b></span>)}</div>
+    {d?.lines.length ? <div class="diplo-why">{d.lines.map(l => <span class="chip small">{l.label}{!HIDDEN_WEIGHT.has(l.key) && <> <b class={l.value >= 0 ? 'green' : 'red'}>{l.value > 0 ? '+' : ''}{l.value}</b></>}</span>)}</div>
       : <p class="small muted">Aucune source cette année.</p>}
     <div class="dossier-grid">
       <table class="report compact dossier-facts">
@@ -137,7 +141,7 @@ export function DossierBlock({ pid }: { pid: number }) {
       </div>
     </div>
     <div class="diplo-act dossier-spies">
-      <span class="small"><b>Réseau d'espions</b> : {net >= 1 ? <>force {Math.round(net)} (soit {Math.min(I.SPY_CAP, Math.round(net))} points de renseignement), risque d'être démasqué ≈ {Math.round(I.detectChance(g, me, pid, net) * 100)} % par an</> : 'aucun'}{queued ? <span class="muted"> · {queued} unité{queued > 1 ? 's' : ''} en commande</span> : null}</span>
+      <span class="small"><b>Réseau d'espions</b> : {net >= 1 ? <>force {Math.round(net)} (soit {Math.min(I.SPY_CAP, Math.round(net))} points de renseignement), risque d'être démasqué ≈ {Math.round(I.detectChance(g, me, pid, net, false) * 100)} % par an, le double si cet empire a une Agence de renseignement</> : 'aucun'}{queued ? <span class="muted"> · {queued} unité{queued > 1 ? 's' : ''} en commande</span> : null}</span>
       {spyWhy || !pay ? <span class="small muted">{spyWhy ?? 'aucune planète pour payer'}</span>
         : <span class="row-btns"><button class="small" onClick={() => addSpies(1)} title={`${I.SPY_UNIT} R, payés par la production de ${pay.name}`}>+1 unité ({I.SPY_UNIT} R)</button> <button class="small" onClick={() => addSpies(3)}>+3 unités</button></span>}
     </div>

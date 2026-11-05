@@ -1,5 +1,6 @@
 // A design seen from the map (Constellations 3.3.5): a station clicked in the planet panel, yours or a known enemy's.
 // Schematic, armament (one line per weapon), equipment and the usual figures.
+import { seenOwner } from '../../engine/aiknow';
 import { useStore, fmt } from '../store';
 import { Modal, CompIcon } from '../components';
 import { designSpec, type DesignSpec } from '../../engine/design';
@@ -22,7 +23,7 @@ export function DesignViewDialog({ designId, planetId }: { designId: number; pla
   if (!d) return <Modal title="Modèle inconnu" onClose={close}><p class="muted">Vos scientifiques n'ont aucune information sur ce modèle.</p></Modal>;
   const owner = g.players[d.owner];
   const slots: DesignSlot[] | undefined = own ? own.slots : known?.slots;
-  const spec = slots ? designSpec(owner, { hull: d.hull, slots, starbase: d.starbase }) : null;
+  const spec = slots ? designSpec(seenOwner(me, owner), { hull: d.hull, slots, starbase: d.starbase }) : null;
   const hull = HULLS.get(d.hull)!;
   const pl = planetId !== undefined ? g.planets[planetId] : undefined;
   const damage = pl && pl.owner === me.id && pl.starbase?.designId === d.id ? pl.starbase.damage : 0;

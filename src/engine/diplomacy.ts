@@ -9,7 +9,7 @@ import { MINERALS } from './types';
 import { Rng, seedFromString } from './rng';
 import { distance, fleetSpec } from './fleet';
 import { navyStrength } from './crisis';
-import { portalThreat } from './megaprojects';
+import { buildsPortal } from './megaprojects';
 import { capitalOf } from './empire';
 import { meet, revealPlanet } from './scan';
 import { specOf } from './design';
@@ -248,7 +248,7 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   if (pr) {
     if (pr.status === 'war') add('En guerre', -25);
     else {
-      add('Paix durable', Math.min(10, Math.floor((game.year - pr.since) / 5)));
+      add('Paix durable', Math.min(10, Math.floor((game.year - (pr.peaceSince ?? pr.since)) / 5)));
       if (pr.status === 'alliance') add('Alliance', 15);
     }
     if (pr.embassy !== undefined && pr.status !== 'war') add('Ambassades', 5);
@@ -266,10 +266,11 @@ export function opinion(game: GameState, of: number, about: number): { total: nu
   const hg = a.ai ? hegemon(game, of) : undefined;
   if (hg && hg.id !== of && coalitionMind(a, game.players[hg.id]) && statusOf(game, of, hg.id) !== 'alliance') {
     if (hg.id === about) add('Votre avance les pousse à s\'unir contre vous', -40 * hg.t);
-    else if (statusOf(game, about, hg.id) !== 'alliance' && !isNemesis(game, of, about)) add(`Rival commun : les ${name(game, hg.id)}`, 50 * hg.t);
+    // (0.3.9.22: named to an empire that has met it only)
+    else if (statusOf(game, about, hg.id) !== 'alliance' && !isNemesis(game, of, about)) add(game.players[about]?.intel.met.includes(hg.id) ? `Rival commun : les ${name(game, hg.id)}` : 'Rival commun : un empire qui domine la galaxie', 50 * hg.t);
   }
-  const portal = game.settings.megaprojects ? portalThreat(game) : null;
-  if (portal && portal.owner === about && portal.announced > 0) add('Vous construisez le Portail', -40);
+  // (0.3.9.22: any Portail announced, not only the most advanced of the galaxy)
+  if (game.settings.megaprojects && buildsPortal(game, about)) add('Vous construisez le Portail', -40);
   if (isNemesis(game, of, about)) add('Ils ont juré votre perte', -60);
   // 0.3.9.10: your borders closed to them, the more resented the more they hem them in
   add(hindrance(game, of, about) >= 0.25 ? 'Vos frontières fermées étouffent leur expansion' : 'Vos frontières leur sont fermées', bordersGrievance(game, of, about));
@@ -352,8 +353,7 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
   switch (kind) {
     case 'peace': {
       if (st !== 'war') return firm('vous n\'êtes pas en guerre', 0);
-      const portal = game.settings.megaprojects ? portalThreat(game) : null;
-      if (portal && portal.owner === from && portal.announced > 0) return firm('pas de paix avec qui construit le Portail');
+      if (game.settings.megaprojects && buildsPortal(game, from)) return firm('pas de paix avec qui construit le Portail');
       if (isNemesis(game, ai, from)) return firm('ils ont juré votre perte : pas de paix tant que leur empire n\'est pas brisé');
       const pr = pairOf(game, ai, from)!;
       if (game.year - pr.since < 3 && game.crisis?.phase !== 'active') return firm('la guerre vient de commencer (pas de paix avant 3 ans de guerre)', -50);
@@ -362,7 +362,7 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
       const strength = 25 * Math.max(-1.5, Math.min(1.5, Math.log2(ratio)));
       const crisis = game.crisis?.phase === 'active' ? 40 : 0;
       const sc = Math.round(op + 20 + ex + strength + crisis + sweet);
-      const parts = [fmtOp, `lassitude +${ex}`, strength >= 0 ? `votre force${guess(game, ai, from)} +${Math.round(strength)}` : `leur force ${Math.round(strength)}`];
+      const parts = [fmtOp, `lassitude ${ex >= 0 ? '+' : ''}${ex}`, strength >= 0 ? `votre force${guess(game, ai, from)} +${Math.round(strength)}` : `leur force ${Math.round(strength)}`];
       if (crisis) parts.push('les Moissonneurs +40');
       if (sweet) parts.push(`minerais ${sweet > 0 ? '+' : ''}${Math.round(sweet)}`);
       return weighed(sc, parts.join(', '));
@@ -388,7 +388,7 @@ export function evaluate(game: GameState, ai: number, from: number, kind: Propos
       const rival = rallyAgainst(game, ai, from);
       const need = common || rival !== undefined || game.crisis?.phase === 'active' ? NEED.alliance : NEED.alliance + 20;
       const sc = Math.round(op + sweet - need);
-      const against = rival !== undefined ? `, contre les ${name(game, rival)}` : '';
+      const against = rival !== undefined ? (game.players[from]?.intel.met.includes(rival) ? `, contre les ${name(game, rival)}` : ', contre un empire qui domine la galaxie') : '';
       return weighed(sc, `${fmtOp}, il faudrait une opinion d'au moins ${need}${common ? ', ennemi commun' : against}`);
     }
     case 'borders': {
@@ -477,12 +477,10 @@ function tellTransfer(game: GameState, t: Transfer, giver: number, receiver: num
 export function declareWar(game: GameState, a: number, b: number, why?: string) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status === 'war') return;
-  // (0.3.9.21: treaties broken by the attacker in the year before count as broken by the war: cancelling them first
-  // avoided the betrayal)
-  const treaty = pr.status === 'alliance' || pr.trade !== undefined || pr.research !== undefined || (pr.broken?.by === a && game.year - pr.broken.year <= 1);
+  const treaty = isBetrayal(game, a, b);
   acquaint(game, a, b);
   const embassy = pr.embassy !== undefined;
-  pr.status = 'war'; pr.since = game.year; pr.wars++; pr.losses = {}; pr.lossValue = {}; pr.planets = {}; pr.trade = undefined; pr.research = undefined; pr.embassy = undefined;
+  pr.status = 'war'; pr.since = game.year; pr.peaceSince = undefined; pr.wars++; pr.losses = {}; pr.lossValue = {}; pr.planets = {}; pr.trade = undefined; pr.research = undefined; pr.embassy = undefined;
   D(game).proposals = D(game).proposals.filter(x => !((x.from === a && x.to === b) || (x.from === b && x.to === a)));
   if (treaty) {
     remember(game, b, a, 'betrayal', -35, 1);
@@ -511,10 +509,28 @@ export function declareWar(game: GameState, a: number, b: number, why?: string) 
   }
 }
 
+/**
+ * 0.3.9.22: proposals between two empires that a deal just made pointless (the same peace or treaty reached the other
+ * way): they stayed in the inbox, their « Accepter » did nothing, and they expired as refusals.
+ */
+function settled(game: GameState, a: number, b: number, kinds: ProposalKind[], oneWay = false) {
+  D(game).proposals = D(game).proposals.filter(x => !(kinds.includes(x.kind) && ((x.from === a && x.to === b) || (!oneWay && x.from === b && x.to === a))));
+}
+
+/**
+ * Would a war declared by a on b betray treaties? (0.3.9.21: treaties broken by the attacker in the year before count
+ * as broken by the war: cancelling them first avoided the betrayal; 0.3.9.22: the page asks the same question.)
+ */
+export function isBetrayal(game: GameState, a: number, b: number): boolean {
+  const pr = pairOf(game, a, b);
+  return !!pr && (pr.status === 'alliance' || pr.trade !== undefined || pr.research !== undefined || (pr.broken?.by === a && game.year - pr.broken.year <= 1));
+}
+
 export function makePeace(game: GameState, a: number, b: number, minerals = 0, payer?: number) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status !== 'war') return;
-  pr.status = 'peace'; pr.since = game.year;
+  pr.status = 'peace'; pr.since = game.year; pr.peaceSince = undefined;
+  settled(game, a, b, ['peace']);
   let paid = 0;
   if (minerals > 0 && payer !== undefined) paid = transferMinerals(game, payer, payer === a ? b : a, minerals);
   const t = lastTransfer;
@@ -529,8 +545,9 @@ export function makePeace(game: GameState, a: number, b: number, minerals = 0, p
 export function sign(game: GameState, a: number, b: number, kind: 'trade' | 'research' | 'alliance' | 'embassy', minerals = 0, payer?: number, against?: number) {
   const pr = pairOf(game, a, b);
   if (!pr || pr.status === 'war') return;
+  settled(game, a, b, kind === 'alliance' ? ['alliance', 'borders'] : [kind]);
   if (kind === 'alliance') {
-    pr.status = 'alliance'; pr.since = game.year;
+    pr.peaceSince ??= pr.since; pr.status = 'alliance'; pr.since = game.year;
     addChronicle(game, 'alliance', against !== undefined ? `Alliance entre les ${name(game, a)} et les ${name(game, b)} contre la domination des ${name(game, against)}.` : `Alliance entre les ${name(game, a)} et les ${name(game, b)}.`, [a, b]);
     openForAllies(game, a, b);
   } else pr[kind] = game.year;
@@ -553,7 +570,7 @@ export function sign(game: GameState, a: number, b: number, kind: 'trade' | 'res
 export function cancel(game: GameState, a: number, b: number, kind: 'trade' | 'research' | 'alliance' | 'embassy') {
   const pr = pairOf(game, a, b);
   if (!pr) return;
-  if (kind === 'alliance') { if (pr.status !== 'alliance') return; pr.status = 'peace'; pr.since = game.year; } else { if (pr[kind] === undefined) return; pr[kind] = undefined; }
+  if (kind === 'alliance') { if (pr.status !== 'alliance') return; pr.peaceSince ??= pr.since; pr.status = 'peace'; pr.since = game.year; } else { if (pr[kind] === undefined) return; pr[kind] = undefined; }
   remember(game, b, a, 'broken', kind === 'embassy' ? -5 : -10, 1);
   if (kind !== 'embassy') pr.broken = { by: a, year: game.year };
   if (kind === 'embassy') {
@@ -588,6 +605,7 @@ function applyProposal(game: GameState, x: { from: number; to: number; kind: Pro
       let paid = 0;
       if ((x.minerals ?? 0) > 0 && x.payer !== undefined) paid = transferMinerals(game, x.payer, x.payer === x.from ? x.to : x.from, x.minerals!);
       setBorders(game, x.to, x.from, false);
+      settled(game, x.from, x.to, ['borders'], true);
       if (paid) tellTransfer(game, lastTransfer, x.payer!, x.payer === x.from ? x.to : x.from, `Pour l'ouverture des frontières, les ${name(game, x.payer!)} vous versent`, `Pour l'ouverture des frontières, vous versez aux ${name(game, x.payer === x.from ? x.to : x.from)}`);
       break;
     }
@@ -649,21 +667,26 @@ export function propose(game: GameState, from: number, to: number, kind: Proposa
   return null;
 }
 
-/** A human answers a proposal. */
-export function answer(game: GameState, id: number, yes: boolean) {
+/**
+ * A human answers a proposal. 0.3.9.22: returns what came of it (null when it was answered, else why nothing
+ * happened: the page announced « Proposition acceptée » for a proposal that could no longer be signed).
+ */
+export function answer(game: GameState, id: number, yes: boolean): string | null {
   const d = D(game);
   const p = d.proposals.find(x => x.id === id);
-  if (!p) return;
+  if (!p) return 'cette proposition n\'est plus valable';
   d.proposals = d.proposals.filter(x => x !== p);
-  if (game.players[p.from]?.dead || game.players[p.to]?.dead) return; // (0.3.9.21: an empire destroyed meanwhile signs nothing)
+  if (game.players[p.from]?.dead || game.players[p.to]?.dead) return 'cet empire a été anéanti'; // (0.3.9.21: an empire destroyed meanwhile signs nothing)
   if (yes) {
     // (a tribute waiting for its answer is not blocked by its own three years)
-    if (p.kind === 'tribute' ? game.players[p.from].dead : proposalBlocker(game, p.from, p.to, p.kind) && !(p.kind === 'peace' && statusOf(game, p.from, p.to) === 'war')) return;
+    const why = p.kind === 'tribute' ? null : proposalBlocker(game, p.from, p.to, p.kind);
+    if (why && !(p.kind === 'peace' && statusOf(game, p.from, p.to) === 'war')) return why;
     applyProposal(game, p);
   } else {
     remember(game, p.from, p.to, p.kind === 'tribute' ? 'demand' : 'refused', p.kind === 'tribute' ? -10 : -5, 1);
     tell(game, p.from, `Les ${name(game, p.to)} refusent ${OFFER_NAMES[p.kind]}.`, p.to);
   }
+  return null;
 }
 
 // ---------------------------------------------------------------------------------------------------- the year
@@ -721,13 +744,15 @@ export function warDesire(game: GameState, ai: number, other: number): number {
   d -= 15 * ((pr.trade !== undefined ? 1 : 0) + (pr.research !== undefined ? 1 : 0)) + (pr.status === 'alliance' ? 60 : 0);
   const dist = reachable(game, ai, other);
   if (dist <= 150) d += 10; else if (dist > game.width * 0.5) d -= 30;
-  if (score(game.players[other]) > 1.3 * Math.max(1, score(game.players[ai]))) d += 10;
+  // (0.3.9.22: the score it can know: the real one was read, private by default)
+  if (knownScore(game, game.players[ai], other) > 1.3 * Math.max(1, score(game.players[ai]))) d += 10;
   if (!game.players[other].ai) d += 5; // a little more often the player: livelier games
   if (isNemesis(game, ai, other)) d += 70;
   d += bordersWarPush(game, ai, other);
   // 0.3.9.14: the empire running away with the game is the one to stop (0.3.9.19: every level, an easy one only
   // against a computer)
-  if (coalitionMind(game.players[ai], game.players[other])) d += Math.round(35 * runaway(game, other, ai));
+  // (0.3.9.22: not against an ally: the coalition still pushed an ally of the hegemon to turn on it)
+  if (coalitionMind(game.players[ai], game.players[other]) && pr.status !== 'alliance') d += Math.round(35 * runaway(game, other, ai));
   return Math.round(d);
 }
 
@@ -739,7 +764,10 @@ export function runDiplomacy(game: GameState) {
   // expired proposals: a refusal
   // (0.3.9.21: in its year of expiry, as shown: the last orders that could answer were those of that year; it stayed a
   // year longer)
-  for (const p of d.proposals.filter(x => x.expires <= game.year)) {
+  // (0.3.9.22: not those of an empire that is gone, nor one already made pointless: the same deal reached otherwise)
+  const expired = d.proposals.filter(x => x.expires <= game.year);
+  d.proposals = d.proposals.filter(x => !expired.includes(x));
+  for (const p of expired.filter(x => game.players[x.from] && game.players[x.to] && !game.players[x.from].dead && !game.players[x.to].dead && (x.kind === 'tribute' || !proposalBlocker(game, x.from, x.to, x.kind)))) {
     remember(game, p.from, p.to, p.kind === 'tribute' ? 'demand' : 'refused', p.kind === 'tribute' ? -10 : -5, 1);
     tell(game, p.to, p.kind === 'tribute' ? `Les ${name(game, p.from)} exigeaient de vous un tribut : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : p.kind === 'borders' ? `Les ${name(game, p.from)} vous demandaient d'ouvrir vos frontières à leurs vaisseaux : faute de réponse de votre part, la demande a expiré, et ils le prennent comme un refus.` : `Les ${name(game, p.from)} vous proposaient ${KIND_NAMES[p.kind]} : faute de réponse de votre part, la proposition a expiré.`, p.from);
   }
@@ -802,7 +830,7 @@ export function runDiplomacy(game: GameState) {
       // 0.3.9.19: one war more, against an empire that dominates the galaxy
       const hg = hegemon(game, p.id);
       const ph = hg && hg.t >= 0.5 && hg.id !== p.id && coalitionMind(p, game.players[hg.id]) ? pairOf(game, p.id, hg.id) : undefined;
-      if (hg && ph && ph.status !== 'war' && !(ph.wars > 0 && game.year - ph.since < 10) && p.intel.met.includes(hg.id) && warDesire(game, p.id, hg.id) >= 45 && rng.chance(0.35)) declareWar(game, p.id, hg.id, 'pour contenir leur avance');
+      if (hg && ph && ph.status === 'peace' && !(ph.wars > 0 && game.year - ph.since < 10) && p.intel.met.includes(hg.id) && warDesire(game, p.id, hg.id) >= 45 && rng.chance(0.35)) declareWar(game, p.id, hg.id, 'pour contenir leur avance');
       continue;
     }
     let best: Player | undefined, bd = -Infinity;
@@ -828,9 +856,9 @@ export function runDiplomacy(game: GameState) {
     }
   }
   // the crisis unites the galaxy: every war between computers ends (not the one against a Portail builder)
-  const portal = game.settings.megaprojects ? portalThreat(game) : null;
+  const builds = (id: number) => !!game.settings.megaprojects && buildsPortal(game, id);
   if (crisis) for (const a of game.players) for (const b of game.players) {
-    if (a.id < b.id && a.ai && b.ai && !a.dead && !b.dead && statusOf(game, a.id, b.id) === 'war' && portal?.owner !== a.id && portal?.owner !== b.id) makePeace(game, a.id, b.id);
+    if (a.id < b.id && a.ai && b.ai && !a.dead && !b.dead && statusOf(game, a.id, b.id) === 'war' && !builds(a.id) && !builds(b.id)) makePeace(game, a.id, b.id);
   }
   syncRelations(game);
 }

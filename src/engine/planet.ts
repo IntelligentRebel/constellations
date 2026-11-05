@@ -2,9 +2,8 @@
 import type { GameState, Hab, Minerals, Planet, Player } from './types';
 import { MINERALS } from './types';
 import { habitability, raceSpec } from './race';
-import { TECH_DATA } from '../data/techs';
-import { hasTech } from './tech';
-import { designSpec, getDesign, type DesignSpec } from './design';
+import { hasTech, techsOfCategory } from './tech';
+import { designSpec, findDesign, getDesign, type DesignSpec } from './design';
 import { efficiency, type Efficiency } from './empire';
 import { hasDoctrine } from './doctrines';
 import { megaScanner } from './megaprojects';
@@ -119,21 +118,36 @@ export interface PlanetSpec {
 
 export function bestPlanetaryTech(player: Player, cat: 'PlanetaryScanner' | 'PlanetaryDefense') {
   let best = null;
-  for (const t of TECH_DATA) if (t.cat === cat && hasTech(player, t)) best = t; // data ordered by strength
+  for (const t of techsOfCategory(cat)) if (hasTech(player, t)) best = t; // data ordered by strength
   return best;
 }
 
 export function starbaseSpec(game: GameState, planet: Planet): DesignSpec | null {
   if (!planet.starbase) return null;
-  const d = game.designs.find(x => x.id === planet.starbase!.designId);
+  const d = findDesign(game, planet.starbase!.designId);
   if (!d) return null;
   return designSpec(game.players[d.owner], d);
 }
 
+/**
+ * 0.3.9.22: the last ability of each player, with what it was computed from (the tech levels, the race's traits, the
+ * acquired techs and the shift of each terraforming tech): asked for every world, several times a turn.
+ */
+const abilityMemo = new WeakMap<Player, { t: number[]; race: Player['race']; prt: string; lrts: string[]; acq: string[]; acqLen: number; shifts: (number | undefined)[]; ab: Hab }>();
 export function terraformAbility(player: Player): Hab {
+  const t = player.tech, r = player.race, terra = techsOfCategory('Terraforming');
+  const m = abilityMemo.get(player);
+  if (m && m.t[0] === t.energy && m.t[1] === t.weapons && m.t[2] === t.propulsion && m.t[3] === t.construction && m.t[4] === t.electronics && m.t[5] === t.biotechnology
+    && m.race === r && m.prt === r.prt && m.lrts.length === r.lrts.length && m.lrts.every((x, i) => x === r.lrts[i]) && m.acq === player.acquiredTechs && m.acqLen === player.acquiredTechs.length
+    && m.shifts.length === terra.length && terra.every((x, i) => player.techShift?.[x.name] === m.shifts[i])) return [m.ab[0], m.ab[1], m.ab[2]];
+  const ab = computeAbility(player);
+  abilityMemo.set(player, { t: [t.energy, t.weapons, t.propulsion, t.construction, t.electronics, t.biotechnology], race: r, prt: r.prt, lrts: [...r.lrts], acq: player.acquiredTechs, acqLen: player.acquiredTechs.length, shifts: terra.map(x => player.techShift?.[x.name]), ab: [ab[0], ab[1], ab[2]] });
+  return ab;
+}
+function computeAbility(player: Player): Hab {
   const ab: Hab = [0, 0, 0];
-  for (const t of TECH_DATA) {
-    if (t.cat !== 'Terraforming' || !hasTech(player, t)) continue;
+  for (const t of techsOfCategory('Terraforming')) {
+    if (!hasTech(player, t)) continue;
     const a = t.stats?.ability ?? 0, ht = t.stats?.habType;
     if (ht === 'All') { for (let i = 0; i < 3; i++) ab[i] = Math.max(ab[i], a); }
     else { const i = ht === 'Grav' ? 0 : ht === 'Temp' ? 1 : 2; ab[i] = Math.max(ab[i], a); }
@@ -204,7 +218,9 @@ export function planetSpec(game: GameState, planet: Planet, player: Player = gam
   const pop = planet.owner === player.id ? planet.pop : 0;
   const growth = planet.owner === player.id ? growthAmount(game, player, planet) : 0;
   const popNextYear = roundTo100Floor(pop + growth);
-  const popOver = pop + Math.max(0, (pop - maxPop) * 0.5);
+  // 0.3.9.22: colonists over the maximum produce at half rate (pop + half the excess counted them at 150 %; the cap
+  // of twice the maximum, reached at three times the maximum, says what was meant)
+  const popOver = pop <= maxPop ? pop : maxPop + (pop - maxPop) * 0.5;
   const productivePop = roundTo100Floor(Math.min(maxPop * 2, popOver));
   const installationPop = Math.min(pop, maxPop);
   let resources: number, maxFactories = 0, maxPossibleFactories = 0, maxMines = 0, maxPossibleMines = 0;

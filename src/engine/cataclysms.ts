@@ -8,7 +8,7 @@ import { Rng, seedFromString } from './rng';
 import { clampFleetHold, distance } from './fleet';
 import { specOf } from './design';
 import { revealPlanet } from './scan';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 import { addChronicle } from './chronicle';
 import { actOf } from './acts';
 
@@ -45,7 +45,7 @@ function wipe(game: GameState, pl: Planet, why: string) {
     o.messages.push({ year: game.year, kind: 'population', text: `${pl.name} est perdue : ${why}. Toute sa population a péri.`, target: { kind: 'planet', id: pl.id } });
     o.stats.planetsLost = (o.stats.planetsLost ?? 0) + 1;
   }
-  pl.owner = -1; pl.pop = 0; pl.queue = []; pl.defenses = 0; pl.factories = 0; pl.mines = 0; pl.scanner = false; pl.starbase = null;
+  pl.owner = -1; pl.pop = 0; clearQueue(pl); pl.defenses = 0; pl.factories = 0; pl.mines = 0; pl.scanner = false; pl.starbase = null;
   pl.route = undefined; pl.packetTarget = undefined; pl.conqueredYear = undefined; resetPlanetPolicies(pl);
 }
 

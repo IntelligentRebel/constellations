@@ -8,6 +8,7 @@ import { fleetSpec } from '../engine/fleet';
 import { isPureScout } from '../engine/missions';
 import { pendingRefit } from '../engine/refit';
 import { isStudying } from '../engine/anomalies';
+import { hasOrders } from '../engine/tasks';
 import { pendingForks } from '../engine/doctrines';
 
 export interface TodoItem {
@@ -37,12 +38,14 @@ export function todoItems(g: GameState, me: Player): TodoItem[] {
   const out: TodoItem[] = [];
   for (const d of me.decisions ?? []) out.push({ group: 'decision', key: 'dec' + d.id, go: () => { s.goTab('empire'); scrollTo('discoveries'); } });
   for (const f of pendingForks(g, me)) out.push({ group: 'doctrine', key: 'doc' + f.title, go: () => { s.goTab('research'); scrollTo('doctrines'); } });
-  for (const p of g.diplomacy?.proposals.filter(x => x.to === me.id) ?? []) out.push({ group: 'proposal', key: 'pro' + p.id, go: () => s.goTab('diplomacy') });
+  for (const p of g.diplomacy?.proposals.filter(x => x.to === me.id && !g.players[x.from]?.dead) ?? []) out.push({ group: 'proposal', key: 'pro' + p.id, go: () => s.goTab('diplomacy') });
   for (const d of me.dilemmas ?? []) out.push({ group: 'dilemma', key: 'dil' + d.id, go: () => s.open('dilemma', { id: d.id }) });
   const fleets = g.fleets.filter(f => f.owner === me.id);
   const onPost = (f: typeof fleets[number]) => f.waypoints[0]?.task === 'stay' || f.meetTrader !== undefined || !!pendingRefit(g, f);
   const fleetGo = (group: TodoItem['group'], f: typeof fleets[number]) => out.push({ group, key: group + f.id, go: () => { s.select({ kind: 'fleet', id: f.id }); s.center(f.x, f.y); if (s.tab !== 'map') s.goTab('map'); } });
-  const idle = (f: typeof fleets[number]) => f.waypoints.length <= 1 && !onPost(f);
+  // (0.3.9.22: a fleet on a standing order (patrol, refuelling post, mine laying, remote mining) is not idle, as the
+  // sidebar and the mission panel say)
+  const idle = (f: typeof fleets[number]) => !hasOrders(f) && !isStudying(g, f) && !onPost(f);
   for (const f of fleets) { const sp = viewFleet(g, f); if (idle(f) && sp.colonizer && f.cargo.colonists > 0) fleetGo('colo', f); }
   for (const f of fleets) { const sp = viewFleet(g, f); if (idle(f) && !f.auto && f.pursue === undefined && !isStudying(g, f) && isPureScout(sp)) fleetGo('scouts', f); }
   for (const f of fleets) { const sp = viewFleet(g, f); if (idle(f) && f.auto !== 'logistics' && !sp.colonizer && f.cargo.ironium + f.cargo.boranium + f.cargo.germanium + f.cargo.colonists > 0) fleetGo('cargo', f); }

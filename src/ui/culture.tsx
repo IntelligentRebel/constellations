@@ -5,7 +5,7 @@ import { Row } from './components';
 import type { GameState, Planet, Player } from '../engine/types';
 import {
   cultureOn, radius, cultureGain, assimilation, territoryOwner, knownTerritoryOwner, CULTURE_BUILDINGS, PATRONAGE, hasReq, reqText,
-  ASSIM_NEEDED, RADIUS_MAX, territoryGrid, cultureFronts, influenceAt, beaconAt, beaconBlocker, miningBlocker, BEACON_RADIUS, type CultureBuildingId,
+  ASSIM_NEEDED, RADIUS_MAX, territoryGrid, cultureFronts, influenceAt, beaconAt, beaconBlocker, knownSources, miningBlocker, BEACON_RADIUS, type CultureBuildingId,
 } from '../engine/culture';
 import type { Fleet } from '../engine/types';
 import { fleetSpec, distance, estimateRoute } from '../engine/fleet';
@@ -20,7 +20,11 @@ export function CultureBlock({ g, me, p }: { g: GameState; me: Player; p: Planet
   if (!cultureOn(g)) return null;
   const gain = cultureGain(g, p);
   const r = radius(p);
-  const a = assimilation(g, p);
+  // (0.3.9.22: the pressure as the engine applies it (an alert when assimilation runs), and the empire named only once met;
+  // below the threshold, the line reads the colonies we know of)
+  const real = assimilation(g, p);
+  const a = real.rate > 0 || (p.assim?.progress ?? 0) > 0 ? real : assimilation(g, p, knownSources(g, me));
+  const who = (o: number) => me.intel.met.includes(o) ? ofEmpire(g, o) : 'd\'une culture étrangère';
   const parts = [`population ${fmt(gain.pop, 1)}`, gain.capital ? `capitale ${gain.capital}` : '', gain.station ? `station ${gain.station}` : '', gain.buildings ? `bâtiments ${gain.buildings}` : ''].filter(Boolean).join(' · ');
   const built = new Set(p.cultureBld ?? []);
   const next = CULTURE_BUILDINGS.find(b => !built.has(b.id) && hasReq(me, b.req) && !p.queue.some(q => q.kind === 'culture' && q.cultureId === b.id));
@@ -36,9 +40,9 @@ export function CultureBlock({ g, me, p }: { g: GameState; me: Player; p: Planet
       {hasReq(me, PATRONAGE.req) && <button class="small" onClick={() => A.queueAdd(p.id, 'patronage', undefined, 5, 0)} title={`5 × ${PATRONAGE.cost.resources} ressources → ${5 * PATRONAGE.points} points de culture, en tête de file`}>Mécénat ×5</button>}
     </div>
     {a.by >= 0 && (a.rate > 0 || progress > 0) ? <div class={'alert' + (progress > ASSIM_NEEDED * 0.5 ? ' strong' : '')}>
-      La culture {ofEmpire(g, a.by)} domine ici ({fmt(a.ratio, 1)} fois la vôtre) : assimilation {Math.round(progress / ASSIM_NEEDED * 100)} %{a.rate > 0 ? `, bascule dans ≈ ${a.years} an${a.years > 1 ? 's' : ''}` : ', en recul'}{a.immune ? ` (${a.immune})` : ''}.
-      <div class="small">Pour garder ce monde : bâtiments culturels et mécénat ici, une station en orbite (divise par deux la vitesse d'assimilation), ou affaiblir les mondes voisins des {g.players[a.by].name}.</div>
-    </div> : a.by >= 0 ? <div class="small muted">Influence étrangère : {ofEmpire(g, a.by)}, {fmt(a.ratio, 2)} fois la vôtre{a.immune ? ` · ${a.immune}` : ' (sans effet sous 1,25)'}.</div> : null}
+      La culture {who(a.by)} domine ici ({fmt(a.ratio, 1)} fois la vôtre) : assimilation {Math.round(progress / ASSIM_NEEDED * 100)} %{a.rate > 0 ? `, bascule dans ≈ ${a.years} an${a.years > 1 ? 's' : ''}` : ', en recul'}{a.immune ? ` (${a.immune})` : ''}.
+      <div class="small">Pour garder ce monde : bâtiments culturels et mécénat ici, une station en orbite (divise par deux la vitesse d'assimilation), ou affaiblir les mondes voisins {me.intel.met.includes(a.by) ? `des ${g.players[a.by].name}` : 'de cet empire'}.</div>
+    </div> : a.by >= 0 ? <div class="small muted">Influence étrangère : {who(a.by)}, {fmt(a.ratio, 2)} fois la vôtre{a.immune ? ` · ${a.immune}` : ' (sans effet sous 1,25)'}.</div> : null}
   </section>;
 }
 
@@ -100,13 +104,13 @@ export function CultureSection({ g, me }: { g: GameState; me: Player }) {
 
 /** Free planet: claim it with a sovereignty beacon (fleets of yours carrying a kit). */
 export function ClaimBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
-  if (!cultureOn(g) || p.owner >= 0 || (me.intel.planets[p.id]?.owner ?? -1) >= 0) return null;
+  if (!cultureOn(g) || (me.intel.planets[p.id]?.owner ?? -1) >= 0) return null; // (0.3.9.22: as far as we know)
   const b = beaconAt(g, p.id);
   if (b && b.owner === me.id) return null;
   const kits = g.fleets.filter(f => f.owner === me.id && f.beaconOf === undefined && viewFleet(g, f).beaconKits > 0);
   const o = knownTerritoryOwner(g, me, p);
   if (o >= 0 && o !== me.id) return null;
-  const ready = kits.filter(f => !beaconBlocker(g, f, p)).sort((a, b2) => distance(a, p) - distance(b2, p)).slice(0, 3);
+  const ready = kits.filter(f => !beaconBlocker(g, f, p, true)).sort((a, b2) => distance(a, p) - distance(b2, p)).slice(0, 3);
   return <section class="blk claim">
     <div class="blk-head"><h3>Revendiquer</h3><span class="small muted">balise de souveraineté</span></div>
     <p class="small muted">Une balise posée en orbite revendique ce monde et {BEACON_RADIUS} al autour : un fort armé qu'un autre empire devra détruire avant de pouvoir coloniser ici. Il faut un vaisseau qui porte un kit de balise.</p>

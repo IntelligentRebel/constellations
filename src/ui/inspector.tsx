@@ -178,7 +178,8 @@ function OwnPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
         {sbSpec.driver && <>
           <Row k="Catapulte" v={`Warp ${sbSpec.driver.safeSpeed}${sbSpec.driver.safeSpeed > sbSpec.driver.speed ? ` (${sbSpec.driver.safeSpeed - sbSpec.driver.speed + 1} × Warp ${sbSpec.driver.speed})` : ''}`} />
           <Row k="Cible des paquets" v={<>{p.packetTarget !== undefined ? g.planets[p.packetTarget].name : 'aucune'} <button class="lnk" onClick={() => { (window as any).__setPacketDest = true; s.notify('Ctrl+clic sur la planète cible des paquets'); }}>définir</button></>} />
-          <Row k="Vitesse des paquets" v={<Num value={p.packetWarp} min={5} max={16} onChange={v => { s.checkpoint(); p.packetWarp = v; s.bump(); }} width={60} />} />
+          {/* (0.3.9.22: up to what the catapult can throw, three warps over its safe speed, the packet decaying above it) */}
+          <Row k="Vitesse des paquets" v={<><Num value={Math.min(p.packetWarp, sbSpec.driver.safeSpeed + 3)} min={5} max={sbSpec.driver.safeSpeed + 3} onChange={v => { s.checkpoint(); p.packetWarp = v; s.bump(); }} width={60} />{Math.min(p.packetWarp, sbSpec.driver.safeSpeed + 3) > sbSpec.driver.safeSpeed && <span class="small yellow"> au-delà de Warp {sbSpec.driver.safeSpeed}, le paquet s'use en route</span>}</>} />
         </>}
       </>}
       <Row k="Route des vaisseaux neufs" v={<>{p.route !== undefined ? <b>{g.planets[p.route].name}</b> : 'aucune'} {p.route !== undefined ? <button class="lnk" onClick={() => { s.checkpoint(); p.route = undefined; s.bump(); }}>retirer</button> : <span class="muted small">(Ctrl+clic sur la carte)</span>}</>} />
@@ -295,7 +296,9 @@ function EmpireBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
       {min === 'export' && <div class="pol-sub"><span>garder</span><Num value={p.mineralPolicy!.reserve} min={0} max={100000} step={50} width={72} onChange={v => A.setMineralPolicy(p, 'export', v)} /><span>kt de chacun</span></div>}
       {min === 'import' && <div class="pol-sub muted">reçoit les minerais exportés par vos autres planètes</div>}
       {needsFreighter && <div class="alert small">Aucun cargo dans le réseau logistique : ces politiques restent lettre morte.
-        {fd && yard ? <div class="btns"><button class="small primary" onClick={() => { s.checkpoint(); queueMission(g, yard, fd, { kind: 'logistics', planetId: yard.id }); s.notify(`${fd.name} ajouté à la file de ${yard.name} pour le réseau.`); s.bump(); }}>Construire un {fd.name} à {yard.name}</button></div> : <div class="small">Cochez « Réseau logistique » sur une flotte de cargos.</div>}
+        {/* (0.3.9.22: one already ordered: each click queued another) */}
+        {g.planets.some(x => x.owner === me.id && x.queue.some(q => q.mission?.kind === 'logistics')) ? <div class="small">Un cargo pour le réseau est en chantier ({g.planets.filter(x => x.owner === me.id && x.queue.some(q => q.mission?.kind === 'logistics')).map(x => x.name).join(', ')}).</div>
+          : fd && yard ? <div class="btns"><button class="small primary" onClick={() => { s.checkpoint(); queueMission(g, yard, fd, { kind: 'logistics', planetId: yard.id }); s.notify(`${fd.name} ajouté à la file de ${yard.name} pour le réseau.`); s.bump(); }}>Construire un {fd.name} à {yard.name}</button></div> : <div class="small">Cochez « Réseau logistique » sur une flotte de cargos.</div>}
       </div>}
     </>}
     {mega.map(id => <Row k={MEGA[id]?.name ?? id} v={<span class="small">{MEGA[id]?.effect}</span>} />)}
@@ -313,7 +316,7 @@ function ProdBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
     : firstManual >= 0 ? <>{itemLabel(g, p.queue[firstManual])}{p.queue[firstManual].qty > 1 ? ` ×${p.queue[firstManual].qty}` : ''} · {est[firstManual]?.dropped !== undefined ? 'sans objet' : est[firstManual]?.blocked ? 'bloqué' : est[firstManual]?.lastYear ? yearsLabel(est[firstManual].lastYear!) : '…'}</> : 'automatique';
   const eta = (i: number) => {
     const it = p.queue[i], e = est[i];
-    if (isAuto(it.kind)) return maxBuildable(g, p, it.kind) === 0 ? 'terminé' : 'chaque année';
+    if (isAuto(it.kind)) return maxBuildable(g, p, it.kind) === 0 ? (it.kind === 'autoPackets' && p.packetTarget === undefined ? 'sans cible' : 'terminé') : 'chaque année';
     if (e?.dropped !== undefined) return <span class="muted">sans objet</span>;
     if (e?.blocked) return <span class="red slow-why" title={`Bloqué : ${queueBottleneck(g, p, i, est).text}`}>bloqué</span>;
     if (e?.lastYear && e.lastYear >= 5) return <span class="yellow slow-why" title={`Ce qui le retarde : ${queueBottleneck(g, p, i, est).text}`}>{yearsLabel(e.lastYear)}</span>;

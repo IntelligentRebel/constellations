@@ -4,7 +4,7 @@ import { borderObstacles } from './borders';
 import { canUseWormholes } from './specials';
 import { effectiveWarp } from './terrain';
 import type { Cargo, Fleet, GameState, MinefieldType, Planet, Player, ShipToken, Waypoint } from './types';
-import { specOf, type DesignSpec, cloakPercent, isScoutDesign } from './design';
+import { specOf, findDesign, type DesignSpec, cloakPercent, isScoutDesign } from './design';
 import { raceSpec } from './race';
 import { hasRelic } from './relics';
 import { hasDoctrine } from './doctrines';
@@ -122,9 +122,9 @@ export function fleetSpec(game: GameState, fleet: Fleet): FleetSpec {
     cloakPercent: hasDoctrine(owner, 'ewar') && ts.length ? Math.min(98, cloakPercent(cloakU) + 10) : cloakPercent(cloakU), idealSpeed: ideal, freeSpeed: free, maxSafeSpeed: maxSafe, hasEngines,
     hasWeapons, bomber, colonizer, orbitalConstruction: orbital, miningRate: mining, terraformRate: terra, mineLaying: lay, mineSweep: sweep,
     armor, shields, ships, powerRating: power, fuelGeneration: fuelGen, repairBonus: repair, canStealFleet: stealF, canStealPlanet: stealP,
-    tachyons: tach, movement, estimatedRange: 0, purposeIcon: fleetIcon(ts.map(x => x.spec)), scout: ts.length > 0 && ts.every(x => { const d = game.designs.find(dd => dd.id === x.token.designId); return !!d && isScoutDesign(d, x.spec); }), canJump, decoyMass, decoys, beaconKits: kits,
+    tachyons: tach, movement, estimatedRange: 0, purposeIcon: fleetIcon(ts.map(x => x.spec)), scout: ts.length > 0 && ts.every(x => { const d = findDesign(game, x.token.designId); return !!d && isScoutDesign(d, x.spec); }), canJump, decoyMass, decoys, beaconKits: kits,
   };
-  spec.estimatedRange = estimateRange(game, fleet, spec);
+  spec.estimatedRange = estimateRange(game, fleet, spec, ts);
   return spec;
 }
 
@@ -146,16 +146,23 @@ function fleetIcon(specs: DesignSpec[]): string {
 export function fuelUsageExact(game: GameState, fleet: Fleet, warp: number, dist: number, cargo = cargoMass(fleet.cargo), specs?: TokenSpecs): number {
   if (warp <= 0 || dist <= 0 || warp > 10) return 0;
   // (specs: the ships' specs when the caller already has them, as a simulation that asks year after year)
-  const ts = (specs ?? tokenSpecs(game, fleet)).map(x => ({ ...x, eff: x.spec.fuelUsage[Math.min(10, warp)] ?? 0 }));
-  ts.sort((a, b) => a.eff - b.eff);
+  const list = specs ?? tokenSpecs(game, fleet);
+  const wi = Math.min(10, warp);
   let remaining = cargo;
   let fuel = 0;
-  for (const t of ts) {
-    const cap = t.spec.cargoCapacity * t.token.qty;
+  const one = (x: TokenSpecs[number], eff: number) => {
+    const cap = x.spec.cargoCapacity * x.token.qty;
     const load = Math.min(cap, remaining);
     remaining -= load;
-    const mass = t.spec.mass * t.token.qty + load;
-    fuel += mass * t.eff * dist / 20000;
+    const mass = x.spec.mass * x.token.qty + load;
+    fuel += mass * eff * dist / 20000;
+  };
+  // 0.3.9.22: the tokens in order of efficiency (a stable sort, as before) without a copy of each one
+  if (list.length === 1) one(list[0], list[0].spec.fuelUsage[wi] ?? 0);
+  else if (list.length > 1) {
+    const eff = list.map(x => x.spec.fuelUsage[wi] ?? 0);
+    const order = list.map((_, i) => i).sort((a, b) => eff[a] - eff[b]);
+    for (const i of order) one(list[i], eff[i]);
   }
   return hasRelic(game.players[fleet.owner], 'compass') ? fuel * 0.85 : fuel;
 }
@@ -177,9 +184,9 @@ export function fuelGenerated(game: GameState, fleet: Fleet, warp: number, dist:
   return Math.trunc(total);
 }
 
-export function estimateRange(game: GameState, fleet: Fleet, spec: FleetSpec): number {
+export function estimateRange(game: GameState, fleet: Fleet, spec: FleetSpec, ts?: TokenSpecs): number {
   if (!spec.hasEngines || spec.idealSpeed <= 0) return 0;
-  const perYear = fuelUsageExact(game, fleet, spec.idealSpeed, spec.idealSpeed * spec.idealSpeed);
+  const perYear = fuelUsageExact(game, fleet, spec.idealSpeed, spec.idealSpeed * spec.idealSpeed, undefined, ts);
   if (perYear <= 0) return Infinity;
   return Math.trunc(fleet.fuel / perYear * spec.idealSpeed * spec.idealSpeed);
 }
@@ -280,6 +287,22 @@ export function estimateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint
   return simulateRoute(game, fleet, waypoints, startFuel);
 }
 
+/**
+ * 0.3.9.22: would the gates let this fleet jump from src to dst (the refusals of the movement: a gate at both ends,
+ * its own or a friend's, within five times the safe range and mass, no colonists left at a friend's gate)?
+ */
+export function gateJumpAllowed(game: GameState, fleet: Fleet, src: Planet | undefined, dst: Planet | undefined): boolean {
+  const owner = game.players[fleet.owner];
+  const gateOf = (p?: Planet) => !p || !p.starbase || (p.owner !== owner.id && owner.relations[p.owner] !== 'friend') ? null : specOf(game, p.starbase.designId).gate;
+  const sg = gateOf(src), dg = gateOf(dst);
+  if (!sg || !dg || !src || !dst) return false;
+  const safeMass = Math.min(sg.safeMass, dg.safeMass);
+  if (sg.safeRange < 1e9 && distance(src, dst) > sg.safeRange * 5) return false;
+  if (safeMass < 1e9 && fleet.tokens.some(t => specOf(game, t.designId).mass > safeMass * 5)) return false;
+  if (!raceSpec(owner.race).canGateCargo && cargoMass(fleet.cargo) > 0 && src.owner !== owner.id && fleet.cargo.colonists > 0) return false;
+  return true;
+}
+
 function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], startFuel: number): LegEstimate[] {
   const owner = game.players[fleet.owner];
   const spec = fleetSpec(game, fleet);
@@ -298,7 +321,14 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
     // cargo changes at previous waypoint (approximate)
     if (!(i === 1 && waypoints[0].processed)) cargo = applyTransportEstimate(cargo, waypoints[i - 1], spec.cargoCapacity);
     const dist = distance(pos, wp);
-    const warp = wp.warp > 0 && wp.warp < 11 ? Math.max(1, Math.min(10, Math.round(wp.warp))) : wp.warp; // (as the movement phase reads it)
+    let warp = wp.warp > 0 && wp.warp < 11 ? Math.max(1, Math.min(10, Math.round(wp.warp))) : wp.warp; // (as the movement phase reads it)
+    // (0.3.9.22: a jump the gates refuse is flown at the ideal speed, as the movement does: it was counted as a jump)
+    if (warp >= 11) {
+      const prevWp = waypoints[i - 1];
+      const src = i === 1 ? (fleet.orbiting >= 0 ? game.planets[fleet.orbiting] : undefined) : prevWp?.target === 'planet' && prevWp.targetId !== undefined ? game.planets[prevWp.targetId] : undefined;
+      const dst = wp.target === 'planet' && wp.targetId !== undefined ? game.planets[wp.targetId] : undefined;
+      if (!gateJumpAllowed(game, fleet, src, dst)) warp = spec.idealSpeed || 5;
+    }
     const pass = isPassThrough(waypoints, i);
     let legFuel = 0, outOfFuel = false, arrival: number;
     const yearEnds: { x: number; y: number }[] = [];

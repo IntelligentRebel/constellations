@@ -9,7 +9,7 @@ import { store, useStore, useChannel, fmt, fmtPop, pct, MINERAL_COLORS, type Vie
 import { closersOf } from '../engine/borders';
 import { PageCtx, MineralLine, useSorted, RangeFilter, rangeOf, rangeDistance, setRangeOf, Num } from './components';
 import type { Fleet, GameState, Planet, Player } from '../engine/types';
-import { MapView, refPos } from './map';
+import { MapView, refPos, resetStepSession } from './map';
 import { gotoTarget, MsgText } from './nav';
 import { TodoBar } from './summary';
 import { SortTable } from './dialogs/reports';
@@ -25,7 +25,7 @@ import { isPureScout, canMineHere, miningYield, missionDesigns, missionStatus, h
 import { designSpec } from '../engine/design';
 import { scannersOf } from '../engine/scan';
 import { fleetMission } from './sidebar';
-import { missionModel, MissionButton, MissionOptions, HaulBlock } from './missionui';
+import { missionModel, MissionButton, MissionOptions, HaulBlock, haulHome } from './missionui';
 import { wpName } from './command';
 import { EmpirePage } from './empire';
 import { fleetHasObsolete } from '../engine/refit';
@@ -121,7 +121,7 @@ export function MapPage() {
           <button onClick={fitGalaxy} title="Toute la galaxie">Centrer</button>
           <button onClick={() => s.setCamera({ ...s.camera, zoom: Math.min(12, s.camera.zoom * 1.25) })} title="Zoomer (+)" aria-label="Zoomer">+</button>
         </div>
-        <button class={'ghost touch-only' + (s.wpMode ? ' on' : '')} disabled={s.selected?.kind !== 'fleet' || s.commanded?.kind !== 'fleet'} title="Chaque toucher de la carte donne une étape à la flotte sélectionnée (équivaut à Maj+clic)" onClick={() => { s.wpMode = !s.wpMode; s.bump(); }}>✚ Étapes</button>
+        <button class={'ghost touch-only' + (s.wpMode ? ' on' : '')} disabled={s.selected?.kind !== 'fleet' || s.commanded?.kind !== 'fleet' || s.selected.id !== s.commanded.id} title="Chaque toucher de la carte donne une étape à la flotte sélectionnée (équivaut à Maj+clic)" onClick={() => { s.wpMode = !s.wpMode; resetStepSession(); s.bump(); }}>✚ Étapes</button>
         <MapMore />
       </div>
     </header>
@@ -449,8 +449,8 @@ function ExploitedTable({ g, me, list, open, toggle, optsRow }: { g: GameState; 
     <tbody>{sorted.map(r => {
       const pi = me.intel.planets[r.pl.id];
       const mineM = { ...missionModel(g, me, r.pl, 'mine'), busy: false };
-      const cap = capitalOf(g, me);
-      const haulM = { ...missionModel(g, me, r.pl, 'haul', null, true, false, { homeId: cap?.id }), busy: false };
+      const haulPort = haulHome(g, me, r.pl);
+      const haulM = { ...missionModel(g, me, r.pl, 'haul', null, true, false, { homeId: haulPort }), busy: false };
       const queuedMine = r.st.queued.filter(x => x.kind === 'mine').length, queuedHaul = r.st.queued.filter(x => x.kind === 'haul').length;
       const bal = r.extraction === 0 ? (r.st.haulers.length ? <span class="muted">navettes à vide</span> : <span class="muted">—</span>)
         : !r.st.haulers.length ? <span class="yellow">sans navette : s'accumule</span>
@@ -469,7 +469,7 @@ function ExploitedTable({ g, me, list, open, toggle, optsRow }: { g: GameState; 
           <td class="small bal">{bal}</td>
           <td class="actions" onClick={e => e.stopPropagation()}><div class="add-btns">
             <div class="mission-btns"><MissionButton g={g} p={r.pl} m={mineM} label={() => '+ Foreuse'} /><button class="ghost icon" onClick={() => toggle(r.pl, 'mine')} aria-expanded={open?.id === r.pl.id && open.kind === 'mine'} title="Choisir le vaisseau, le modèle ou le chantier" aria-label="Options des foreuses">⋯</button></div>
-            <div class="mission-btns"><MissionButton g={g} p={r.pl} m={haulM} label={() => '+ Navette'} /><button class="ghost icon" onClick={() => toggle(r.pl, 'haul')} aria-expanded={open?.id === r.pl.id && open.kind === 'haul'} title="Port de livraison, cargo, modèle ou chantier" aria-label="Options des navettes">⋯</button></div>
+            {haulPort !== undefined && <div class="mission-btns"><MissionButton g={g} p={r.pl} m={haulM} label={() => '+ Navette'} /><button class="ghost icon" onClick={() => toggle(r.pl, 'haul')} aria-expanded={open?.id === r.pl.id && open.kind === 'haul'} title="Port de livraison, cargo, modèle ou chantier" aria-label="Options des navettes">⋯</button></div>}
           </div></td>
         </tr>
         {optsRow(r.pl, 7)}

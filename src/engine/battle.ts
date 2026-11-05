@@ -11,7 +11,7 @@ import { RULES_RAW } from '../data/rules-raw';
 import { learnDesign, meet } from './scan';
 import { cargoMass, clampFleetHold, distance, estimateRoute, fleetSpec } from './fleet';
 import { shieldFactorAt } from './terrain';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 import { veteransOn, rankOf, rankBonus, battleExperience, logFleet } from './veterans';
 import { battleGrudges } from './nemesis';
 import { foughtWith } from './techtrade';
@@ -589,7 +589,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
         t.planet.starbase = null;
         if (raceSpec(owner.race).livesOnStarbases) {
           owner.messages.push({ year: game.year, kind: 'battle', text: `La destruction de la station de ${t.planet.name} a tué toute sa population.`, target: { kind: 'planet', id: t.planet.id } });
-          t.planet.pop = 0; t.planet.owner = -1; t.planet.queue = []; resetPlanetPolicies(t.planet);
+          t.planet.pop = 0; t.planet.owner = -1; clearQueue(t.planet); resetPlanetPolicies(t.planet);
         }
       } else t.planet.starbase.damage = t.qtyDamaged > 0 ? Math.floor(t.damage) : 0;
     }

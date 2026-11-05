@@ -66,9 +66,10 @@ export function spyGain(game: GameState, p: Player): number {
   return Math.round(SPY_GAIN * (agencyOf(game, p.id) ? 1.5 : 1) * (bornSpies(p) ? 1.5 : 1));
 }
 /** Yearly chance that a network is uncovered. */
-export function detectChance(game: GameState, spy: Player, target: number, network: number): number {
+/** (agency: false leaves the target's agency out, as a spy master who does not know of it: 0.3.9.22, the page) */
+export function detectChance(game: GameState, spy: Player, target: number, network: number, agency = true): number {
   if (network <= 0) return 0;
-  return Math.min(0.5, (0.03 + network / 600) * (agencyOf(game, target) ? 2 : 1) * (bornSpies(spy) ? 0.5 : 1) * (closedTo(game, target, spy.id) ? BORDER_CONTROLS : 1));
+  return Math.min(0.5, (0.03 + network / 600) * (agency && agencyOf(game, target) ? 2 : 1) * (bornSpies(spy) ? 0.5 : 1) * (closedTo(game, target, spy.id) ? BORDER_CONTROLS : 1));
 }
 
 export function spyBlocker(game: GameState, p: Player, target?: number): string | null {
@@ -269,8 +270,11 @@ export function updateDossiers(game: GameState, refresh = false) {
     base.set(`${o.id}-${t.id}`, sources(game, o, t, dossierOf(o, t.id), ctx));
   }
   for (const o of emps) for (const t of emps) {
-    const lines = base.get(`${o.id}-${t.id}`);
-    if (!lines) continue;
+    const own = base.get(`${o.id}-${t.id}`);
+    if (!own) continue;
+    // (0.3.9.22: a copy: the share pushed into the array kept in `base` was read again by the next ally, passing on
+    // second-hand what it had been told, as the order of the empires happened to be)
+    const lines = [...own];
     let share = 0, by: Player | undefined;
     if (diplomacyOn(game)) for (const z of emps) {
       if (z.id === o.id || z.id === t.id || statusOf(game, o.id, z.id) !== 'alliance') continue;

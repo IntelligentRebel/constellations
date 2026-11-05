@@ -4,7 +4,7 @@ import type { GameState, Planet, Player, QueueItem } from './types';
 import { planetSpec } from './planet';
 import { ADMIN_RADIUS, adminFactor, distanceCostOn, regionalBlocker, seatsOf } from './empire';
 import { logisticsOn, DEFAULT_IN, joinNetwork, canServe } from './logistics';
-import { MEGA, megaBlocker, megaOn, portalThreat, relaysOn, relaysOf, RELAYS_NEEDED, type MegaId } from './megaprojects';
+import { MEGA, megaBlocker, megaOn, rivalPortal, relaysOn, relaysOf, RELAYS_NEEDED, type MegaId } from './megaprojects';
 import { canBuildShip, isAuto, zeroCost } from './production';
 import { designSpec } from './design';
 import { raceSpec } from './race';
@@ -137,9 +137,10 @@ function aiMegaprojects(game: GameState, p: Player) {
   if (!megaOn(game)) return;
   const st = p.aiState;
   // react: the Portail of someone else is a war target, whatever the phase
-  const threat = portalThreat(game);
+  // (0.3.9.22: a rival's, as announced: its own Portail further along hid it, and the true progress chose)
+  const threat = rivalPortal(game, p);
   if (st) {
-    if (threat && threat.owner !== p.id && p.relations[threat.owner] !== 'friend') {
+    if (threat && p.relations[threat.owner] !== 'friend') {
       // 0.3.9: a relay may be easier to take than the Portal itself, and stops it as well
       const targets = [threat.planet, ...(relaysOn(game) ? relaysOf(game, threat.owner) : [])];
       const mineW = game.planets.filter(x => x.owner === p.id);

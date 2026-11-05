@@ -81,7 +81,7 @@ export function PbemDialog() {
     {confirm ? <><span class="small yellow">{missing.length > 1 ? `${missing.length} empires n'ont pas envoyé d'ordres : ils garderont ceux de l'an dernier.` : 'Un empire n\'a pas envoyé d\'ordres : il gardera ceux de l\'an dernier.'}</span><button class="danger" onClick={go}>Générer quand même</button><button onClick={() => setConfirm(false)}>Attendre</button></>
       : <button class="primary" disabled={s.busy} onClick={() => missing.length ? setConfirm(true) : go()}>{`Générer l'année ${P.turn + 1}`}</button>}
   </>}>
-    <p class="small">Ce navigateur héberge la partie. Chaque année, envoyez à chaque joueur son fichier de tour ; il donne ses ordres chez lui et vous renvoie un fichier d'ordres ; importez-les, puis générez l'année. Vous pouvez jouer votre propre empire ici (« Jouer ici »), comme les autres : la partie hébergée reste dans sa sauvegarde.</p>
+    <p class="small">Ce navigateur héberge la partie. Chaque année, envoyez à chaque joueur son fichier de tour ; il donne ses ordres chez lui et vous renvoie un fichier d'ordres ; importez-les, puis générez l'année. Vous pouvez jouer votre propre empire ici (« Jouer ici »), comme les autres : la partie hébergée reste dans sa sauvegarde. Ne donnez pas d'ordres directement dans la partie hébergée : les fichiers d'ordres des joueurs remplacent ce qui y change.</p>
     <table class="report pbem-table"><thead><tr><th>Empire</th><th>Ordres de {P.turn}</th><th /></tr></thead>
       <tbody>{humans.map(id => { const p = g.players[id]; const got = P.received?.[id] === P.turn; return <tr>
         <td><span style={{ color: p.color }}>{p.name}</span></td>

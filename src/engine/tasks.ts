@@ -16,7 +16,7 @@ import { applyTemplate } from './production';
 import { addResearch } from './research';
 import { Rng } from './rng';
 import { FIELDS } from './types';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 import { hasDoctrine } from './doctrines';
 import { hasMega } from './megaprojects';
 import { FIELD_NAMES } from './tech';
@@ -83,7 +83,7 @@ export function transferWithPlanet(game: GameState, f: Fleet, planet: Planet, ke
 
 export function transferBetweenFleets(game: GameState, from: Fleet, to: Fleet, key: TransportKey, amount: number, by = to.owner): number {
   // moves `amount` from `from` into `to` (amount >= 0); `by` is the empire giving the order
-  if (amount <= 0) return 0;
+  if (!(amount > 0)) return 0; // (0.3.9.22: NaN too)
   if (from.owner !== to.owner) {
     // 0.3.9.16 (Stars!): no colonists to or from another empire's fleet; taking its cargo needs a steal scanner (Pick
     // Pocket, Robber Baron) and never takes its fuel; a fleet accepts nothing from an empire it treats as an enemy
@@ -91,15 +91,16 @@ export function transferBetweenFleets(game: GameState, from: Fleet, to: Fleet, k
     if (by === to.owner) { if (key === 'fuel' || !fleetSpec(game, to).canStealFleet) return 0; }
     else if ((game.players[to.owner]?.relations[from.owner] ?? 'enemy') === 'enemy') return 0;
   }
+  // (0.3.9.22: never a negative amount: into a hold already over its capacity, the transfer ran backwards)
   if (key === 'fuel') {
     const cap = fleetSpec(game, to).fuelCapacity;
-    const a = Math.min(amount, from.fuel, cap - to.fuel);
+    const a = Math.max(0, Math.min(amount, from.fuel, cap - to.fuel));
     from.fuel -= a; to.fuel += a; return a;
   }
   if (key === 'colonists' && from.owner !== to.owner) return 0;
-  const a = Math.min(amount, from.cargo[key], fleetCargoSpace(game, to));
+  const a = Math.max(0, Math.min(amount, from.cargo[key], fleetCargoSpace(game, to)));
   from.cargo[key] -= a; to.cargo[key] += a;
-  return Math.max(0, a);
+  return a;
 }
 
 export function invade(game: GameState, attacker: Player, planet: Planet, colonists: number) {
@@ -133,7 +134,7 @@ function takePlanet(game: GameState, attacker: Player, defender: Player | undefi
     if (planet.homeworld || before.capital === planet.id) addChronicle(game, 'conquest', planet.homeworld ? `Les ${attacker.name} prennent ${planet.name}, monde natal des ${before.name}.` : `Les ${attacker.name} prennent ${planet.name}, capitale des ${before.name}.`, [attacker.id, before.id], planet);
     if (defender) seizeArchives(game, attacker.id, defender.id, planet);
   }
-  planet.owner = attacker.id; planet.pop = remaining; planet.queue = []; planet.defenses = 0; planet.scanner = false; planet.starbase = null;
+  planet.owner = attacker.id; planet.pop = remaining; clearQueue(planet); planet.defenses = 0; planet.scanner = false; planet.starbase = null;
   planet.colonizedYear = game.year; planet.conqueredYear = before && before.id !== attacker.id ? game.year : undefined; resetPlanetPolicies(planet);
   if (game.emptied) delete game.emptied[planet.id];
   if (before && before.id !== attacker.id) {
@@ -169,9 +170,12 @@ export function resolveLandings(game: GameState) {
       const emptiedNow = planet.owner < 0 && game.emptied?.[pid]?.year === game.year;
       const ok = planet.owner === l.owner || (!planet.starbase && (emptiedNow || (planet.owner >= 0 && atWar(game, l.owner, planet.owner))));
       if (ok) { valid.push(l); continue; }
-      const f = game.fleets.find(x => x.id === l.fleetId && x.orbiting === pid);
-      if (f) f.cargo.colonists += l.kt;
-      p.messages.push({ year: game.year, kind: 'combat', text: `Les troupes de ${l.fleetName} n'ont pas pu débarquer sur ${planet.name}${f ? ' et sont remontées à bord' : ' et ont été perdues'}.`, target: { kind: 'planet', id: pid } });
+      // (0.3.9.22: aboard a fleet of theirs only, as much as its hold takes: a fleet given away meanwhile took them in,
+      // a hold filled again went over its capacity)
+      const f = game.fleets.find(x => x.id === l.fleetId && x.orbiting === pid && x.owner === l.owner);
+      const back = f ? Math.max(0, Math.min(l.kt, fleetCargoSpace(game, f))) : 0;
+      if (f) f.cargo.colonists += back;
+      p.messages.push({ year: game.year, kind: 'combat', text: `Les troupes de ${l.fleetName} n'ont pas pu débarquer sur ${planet.name}${f && back >= l.kt ? ' et sont remontées à bord' : f && back > 0 ? ' ; une partie seulement a pu remonter à bord' : ' et ont été perdues'}.`, target: { kind: 'planet', id: pid } });
     }
     // reinforcements of the owner simply land
     for (const l of valid.filter(x => x.owner === planet.owner)) planet.pop += l.kt * 100;
@@ -211,7 +215,7 @@ export function resolveLandings(game: GameState) {
 }
 
 function emptyWorld(planet: Planet) {
-  planet.owner = -1; planet.pop = 0; planet.queue = []; planet.defenses = 0; planet.scanner = false; planet.starbase = null;
+  planet.owner = -1; planet.pop = 0; clearQueue(planet); planet.defenses = 0; planet.scanner = false; planet.starbase = null;
   planet.route = undefined; planet.packetTarget = undefined; planet.conqueredYear = undefined; resetPlanetPolicies(planet);
 }
 
@@ -402,20 +406,23 @@ export function mergeFleets(game: GameState, into: Fleet, from: Fleet, inheritOr
     into.tankerPost = from.tankerPost ? { ...from.tankerPost } : undefined;
   }
   // whoever was heading for, following or refuelling the absorbed fleet now deals with the merged one
+  // (0.3.9.22: in the routes kept for repeating too, which brought the absorbed fleet's id back each lap)
   for (const o of game.fleets) {
     if (o === from) continue;
     if (o.pursue === from.id) o.pursue = o === into ? undefined : into.id;
     if (o.refuelFor === from.id) { if (o === into) { o.refuelFor = undefined; o.refuelYear = undefined; } else o.refuelFor = into.id; }
-    for (const w of o.waypoints) {
+    for (const w of [...o.waypoints, ...(o.route ?? [])]) {
       if (w.target === 'fleet' && w.targetId === from.id) { if (o === into) { w.target = 'space'; w.targetId = undefined; } else w.targetId = into.id; }
       if (w.mergeWith === from.id) { if (o === into) { w.task = 'none'; w.mergeWith = undefined; } else w.mergeWith = into.id; }
     }
   }
   // orders taken over from a fleet that was following the absorbing one would now point at itself
-  for (const w of into.waypoints) {
+  for (const w of [...into.waypoints, ...(into.route ?? [])]) {
     if (w.target === 'fleet' && w.targetId === into.id) { w.target = 'space'; w.targetId = undefined; }
     if (w.mergeWith === into.id) { w.task = 'none'; w.mergeWith = undefined; }
   }
+  // troops it landed this year go back aboard the merged fleet if they cannot land
+  for (const l of game.landings ?? []) if (l.fleetId === from.id) l.fleetId = into.id;
   // 0.3.9.11: caught inside closed borders, the merged fleet keeps the shorter delay
   if (from.borderExit && (!into.borderExit || from.borderExit.by < into.borderExit.by)) into.borderExit = { ...from.borderExit };
   if (into.pursue === into.id) into.pursue = undefined;
@@ -481,6 +488,11 @@ export function compositionName(game: GameState, f: Fleet): string {
 export function splitFleet(game: GameState, f: Fleet, parts: { designId: number; qty: number }[]): Fleet | null {
   const owner = game.players[f.owner];
   const total = f.tokens.reduce((a, t) => a + t.qty, 0);
+  // (0.3.9.22: whole ships the fleet has, each design once: a design it does not have, or a negative or fractional
+  // quantity, made an empty fleet or let the whole fleet go)
+  const want = new Map<number, number>();
+  for (const p of parts) { const q = Math.trunc(p.qty); if (!(q > 0)) continue; want.set(p.designId, (want.get(p.designId) ?? 0) + q); }
+  parts = [...want].map(([designId, qty]) => ({ designId, qty: Math.min(qty, f.tokens.find(t => t.designId === designId)?.qty ?? 0) })).filter(p => p.qty > 0);
   const moving = parts.reduce((a, p) => a + p.qty, 0);
   if (moving <= 0 || moving >= total) return null;
   const capBefore = fleetSpec(game, f).cargoCapacity, fuelCapBefore = fleetSpec(game, f).fuelCapacity;
@@ -489,7 +501,7 @@ export function splitFleet(game: GameState, f: Fleet, parts: { designId: number;
     ...JSON.parse(JSON.stringify(f)), id: game.nextId++, num: owner.fleetNum, tokens: [], cargo: { ironium: 0, boranium: 0, germanium: 0, colonists: 0 }, fuel: 0, customName: false, route: undefined, repeat: false,
     // 0.3.9.21: the fleet split off stays put, with none of the standing orders of the other (it chased the pursued
     // fleet, ran the logistics job, led the operation)
-    pursue: undefined, refuelFor: undefined, refuelYear: undefined, tankerPost: undefined, meetTrader: undefined, auto: undefined, job: undefined, op: undefined, joinOp: undefined, aiGuard: undefined,
+    pursue: undefined, refuelFor: undefined, refuelYear: undefined, tankerPost: undefined, meetTrader: undefined, auto: undefined, job: undefined, op: undefined, joinOp: undefined, aiGuard: undefined, waiting: false,
   };
   for (const p of parts) {
     const t = f.tokens.find(x => x.designId === p.designId);
@@ -506,10 +518,18 @@ export function splitFleet(game: GameState, f: Fleet, parts: { designId: number;
   if (!f.customName) f.name = compositionName(game, f);
   game.fleets.push(nf);
   // split cargo & fuel proportionally to capacity
-  const capNew = fleetSpec(game, nf).cargoCapacity, fuelNew = fleetSpec(game, nf).fuelCapacity;
-  for (const k of CARGO_KEYS) {
-    const share = capBefore > 0 ? Math.min(Math.round(f.cargo[k] * capNew / capBefore), f.cargo[k]) : 0;
-    nf.cargo[k] = share; f.cargo[k] -= share;
+  const capNew = fleetSpec(game, nf).cargoCapacity, fuelNew = fleetSpec(game, nf).fuelCapacity, capLeft = fleetSpec(game, f).cargoCapacity;
+  // (0.3.9.22: shares rounded down, then what the fleet left behind cannot hold moves over a kt at a time, the
+  // largest remainders first: rounding each mineral gave one of the two fleets more than its hold)
+  const exact = CARGO_KEYS.map(k => capBefore > 0 ? f.cargo[k] * capNew / capBefore : 0);
+  CARGO_KEYS.forEach((k, j) => { const share = Math.max(0, Math.min(Math.floor(exact[j]), f.cargo[k])); nf.cargo[k] = share; f.cargo[k] -= share; });
+  const byRest = CARGO_KEYS.map((k, j) => ({ k, r: exact[j] - Math.floor(exact[j]) })).sort((a, b) => b.r - a.r);
+  for (let guard = 0; guard < 100 && cargoMass(f.cargo) > capLeft && cargoMass(nf.cargo) < capNew; guard++) {
+    const pick = byRest.find(x => f.cargo[x.k] >= 1);
+    if (!pick) break;
+    const n = Math.min(1, f.cargo[pick.k]);
+    f.cargo[pick.k] -= n; nf.cargo[pick.k] += n;
+    byRest.push(byRest.splice(byRest.indexOf(pick), 1)[0]);
   }
   const fuelShare = fuelCapBefore > 0 ? Math.round(f.fuel * fuelNew / fuelCapBefore) : 0;
   nf.fuel = fuelShare; f.fuel -= fuelShare;
@@ -547,7 +567,7 @@ export function transferFleet(game: GameState, f: Fleet, to: number) {
   f.borderExit = undefined;
   // (0.3.9.21: and none of its former owner's standing orders)
   f.pursue = undefined; f.refuelFor = undefined; f.refuelYear = undefined; f.tankerPost = undefined; f.meetTrader = undefined;
-  f.auto = undefined; f.job = undefined; f.op = undefined; f.joinOp = undefined; f.aiGuard = undefined; f.repeat = false; f.route = undefined;
+  f.auto = undefined; f.job = undefined; f.op = undefined; f.joinOp = undefined; f.aiGuard = undefined; f.repeat = false; f.route = undefined; f.waiting = false;
   recipient.fleetNum++;
   f.num = recipient.fleetNum;
   f.waypoints = [{ x: f.x, y: f.y, target: f.orbiting >= 0 ? 'planet' : 'space', targetId: f.orbiting >= 0 ? f.orbiting : undefined, warp: 0, task: 'none', processed: true }];

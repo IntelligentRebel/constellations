@@ -110,6 +110,15 @@ export function regionalAllowance(game: GameState, player: Player): { have: numb
   return { have, allowed: Math.min(REGIONAL_MAX, Math.floor(owned / REGIONAL_PER_WORLDS)) };
 }
 
+/**
+ * 0.3.9.22: empties a world's production queue, putting back on its surface the minerals already committed to it (a
+ * world that changed hands or emptied lost them: half a starbase, a terraforming paid ahead).
+ */
+export function clearQueue(planet: Planet) {
+  for (const it of planet.queue) { planet.surface.ironium += it.allocated.ironium; planet.surface.boranium += it.allocated.boranium; planet.surface.germanium += it.allocated.germanium; }
+  planet.queue = [];
+}
+
 /** Clears what belongs to the former owner when a planet changes hands or is abandoned. */
 export function resetPlanetPolicies(planet: Planet) {
   planet.regionalCapital = undefined;

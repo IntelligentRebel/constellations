@@ -11,6 +11,7 @@ import { TECHS, HULLS, hasTech, mainField, playerCost, FIELD_NAMES, CATEGORY_NAM
 import { techOdds, TECH_HORIZON } from '../engine/research';
 import { miningYield } from '../engine/missions';
 import { tl } from '../data/labels';
+import { raceSpec } from '../engine/race';
 import { EngineChart } from './enginechart';
 import type { SpecialTech } from '../engine/specials';
 import { specialReqText, specialLevelText, AUTO_EXPLORE, WORMHOLE_NAV, INFRARED, LENSING, specialsOf } from '../engine/specials';
@@ -45,6 +46,10 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
   let compare: string | undefined;
   let chart: ComponentChildren | undefined;
   const cmp = (b: TechData | undefined, txt: (b: TechData) => string) => { if (b) compare = `Votre meilleur équipement de ce type : ${tl(b.name)} (${txt(b)}).`; };
+  // (0.3.9.22: with the factors of the race, as the designs get them: RS armour ×0.5 and shields ×1.4, NAS scanners ×2)
+  const rs = raceSpec(me.race);
+  const arm = (v = 0) => Math.trunc(v * rs.armorFactor), shd = (v = 0) => Math.trunc(v * rs.shieldFactor);
+  const scn = (v = 0) => Math.round(v * rs.scanRangeFactor), pscn = (v = 0) => Math.trunc(v * rs.scanRangeFactor);
   switch (t.cat) {
     case 'Engine': {
       const e = t.engine!;
@@ -79,7 +84,7 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
     }
     case 'Bomb': {
       // 0.3.9.21: as the bombing does it (no effect of the planet's hostility; the retro bomb undoes terraforming)
-      if (st.smart) lines.push(`Bombe intelligente : elle tue ${st.killRate} % de la population par an sans toucher aux installations. Les défenses planétaires l'arrêtent deux fois moins bien qu'une bombe ordinaire ; seules, les bombes intelligentes ne tuent jamais les 100 derniers colons.`);
+      if (st.smart) lines.push(`Bombe intelligente : elle tue ${st.killRate} % de la population par an sans toucher aux installations. Les défenses planétaires l'arrêtent deux fois moins bien qu'une bombe ordinaire ; seules, les bombes intelligentes ne tuent jamais les ${fmtPeople(100)} derniers colons.`);
       else if (st.unterraformRate) lines.push(`Bombe régressive : elle défait le terraformement de la planète, de ${st.unterraformRate} point(s) par an et par bombe, en ramenant son environnement vers ce qu'il était à l'origine. Elle ne tue personne et ne détruit rien.`);
       else lines.push(`Bombe orbitale : chaque année, elle tue ${st.killRate ?? 0} % de la population (au moins ${fmtPeople(st.minKillRate ?? 0)} colons) et détruit ${st.structureDestroyRate ?? 0} installations. Les défenses planétaires en arrêtent une partie.`);
       if (st.killRate) stats.push(['Population tuée', `${st.killRate} %/an`]);
@@ -87,32 +92,32 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
       break;
     }
     case 'Armor':
-      lines.push(`Blindage : ${st.armor} points de structure de plus par module. Un vaisseau est détruit quand sa structure tombe à zéro.`);
-      if (st.shield) lines.push(`Il protège aussi comme un bouclier (${st.shield}).`);
+      lines.push(`Blindage : ${arm(st.armor)} points de structure de plus par module. Un vaisseau est détruit quand sa structure tombe à zéro.`);
+      if (st.shield) lines.push(`Il protège aussi comme un bouclier (${shd(st.shield)}).`);
       if (st.cloakUnits) lines.push(`Il camoufle en partie le vaisseau (${st.cloakUnits} unités).`);
-      stats.push(['Structure', `+${st.armor}`]);
-      cmp(bestOwned(me, 'Armor', x => x.stats?.armor ?? 0), b => `+${b.stats?.armor}`);
+      stats.push(['Structure', `+${arm(st.armor)}`]);
+      cmp(bestOwned(me, 'Armor', x => x.stats?.armor ?? 0), b => `+${arm(b.stats?.armor)}`);
       break;
     case 'Shield':
-      lines.push(`Bouclier : il absorbe ${st.shield} points de dégâts par vaisseau avant le blindage, et se recharge entièrement entre deux batailles.`);
+      lines.push(`Bouclier : il absorbe ${shd(st.shield)} points de dégâts par vaisseau avant le blindage, et se recharge entièrement entre deux batailles.`);
       if (st.armor) lines.push(`Il ajoute aussi ${st.armor} points de structure.`);
-      stats.push(['Bouclier', `${st.shield}`]);
-      cmp(bestOwned(me, 'Shield', x => x.stats?.shield ?? 0), b => `${b.stats?.shield}`);
+      stats.push(['Bouclier', `${shd(st.shield)}`]);
+      cmp(bestOwned(me, 'Shield', x => x.stats?.shield ?? 0), b => `${shd(b.stats?.shield)}`);
       break;
     case 'Scanner': {
       if (!st.scanRange && !st.scanRangePen) lines.push('Scanner de vaisseau sans portée : il ne voit que ce qui se trouve au même endroit que le vaisseau (les flottes au même point, la planète où il est en orbite, qu\'il analyse). Léger et presque gratuit, il suffit pour explorer planète par planète.');
-      else lines.push(`Scanner de vaisseau : il repère les flottes jusqu'à ${st.scanRange ?? 0} al.`);
+      else lines.push(`Scanner de vaisseau : il repère les flottes jusqu'à ${scn(st.scanRange)} al.`);
       if (st.scanRangePen) lines.push(`Pénétrant jusqu'à ${st.scanRangePen} al : il analyse les planètes (environnement, minerais) et voit les flottes en orbite sans s'y rendre. Il balaie tout le trajet parcouru dans l'année, pas seulement le point d'arrivée.`);
       else if (st.scanRange) lines.push('Non pénétrant : pour analyser une planète, il faut se mettre en orbite (s\'y arrêter).');
       if (st.canStealFleetCargo || st.canStealPlanetCargo) lines.push(`Il permet de voler la cargaison ${st.canStealFleetCargo && st.canStealPlanetCargo ? 'des flottes et des planètes' : st.canStealFleetCargo ? 'des flottes' : 'des planètes'} ennemies.`);
-      stats.push(['Portée', `${st.scanRange ?? 0} al`], ['Pénétrant', st.scanRangePen ? `${st.scanRangePen} al` : 'non']);
-      cmp(bestOwned(me, 'Scanner', x => (x.stats?.scanRangePen ?? 0) * 2 + (x.stats?.scanRange ?? 0)), b => `${b.stats?.scanRange ?? 0} al${b.stats?.scanRangePen ? `, pénétrant ${b.stats.scanRangePen}` : ''}`);
+      stats.push(['Portée', `${scn(st.scanRange)} al`], ['Pénétrant', st.scanRangePen ? `${st.scanRangePen} al` : 'non']);
+      cmp(bestOwned(me, 'Scanner', x => (x.stats?.scanRangePen ?? 0) * 2 + (x.stats?.scanRange ?? 0)), b => `${scn(b.stats?.scanRange)} al${b.stats?.scanRangePen ? `, pénétrant ${b.stats.scanRangePen}` : ''}`);
       break;
     }
     case 'PlanetaryScanner':
-      lines.push(`Scanner planétaire : une fois découvert, il équipe toutes vos colonies qui ont construit un scanner. Portée ${st.scanRange ?? 0} al${st.scanRangePen ? `, pénétrant ${st.scanRangePen} al (analyse des planètes voisines)` : ''}.`);
-      stats.push(['Portée', `${st.scanRange ?? 0} al`], ['Pénétrant', st.scanRangePen ? `${st.scanRangePen} al` : 'non']);
-      cmp(bestOwned(me, 'PlanetaryScanner', x => x.stats?.scanRange ?? 0), b => `${b.stats?.scanRange} al`);
+      lines.push(`Scanner planétaire : une fois découvert, il équipe toutes vos colonies qui ont construit un scanner. Portée ${pscn(st.scanRange)} al${st.scanRangePen ? `, pénétrant ${st.scanRangePen} al (analyse des planètes voisines)` : ''}.`);
+      stats.push(['Portée', `${pscn(st.scanRange)} al`], ['Pénétrant', st.scanRangePen ? `${st.scanRangePen} al` : 'non']);
+      cmp(bestOwned(me, 'PlanetaryScanner', x => x.stats?.scanRange ?? 0), b => `${pscn(b.stats?.scanRange)} al`);
       break;
     case 'PlanetaryDefense': {
       const c = (st.defenseCoverage ?? 0) / 100;
@@ -155,12 +160,14 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
       if (st.fuelGeneration) lines.push(`Produit ${st.fuelGeneration} mg de carburant par an.`);
       // 0.3.9.21: in points of battle speed (4 points make one more square a round), not squares: the text said 4× too much
       if (st.movementBonus) lines.push(`Propulseur de manœuvre : +${String(st.movementBonus).replace('.', ',')} point${st.movementBonus > 1 ? 's' : ''} de vitesse de combat (4 points font une case de plus par round ; 1 point, une case de plus un round sur quatre).`);
+      // (0.3.9.22: as battleSpeed counts them)
+      if (st.movementBonus && st.movementBonus % 1) lines.push('Le total des bonus de manœuvre du vaisseau est arrondi au point supérieur.');
       if (st.cloakUnits) lines.push(`Camouflage : ${st.cloakUnits} unités${st.cloakUnarmedOnly ? ', seulement sur un vaisseau sans armes' : ''}. Un vaisseau camouflé n'est repéré qu'à une fraction de la portée des scanners ennemis.`);
       if (st.torpedoBonus || st.initiativeBonus) lines.push(`Ordinateur de combat : ${st.initiativeBonus ? `+${st.initiativeBonus} d'initiative (tire plus tôt)` : ''}${st.initiativeBonus && st.torpedoBonus ? ', ' : ''}${st.torpedoBonus ? `+${pc(st.torpedoBonus)} de précision des torpilles` : ''}.`);
       if (st.torpedoJamming) lines.push(`Brouilleur : ${pc(st.torpedoJamming)} de chances de dévier chaque torpille ennemie.`);
       if (st.beamBonus) lines.push(`Condensateur : +${pc(st.beamBonus)} de dégâts pour les armes à faisceau du vaisseau.`);
       if (st.beamDefense) lines.push(`Déflecteur : −${pc(st.beamDefense)} de dégâts reçus des armes à faisceau.`);
-      if (st.reduceMovement) lines.push(`Amortisseur : ralentit de ${st.reduceMovement} tous les vaisseaux en combat, amis compris.`);
+      if (st.reduceMovement) lines.push(`Amortisseur : retire ${st.reduceMovement} points de vitesse de combat (4 points font une case par round) à tous les vaisseaux de la bataille, amis compris, sans descendre sous 2 points.`);
       if (st.reduceCloaking) lines.push('Détecteur à tachyons : réduit le camouflage des vaisseaux ennemis face à vos scanners.');
       if (st.canJump) lines.push('Portail de saut embarqué : le vaisseau peut sauter comme par un portail stellaire.');
       if (st.armor) lines.push(`Ajoute ${st.armor} points de structure.`);
@@ -183,7 +190,7 @@ function componentInfo(me: Player, t: TechData): Omit<TechInfo, 'title' | 'when'
 
 function partFallback(t: TechData): string { return `${CATEGORY_NAMES[t.cat] ?? t.cat}.`; }
 
-function hullInfo(h: HullData): Omit<TechInfo, 'title' | 'when' | 'cost'> {
+function hullInfo(me: Player, h: HullData): Omit<TechInfo, 'title' | 'when' | 'cost'> {
   const lines: ComponentChildren[] = [];
   const stats: [string, string][] = [];
   const groups = new Map<string, number>();
@@ -196,8 +203,11 @@ function hullInfo(h: HullData): Omit<TechInfo, 'title' | 'when' | 'cost'> {
   if (h.repairBonus) lines.push(h.starbase ? `Atelier : les vaisseaux en orbite réparent ${Math.round(h.repairBonus * 100)} % de leur structure de plus par an.` : `Atelier embarqué : la flotte répare ${Math.round(h.repairBonus * 100)} % de sa structure de plus par an.`);
   if (h.mineLayingBonus) lines.push(`Ses lance-mines posent ${1 + h.mineLayingBonus} fois plus de mines.`);
   if (h.starbase && h.maxPop) lines.push(`Habitat : jusqu'à ${fmtPeople(h.maxPop)} habitants pour une race à vie orbitale, qui ne vit que dans ses stations.`);
-  if (h.builtInScanner) lines.push('Scanner intégré.');
-  if (h.orbitalConstruction) lines.push('Peut déployer une station.');
+  // (0.3.9.22: the built-in scanner is a gift of the Jack of all trades only; the Orbital Fort deploys nothing itself, it
+  // is the station the orbital construction module puts up)
+  const rs = raceSpec(me.race);
+  if (h.builtInScanner && rs.joatScanner) lines.push(`Scanner intégré : portée ${Math.round(20 * me.tech.electronics * rs.scanRangeFactor)} al, pénétrant ${10 * me.tech.electronics} al (selon votre niveau d'électronique).`);
+  if (h.orbitalConstruction) lines.push('Station déployée par un module de construction orbitale.');
   stats.push(['Structure', `${h.armor}`]);
   if (!h.starbase) stats.push(['Carburant', `${h.fuel} mg`], ['Soute', `${h.cargo} kt`], ['Masse', `${h.mass} kt`]);
   stats.push(['Initiative', `${h.init}`]);
@@ -205,7 +215,7 @@ function hullInfo(h: HullData): Omit<TechInfo, 'title' | 'when' | 'cost'> {
 }
 
 export function techInfo(g: GameState, me: Player, t: Item, horizon = 5): TechInfo {
-  const base = isHull(t) ? hullInfo(t) : componentInfo(me, t);
+  const base = isHull(t) ? hullInfo(me, t) : componentInfo(me, t);
   const f = mainField(t.req);
   let when: string | undefined;
   if (hasTech(me, t)) when = 'Déjà disponible.';

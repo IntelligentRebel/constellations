@@ -17,7 +17,7 @@ import { ensureFaction, factionDesign, topTech, spawnFleet, sendTo, empires, fle
 import { availableParts, type Purpose } from './design';
 import { TECHS, HULLS, partFitsSlot } from './tech';
 import { addChronicle } from './chronicle';
-import { resetPlanetPolicies } from './empire';
+import { resetPlanetPolicies, clearQueue } from './empire';
 
 export const crisisOn = (game: GameState) => !!game.settings.crisis;
 export const crisisActive = (game: GameState) => crisisOn(game) && game.crisis?.phase === 'active';
@@ -168,7 +168,7 @@ function openBreach(game: GameState) {
   if (pl.owner >= 0) {
     const victim = game.players[pl.owner];
     victim.messages.push({ year: game.year, kind: 'population', text: `La Brèche s'ouvre sur ${pl.name} : la colonie est anéantie.`, target: { kind: 'planet', id: pl.id } });
-    pl.owner = -1; pl.pop = 0; pl.queue = []; pl.starbase = null; pl.defenses = 0;
+    pl.owner = -1; pl.pop = 0; clearQueue(pl); pl.starbase = null; pl.defenses = 0;
     // 0.3.9.21: everything a colony leaves on its world goes with it (its scanner, where its ships went...)
     pl.scanner = false; pl.route = undefined; pl.packetTarget = undefined; pl.conqueredYear = undefined; resetPlanetPolicies(pl);
     victim.stats.planetsLost = (victim.stats.planetsLost ?? 0) + 1;
@@ -260,7 +260,7 @@ function harvest(game: GameState, f: Fleet, pl: Planet) {
   if (pl.pop <= 0) {
     victim.messages.push({ year: game.year, kind: 'combat', text: `${pl.name} a été moissonnée par la ${f.name} : il n'y reste personne.`, target: { kind: 'planet', id: pl.id } });
     victim.stats.planetsLost = (victim.stats.planetsLost ?? 0) + 1;
-    pl.owner = -1; pl.pop = 0; pl.queue = []; pl.defenses = 0; pl.scanner = false; pl.starbase = null; pl.route = undefined; pl.packetTarget = undefined;
+    pl.owner = -1; pl.pop = 0; clearQueue(pl); pl.defenses = 0; pl.scanner = false; pl.starbase = null; pl.route = undefined; pl.packetTarget = undefined;
     pl.conqueredYear = undefined; resetPlanetPolicies(pl); // (0.3.9.21: a harvested regional capital stayed one, with no owner)
     return;
   }

@@ -32,7 +32,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'legend', name: 'Entrée dans la légende', text: 'Mener une flotte au rang « Légende ».', unlocks: { icon: 16 + 6 }, test: (g, me) => g.fleets.some(f => f.owner === me.id && rankOf(f) === RANKS.length - 1) },
   { id: 'guardian', name: 'Tueur de gardiens', text: 'Abattre un gardien.', test: (g, me) => !!g.guardians?.some(x => x.killedBy === me.id) },
   { id: 'secret', name: 'Ce que cachent les étoiles', text: 'Trouver une étoile cachée.', secret: true, test: (g, me) => !!g.secrets?.some(s => s.known.includes(me.id)) },
-  { id: 'mega', name: 'Merveille', text: 'Achever un mégaprojet.', unlocks: { icon: 16 + 4 }, test: (g, me) => own(g, me).some(p => (p.megaprojects?.length ?? 0) > 0) },
+  { id: 'mega', name: 'Merveille', text: 'Achever un mégaprojet.', unlocks: { icon: 16 + 4 }, test: (g, me) => (g.chronicle?.events ?? []).some(e => e.kind === 'mega' && e.who.includes(me.id)) }, // (0.3.9.22: built, not taken with a world)
   { id: 'rich', name: 'Trésor de guerre', text: 'Accumuler 20 000 kt de minerais sur un seul monde.', test: (g, me) => own(g, me).some(p => MINERALS.reduce((a, m) => a + p.surface[m], 0) >= 20000) },
   { id: 'nemesis', name: 'La haine éteinte', text: 'Briser votre némésis.', unlocks: { icon: 16 + 2 }, test: (g, me) => !!g.nemeses?.some(n => n.of === me.id && n.broken !== undefined) },
   { id: 'act3', name: 'L\'Apothéose', text: 'Voir s\'ouvrir le troisième acte.', test: (g, me) => !!g.settings.acts && (g.act?.n ?? 1) >= 3 && !me.dead },

@@ -194,7 +194,8 @@ console.log('--- research points a year, as the turn counts them');
   me.researchLastYear = 0;
   check(researchPerYear(g, me, 200) === 100, `GR: 200 resources give 100 points to the field (${researchPerYear(g, me, 200)}), not 50`);
   me.researchLastYear = 100;
-  check(researchPerYear(g, me, 100) === 100, `last year's points are not halved again (${researchPerYear(g, me, 100)})`);
+  // (0.3.9.22: the points of the coming year only: last year's are no floor, a share cut to 0 % shows 0)
+  check(researchPerYear(g, me, 100) === 50 && researchPerYear(g, me, 0) === 0, `next year's points, not last year's (${researchPerYear(g, me, 100)}, ${researchPerYear(g, me, 0)})`);
 }
 
 console.log('--- the population a free world would hold, for a race living on its stations');

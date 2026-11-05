@@ -3,7 +3,7 @@
 import type { Field, GameState, Player } from './types';
 import { FIELDS } from './types';
 import type { TechReq } from '../data/types';
-import { TECHS, HULLS, hasTech, FIELD_KEYS } from './tech';
+import { TECHS, HULLS, hasTech, FIELD_KEYS, ruleOffTech } from './tech';
 import { SPECIALS, hasSpecial } from './specials';
 import { MEGAPROJECTS } from './megaprojects';
 
@@ -18,9 +18,9 @@ export function levelsReq(r: Partial<Record<Field, number>>): TechReq {
 export function resolveGoal(game: GameState, name?: string): GoalItem | undefined {
   if (!name) return undefined;
   const t = TECHS.get(name);
-  if (t) return { name, req: t.req, kind: 'tech' };
+  if (t) return ruleOffTech(game, t) ? undefined : { name, req: t.req, kind: 'tech' };
   const h = HULLS.get(name);
-  if (h) return { name, req: h.req, kind: 'hull' };
+  if (h) return ruleOffTech(game, h) ? undefined : { name, req: h.req, kind: 'hull' };
   const sp = SPECIALS.find(x => x.name === name);
   // a special technology on the hidden tree is aimed at like a component (odds); otherwise its level is known
   if (sp) return { name, req: levelsReq(sp.req), kind: 'special', exact: !(sp.fuzzy && game.settings.fuzzyTechTree) };

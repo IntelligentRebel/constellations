@@ -4,7 +4,7 @@ import { hailingWorld } from './trader';
 import { fleetSpec } from './fleet';
 import { planetSpec } from './planet';
 import { raceSpec } from './race';
-import { designSpec, specOf } from './design';
+import { designSpec, findDesign, specOf } from './design';
 import { scanFactorAt } from './terrain';
 import { hasWalls, routePoints } from './walls';
 import { addChronicle } from './chronicle';
@@ -40,6 +40,34 @@ export function scannersOf(game: GameState, player: Player): Scanner[] {
 
 const d2 = (a: { x: number; y: number }, b: { x: number; y: number }) => (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
 
+/**
+ * The scanners within reach of an x: those whose x is within the largest range (a little more, against rounding) of
+ * it. Scanners at a position that is not a number never see anything: they are left out.
+ */
+function scannerBand(scanners: Scanner[]): (x: number) => Scanner[] {
+  let R = 0;
+  for (const s of scanners) R = Math.max(R, s.range, s.pen);
+  const ok = scanners.map((s, i) => i).filter(i => Number.isFinite(scanners[i].x));
+  // (and none at all with distances so large that their squares would overflow: Infinity <= Infinity holds)
+  const BIG = 1e150;
+  const huge = R > BIG || scanners.some(s => Math.abs(s.x) > BIG || Math.abs(s.y) > BIG);
+  if (!Number.isFinite(R) || huge || ok.length < 24) { const all = huge ? scanners : ok.map(i => scanners[i]); return () => all; }
+  const W = R * (1 + 1e-9) + 1e-9;
+  const order = ok.sort((a, b) => scanners[a].x - scanners[b].x || a - b);
+  const xs = Float64Array.from(order, i => scanners[i].x);
+  const lower = (v: number) => { let lo = 0, hi = xs.length; while (lo < hi) { const m = (lo + hi) >> 1; if (xs[m] < v) lo = m + 1; else hi = m; } return lo; };
+  const all = ok.map(i => scanners[i]);
+  return (x: number) => {
+    if (!Number.isFinite(x)) return [];
+    if (Math.abs(x) > BIG) return all;
+    const a = lower(x - W), b = lower(x + W + 1e-9 * Math.abs(x));
+    // (in the order of x: what the callers find is whether any scanner sees, which no order changes)
+    const out: Scanner[] = [];
+    for (let i = a; i < b; i++) { const s = scanners[order[i]]; if (s.x >= x - W && s.x <= x + W) out.push(s); }
+    return out;
+  };
+}
+
 type Pt = { x: number; y: number };
 function segDist2(p: Pt, a: Pt, b: Pt): number {
   const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
@@ -58,7 +86,18 @@ function cloakFactor(cloak: number, tachyons: number): number {
   return 1 - (cloak / 100) * red;
 }
 
-export function revealPlanet(game: GameState, player: Player, planet: Planet, fullOwnerInfo = true) {
+/** 0.3.9.22: the guardian and the lair over each planet, found once for a whole update of the intel. */
+interface Orbiters { guard: Map<number, Fleet>; lair: Map<number, Fleet> }
+function orbitersOf(game: GameState): Orbiters {
+  const guard = new Map<number, Fleet>(), lair = new Map<number, Fleet>();
+  for (const f of game.fleets) {
+    if (game.monsterId !== undefined && f.owner === game.monsterId && !guard.has(f.orbiting)) guard.set(f.orbiting, f);
+    if (f.immobile && f.tokens.length > 0 && game.players[f.owner]?.faction && !lair.has(f.orbiting)) lair.set(f.orbiting, f);
+  }
+  return { guard, lair };
+}
+
+export function revealPlanet(game: GameState, player: Player, planet: Planet, fullOwnerInfo = true, orb?: Orbiters) {
   const intel = player.intel.planets[planet.id];
   const wasOwner = intel.owner;
   intel.year = game.year;
@@ -70,16 +109,16 @@ export function revealPlanet(game: GameState, player: Player, planet: Planet, fu
   intel.explored = true;
   intel.homeworld = planet.homeworld && planet.owner >= 0;
   // Constellations 3.2: a guardian in orbit is part of what an analysis reveals
-  const guard = game.monsterId !== undefined ? game.fleets.find(f => f.owner === game.monsterId && f.orbiting === planet.id) : undefined;
+  const guard = game.monsterId !== undefined ? (orb ? orb.guard.get(planet.id) : game.fleets.find(f => f.owner === game.monsterId && f.orbiting === planet.id)) : undefined;
   if (guard) { intel.guardian = guard.purpose?.slice(9); intel.guardianYear = game.year; } else intel.guardian = undefined;
   // Constellations 3.4: a pirate lair (or the Breach of the crisis)
-  const lair = game.fleets.find(f => f.immobile && f.orbiting === planet.id && f.tokens.length > 0 && game.players[f.owner]?.faction);
+  const lair = orb ? orb.lair.get(planet.id) : game.fleets.find(f => f.immobile && f.orbiting === planet.id && f.tokens.length > 0 && game.players[f.owner]?.faction);
   intel.lair = lair ? game.players[lair.owner].faction : undefined;
   if (planet.owner >= 0) {
     intel.pop = planet.owner === player.id ? planet.pop : Math.round(planet.pop / 1000) * 1000;
     intel.defenses = fullOwnerInfo ? planet.defenses : undefined;
     if (planet.starbase) {
-      const d = game.designs.find(x => x.id === planet.starbase!.designId);
+      const d = findDesign(game, planet.starbase!.designId);
       intel.starbaseDesign = d?.id; intel.starbaseName = d?.name;
       if (d && planet.owner !== player.id) learnDesign(player, game, d.id, false);
     } else { intel.starbaseDesign = undefined; intel.starbaseName = undefined; }
@@ -99,7 +138,7 @@ export function revealPlanet(game: GameState, player: Player, planet: Planet, fu
 }
 
 export function learnDesign(player: Player, game: GameState, designId: number, full: boolean) {
-  const d = game.designs.find(x => x.id === designId);
+  const d = findDesign(game, designId);
   if (!d || d.owner === player.id) return;
   const known = player.intel.designs[designId];
   player.intel.designs[designId] = { id: d.id, owner: d.owner, name: d.name, hull: d.hull, starbase: d.starbase, slots: full || raceSpec(player.race).discoverDesignOnScan ? d.slots.map(s => ({ ...s })) : known?.slots };
@@ -118,10 +157,14 @@ export function meet(game: GameState, player: Player, other: number, where?: { t
 
 /** Recompute every player's knowledge for the current year. */
 export function updateIntel(game: GameState, initial = false) {
+  const orb = orbitersOf(game);
   for (const player of game.players) {
     if (player.dead) continue;
     const intel = player.intel;
     const scanners = scannersOf(game, player);
+    // 0.3.9.22: the scanners sorted by x: a planet or a fleet is only compared with those whose band of x could reach
+    // it (no scanner sees farther than its largest range, a nebula or a cloak only shortens it)
+    const near = scannerBand(scanners);
     // paths flown this year: penetrating scanners sweep them
     const sweeps = game.fleets.filter(f => f.owner === player.id && f.trail && f.trail.length > 1).map(f => ({ trail: f.trail!, pen: fleetSpec(game, f).scanRangePen }));
     // 0.3.7: the hidden cluster lies far beyond the edge of the map: nothing is seen across the void
@@ -129,13 +172,13 @@ export function updateIntel(game: GameState, initial = false) {
     const apart = (a: { x: number }, b: { x: number }) => far && (a.x > game.width) !== (b.x > game.width);
     // planets
     for (const p of game.planets) {
-      if (p.owner === player.id) { revealPlanet(game, player, p); continue; }
+      if (p.owner === player.id) { revealPlanet(game, player, p, true, orb); continue; }
       // 0.3.7: a hidden star nobody told this empire about: found only by the ways of secrets.ts
       if (intel.planets[p.id]?.unknown) continue;
       let seen = false;
       // a planet inside a nebula can only be analysed from half the distance
       const tf = scanFactorAt(game, p);
-      for (const s of scanners) {
+      for (const s of near(p.x)) {
         if (apart(s, p)) continue;
         const dd = d2(s, p);
         if ((s.pen >= 0 && dd <= (s.pen * tf) ** 2) || dd === 0) { seen = true; break; }
@@ -144,7 +187,7 @@ export function updateIntel(game: GameState, initial = false) {
       if (!seen && raceSpec(player.race).detectStargatePlanets) {
         // IT: own stargates scan other stargate planets within range (approximation)
       }
-      if (seen) revealPlanet(game, player, p);
+      if (seen) revealPlanet(game, player, p, true, orb);
       else if (initial) { /* unknown */ }
     }
     // fleets
@@ -160,11 +203,13 @@ export function updateIntel(game: GameState, initial = false) {
       const fs = fleetSpec(game, f);
       let normal = false, pen = false, same = false;
       const tf = scanFactorAt(game, f);
-      for (const s of scanners) {
+      const band = near(f.x);
+      const cf0 = cloakFactor(fs.cloakPercent, 0) * tf;
+      for (const s of band) {
         if (apart(s, f)) continue;
         const dd = d2(s, f);
         if (dd === 0) { same = true; pen = true; break; }
-        const cf = cloakFactor(fs.cloakPercent, s.tachyons) * tf;
+        const cf = s.tachyons > 0 ? cloakFactor(fs.cloakPercent, s.tachyons) * tf : cf0;
         if (s.pen >= 0 && dd <= (s.pen * cf) ** 2) pen = true;
         if (f.orbiting < 0 && dd <= (s.range * cf) ** 2) normal = true;
         if (f.orbiting >= 0 && game.planets[f.orbiting].owner === player.id && dd === 0) pen = true;
@@ -174,7 +219,7 @@ export function updateIntel(game: GameState, initial = false) {
       const guardian = game.monsterId !== undefined && f.owner === game.monsterId;
       // 3.4: so do a pirate lair and the Nexus
       const huge = guardian || (!!f.immobile && !!game.players[f.owner]?.faction);
-      if (huge && !pen) for (const s of scanners) if (!apart(s, f) && d2(s, f) <= (s.range * tf) ** 2) { pen = true; break; }
+      if (huge && !pen) for (const s of band) if (!apart(s, f) && d2(s, f) <= (s.range * tf) ** 2) { pen = true; break; }
       if (!normal && !pen && !friend) continue;
       if (guardian && f.orbiting >= 0) { const pi = intel.planets[f.orbiting]; if (!pi.unknown) { pi.guardian = f.purpose?.slice(9); pi.guardianYear = game.year; } }
       else if (huge && f.orbiting >= 0 && !intel.planets[f.orbiting].unknown) intel.planets[f.orbiting].lair = game.players[f.owner].faction;
@@ -210,7 +255,8 @@ export function updateIntel(game: GameState, initial = false) {
     }
     intel.fleets = fleets;
     // a contact lost even for one year is a new, unknown one when it comes back
-    for (const k of Object.keys(idents)) if (!fleets.some(x => x.id === +k)) delete idents[+k];
+    const seenIds = new Set(fleets.map(x => x.id));
+    for (const k of Object.keys(idents)) if (!seenIds.has(+k)) delete idents[+k];
     // forget tracks of fleets not seen for 3 years
     for (const k of Object.keys(intel.tracks)) {
       const tr = intel.tracks[+k];
@@ -244,7 +290,8 @@ export function updateIntel(game: GameState, initial = false) {
         }
       }
     }
-    for (const k of Object.keys(intel.minefields)) if (!game.minefields.some(m => m.id === +k)) delete intel.minefields[+k];
+    const fieldIds = new Set(game.minefields.map(m => m.id));
+    for (const k of Object.keys(intel.minefields)) if (!fieldIds.has(+k)) delete intel.minefields[+k];
     // packets, salvage, traders
     intel.packets = game.packets.filter(k => k.owner === player.id || raceSpec(player.race).packetScanner || scanners.some(s => d2(s, k) <= s.range * s.range)).map(k => ({ id: k.id, owner: k.owner, x: k.x, y: k.y, targetId: k.targetId, warp: k.warp, mass: k.cargo.ironium + k.cargo.boranium + k.cargo.germanium }));
     intel.salvage = game.salvage.filter(k => k.owner === player.id || scanners.some(s => d2(s, k) <= s.range * s.range)).map(k => ({ id: k.id, x: k.x, y: k.y, mass: k.cargo.ironium + k.cargo.boranium + k.cargo.germanium }));

@@ -1,4 +1,5 @@
 // Battle VCR: replays recorded battles on the 10x10 board.
+import { seenOwner } from '../../engine/aiknow';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useStore, fmt } from '../store';
 import { Modal, Row } from '../components';
@@ -43,9 +44,12 @@ function stateAt(rec: BattleRecord, step: number) {
 /** 3.6: the ship picked on the board: its design (name opens it in Conception), equipment, firepower and defence. */
 function ShipCard({ g, me, tok, st, onClose }: { g: GameState; me: Player; tok: BattleTokenRecord; st: { qty: number; shields: number; damage: number; qtyDamaged: number }; onClose: () => void }) {
   const s = useStore();
-  const d = g.designs.find(x => x.id === tok.designId);
+  const real = g.designs.find(x => x.id === tok.designId);
   const known = tok.owner === me.id || !!me.intel.designs[tok.designId]?.slots;
-  const sp = d ? designSpec(g.players[tok.owner], d) : null;
+  // (0.3.9.22: a rival's design as we know it, its slots from our intel, with the levels our spies report)
+  const di = me.intel.designs[tok.designId];
+  const d = tok.owner === me.id ? real : real && di?.slots ? { ...real, slots: di.slots } : real;
+  const sp = d ? designSpec(seenOwner(me, g.players[tok.owner]), d) : null;
   // grouped by component (a design often carries the same weapon in several slots)
   const weapons: NonNullable<typeof sp>['weapons'] = [];
   for (const w of sp?.weapons ?? []) { const x = weapons.find(y => y.part === w.part); if (x) x.qty += w.qty; else weapons.push({ ...w }); }

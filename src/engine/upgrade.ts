@@ -75,8 +75,9 @@ const toRoman = (n: number) => { let s = ''; for (const [v, r] of ROMAN) while (
 const fromRoman = (s: string) => { let n = 0, i = 0; for (const [v, r] of ROMAN) while (s.startsWith(r, i)) { n += v; i += r.length; } return i === s.length ? n : 0; };
 
 /** "Croiseur IV" → "Croiseur V", "Éclaireur 2" → "Éclaireur 3", "Sonde" → "Sonde 2"; never a name already taken. */
-export function nextDesignName(game: GameState, p: Player, name: string): string {
-  const taken = new Set(game.designs.filter(d => d.owner === p.id).map(d => d.name));
+export function nextDesignName(game: GameState, p: Player, name: string, also: Iterable<string> = []): string {
+  // (also: names given just before, as the upgrade does one after another: 0.3.9.22, the preview)
+  const taken = new Set([...game.designs.filter(d => d.owner === p.id).map(d => d.name), ...also]);
   let base = name, n = 1, roman = false;
   const mr = /^(.*\S)\s+([IVXLCDM]+)$/.exec(name);
   const mn = /^(.*\S)\s+(\d+)$/.exec(name);

@@ -54,6 +54,16 @@ export function seenMight(game: GameState, p: Player, fi: FleetIntel): SeenMight
   return out;
 }
 /** One ship (or station) of a design of another empire, as far as this empire knows it. */
+/**
+ * 0.3.9.22: another empire's designs as this one can weigh them: with the technology its spies report (else its own),
+ * no doctrines: the pages computed them with the rival's real levels (cost, scanner range gave them away).
+ */
+export function seenOwner(p: Player, owner: Player): { tech: Player['tech']; race: Player['race']; doctrines?: Player['doctrines']; techShift?: Player['techShift'] } {
+  if (owner.id === p.id) return owner;
+  // (the shifts of the tech tree are the same for every empire of a game)
+  return { tech: p.intel.dossiers?.[owner.id]?.techs?.v ?? p.tech, race: owner.race, techShift: owner.techShift };
+}
+
 export function seenDesign(game: GameState, p: Player, designId: number): SeenMight {
   const di = p.intel.designs[designId], d = game.designs.find(x => x.id === designId);
   if (d && (di?.slots || d.owner === p.id)) { const s = specOf(game, designId); return { hp: s.armor + s.shields, pow: s.powerRating, bomber: s.bomber }; }

@@ -238,7 +238,8 @@ console.log('--- stargates: why a leg can or cannot jump');
   go(scout, far, 11);
   generateTurn(g);
   check(scout.orbiting === far.id, `the scout jumps to ${far.name} (${Math.round(Math.hypot(far.x - cap.x, far.y - cap.y))} ly) in one year`);
-  check(bb.orbiting === cap.id && me.messages.some(m => m.text.includes('trop lourd pour la porte')), 'the battleship stays, with a message');
+  // (0.3.9.22: refused, it leaves the same year at its ideal speed, as the route panel says; it waited a year)
+  check(bb.orbiting !== cap.id && me.messages.some(m => m.text.includes('trop lourd pour la porte')), 'the battleship refused by the gate leaves at its ideal speed the same year, with a message');
 }
 
 console.log('--- emigrants go where colonists are lacking');

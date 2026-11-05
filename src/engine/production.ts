@@ -5,7 +5,7 @@ import { raceSpec } from './race';
 import { designCost, designSpec, starbaseUpgradeCost } from './design';
 import { planetSpec, terraformOneStep, terraformRemaining, bestPlanetaryTech } from './planet';
 import { hasTech, TECHS } from './tech';
-import { REGIONAL_COST, regionalBlocker, distanceCostOn } from './empire';
+import { REGIONAL_COST, regionalBlocker, distanceCostOn, capitalOf } from './empire';
 import { MEGA, megaList, megaBlocker, megaCompleted, megaOn, megaYearCap, hasMega, megaVisible, portalPaused, relaysOf, RELAYS_NEEDED, type MegaId } from './megaprojects';
 import { refitStatus, refitUnitCost } from './refit';
 import { BOUNTY_UNIT, bountyBlocker, placeBounty } from './pirates';
@@ -237,7 +237,8 @@ export function maxBuildable(game: GameState, planet: Planet, kind: QueueKind): 
 }
 
 export interface ProductionResult {
-  built: { kind: QueueKind; designId?: number; qty: number }[];
+  /** (tag: the queue line it came from, in an estimate) */
+  built: { kind: QueueKind; designId?: number; qty: number; tag?: number }[];
   leftover: number;
   messages: string[];
   packets: { kind: QueueKind; qty: number }[];
@@ -334,12 +335,21 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
       }
       const done = (['resources', 'ironium', 'boranium', 'germanium'] as const).every(k => item.allocated[k] >= m!.cost[k]);
       if (done) {
-        result.built.push({ kind: 'mega', qty: 1 });
+        result.built.push({ kind: 'mega', qty: 1, tag: (item as QueueItem & { _tag?: number })._tag });
         if (!dryRun) megaCompleted(game, planet, player, m!.id);
         queue.splice(i, 1); continue;
       }
       if (short) { stop = true; break; }
       i++; continue;
+    }
+    // 0.3.9.22: a regional capital the world cannot found for now (too few inhabitants, the quota of seats reached,
+    // another seat founded nearby) waits, keeping what was paid, like a megaproject; it was dropped, its resources lost
+    if (item.kind === 'capital') {
+      const why = capitalPause(game, planet, player);
+      if (why) {
+        if (!dryRun) result.messages.push(`${itemLabel(game, item)} en pause : ${why}.`);
+        i++; continue;
+      }
     }
     let mb = maxBuildable(game, planet, item.kind);
     // 0.3.9.21: spies, as many units as the network can still take (those beyond its ceiling were paid for nothing)
@@ -398,6 +408,9 @@ export function runProduction(game: GameState, planet: Planet, onBuild: (item: Q
     }
     if (numBuilt > 0) {
       applyBuilt(game, planet, player, item, numBuilt, onBuild, result, dryRun);
+      // 0.3.9.22: the minerals of alchemy go into what the world has (they were added to its surface, which is
+      // rewritten from `available` at the end: paid for, never received)
+      if (item.kind === 'alchemy' || item.kind === 'autoAlchemy') available = { ...available, ironium: available.ironium + numBuilt, boranium: available.boranium + numBuilt, germanium: available.germanium + numBuilt };
     }
     // (0.3.9.21: what was set aside for an unfinished unit of alchemy is not lost: it goes on to research)
     if (item.kind === 'autoAlchemy') { available = add(available, paid); paid = zeroCost(); i++; continue; }
@@ -443,13 +456,12 @@ function autoToConcrete(k: QueueKind): QueueKind | null {
 }
 
 function applyBuilt(game: GameState, planet: Planet, player: Player, item: QueueItem, n: number, onBuild: (item: QueueItem, qty: number) => void, result: ProductionResult, dryRun: boolean) {
-  result.built.push({ kind: item.kind, designId: item.designId, qty: n });
+  result.built.push({ kind: item.kind, designId: item.designId, qty: n, tag: (item as QueueItem & { _tag?: number })._tag });
   switch (item.kind) {
     case 'factory': case 'autoFactories': planet.factories += n; break;
     case 'mine': case 'autoMines': planet.mines += n; break;
     case 'defenses': case 'autoDefenses': planet.defenses += n; break;
-    case 'alchemy': case 'autoAlchemy':
-      planet.surface.ironium += n; planet.surface.boranium += n; planet.surface.germanium += n; break;
+    case 'alchemy': case 'autoAlchemy': break; // (the minerals are added to the world's funds by runProduction)
     case 'terraform': case 'autoMinTerraform': case 'autoMaxTerraform':
       for (let k = 0; k < n; k++) if (!terraformOneStep(player, planet)) break;
       break;
@@ -479,7 +491,7 @@ export function queueTotalCost(game: GameState, planet: Planet): Cost {
   return c;
 }
 
-export interface QueueEstimate { firstYear: number | null; lastYear: number | null; doneThisYear: boolean; blocked: boolean; /** 0.3.9.21: the year the line leaves the queue with nothing to build (a scanner already there, the cap reached) */ dropped?: number }
+export interface QueueEstimate { firstYear: number | null; lastYear: number | null; doneThisYear: boolean; blocked: boolean; /** 0.3.9.21: the year the line leaves the queue with nothing to build (a scanner already there, the cap reached) */ dropped?: number; /** 0.3.9.22: what the production will say when it removes it */ why?: string }
 
 /**
  * Projects the queue forward (growth and mining included, technology constant) to estimate completion years.
@@ -493,6 +505,9 @@ export function estimateQueue(game: GameState, planet: Planet, maxYears = 60): Q
   const est: QueueEstimate[] = planet.queue.map(() => ({ firstYear: null, lastYear: null, doneThisYear: false, blocked: false }));
   const player = g.players[clone.owner];
   for (let y = 1; y <= maxYears; y++) {
+    // 0.3.9.22: in the year it will be built (a golden age, a disorganisation, a conquered world's recovery end in
+    // their year; the estimate kept the present year for all of them)
+    g.year = game.year + y;
     // 0.3.9.21: the year's mining comes before its production, as in the turn (it came after: a line waiting for the
     // minerals of the coming year was shown a year late)
     const spec0 = planetSpec(g, clone, player);
@@ -501,11 +516,13 @@ export function estimateQueue(game: GameState, planet: Planet, maxYears = 60): Q
     // attribute builds
     const remainingTags = new Set((clone.queue as (QueueItem & { _tag?: number })[]).map(q => q._tag));
     for (const t of tags) {
-      const b = res.built.find(x => (planet.queue[t].kind === x.kind) && (planet.queue[t].designId === x.designId));
+      // (0.3.9.22: what this very line built: two lines of the same kind or design were credited with each other's)
+      const b = res.built.find(x => x.tag === t);
       if (b && est[t].firstYear === null) est[t].firstYear = y;
       // (0.3.9.21: a line that leaves the queue without anything built was dropped, not finished)
       if (!remainingTags.has(t) && est[t].lastYear === null && est[t].dropped === undefined && !isAuto(planet.queue[t].kind)) {
-        if (est[t].firstYear !== null) est[t].lastYear = y; else est[t].dropped = y;
+        if (est[t].firstYear !== null) est[t].lastYear = y;
+        else { est[t].dropped = y; const label = itemLabel(game, planet.queue[t]); est[t].why = res.messages.find(m => m.startsWith(label)); }
       }
     }
     if (clone.queue.every(q => isAuto(q.kind))) break;
@@ -523,6 +540,12 @@ export function estimateQueue(game: GameState, planet: Planet, maxYears = 60): Q
  * (production, ironium, boranium, germanium) gives the years it needs from the stock and the yearly income. The
  * slowest is the bottleneck. A line stuck behind an impossible one says so.
  */
+/** 0.3.9.22: why a regional capital of the queue waits (the world cannot found one for now), or null. */
+export function capitalPause(game: GameState, planet: Planet, player: Player): string | null {
+  if (!distanceCostOn(game) || planet.regionalCapital || planet === capitalOf(game, player)) return null;
+  return regionalBlocker(game, planet);
+}
+
 export interface Bottleneck {
   key: 'resources' | 'ironium' | 'boranium' | 'germanium' | 'ahead' | 'none';
   /** for the queue up to this line: what it costs, what is in stock, what comes in each year */
@@ -536,8 +559,11 @@ export function queueBottleneck(game: GameState, planet: Planet, index: number, 
   const player = game.players[planet.owner];
   const spec = planetSpec(game, planet, player);
   const e = est ?? estimateQueue(game, planet, 60);
+  // (0.3.9.22: a regional capital on hold says why, and holds nothing back: the production goes past it)
+  const pause = planet.queue[index]?.kind === 'capital' ? capitalPause(game, planet, player) : null;
+  if (pause) return { key: 'none', need: 0, have: 0, perYear: 0, years: Infinity, text: `en pause : ${pause}` };
   // stuck behind a line that will never be built
-  for (let i = 0; i < index; i++) if (e[i]?.blocked && !isAuto(planet.queue[i].kind)) {
+  for (let i = 0; i < index; i++) if (e[i]?.blocked && !isAuto(planet.queue[i].kind) && !(planet.queue[i].kind === 'capital' && capitalPause(game, planet, player))) {
     return { key: 'ahead', need: 0, have: 0, perYear: 0, years: Infinity, ahead: i, text: `bloqué derrière « ${itemLabel(game, planet.queue[i])} » (ligne ${i + 1}), qui n'avance pas : remontez cette commande au-dessus de la ligne ${i + 1}, ou débloquez d'abord la ligne ${i + 1}` };
   }
   const need = { resources: 0, ironium: 0, boranium: 0, germanium: 0 };
@@ -573,13 +599,20 @@ export function stuckWarnings(game: GameState) {
     const it = planet.queue[i];
     // 3.6: the unfinished unit of an automatic item (older saves: a concrete item of the same kind as an automatic one
     // of the queue) is no order of the player's: rather than hold the queue for decades, it gives way to the automatic item
-    const leftover = !game.settings.classic && (it.fromAuto || (it.qty === 1 && planet.queue.some(q => isAuto(q.kind) && autoToConcrete(q.kind) === it.kind)));
+    // (0.3.9.22: only a line marked as such: a player's own order of one unit of the same kind as an automatic item was
+    // taken for one and deleted without a word)
+    // (an older save's remainder, not marked: only once warned, and then removed with a word: an order of one unit of
+    // the player's own was taken for one)
+    const legacy = !game.settings.classic && !it.fromAuto && !!it.warned && it.qty === 1 && planet.queue.some(q => isAuto(q.kind) && autoToConcrete(q.kind) === it.kind);
+    const leftover = (!game.settings.classic && !!it.fromAuto) || legacy;
     if (it.warned && !leftover) continue;
     const b = queueBottleneck(game, planet, i, []);
-    if (b.years < (leftover ? AUTO_PATIENCE : 25)) continue;
+    // (a remainder the production made, at no more than AUTO_PATIENCE years, is kept: it was made to be finished)
+    if (leftover ? b.years <= AUTO_PATIENCE : b.years < 25) continue;
     if (leftover) {
       planet.surface.ironium += it.allocated.ironium; planet.surface.boranium += it.allocated.boranium; planet.surface.germanium += it.allocated.germanium;
       planet.queue.splice(i, 1);
+      if (legacy) game.players[planet.owner].messages.push({ year: game.year, kind: 'production', text: `${planet.name} : « ${itemLabel(game, it)} » est retiré de la file, qu'il retenait depuis des années ; ce qu'il avait reçu en minerais revient en surface.`, target: { kind: 'planet', id: planet.id } });
       continue;
     }
     planet.queue[i].warned = true;

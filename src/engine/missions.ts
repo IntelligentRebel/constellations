@@ -11,6 +11,7 @@ import { capitalOf as empireCapital } from './empire';
 import { joinNetwork } from './logistics';
 import { hasOrders } from './tasks';
 import { isStudying } from './anomalies';
+import { closersOf, routeEntries } from './borders';
 
 export type MissionKind = 'colonize' | 'explore' | 'mine' | 'haul' | 'logistics';
 /** homeId: for a mineral shuttle ('haul'), the planet where the minerals are delivered (default: the capital). */
@@ -87,7 +88,9 @@ export function planHaul(game: GameState, f: Fleet, planetId: number, homeId: nu
   const cycleFleet: Fleet = { ...f, x: home.x, y: home.y, orbiting: home.id, fuel: canRefuelAt(game, game.players[f.owner], home) ? sp.fuelCapacity : f.fuel };
   const cycle = estimateRoute(game, cycleFleet, [{ ...unload, processed: true, task: 'none', transport: undefined }, { ...load, warp: f.waypoints.find(w => w.targetId === pl.id)?.warp ?? ideal }, { ...unload, warp: f.waypoints[f.waypoints.length - 1].warp }]);
   const first = estimateRoute(game, f);
-  if (!first.every(l => l.ok) || !cycle.every(l => l.ok)) { f.waypoints = saved.wps; f.repeat = saved.repeat; f.route = saved.route; return false; }
+  // (0.3.9.22: nor through borders closed to the fleet, as the other missions: it went in and declared war)
+  const closed = closersOf(game, f.owner).length > 0 && (routeEntries(game, f.owner, f.waypoints).length > 0 || routeEntries(game, f.owner, [{ ...unload, processed: true }, load, unload]).length > 0);
+  if (closed || !first.every(l => l.ok) || !cycle.every(l => l.ok)) { f.waypoints = saved.wps; f.repeat = saved.repeat; f.route = saved.route; return false; }
   f.repeat = true;
   f.route = [{ ...load, warp: f.waypoints.find(w => w.targetId === pl.id && w.task === 'transport')?.warp ?? ideal }, { ...unload, warp: f.waypoints[f.waypoints.length - 1].warp }];
   f.auto = undefined;
@@ -123,6 +126,8 @@ function viaRefuel(game: GameState, f: Fleet, target: { x: number; y: number; pl
   for (const d of docks) {
     for (let w = ideal; w >= 1; w--) {
       const wps: Waypoint[] = [base, { x: d.x, y: d.y, target: 'planet', targetId: d.id, warp: w, task: 'none' }, { x: target.x, y: target.y, target: 'planet', targetId: target.planetId, warp: ideal, task }];
+      // (0.3.9.22: not through borders closed to the fleet: the direct trip refused for that, the stop led it in)
+      if (w === ideal && closersOf(game, f.owner).length && routeEntries(game, f.owner, wps).length) break;
       const est = estimateRoute(game, f, wps);
       if (est.length < 2 || !est.every(l => l.ok) || !est[0].refuelled) continue;
       // the same thin reserve as a direct trip

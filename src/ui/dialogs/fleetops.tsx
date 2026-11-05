@@ -33,7 +33,7 @@ export function CargoDialog({ fleetId, planetId, otherId }: { fleetId: number; p
     else if (other) { if (n > 0) A.transferFleets(other, f, k, n, f.owner); else A.transferFleets(f, other, k, -n, f.owner); }
     else if (salvage && k !== 'fuel' && k !== 'colonists') {
       s.checkpoint();
-      if (n > 0) { const space = spec.cargoCapacity - cargoMass(f.cargo); const a = Math.min(n, salvage.cargo[k], space); salvage.cargo[k] -= a; f.cargo[k] += a; }
+      if (n > 0) { const space = spec.cargoCapacity - cargoMass(f.cargo); const a = Math.max(0, Math.min(n, salvage.cargo[k], space)); salvage.cargo[k] -= a; f.cargo[k] += a; }
       s.bump();
     }
   };

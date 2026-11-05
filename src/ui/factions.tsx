@@ -43,7 +43,11 @@ export function PiratesSection({ g, me }: { g: GameState; me: Player }) {
     <p class="small muted">Tous les quelques années, un repaire lance un raid sur une colonie riche et mal défendue à moins de {Math.round(raidRange(g))} al. Une flotte armée en orbite ou une station armée l'arrête ; les défenses planétaires réduisent le pillage. Détruire un repaire rapporte de la recherche et son butin ; les pirates disparaissent avec leur dernier repaire.</p>
     {raids.map(f => {
       const t = g.planets[f.raid!.target];
-      return <div class="alert strong">Raid en route vers <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: t.id }, t)}>{t.name}</button> : {f.tokens.reduce((a, x) => a + x.qty, 0)} vaisseau(x), arrivée vers {g.year + (f.raid!.phase === 'siege' ? 0 : etaYears(g, f, t))}{f.raid!.phase === 'siege' ? ' (déjà sur place)' : ''}.</div>;
+      // (0.3.9.22: what the scanners see of it, else what the informants announced, as on the map)
+      const seen = me.intel.fleets.find(x => x.id === f.id);
+      const n = seen ? seen.count ?? seen.tokens?.reduce((a, x) => a + x.qty, 0) : undefined;
+      const eta = f.raid!.phase === 'siege' ? g.year : seen ? g.year + etaYears(g, f, t) : f.raid!.eta;
+      return <div class="alert strong">Raid en route vers <button class="lnk" onClick={() => s.focus({ kind: 'planet', id: t.id }, t)}>{t.name}</button>{n !== undefined ? ` : ${n} vaisseau(x)` : ''}{eta !== undefined ? `, arrivée vers ${eta}` : ''}{f.raid!.phase === 'siege' ? ' (déjà sur place)' : ''}.</div>;
     })}
     <table class="report compact"><thead><tr><th>Repaire</th><th>Planète</th><th class="num">Garnison</th><th class="num">De vos colonies</th></tr></thead>
       <tbody>{liveLairs(g).map(l => {
@@ -76,11 +80,13 @@ export function LairBlock({ g, me, p }: { g: GameState; me: Player; p: Planet })
   const f = lairFleet(g, l);
   const fi = f ? me.intel.fleets.find(x => x.id === f.id) : undefined;
   const c = s.commanded?.kind === 'fleet' ? g.fleets.find(x => x.id === s.commanded!.id && x.owner === me.id) : undefined;
-  const ratio = c && f && fi ? fleetStrength(g, c) / Math.max(1, fleetStrength(g, f)) : 0;
+  // (0.3.9.22: against what the crews measured, as for a guardian: the garrison's real strength heals and grows unseen)
+  const rep = me.intel.lairReports?.[p.id];
+  const ratio = c && rep ? fleetStrength(g, c) / Math.max(1, rep.strength) : 0;
   return <section class="blk guardian lair">
     <div class="blk-head"><h3>☠ Repaire {deBand(l.name)}</h3>{fi?.tokens && <span class="tag">{fi.tokens.reduce((a, t) => a + t.qty, 0)} vaisseaux</span>}</div>
     <p class="small">Le repaire de pirates ne se déplace jamais. Sa garnison attaque toute flotte qui s'arrête ici et grossit avec le butin. Le détruire rapporte de la recherche, le trésor de la bande (laissé à la surface) et parfois une relique.</p>
-    {c && fi && <div class={'small ' + (ratio >= 2.5 ? 'green' : ratio >= 1 ? 'yellow' : 'red')}>Rapport de force estimé avec {c.name} : {ratio >= 10 ? '×10 et plus' : `×${ratio.toFixed(ratio < 1 ? 2 : 1)}`} {ratio < 1 ? '(perdu d\'avance)' : ratio < 2.5 ? '(risqué)' : '(favorable)'}</div>}
+    {c && rep && <div class={'small ' + (ratio >= 2.5 ? 'green' : ratio >= 1 ? 'yellow' : 'red')}>Rapport de force estimé avec {c.name} : {ratio >= 10 ? '×10 et plus' : `×${ratio.toFixed(ratio < 1 ? 2 : 1)}`} {ratio < 1 ? '(perdu d\'avance)' : ratio < 2.5 ? '(risqué)' : '(favorable)'}</div>}
     {!fi && <p class="small muted">La garnison est hors de portée de vos scanners.</p>}
     <LairReport g={g} me={me} planetId={p.id} brief />
   </section>;

@@ -17,7 +17,7 @@ import { planetSprite } from './art';
 import { canUseWormholes } from '../engine/specials';
 import { terrainAt, terrainName, TERRAIN_INFO } from '../engine/terrain';
 import { seatsOf, ADMIN_RADIUS } from '../engine/empire';
-import { portalThreat } from '../engine/megaprojects';
+import { portalThreat, rivalPortal, megaProgress } from '../engine/megaprojects';
 import { raidsAgainst, etaYears } from '../engine/pirates';
 import { waves } from '../engine/crisis';
 import { planetNotes } from './discoveries';
@@ -188,7 +188,9 @@ function drawClouds(ctx: CanvasRenderingContext2D, game: GameState, toScreen: (x
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   const c2 = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
   const font = (size: number) => { ctx.font = `600 ${size}px Georgia, 'Times New Roman', serif`; c2.letterSpacing = `${Math.round(size * 0.22)}px`; };
-  const view = { x0: Math.max(tl.x, 0), y0: Math.max(tl.y, 0), x1: Math.min(br.x, ctx.canvas.width), y1: Math.min(br.y, ctx.canvas.height) };
+  // (0.3.9.22: in the units drawn in, the canvas being scaled by the screen's pixel ratio and the text size)
+  const k = ctx.getTransform().a || 1;
+  const view = { x0: Math.max(tl.x, 0), y0: Math.max(tl.y, 0), x1: Math.min(br.x, ctx.canvas.width / k), y1: Math.min(br.y, ctx.canvas.height / k) };
   for (const l of layoutCloudLabels(cl.labels, toScreen, { x0: tl.x, y0: tl.y, x1: br.x, y1: br.y }, z, (t, size) => { font(size); return ctx.measureText(t).width; })) {
     if (l.x < view.x0 - 200 || l.x > view.x1 + 200 || l.y < view.y0 - 20 || l.y > view.y1 + 20) continue;
     font(l.size);
@@ -225,9 +227,9 @@ export function MapView() {
   const [hover, setHover] = useState<{ x: number; y: number; text: string[] } | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; items: Hit[]; wx: number; wy: number } | null>(null);
   const drag = useRef<{ x: number; y: number; cx: number; cy: number; moved: boolean; ruler?: { x: number; y: number } } | null>(null);
-  const routeDrag = useRef<{ h: RouteHandle; fleet: number; sx: number; sy: number; moved: boolean } | null>(null);
+  const routeDrag = useRef<{ h: RouteHandle; fleet: number; sx: number; sy: number; moved: boolean; game?: unknown; rev?: number } | null>(null);
   const previewCache = useRef<{ key: string; arr: number | undefined } | null>(null);
-  const [dragPt, setDragPt] = useState<{ x: number; y: number; snap: boolean; track?: TrackSnap } | null>(null);
+  const [dragPt, setDragPt] = useState<{ x: number; y: number; snap: boolean; track?: TrackSnap; kind?: Waypoint['target']; targetId?: number } | null>(null);
   const [hoverHandle, setHoverHandle] = useState<RouteHandle | null>(null);
   const lastClick = useRef<{ x: number; y: number; i: number }>({ x: -1, y: -1, i: 0 });
   const measure = useRef<{ x: number; y: number } | null>(null);
@@ -241,6 +243,9 @@ export function MapView() {
 
   const [camTick, setCamTick] = useState(0);
   useEffect(() => s.subscribeCamera(() => setCamTick(v => v + 1)), []);
+  // (0.3.9.22: the context menu closes when the turn, an undo or the commanded object changes: its "Aller ici" gave
+  // last year's target to whatever was commanded now)
+  useEffect(() => { setMenu(null); }, [s.game, s.game?.year, s.commanded?.kind, s.commanded?.id]);
   useEffect(() => { const f = () => setCamTick(v => v + 1); cloudsReady.add(f); return () => { cloudsReady.delete(f); }; }, []);
   useEffect(() => {
     const el = wrap.current!;
@@ -271,7 +276,10 @@ export function MapView() {
     if (!cv || !game || !me) return;
     // 0.3.9: under the interface zoom (text size), draw at the real resolution of the screen
     const dpr = (window.devicePixelRatio || 1) * (uiPrefs.textScale || 1);
-    if (cv.width !== size.w * dpr || cv.height !== size.h * dpr) { cv.width = size.w * dpr; cv.height = size.h * dpr; }
+    // (0.3.9.22: in whole pixels: a fractional product never equalled the width set, and the canvas was reallocated at
+    // every frame)
+    const bw = Math.round(size.w * dpr), bh = Math.round(size.h * dpr);
+    if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
     const ctx = cv.getContext('2d')!;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#03050b';
@@ -398,7 +406,7 @@ export function MapView() {
       ctx.fillStyle = '#ffd24a'; ctx.font = 'bold 14px system-ui'; ctx.fillText('✪', p.x - 6, p.y + 5);
     }
     // fleet paths
-    const commandedFleet = s.commanded?.kind === 'fleet' ? game.fleets.find(f => f.id === s.commanded!.id) : undefined;
+    const commandedFleet = s.commanded?.kind === 'fleet' ? game.fleets.find(f => f.id === s.commanded!.id && f.owner === me.id) : undefined;
     if (v.paths) for (const f of game.fleets) if (f.owner === me.id && f !== commandedFleet && f.waypoints.length > 1) drawRoute(ctx, game, f, false);
     if (commandedFleet) drawRoute(ctx, game, commandedFleet, true);
     // route of commanded planet
@@ -489,15 +497,18 @@ export function MapView() {
       // 3.6: on the left of the planet (what stands in orbit is drawn on its right)
       ctx.textAlign = 'right'; ctx.fillText(pl.regionalCapital ? '◆' : '★', p.x - 7, p.y - 6); ctx.textAlign = 'left';
     }
-    const portal = game.settings.megaprojects ? portalThreat(game) : null;
-    const portals = portal && (portal.owner === me.id || portal.announced > 0) ? [portal] : [];
+    // (0.3.9.22: the rival's announced one and ours: the most advanced of all hid the other)
+    const own = game.settings.megaprojects ? game.planets.find(pl => pl.owner === me.id && pl.queue.some(q => q.kind === 'mega' && q.megaId === 'portal')) : undefined;
+    const rp = game.settings.megaprojects ? rivalPortal(game, me) : null;
+    const ownItem = own?.queue.find(q => q.kind === 'mega' && q.megaId === 'portal');
+    const portals = [...(own && ownItem ? [{ planet: own, owner: me.id, pct: Math.floor(megaProgress(ownItem) * 100) }] : []), ...(rp ? [{ planet: rp.planet, owner: rp.owner, pct: rp.announced }] : [])];
     for (const pt of portals) {
       const p = toScreen(pt.planet.x, pt.planet.y);
       const pulse = 12 + 3 * Math.sin(Date.now() / 300);
       ctx.strokeStyle = 'rgba(232,197,71,0.85)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(p.x, p.y, pulse, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = '#e8c547'; ctx.font = 'bold 11px system-ui';
-      ctx.fillText(`Portail ${pt.owner === me.id ? Math.floor(pt.progress * 100) : pt.announced} %`, p.x + pulse + 3, p.y + 4);
+      ctx.fillText(`Portail ${pt.pct} %`, p.x + pulse + 3, p.y + 4);
     }
     // 3.4: raids announced against my worlds (the informants name the target)
     if (game.pirates?.emerged && !game.pirates.ended) for (const f of raidsAgainst(game, me.id)) {
@@ -650,11 +661,13 @@ export function MapView() {
         if (dragPt.snap) { ctx.strokeStyle = dragPt.track ? '#ff9a3d' : '#4fd6e3'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(pd.x, pd.y, 10, 0, Math.PI * 2); ctx.stroke(); }
         // the year the fleet would get there, and for an interception, the year the target is expected
         const wps = f.waypoints.map(w => ({ ...w }));
-        const moved = { ...(rd.h.kind === 'wp' ? wps[i] : (wps[i] ?? wps[wps.length - 1])), x: Math.round(dragPt.x), y: Math.round(dragPt.y), target: 'space' as const, targetId: undefined, task: rd.h.kind === 'wp' ? wps[i].task : 'none' as const, stop: dragPt.track ? true : undefined };
+        // (0.3.9.22: with the kind of target the drop will give it: a point of a trajectory or a fleet in deep space kept
+        // the stargate in the preview, which the order then flew at warp)
+        const moved = { ...(rd.h.kind === 'wp' ? wps[i] : (wps[i] ?? wps[wps.length - 1])), x: Math.round(dragPt.x), y: Math.round(dragPt.y), target: dragPt.kind ?? 'space', targetId: dragPt.targetId, task: rd.h.kind === 'wp' ? wps[i].task : 'none' as const, stop: dragPt.track ? true : undefined };
         if (rd.h.kind === 'wp') wps[i] = moved; else wps.splice(i, 0, moved);
         // 0.3.9.21: at the speeds the order will give the legs (cached while the point stays on the same spot)
-        const pk = `${f.id}|${i}|${rd.h.kind}|${moved.x}|${moved.y}|${s.version}`;
-        if (previewCache.current?.key !== pk) previewCache.current = { key: pk, arr: estimateRoute(game, f, retunedRoute(f, wps, i, rd.h.kind === 'wp' && (dragPt.snap ? 'planet' : 'space') === f.waypoints[i].target))[i - 1]?.arrival };
+        const pk = `${f.id}|${i}|${rd.h.kind}|${moved.x}|${moved.y}|${moved.target}|${moved.targetId}|${!!dragPt.track}|${s.version}`;
+        if (previewCache.current?.key !== pk) previewCache.current = { key: pk, arr: estimateRoute(game, f, retunedRoute(f, wps, i, rd.h.kind === 'wp' && moved.target === f.waypoints[i].target))[i - 1]?.arrival };
         const arr = previewCache.current.arr;
         const lines = [`${fmt(distance(a, dragPt), 0)} al${arr !== undefined && Number.isFinite(arr) ? ` · arrivée ${game.year + arr}` : ''}`];
         let col = '#ffffff';
@@ -709,13 +722,14 @@ export function MapView() {
       for (let i = 1; i < f.waypoints.length; i++) {
         const wp = f.waypoints[i];
         const a = toScreen(prev.x, prev.y), b = toScreen(wp.x, wp.y);
-        const mines = selected && wp.warp < 11 && minefieldsOnLeg(g, store.me!, prev, wp).some(m => wp.warp > m.safeWarp);
+        // 3.6: around the dark clouds, through the points of the detour
+        const poly = [prev, ...(est[i - 1]?.via ?? []), wp];
+        // (0.3.9.22: the mines along the path flown, around the clouds: the straight line was tested)
+        const mines = selected && wp.warp < 11 && poly.slice(1).some((q, k) => minefieldsOnLeg(g, store.me!, poly[k], q).some(m => wp.warp > m.safeWarp));
         const bad = (est[i - 1] && !est[i - 1].ok) || mines;
         c.strokeStyle = bad ? '#ff5d5d' : selected ? (i === s.waypointIndex ? '#ffffff' : '#9fd4ff') : 'rgba(127,200,255,0.45)';
         c.lineWidth = selected ? 1.6 : 1;
         if (wp.warp >= 11) c.setLineDash([8, 4]);
-        // 3.6: around the dark clouds, through the points of the detour
-        const poly = [prev, ...(est[i - 1]?.via ?? []), wp];
         c.beginPath(); c.moveTo(a.x, a.y); for (const q of poly.slice(1)) { const t = toScreen(q.x, q.y); c.lineTo(t.x, t.y); } c.stroke(); c.setLineDash([]);
         // year chevrons: where the fleet will be at the end of each year (turns in deep space cost no time)
         if (selected && wp.warp > 0 && wp.warp < 11 && est[i - 1]) {
@@ -741,7 +755,8 @@ export function MapView() {
         // 0.3.7: through a wormhole whose exit is known, the route goes on from the exit
         if (wp.target === 'wormhole' && wp.targetId !== undefined) {
           const wh = g.wormholes.find(x => x.id === wp.targetId), known = store.me!.intel.wormholes;
-          const exit = wh && !wh.sealed && known[wh.id]?.destId === wh.destId ? known[wh.destId] : undefined;
+          // (0.3.9.22: only for a fleet that may cross it, as the estimate and the movement: without the technology it stops at the mouth)
+          const exit = wh && !wh.sealed && canUseWormholes(store.me!) && known[wh.id]?.destId === wh.destId ? known[wh.destId] : undefined;
           if (exit) prev = { ...wp, x: exit.x, y: exit.y };
         }
       }
@@ -831,7 +846,7 @@ export function MapView() {
     if (e.button === 0 && e.shiftKey && e.altKey) { const w = snapPoint(p.x, p.y); measure.current = w; setRuler({ a: w, b: w, la: w.label }); return; }
     if (e.button === 0 && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && !s.wpMode) {
       const rh = handleAt(p.x, p.y, e.pointerType === 'mouse' ? 7 : 14);
-      if (rh) { routeDrag.current = { h: rh, fleet: editableFleet()!.id, sx: p.x, sy: p.y, moved: false }; drag.current = null; setHover(null); return; }
+      if (rh) { routeDrag.current = { h: rh, fleet: editableFleet()!.id, sx: p.x, sy: p.y, moved: false, game: s.game, rev: s.dataRev }; drag.current = null; setHover(null); return; }
     }
     drag.current = { x: e.clientX, y: e.clientY, cx: s.camera.x, cy: s.camera.y, moved: false };
     // 3.3.6: Ctrl (or Cmd) + drag measures a distance; Ctrl + click without moving keeps its usual meaning
@@ -860,7 +875,7 @@ export function MapView() {
     const rd = routeDrag.current;
     if (rd) {
       if (!rd.moved && Math.hypot(p.x - rd.sx, p.y - rd.sy) > 4) rd.moved = true;
-      if (rd.moved) { if (rd.h.kind === 'radius') { const w = toWorld(p.x, p.y); setDragPt({ x: w.x, y: w.y, snap: false }); } else { const t = dropTarget(p.x, p.y, rd.fleet); setDragPt({ ...t.pos, snap: t.snap, track: t.track }); } }
+      if (rd.moved) { if (rd.h.kind === 'radius') { const w = toWorld(p.x, p.y); setDragPt({ x: w.x, y: w.y, snap: false }); } else { const t = dropTarget(p.x, p.y, rd.fleet); const kind = t.ref.kind === 'planet' || t.ref.kind === 'fleet' || t.ref.kind === 'wormhole' ? t.ref.kind : 'space'; setDragPt({ ...t.pos, snap: t.snap, track: t.track, kind, targetId: kind === 'space' ? undefined : t.ref.id }); } }
       return;
     }
     const d = drag.current;
@@ -902,6 +917,9 @@ export function MapView() {
     let fromHandle = false;
     if (rd) {
       routeDrag.current = null; setDragPt(null); setHoverHandle(null);
+      // (0.3.9.22: only on the route that was grabbed: a turn, an undo or another fleet commanded while the button
+      // was held sent the drop to another fleet, or to another step)
+      if (rd.game !== s.game || rd.rev !== s.dataRev || commandedFleet()?.id !== rd.fleet) return;
       const p = local(e);
       if (rd.moved && rd.h.kind === 'radius') {
         const f = s.game!.fleets.find(x => x.id === rd.fleet);
@@ -994,9 +1012,12 @@ export function MapView() {
             const sp = viewFleet(game, f);
             lines.push(`§Trajet de votre flotte ${f.name}`);
             if (sp.idealSpeed) {
-              lines.push(`${fmt(d, 1)} al · ${travelYears(d, sp.idealSpeed)} a à Warp ${sp.idealSpeed}`);
               // fuel for a direct trip at the ideal speed, out of what is in the tank
               const leg = estimateRoute(game, f, [{ ...f.waypoints[0], x: f.x, y: f.y, processed: true }, { x: h.x, y: h.y, target: 'space', warp: sp.idealSpeed, task: 'none' }])[0];
+              // (0.3.9.22: the years and the distance of the path the movement will fly, around the clouds, through the
+              // nebulae: the straight line promised fewer years than the order then took)
+              const sure = leg && Number.isFinite(leg.arrival) && leg.arrival > 0;
+              lines.push(`${fmt(sure ? leg.dist : d, 1)} al · ${sure ? leg.arrival : travelYears(d, sp.idealSpeed)} a à Warp ${sp.idealSpeed}`);
               if (leg) lines.push(leg.ok ? `Consommation ≈ ${fmt(leg.fuel)} mg (à bord : ${fmt(f.fuel)} mg)` : `⚠ Carburant insuffisant : il faut ≈ ${fmt(leg.fuel)} mg, à bord ${fmt(f.fuel)} mg`);
             } else lines.push(`${fmt(d, 1)} al · immobile`);
           }
@@ -1035,9 +1056,9 @@ export function MapView() {
           <button onClick={() => { setMenu(null); s.center(menu.wx, menu.wy); }}>Centrer ici</button>
         </div>
       )}
-      <div class="map-scale">{fmt(100 / s.camera.zoom, 0)} al / 100 px{s.commanded?.kind === 'fleet' && s.selected?.kind === 'fleet' ? <span class="hide-touch"> · Maj+clic : destination · Ctrl+Maj+clic : étape en plus</span> : <span class="hide-touch"> · Ctrl+glisser : règle</span>}</div>
+      <div class="map-scale">{fmt(100 / s.camera.zoom, 0)} al / 100 px{s.commanded?.kind === 'fleet' && s.selected?.kind === 'fleet' && s.selected.id === s.commanded.id ? <span class="hide-touch"> · Maj+clic : destination · Ctrl+Maj+clic : étape en plus</span> : <span class="hide-touch"> · Ctrl+glisser : règle</span>}</div>
       {s.view.minimap && <Minimap w={size.w} h={size.h} tick={camTick} />}
-      {s.wpMode && s.commanded?.kind === 'fleet' && <div class="wp-banner">Mode étapes : le premier toucher fixe la destination, les suivants ajoutent des étapes <button class="small" onClick={() => { s.wpMode = false; resetStepSession(); s.bump(); }}>Terminer</button></div>}
+      {s.wpMode && s.commanded?.kind === 'fleet' && s.selected?.kind === 'fleet' && s.selected.id === s.commanded.id && <div class="wp-banner">Mode étapes : le premier toucher fixe la destination, les suivants ajoutent des étapes <button class="small" onClick={() => { s.wpMode = false; resetStepSession(); s.bump(); }}>Terminer</button></div>}
     </div>
   );
 }
@@ -1161,9 +1182,10 @@ function drawTerritories(ctx: CanvasRenderingContext2D, game: GameState, me: Pla
 }
 
 function drawTerrain(ctx: CanvasRenderingContext2D, game: GameState, toScreen: (x: number, y: number) => { x: number; y: number }, z: number) {
+  const k = ctx.getTransform().a || 1, W = ctx.canvas.width / k, H = ctx.canvas.height / k;
   for (const t of game.terrain!) {
     const c = toScreen(t.x, t.y), R = t.r * z;
-    if (c.x + R < -20 || c.y + R < -20 || c.x - R > ctx.canvas.width + 20 || c.y - R > ctx.canvas.height + 20) continue;
+    if (c.x + R < -20 || c.y + R < -20 || c.x - R > W + 20 || c.y - R > H + 20) continue;
     const rnd = prand(t.id * 7 + (t.kind === 'nebula' ? 1 : t.kind === 'storm' ? 2 : 3));
     if (t.kind === 'nebula') {
       // a soft cloud made of overlapping glows
@@ -1485,7 +1507,7 @@ function Minimap({ w, h, tick }: { w: number; h: number; tick: number }) {
     if (prev && sig.every((v, i) => v === prev[i])) return;
     drawn.current = sig;
     const dpr = window.devicePixelRatio || 1;
-    if (cv.width !== S * dpr) { cv.width = S * dpr; cv.height = S * dpr; }
+    if (cv.width !== Math.round(S * dpr)) { cv.width = Math.round(S * dpr); cv.height = Math.round(S * dpr); }
     const c = cv.getContext('2d')!;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.fillStyle = 'rgba(3,5,11,0.88)'; c.fillRect(0, 0, S, S);

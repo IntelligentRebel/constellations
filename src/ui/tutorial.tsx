@@ -803,7 +803,7 @@ const GROWTH: Chapter = {
         enter: () => { if (store.tab !== 'map') store.goTab('map'); },
         body: [
           'La **terraformation** rapproche la gravité, la température ou les radiations d\'une planète de l\'idéal de votre espèce : sa valeur monte, et sa capacité avec. Chaque progrès de la recherche (Biotechnologie surtout) permet d\'aller plus loin.',
-          'Elle se construit dans la file : les éléments « Terraformation (auto) » de la Colonie standard s\'en chargent. Le mode de carte [[4]] montre la valeur que chaque monde atteindrait une fois terraformé.',
+          'Elle se construit dans la file : les éléments « Terraformation min. (auto) » et « Terraformation max. (auto) » de la Colonie standard s\'en chargent. Le mode de carte [[4]] montre la valeur que chaque monde atteindrait une fois terraformé.',
         ],
       },
     ];
@@ -1052,11 +1052,17 @@ function goStep(chapter: string, step: number) {
   save();
 }
 
+/** 0.3.9.22: the next core chapter not played yet (the button said "Chapitre suivant" and led to the list). */
+function nextCore(done: string[], id: string) {
+  const core = CORE.findIndex(c => c.id === id);
+  return core < 0 ? undefined : CORE.slice(core + 1).find(c => c.id !== id && !done.includes(c.id));
+}
+
 function finishChapter(id: string) {
   const t = tut()!;
   if (!t.done.includes(id)) t.done.push(id);
-  const core = CORE.findIndex(c => c.id === id);
-  if (core >= 0 && core < CORE.length - 1 && !t.done.includes(CORE[core + 1].id)) return goStep(CORE[core + 1].id, 0);
+  const next = nextCore(t.done, id);
+  if (next) return goStep(next.id, 0);
   goStep('menu', 0);
 }
 
@@ -1267,7 +1273,7 @@ export function Tutorial() {
           <button onClick={prevStep} disabled={t.step === 0 && CORE.findIndex(c => c.id === t.chapter) <= 0} title="Étape précédente">◀</button>
           <span class="sp" />
           {st.doIt && !done && <button class="tut-doit" onClick={() => { st.doIt!(); }} title="Le tutoriel fait l'action à votre place">Le faire pour moi</button>}
-          <button class={'primary' + (done && st.goal ? ' pulse' : '')} disabled={!done} onClick={nextStep}>{t.step + 1 >= steps.length ? (ch!.core && CORE[CORE.length - 1] !== ch ? 'Chapitre suivant ▶' : 'Terminer le chapitre') : 'Suivant ▶'}</button>
+          <button class={'primary' + (done && st.goal ? ' pulse' : '')} disabled={!done} onClick={nextStep}>{t.step + 1 >= steps.length ? (ch!.core && nextCore(t.done, ch!.id) ? 'Chapitre suivant ▶' : 'Terminer le chapitre') : 'Suivant ▶'}</button>
         </footer>
       </>)}
     </div>

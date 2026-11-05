@@ -226,3 +226,25 @@ export function portalThreat(game: GameState): { planet: Planet; owner: number; 
   }
   return best;
 }
+
+/** 0.3.9.22: does this empire build a Portail the galaxy has been told of (any of them, not only the most advanced)? */
+export function buildsPortal(game: GameState, owner: number): boolean {
+  return game.planets.some(pl => pl.owner === owner && pl.queue.some(q => q.kind === 'mega' && q.megaId === 'portal' && (q.announced ?? 0) > 0));
+}
+
+/**
+ * 0.3.9.22: the rival Portal a player has been told of: the one announced furthest along among the other empires'
+ * (portalThreat gave the most advanced of all by its hidden progress: the player's own hid a rival's, and between
+ * rivals the true progress chose).
+ */
+export function rivalPortal(game: GameState, viewer: { id: number }): { planet: Planet; owner: number; announced: number } | null {
+  let best: { planet: Planet; owner: number; announced: number } | null = null;
+  for (const planet of game.planets) {
+    if (planet.owner < 0 || planet.owner === viewer.id) continue;
+    for (const item of planet.queue) {
+      if (item.kind !== 'mega' || item.megaId !== 'portal' || !(item.announced ?? 0)) continue;
+      if (!best || (item.announced ?? 0) > best.announced) best = { planet, owner: planet.owner, announced: item.announced ?? 0 };
+    }
+  }
+  return best;
+}

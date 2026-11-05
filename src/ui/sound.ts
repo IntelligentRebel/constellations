@@ -2,7 +2,7 @@
 // and each new year plays the signal of its most important news.
 import type { GameState, Player } from '../engine/types';
 import { FIELDS } from '../engine/types';
-import { portalThreat } from '../engine/megaprojects';
+import { portalThreat, rivalPortal } from '../engine/megaprojects';
 import { play, setMood, type Mood, type Sfx } from './audio';
 
 export interface Before { year: number; planets: number; tech: number; anomalies: number }
@@ -18,8 +18,7 @@ export const snapshot = (g: GameState, me: Player): Before => ({
 /** Calm by default; tension when an enemy is close, a battle was fought or a rival builds the Portal; crisis when worlds fall, the Breach is open, or a rival's Portal is half done. */
 export function moodOf(g: GameState, me: Player, before?: Before): Mood {
   if (g.victor !== null || me.dead) return 'calm';
-  const portal = g.settings.megaprojects ? portalThreat(g) : null;
-  const rival = portal && portal.owner !== me.id ? portal.announced : 0;
+  const rival = (g.settings.megaprojects ? rivalPortal(g, me)?.announced : 0) ?? 0;
   const phase = g.settings.crisis ? g.crisis?.phase : undefined;
   const fights = g.battles.filter(b => b.players.includes(me.id)).length;
   const mine = g.planets.filter(p => p.owner === me.id);
@@ -48,7 +47,9 @@ export function afterTurn(g: GameState, me: Player, before: Before) {
     if (planets < before.planets) out.push('alert');
     if (techSum(me) > before.tech) out.push('tech');
     if (planets > before.planets) out.push('colony');
-    if (me.messages.filter(m => m.kind === 'event').length > before.anomalies) out.push('discovery');
+    // (0.3.9.22: the reports are those of the new year only: compared with last year's count, a year with fewer
+    // events than the one before rang nothing)
+    if (me.messages.some(m => m.kind === 'event')) out.push('discovery');
     if (!out.length && me.messages.some(m => m.kind === 'warning')) out.push('alert');
   }
   play('turn');

@@ -50,6 +50,7 @@ export function secondaryLines(t: TechData): string[] {
   if (has('torpedoBonus')) out.push(`+${pc(st.torpedoBonus!)} de précision pour les torpilles du vaisseau.`);
   if (has('initiativeBonus')) out.push(`+${st.initiativeBonus} d'initiative : le vaisseau tire plus tôt.`);
   if (has('movementBonus')) out.push(`Manœuvre : +${String(st.movementBonus).replace('.', ',')} point${st.movementBonus! > 1 ? 's' : ''} de vitesse de combat (4 points font une case de plus par round).`);
+  if (has('movementBonus') && st.movementBonus! % 1) out.push('Le total des bonus de manœuvre du vaisseau est arrondi au point supérieur.');
   if (has('fuelBonus')) out.push(`Réservoir : +${st.fuelBonus} mg de carburant.`);
   if (has('cargoBonus')) out.push(`Soute : +${st.cargoBonus} kt de cargaison.`);
   if (has('miningRate')) out.push(`Foreuse : taux de minage ${st.miningRate} sur un monde libre.`);

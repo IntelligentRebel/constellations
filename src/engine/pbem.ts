@@ -224,7 +224,15 @@ export function mergeOrders(host: GameState, file: PbemFile, f: GameState): stri
   host.players[pid].ai = keepAi;
   host.players[pid].messages.push(...keepMsgs);
   // empires (monsters) the player's orders brought in: a guardian woken by a decision
-  for (let i = host.players.length; i < f.players.length; i++) if (f.players[i]?.monster) host.players[i] = f.players[i];
+  // (0.3.9.22: with its place among the empires: the others' relations to it and the game's monster id; without
+  // them the guardian was ignored and the next one woken made a second « Gardiens »)
+  // (only next to the others, with the relations the engine gives a new monster: what the file says of the other empires'
+  // attitudes is not this player's to set)
+  for (let i = host.players.length; i < f.players.length && f.players[i]?.monster && f.players[i].id === i; i++) {
+    host.players[i] = f.players[i];
+    for (const o of host.players) if (o.id !== i && o.relations[i] === undefined) o.relations[i] = o.monster ? 'friend' : 'enemy';
+  }
+  if (host.monsterId === undefined && f.monsterId !== undefined && host.players[f.monsterId]?.monster) host.monsterId = f.monsterId;
   // what the player's actions told the others
   for (const o of host.players) {
     if (o.id === pid) continue;
@@ -300,7 +308,14 @@ export function mergeOrders(host: GameState, file: PbemFile, f: GameState): stri
     const i = host.fleets.findIndex(y => y.id === x.id);
     if (x.owner === pid || (i >= 0 && host.fleets[i].owner === pid)) {
       // their fleet (or one they gave away)
-      addH(x, missingH(a => a.fleets[x.id]));
+      // (0.3.9.22: what another took from it that this player had already moved away comes out of this player's
+      // holds, as on its worlds: clamped at zero without a word, the minerals were made twice)
+      const miss = missingH(a => a.fleets[x.id]);
+      if (anyH(miss)) {
+        const before = { ...x.cargo };
+        addH(x, miss);
+        took(x.x, x.y, { ironium: miss.cargo.ironium, boranium: miss.cargo.boranium, germanium: miss.cargo.germanium }, diffM(x.cargo, before));
+      }
       if (i < 0) host.fleets.push(x); else host.fleets[i] = x;
       continue;
     }
@@ -451,7 +466,9 @@ export function mergeOrders(host: GameState, file: PbemFile, f: GameState): stri
   // nothing of an empire the host does not know (a forged or damaged file)
   host.fleets = host.fleets.filter(x => !!host.players[x.owner]);
   host.designs = host.designs.filter(x => !!host.players[x.owner]);
-  host.nextId = Math.max(host.nextId, f.nextId);
+  // (0.3.9.22: the host keeps its own range of ids: taking the player's counter put the objects the host made next
+  // (playing its own empire in this window) in that player's range, where its next file overwrote them;
+  // beforeGenerate lifts the counter past every range before the year is generated)
   A[pid] = cur;
   P.received = { ...(P.received ?? {}), [pid]: P.turn };
   return null;

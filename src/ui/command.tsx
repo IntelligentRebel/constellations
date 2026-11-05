@@ -129,7 +129,7 @@ export function TaskDetails({ g, f, i }: { g: GameState; f: Fleet; i: number }) 
     }
     case 'beacon': {
       const pl = wp.target === 'planet' && wp.targetId !== undefined ? g.planets[wp.targetId] : undefined;
-      const why = pl ? beaconBlocker(g, f, pl) : 'choisissez une planète libre comme étape';
+      const why = pl ? beaconBlocker(g, f, pl, true) : 'choisissez une planète libre comme étape';
       return <div class="small">À l'arrivée, un vaisseau qui porte le kit devient une balise de souveraineté : un fort armé, immobile, qui revendique le monde et {BEACON_RADIUS} al autour. Aucun autre empire ne pourra y fonder de colonie tant qu'elle tient ; quand vous le colonisez vous-même, elle devient sa station.{why && <div class="alert">{why[0].toUpperCase() + why.slice(1)}.</div>}</div>;
     }
     case 'merge': {

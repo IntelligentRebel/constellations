@@ -1,7 +1,7 @@
 // User actions that modify the game (each one is undoable).
 import { store, type ObjRef } from './store';
 import type { BattlePlan, Fleet, GameState, Planet, QueueKind, ShipDesign, ShipRole, TransportKey, Waypoint, WaypointTask } from '../engine/types';
-import { DEFAULT_IN, DEFAULT_OUT, DEFAULT_RESERVE, joinNetwork, leaveNetwork , autoImmigration } from '../engine/logistics';
+import { DEFAULT_IN, DEFAULT_OUT, DEFAULT_RESERVE, joinNetwork, leaveNetwork, autoImmigration, logisticsOn, canServe } from '../engine/logistics';
 import { chooseDoctrine } from '../engine/doctrines';
 import { setRule } from '../engine/rules';
 import { queueRefit, refitRoom } from '../engine/refit';
@@ -27,7 +27,7 @@ import { upperFirst } from '../engine/words';
 export function commandedFleet(): Fleet | undefined {
   const g = store.game;
   if (!g || store.commanded?.kind !== 'fleet') return undefined;
-  return g.fleets.find(f => f.id === store.commanded!.id);
+  return g.fleets.find(f => f.id === store.commanded!.id && f.owner === g.human); // (0.3.9.22: ours only)
 }
 
 function syncRoute(f: Fleet) { if (f.repeat) f.route = f.waypoints.map(w => ({ ...w, processed: false })); }
@@ -221,7 +221,15 @@ export function addWaypoint(ref: ObjRef, pos: { x: number; y: number }) {
   if (ref.kind === 'planet' && spec.colonizer && f.cargo.colonists > 0) {
     const intel = me.intel.planets[ref.id];
     if (intel.owner === undefined || intel.owner < 0) {
-      if (!intel.hab || habitability(me.race, intel.hab) > 0) { wp.task = 'colonize'; store.notify('Tâche « Coloniser » assignée'); }
+      if (!intel.hab || habitability(me.race, intel.hab) > 0) {
+        // (0.3.9.22: the ark colonizes where its route ends: an earlier step that had the task loses it, the first
+        // world reached was settled and the ark never got further)
+        const later = f.waypoints.some((x, k) => k > at && x.task === 'colonize');
+        if (!later) {
+          for (let k = 1; k < at; k++) if (f.waypoints[k].task === 'colonize') f.waypoints[k].task = 'none';
+          wp.task = 'colonize'; store.notify('Tâche « Coloniser » assignée');
+        }
+      }
     }
   }
   if (ref.kind === 'planet' && spec.colonizer && f.cargo.colonists === 0 && at === 1 && f.orbiting >= 0 && g.planets[f.orbiting].owner === me.id && g.planets[f.orbiting].pop > 1000) {
@@ -259,7 +267,13 @@ export function moveWaypoint(i: number, ref: ObjRef, pos: { x: number; y: number
   manual(f);
   const old = f.waypoints[i];
   const sameTarget = old.target === w.target && old.targetId === w.targetId;
-  f.waypoints[i] = { ...w, warp: old.warp >= 11 && w.target === old.target ? old.warp : 0, task: sameTarget ? old.task : (old.task === 'colonize' && w.target !== 'planet' ? 'none' : old.task), transport: old.transport, processed: false };
+  const task = sameTarget ? old.task : (old.task === 'colonize' && w.target !== 'planet' ? 'none' : old.task);
+  // (0.3.9.22: with the settings of its task when the task stays: the refit chosen, the years of mine laying, the
+  // patrol radius and speed, the stop; they were dropped, a refit refused fell back to the newest design)
+  // (the fleet to merge with is the one there: kept for the same target, else the fleet the step now aims at)
+  const mergeWith = sameTarget ? old.mergeWith : task === 'merge' && w.target === 'fleet' ? w.targetId : undefined;
+  const keep = task === old.task ? { refitTo: old.refitTo, layYears: old.layYears, patrolRange: old.patrolRange, patrolWarp: old.patrolWarp, mergeWith, transferTo: old.transferTo, stop: w.target === 'space' ? old.stop : undefined } : {};
+  f.waypoints[i] = { ...w, ...keep, warp: old.warp >= 11 && w.target === old.target ? old.warp : 0, task, transport: old.transport, processed: false };
   const a = retuneLeg(f, i), b = retuneLeg(f, i + 1);
   if (a === 'slowed') store.notify(`Vitesse réduite à Warp ${f.waypoints[i].warp} pour économiser le carburant`);
   syncRoute(f);
@@ -290,6 +304,8 @@ export function deleteWaypoint(i: number) {
   store.checkpoint();
   manual(f);
   f.waypoints.splice(i, 1);
+  // (0.3.9.22: the detour points that led to a deleted destination go with it)
+  while (f.waypoints.length > 1 && f.waypoints[f.waypoints.length - 1].detour) f.waypoints.pop();
   // the following step now starts from the previous one: its speed is computed again
   const st = retuneLeg(f, i);
   store.waypointIndex = Math.min(i, f.waypoints.length - 1);
@@ -324,6 +340,7 @@ export function clearRoute() {
 
 export function setWarp(i: number, warp: number) {
   const f = commandedFleet(); if (!f || !f.waypoints[i]) return;
+  if (f.waypoints[i].warp === warp) return; // (0.3.9.22: no undo point for nothing: they pushed real orders off the list)
   store.checkpoint();
   f.waypoints[i].warp = warp;
   syncRoute(f);
@@ -369,7 +386,10 @@ export function slowInMinefields(i: number) {
 export function applyWarpToAll(warp: number) {
   const f = commandedFleet(); if (!f) return;
   store.checkpoint();
-  for (let i = 1; i < f.waypoints.length; i++) if (f.waypoints[i].warp < 11) f.waypoints[i].warp = warp;
+  // (0.3.9.22: the stargate only on the legs whose gates take the fleet: on the others it lost a year, then left
+  // without a check of its fuel)
+  const g = store.game!;
+  for (let i = 1; i < f.waypoints.length; i++) if (f.waypoints[i].warp < 11 && (warp < 11 || !gateCheck(g, f, i).problem)) f.waypoints[i].warp = warp;
   syncRoute(f); store.bump();
 }
 
@@ -419,6 +439,7 @@ export function intercept(targetId: number) {
   if (!plan.ok) { store.notify(`Interception impossible : ${plan.reason}`); return; }
   store.checkpoint();
   if (f.auto === 'logistics') leaveNetwork(f);
+  manual(f); // (0.3.9.22: its other standing orders end: a refuelling or an operation re-planned it the next turn)
   applyIntercept(g, f, targetId, plan);
   store.waypointIndex = f.waypoints.length - 1;
   store.notify(plan.ourYears === 0 ? `${f.name} attend ${name} sur place` : plan.direct ? `${f.name} fonce sur ${name} à Warp ${plan.warp} : contact attendu cette année` : `${f.name} interceptera ${name} en ${g.year + plan.years} (Warp ${plan.warp}${plan.ourYears < plan.years ? `, arrivée en ${g.year + plan.ourYears} puis attente` : ''})`);
@@ -431,6 +452,7 @@ export function meetTrader(o: TraderOffer, traderId: number) {
   store.checkpoint();
   const f = o.fleet;
   if (f.auto === 'logistics') leaveNetwork(f);
+  manual(f);
   applyTraderMeet(g, f, traderId, o.plan, o.load);
   store.waypointIndex = f.waypoints.length - 1;
   const loadTxt = o.load ? `charge ${fmtKt(o.total - o.carried)} kt de minerais à ${o.from!.name}, puis ` : '';
@@ -513,11 +535,12 @@ export function setRepeat(on: boolean) {
 }
 
 export function renameFleet(f: Fleet, name: string) {
+  if ((name.trim() || f.name) === f.name) return;
   store.checkpoint();
   f.name = name.trim() || f.name; f.customName = true; store.bump();
 }
 
-export function setBattlePlan(f: Fleet, id: number) { store.checkpoint(); f.battlePlan = id; store.bump(); }
+export function setBattlePlan(f: Fleet, id: number) { if (f.battlePlan === id) return; store.checkpoint(); f.battlePlan = id; store.bump(); }
 
 // ---------------------------------------------------------------- production queue
 
@@ -712,6 +735,7 @@ export function setAutoExplore(f: Fleet, on: boolean) {
   const g = store.game, me = store.me; if (!g || !me) return;
   if (on && !canAutoExplore(me)) { store.notify(`L'exploration automatique demande la technologie « ${AUTO_EXPLORE.name} » (${specialLevelText(store.game!, AUTO_EXPLORE)}).`); return; }
   store.checkpoint();
+  if (on) { if (f.auto === 'logistics') leaveNetwork(f); manual(f); }
   f.auto = on ? 'explore' : undefined; f.job = undefined;
   if (on) { f.pursue = undefined; f.refuelFor = undefined; }
   if (on && f.waypoints.length <= 1) {
@@ -751,8 +775,10 @@ export function setMineralPolicy(p: Planet, mode: 'none' | 'export' | 'import', 
 
 export function setNetwork(f: Fleet, on: boolean) {
   const g = store.game; if (!g) return;
+  // (0.3.9.22: refused before anything changes: its standing orders were cleared, with no undo point left)
+  if (on && !(logisticsOn(g) && canServe(g, f))) { store.notify('Cette flotte ne peut pas servir le réseau (il faut une soute, sans module de colonisation ni robots foreurs).'); return; }
   store.checkpoint();
-  if (on) { if (!joinNetwork(g, f)) { store.undo.pop(); store.notify('Cette flotte ne peut pas servir le réseau (il faut une soute, sans module de colonisation ni robots foreurs).'); return; } store.notify(`${f.name} rejoint le réseau logistique.`); }
+  if (on) { manual(f); joinNetwork(g, f); store.notify(`${f.name} rejoint le réseau logistique.`); }
   else { leaveNetwork(f); store.notify(`${f.name} quitte le réseau logistique.`); }
   store.bump();
 }
@@ -842,6 +868,8 @@ export function sendBeacon(f: Fleet, planetId: number) {
   const g = store.game; if (!g) return;
   const pl = g.planets[planetId];
   store.checkpoint();
+  if (f.auto === 'logistics') leaveNetwork(f);
+  manual(f); f.auto = undefined;
   if (f.x === pl.x && f.y === pl.y) { f.waypoints = [{ ...f.waypoints[0], task: 'beacon', processed: false }]; store.notify(`${f.name} posera la balise à ${pl.name} au prochain tour.`); store.bump(); return; }
   // (0.3.9.21: a refused order leaves the route as it was: it was wiped, with its undo point removed)
   const before = f.waypoints;
@@ -860,6 +888,8 @@ export function sendBeacon(f: Fleet, planetId: number) {
 export function refit(f: Fleet, fromId: number, toId: number, qty: number) {
   const g = store.game; if (!g) return;
   store.checkpoint();
+  if (f.auto === 'logistics') leaveNetwork(f);
+  manual(f); f.auto = undefined;
   const why = queueRefit(g, f, fromId, toId, qty);
   if (why) { store.undo.pop(); store.notify(`Modernisation impossible : ${why}.`); return; }
   const pl = g.planets[f.orbiting];

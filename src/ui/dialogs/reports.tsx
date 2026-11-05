@@ -14,12 +14,18 @@ import { gotoTarget, MsgText } from '../nav';
 import type { FactKey, Player, ScoreEntry } from '../../engine/types';
 import { intelOn } from '../../engine/espionage';
 import { DossierBlock, IntelLevel, known, scoresOpen } from '../intel';
+import { foughtWith } from '../../engine/techtrade';
 
 export interface Col<T> { key: string; label: string; get: (r: T) => number | string; render?: (r: T) => ComponentChildren; num?: boolean; minerals?: (r: T) => { ironium: number; boranium: number; germanium: number }; /** 0.3.9.21: the value exported (the sort key is not always one: years from now, a fraction), or false to leave the column out */ csv?: ((r: T) => number | string) | false }
 
 function toCsv<T>(all: Col<T>[], rows: T[]): string {
   const cols = all.filter(c => c.csv !== false);
-  const cell = (v: number | string) => typeof v === 'number' ? String(v).replace('.', ',') : /[;"\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  // (0.3.9.22: a name that starts like a formula is not one for the spreadsheet (= + - @), and a carriage return is quoted)
+  const cell = (v: number | string) => {
+    if (typeof v === 'number') return String(v).replace('.', ',');
+    const t = /^[=+\-@]/.test(v) && !/^[-+]?\d/.test(v) ? `'${v}` : v;
+    return /[;"\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
   // semicolons and a BOM so spreadsheets in French locales open it directly
   const head = cols.flatMap(c => c.minerals ? ['Ironium', 'Boranium', 'Germanium'].map(m => `${c.label} ${m}`) : [c.label]);
   const line = (r: T) => cols.flatMap(c => { if (!c.minerals) return [cell(c.csv ? c.csv(r) : c.get(r))]; const m = c.minerals(r); return [m.ironium, m.boranium, m.germanium].map(cell); });
@@ -58,19 +64,21 @@ export function ReportsDialog({ tab: initialTab }: { tab?: string }) {
         { key: 'name', label: 'Flotte', get: r => r.detail === 'full' ? r.name ?? '' : 'Contact inconnu' },
         { key: 'owner', label: 'Empire', get: r => r.owner >= 0 ? g.players[r.owner].name : '?', render: r => r.owner >= 0 ? <span style={{ color: g.players[r.owner].color }}>{g.players[r.owner].name}</span> : '?' },
         { key: 'loc', label: 'Position', get: r => r.orbiting !== undefined ? g.planets[r.orbiting].name : `(${Math.round(r.x)}, ${Math.round(r.y)})` },
-        { key: 'ships', label: 'Vaisseaux', num: true, get: r => r.tokens?.reduce((a, t) => a + t.qty, 0) ?? 0, render: r => r.tokens ? String(r.tokens.reduce((a, t) => a + t.qty, 0)) : '?' },
-        { key: 'mass', label: 'Masse', num: true, get: r => r.mass ?? 0, render: r => r.mass !== undefined ? fmt(r.mass) : '?' },
-        { key: 'warp', label: 'Warp', num: true, get: r => r.warp ?? 0, render: r => r.warp ? String(r.warp) : '?' },
+        // (0.3.9.22: in the export too, what is unknown stays empty and an estimate says so)
+        { key: 'ships', label: 'Vaisseaux', num: true, get: r => r.tokens?.reduce((a, t) => a + t.qty, 0) ?? 0, render: r => r.tokens ? String(r.tokens.reduce((a, t) => a + t.qty, 0)) : '?', csv: r => r.tokens ? r.tokens.reduce((a, t) => a + t.qty, 0) : '' },
+        { key: 'mass', label: 'Masse', num: true, get: r => r.mass ?? 0, render: r => r.mass !== undefined ? (r.uncertain ? '≈ ' : '') + fmt(r.mass) : '?', csv: r => r.mass === undefined ? '' : r.uncertain ? '≈' + r.mass : r.mass },
+        { key: 'warp', label: 'Warp', num: true, get: r => r.warp ?? 0, render: r => r.warp ? String(r.warp) : '?', csv: r => r.warp ?? '' },
         { key: 'track', label: 'Suivi', num: true, get: r => me.intel.tracks[r.id]?.length ?? 0, render: r => `${me.intel.tracks[r.id]?.length ?? 0} obs.` },
       ]} />}
       {tab === 'battles' && <SortTable csv="batailles" rows={g.battles.filter(b => b.players.includes(me.id))} onRow={r => s.open('battle', { battleId: r.id })} empty="Aucune bataille cette année." cols={[
         { key: 'loc', label: 'Lieu', get: r => r.planetId !== undefined ? g.planets[r.planetId].name : `(${Math.round(r.x)}, ${Math.round(r.y)})` },
-        { key: 'sb', label: 'Station', get: r => { const sb = r.tokens.find(t => t.starbase); return !sb ? '' : sb.owner === me.id ? 'nôtre' : 'adverse'; } },
+        // (0.3.9.22: the empires we exchanged fire with, as the report counts them: allies and bystanders were "adverse")
+        { key: 'sb', label: 'Station', get: r => { const sb = r.tokens.find(t => t.starbase); return !sb ? '' : sb.owner === me.id ? 'nôtre' : foughtWith(r, me.id).has(sb.owner) ? 'adverse' : 'alliée ou neutre'; } },
         { key: 'players', label: 'Camps', get: r => r.players.map(p => g.players[p].name).join(' / ') },
         { key: 'ours', label: 'Nos unités', num: true, get: r => r.tokens.filter(t => t.owner === me.id).reduce((a, t) => a + t.qty, 0) },
-        { key: 'theirs', label: 'Adverses', num: true, get: r => r.tokens.filter(t => t.owner !== me.id).reduce((a, t) => a + t.qty, 0) },
+        { key: 'theirs', label: 'Adverses', num: true, get: r => { const foes = foughtWith(r, me.id); return r.tokens.filter(t => foes.has(t.owner)).reduce((a, t) => a + t.qty, 0); } },
         { key: 'ourdead', label: 'Nos pertes', num: true, get: r => r.losses[me.id] ?? 0 },
-        { key: 'theirdead', label: 'Pertes adverses', num: true, get: r => Object.entries(r.losses).filter(([k]) => +k !== me.id).reduce((a, [, v]) => a + v, 0) },
+        { key: 'theirdead', label: 'Pertes adverses', num: true, get: r => { const foes = foughtWith(r, me.id); return Object.entries(r.losses).filter(([k]) => foes.has(+k)).reduce((a, [, v]) => a + v, 0); } },
         { key: 'rounds', label: 'Rounds', num: true, get: r => r.rounds },
       ]} />}
       {tab === 'messages' && <MessageList />}

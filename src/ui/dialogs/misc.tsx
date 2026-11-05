@@ -154,7 +154,7 @@ export function TemplatesDialog() {
           </div>}
         </div>
         {t && <div class="bp-edit">
-          <Row k="Nom" v={<input value={t.name} onInput={e => { t.name = (e.target as HTMLInputElement).value; s.bump(); }} />} />
+          <Row k="Nom" v={<input value={t.name} onInput={e => { t.name = (e.target as HTMLInputElement).value; s.dirty = true; s.autosaveSoon(); s.bump(); }} />} />
           <label class="chk"><input type="checkbox" checked={me.defaultTemplate === t.id} onChange={e => { s.checkpoint(); me.defaultTemplate = (e.target as HTMLInputElement).checked ? t.id : -1; s.bump(); }} /> Appliquer automatiquement aux nouvelles colonies</label>
           <ul class="list">{t.items.map((it, i) => <li>{QUEUE_LABELS[it.kind]} · {isAuto(it.kind) ? 'par an, jusqu\'à ' : ''}{it.qty} <button class="link" onClick={() => { s.checkpoint(); t.items.splice(i, 1); s.bump(); }}>✕</button></li>)}</ul>
           <select onChange={e => { const k = (e.target as HTMLSelectElement).value as QueueKind; if (k) { s.checkpoint(); t.items.push({ kind: k, qty: isAuto(k) ? 50 : 1 }); s.bump(); } (e.target as HTMLSelectElement).value = ''; }}><option value="">Ajouter un élément…</option>{kinds.map(k => <option value={k}>{QUEUE_LABELS[k]}</option>)}</select>
@@ -331,14 +331,14 @@ export function SettingsDialog() {
   // objects the rule brought in broke the host's year)
   const pbemPlayer = g.pbem?.role === 'player';
   return <Modal title="Paramètres de la partie" onClose={() => s.close('settings')} width={560}>
-    <Row k="Nom" v={<input value={g.name} onInput={e => { g.name = (e.target as HTMLInputElement).value; s.bump(); }} />} />
+    <Row k="Nom" v={<input value={g.name} onInput={e => { g.name = (e.target as HTMLInputElement).value; s.dirty = true; s.autosaveSoon(); s.bump(); }} />} />
     <Row k="Univers" v={`${set.size} · ${g.planets.length} planètes · ${g.width} al`} />
     <Row k="Graine" v={set.seed} />
     {/* 3.6: an option can be added during a game, never taken away */}
-    <label class={'chk' + (set.anonymousContacts ? ' locked' : '')} title={set.anonymousContacts ? LOCKED : undefined}><input type="checkbox" checked={set.anonymousContacts} disabled={set.anonymousContacts || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.anonymousContacts = true; s.bump(); }} /> Contacts anonymes hors scanner pénétrant (effet au prochain tour)</label>
+    <label class={'chk' + (set.anonymousContacts ? ' locked' : '')} title={set.anonymousContacts ? LOCKED : undefined}><input type="checkbox" checked={set.anonymousContacts} disabled={set.anonymousContacts || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; s.checkpoint(); set.anonymousContacts = true; s.bump(); }} /> Contacts anonymes hors scanner pénétrant (effet au prochain tour)</label>
     {/* 3.6: display only, changes nothing to the rules: either way, any time */}
-    <label class="chk"><input type="checkbox" checked={set.popUnits === 'millions'} onChange={e => { if ((e.target as HTMLInputElement).checked) set.popUnits = 'millions'; else delete set.popUnits; s.bump(); }} /> Populations en millions <span class="muted small">(un colon des règles = mille habitants ; affichage seulement, les nouveaux rapports suivent)</span></label>
-    <label class={'chk' + (set.publicScores ? ' locked' : '')} title={set.publicScores ? LOCKED : undefined}><input type="checkbox" checked={set.publicScores} disabled={set.publicScores || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; set.publicScores = true; s.bump(); }} /> Scores publics</label>
+    <label class="chk"><input type="checkbox" checked={set.popUnits === 'millions'} onChange={e => { s.checkpoint(); if ((e.target as HTMLInputElement).checked) set.popUnits = 'millions'; else delete set.popUnits; s.bump(); }} /> Populations en millions <span class="muted small">(un colon des règles = mille habitants ; affichage seulement, les nouveaux rapports suivent)</span></label>
+    <label class={'chk' + (set.publicScores ? ' locked' : '')} title={set.publicScores ? LOCKED : undefined}><input type="checkbox" checked={set.publicScores} disabled={set.publicScores || pbemPlayer} onChange={e => { if (!(e.target as HTMLInputElement).checked) return; s.checkpoint(); set.publicScores = true; s.bump(); }} /> Scores publics</label>
     <h4>Règles de Constellations</h4>
     <p class="small muted">Décochées, la partie suit les règles de Stars! d'origine. En cours de partie, on peut en ajouter (effet immédiat : une règle activée en route prépare ce qu'il faut, terrain, objectifs, capitales), mais plus en retirer.</p>
     <div class="rules-list">{CONSTELLATIONS_RULES.map(k => { const on = !!(set as any)[k]; return <label class={'chk rule' + (on ? ' locked' : '')} title={on ? LOCKED : undefined}><input type="checkbox" checked={on} disabled={RULE_INFO[k].creationOnly || on || pbemPlayer} onChange={e => { if ((e.target as HTMLInputElement).checked) A.toggleRule(k, true); }} /> <span class="rule-txt"><b>{RULE_INFO[k].name}</b><small class="muted">{RULE_INFO[k].text}{RULE_INFO[k].creationOnly ? ' (ne se choisit qu\'à la création de la partie)' : ''}</small></span></label>; })}</div>

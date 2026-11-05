@@ -8,7 +8,7 @@ import { FIELDS } from '../engine/types';
 import { VICTORY_LABELS, countBits } from '../engine/score';
 import { intelOn } from '../engine/espionage';
 import { known, scoresOpen } from './intel';
-import { portalThreat, megaProgress, MEGAPROJECTS, relaysOn, relaysOf, RELAYS_NEEDED } from '../engine/megaprojects';
+import { portalThreat, rivalPortal, megaProgress, MEGAPROJECTS, relaysOn, relaysOf, RELAYS_NEEDED } from '../engine/megaprojects';
 import { actOf } from '../engine/acts';
 import { breachPlanet } from '../engine/crisis';
 import { secretOn, CLUES_NEEDED } from '../engine/ancients';
@@ -66,7 +66,8 @@ export function VictoryRace() {
       const others = scores.filter(x => x.p !== p && x.f.v !== null).map(x => x.f.v!);
       if (f.v === null || !others.length) return { p, v: null, node: f.node, progress: null, met: false };
       const ratio = f.v / Math.max(1, ...others);
-      return { p, v: ratio, node: <>{f.node} <span class="muted small">(×{fmt(ratio, 2)})</span></>, progress: ratio / (1 + v.exceedSecond! / 100), met: ratio >= 1 + v.exceedSecond! / 100 };
+      // (0.3.9.22: for oneself, what the engine says: the other scores known may be fewer than the real ones)
+      return { p, v: ratio, node: <>{f.node} <span class="muted small">(×{fmt(ratio, 2)})</span></>, progress: ratio / (1 + v.exceedSecond! / 100), met: p.id === me.id ? !!(me.victoryMet & 8) : ratio >= 1 + v.exceedSecond! / 100 };
     }) });
   }
   if (v.production !== null) simple(VICTORY_LABELS[4].replace('{production}', fmt(v.production)), 'resources', v.production * 1000, e => e.resources);
@@ -75,9 +76,9 @@ export function VictoryRace() {
     const after = 2400 + v.highestAfter;
     const scores = rivals.map(p => ({ p, f: fact(p, 'score') })).filter(x => x.f.v !== null);
     const lead = Math.max(0, ...scores.map(x => x.f.v!));
-    blocks.push({ title: VICTORY_LABELS[6].replace('{highestAfter}', String(v.highestAfter)), note: g.year < after ? `Compte à partir de ${after}.` : undefined, lines: rivals.map(p => { const f = fact(p, 'score'); return { p, v: f.v, node: f.node, progress: f.v === null || !lead ? null : f.v / lead, met: g.year >= after && f.v !== null && scores.every(x => x.p === p || x.f.v! < f.v!) }; }) }); // (0.3.9.21: strictly first, as the engine counts it)
+    blocks.push({ title: VICTORY_LABELS[6].replace('{highestAfter}', String(v.highestAfter)), note: g.year < after ? `Compte à partir de ${after}.` : undefined, lines: rivals.map(p => { const f = fact(p, 'score'); return { p, v: f.v, node: f.node, progress: f.v === null || !lead ? null : f.v / lead, met: p.id === me.id ? !!(me.victoryMet & 64) : g.year >= after && f.v !== null && scores.length > 1 && scores.every(x => x.p === p || x.f.v! < f.v!) }; }) }); // (0.3.9.21: strictly first, as the engine counts it; 0.3.9.22: for oneself, the engine's answer)
   }
-  const portal = g.settings.megaprojects ? portalThreat(g) : null;
+  const portal = g.settings.megaprojects ? rivalPortal(g, me) : null;
   const myPortal = g.planets.flatMap(pl => pl.owner === me.id ? pl.queue.filter(q => q.kind === 'mega' && q.megaId === 'portal').map(q => ({ pl, q })) : [])[0];
   const breach = g.settings.crisis ? g.crisis : undefined;
   const bp = breachPlanet(g);
@@ -85,7 +86,8 @@ export function VictoryRace() {
   const mySeal = g.planets.flatMap(pl => pl.owner === me.id ? pl.queue.filter(q => q.kind === 'mega' && q.megaId === 'seal').map(q => ({ pl, q })) : [])[0];
   const ow = originWinsOn(g) && me.origin ? ORIGIN_WINS[me.origin] : undefined;
   const owp = ow?.progress(g, me);
-  const metCount = (p: Player) => p.id === me.id ? countBits(me.victoryMet) : open ? countBits(p.victoryMet) : me.intel.dossiers?.[p.id]?.victory ? countBits(me.intel.dossiers[p.id].victory!.v) : null;
+  // (0.3.9.22: the dossier holds a count already: its bits were counted a second time)
+  const metCount = (p: Player) => p.id === me.id ? countBits(me.victoryMet) : open ? countBits(p.victoryMet) : me.intel.dossiers?.[p.id]?.victory ? me.intel.dossiers[p.id].victory!.v : null;
   return <div class="vrace">
     <p class="small">{v.numCriteria > 1
       ? (g.year < from ? <>Il faut remplir <b>{v.numCriteria}</b> conditions, comptées à partir de <b>{from}</b>.</> : <>Il faut remplir <b>{v.numCriteria}</b> conditions pour gagner.</>)

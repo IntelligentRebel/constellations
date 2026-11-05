@@ -9,7 +9,7 @@ import { planetSpec } from '../engine/planet';
 import { distance } from '../engine/fleet';
 import { ADMIN_RADIUS, ADMIN_LOSS, ADMIN_STEP, adminFactor, capitalOf, regionalAllowance, regionalBlocker, seatsOf, REGIONAL_PER_WORLDS, DISORG_FACTOR } from '../engine/empire';
 import { activeFlows, colonistNeed, colonistSurplus, idleFreighters, jobText, logisticsOn, mineralSurplus, networkFleets, DEFAULT_IN, DEFAULT_OUT, joinNetwork , migrationTargets, autoImmigration, mineralSinks } from '../engine/logistics';
-import { MEGAPROJECTS, megaList, megaBlocker, megaProgress, portalThreat, megaVisible, MEGA_HORIZON, relaysOn, relaysOf, RELAYS_NEEDED, type MegaId } from '../engine/megaprojects';
+import { MEGAPROJECTS, megaList, megaBlocker, megaProgress, portalThreat, rivalPortal, megaVisible, MEGA_HORIZON, relaysOn, relaysOf, RELAYS_NEEDED, type MegaId } from '../engine/megaprojects';
 import { OBJ, objectiveProgress, objectiveText, OBJECTIVE_POINTS } from '../engine/objectives';
 import { DOCTRINE_FORKS, pendingForks } from '../engine/doctrines';
 import { FIELD_NAMES } from '../engine/tech';
@@ -168,7 +168,7 @@ function Megaprojects({ g, me }: { g: GameState; me: Player }) {
   const mine = g.planets.filter(p => p.owner === me.id);
   const built = mine.flatMap(p => (p.megaprojects ?? []).map(id => ({ p, id: id as MegaId })));
   const running = mine.flatMap(p => p.queue.filter(q => q.kind === 'mega').map(q => ({ p, q })));
-  const threat = portalThreat(g);
+  const threat = rivalPortal(g, me);
   const best = [...mine].sort((a, b) => viewSpec(g, b, me).resources - viewSpec(g, a, me).resources)[0];
   const list = megaList(g).filter(m => m.id !== 'seal' || me.secretKnown !== undefined);
   const visible = list.filter(m => megaVisible(me, m) || built.some(b => b.id === m.id) || running.some(r => r.q.megaId === m.id));

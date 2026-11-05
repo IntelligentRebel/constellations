@@ -107,7 +107,8 @@ function ImportDialog({ kind, onRace }: { kind?: 'game' | 'race'; onRace?: (r: a
       if (kind === 'race') { const r = sanitizeRace(g); if (typeof r === 'string') throw new Error(r); store.close('import'); saveRace(r); onRace?.(r); store.notify('Race importée'); return; }
       // 0.3.9: a turn file opens the turn; an orders file goes to the hosted game open here
       if (g.format === PB.TURN_FORMAT || g.format === PB.ORDERS_FORMAT) {
-        const r = PB.readPbem(raw)!;
+        const r = PB.readPbem(raw);
+        if (!r) throw new Error('fichier de tour ou d\'ordres endommagé');
         if (r.file.format === PB.TURN_FORMAT) { store.close('import'); store.setGame(PB.openTurn(r.file, r.game)); store.notify(`Tour ${r.file.year} des ${r.game.players[r.file.player].name} : donnez vos ordres, puis envoyez-les.`); return; }
         const host = store.game;
         if (!host?.pbem || host.pbem.role !== 'host') throw new Error('ouvrez d\'abord la partie hébergée (écran d\'accueil, sauvegardes), puis importez ces ordres');

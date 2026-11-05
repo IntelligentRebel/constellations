@@ -21,7 +21,7 @@ const RALLY = 35;
 import { fleetStrength } from './factions';
 import { isStudying } from './anomalies';
 import { needsFuel, defaultTankerRange } from './refuel';
-import { colonyBlocker, cultureOn, CULTURE_BUILDINGS, PATRONAGE, hasReq } from './culture';
+import { colonyBlocker, cultureOn, cultureSources, CULTURE_BUILDINGS, PATRONAGE, hasReq, type Source } from './culture';
 import { swornAgainst, isNemesis, counterPurpose } from './nemesis';
 import { actOf } from './acts';
 import { dangerAt } from './cataclysms';
@@ -371,12 +371,15 @@ function packets(game: GameState, p: Player, planet: Planet) {
 
 export function colonyTargets(game: GameState, p: Player): { planet: Planet; value: number }[] {
   const res: { planet: Planet; value: number }[] = [];
+  let srcs: Source[] | undefined;
   for (const pi of p.intel.planets) {
     if (pi.year === undefined || !pi.hab || pi.guardian || pi.lair) continue;
     if (pi.owner !== undefined && pi.owner >= 0) continue;
+    if ((p.aiState?.refusedColony?.[pi.id] ?? -99) > game.year - 10) continue; // (0.3.9.22: refused there lately)
     const planet = game.planets[pi.id];
     if (planet.hidden && !reachable(game, p, planet)) continue; // 0.3.7: the veiled star without its way in, the hidden cluster
-    if (colonyBlocker(game, p, planet) !== null) continue; // another empire's territory
+    // (0.3.9.22: the territory as this empire knows it: the colonies it has seen, not the truth)
+    if (cultureOn(game) && colonyBlocker(game, p, planet, true, srcs ??= cultureSources(game, p)) !== null) continue; // another empire's territory
     if (game.cataclysms?.length && dangerAt(game, planet, 20)) continue; // 0.3.9: not under an announced cataclysm
     const hab = habitability(p.race, pi.hab);
     const tf = terraformedHabValue(p, { ...planet, hab: pi.hab, baseHab: pi.baseHab ?? pi.hab });
@@ -524,12 +527,20 @@ function fleets(game: GameState, p: Player, rng: Rng) {
       // retarget if needed
       const tid = Object.entries(st.colonyTargets).find(([, fid]) => fid === f.id)?.[0];
       let tPlanet = tid !== undefined ? game.planets[+tid] : undefined;
-      if (tPlanet && (p.intel.planets[tPlanet.id].owner ?? -1) >= 0) { delete st.colonyTargets[tPlanet.id]; }
-      // Constellations 3.3: the target fell inside another empire's territory meanwhile: find another one
-      if (tPlanet && colonyBlocker(game, p, tPlanet) !== null) {
-        delete st.colonyTargets[tPlanet.id]; tPlanet = undefined;
+      const giveUp = (refused = false) => {
+        if (refused) (st.refusedColony ??= {})[tPlanet!.id] = game.year;
+        delete st.colonyTargets[tPlanet!.id]; claimed.delete(tPlanet!.id); tPlanet = undefined;
         if (f.waypoints.length > 1) f.waypoints = [{ ...f.waypoints[0], x: f.x, y: f.y, task: 'none', transport: undefined, processed: true }];
-      }
+      };
+      // (0.3.9.22: the world known taken is given up at once: the ark flew on to it for a year)
+      if (tPlanet && (p.intel.planets[tPlanet.id].owner ?? -1) >= 0) giveUp();
+      // Constellations 3.3: the target fell inside another empire's territory meanwhile: find another one
+      if (tPlanet && colonyBlocker(game, p, tPlanet, true) !== null) giveUp();
+      // (0.3.9.22: refused on arrival, by a territory it had not seen: it tried again every year, holding the claim)
+      const w0 = f.waypoints[0];
+      if (tPlanet && f.orbiting === tPlanet.id && w0?.task === 'colonize' && w0.processed && tPlanet.owner < 0 && f.cargo.colonists > 0) giveUp(true);
+      // (0.3.9.22: stopped short of its world, an idle ark plans again; it kept the claim and took a second world)
+      if (tPlanet && f.waypoints.length <= 1 && f.orbiting !== tPlanet.id) { delete st.colonyTargets[tPlanet.id]; claimed.delete(tPlanet.id); tPlanet = undefined; }
       // (0.3.9.21: an empty one gives its world up and goes home to reload: it tried to colonize there every year,
       // holding the claim that kept every other ark away)
       if (tPlanet && f.cargo.colonists <= 0 && f.orbiting === tPlanet.id) { delete st.colonyTargets[tPlanet.id]; claimed.delete(tPlanet.id); tPlanet = undefined; }
@@ -538,7 +549,7 @@ function fleets(game: GameState, p: Player, rng: Rng) {
         continue;
       }
       // (a colony ship under way on another errand, refuelling or unloading, is not sent elsewhere every year)
-      if (!idle && (tPlanet || f.waypoints[f.waypoints.length - 1].task !== 'colonize')) continue;
+      if (f.waypoints.length > 1 && (tPlanet || f.waypoints[f.waypoints.length - 1].task !== 'colonize')) continue;
       // load colonists if empty and at own planet
       if (f.cargo.colonists === 0 && f.orbiting >= 0 && game.planets[f.orbiting].owner === p.id) {
         const pl = game.planets[f.orbiting];
@@ -716,9 +727,10 @@ function warFleets(game: GameState, p: Player) {
     const here = f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
     if (here && here.owner >= 0 && here.owner !== p.id && p.relations[here.owner] === 'enemy') {
       // siege: hold the orbit (bombers bomb, troops follow) unless badly hurt
+      // (0.3.9.22: bombers alone only where they can bomb, without a station: they held a useless siege for decades)
       const sp = fleetSpec(game, f);
       const damage = f.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0);
-      if (damage < (sp.armor + sp.shields) * 0.5) continue;
+      if (damage < (sp.armor + sp.shields) * 0.5 && (sp.hasWeapons || (sp.bomber && !here.starbase))) continue;
     }
     if (f.orbiting !== staging.id) travel(game, f, { x: staging.x, y: staging.y, planetId: staging.id });
   }
@@ -727,8 +739,11 @@ function warFleets(game: GameState, p: Player) {
   const main = atStage[0];
   for (const o of atStage.slice(1)) mergeFleets(game, main, o);
   if (!enemyPlanets.length) return;
-  main.purpose = 'warship';
   const sp = fleetSpec(game, main);
+  // (0.3.9.22: bombers alone go only where no station is known, and stay bombers: renamed warships, they held a
+  // siege under a station for decades)
+  const bombersOnly = !sp.hasWeapons;
+  if (!bombersOnly) main.purpose = 'warship';
   const damage = main.tokens.reduce((a, t) => a + t.damage * t.qtyDamaged, 0);
   if (damage > (sp.armor + sp.shields) * 0.25) return; // repair at the dock first
   if (totalShips(main) < 3) return;
@@ -738,6 +753,7 @@ function warFleets(game: GameState, p: Player) {
   const hunter = st.targetPlayer !== undefined && isNemesis(game, p.id, st.targetPlayer);
   for (const e of enemyPlanets) {
     const pi = p.intel.planets[e.id];
+    if (bombersOnly && (!sp.bomber || pi.starbaseDesign !== undefined)) continue;
     const def = planetDefense(game, p, e);
     if (score < def * (portal ? 1 : 2)) continue;
     const val = (pi.pop ?? 20000) + (pi.homeworld ? 300000 : 0) + 50000;
@@ -865,7 +881,7 @@ function troopFleets(game: GameState, p: Player) {
     const here = f.orbiting >= 0 ? game.planets[f.orbiting] : undefined;
     // colonists left aboard at home: put them back
     if (here && here.owner === p.id && f.cargo.colonists > 0 && !targets.length && !prep) transferWithPlanet(game, f, here, 'colonists', -f.cargo.colonists);
-    if (!targets.length && !prep) continue;
+    // (0.3.9.22: away from its worlds, it comes home in peace too: it waited there for the next war, colonists aboard)
     if (!here || here.owner !== p.id) {
       const src = homes.filter(h => canRefuelAt(game, p, h)).sort((a, b) => surplusOf(b) - surplusOf(a))[0];
       // (0.3.9.21: out of reach in a decent time, it crawls to its nearest dock: it stayed there forever, colonists aboard)
@@ -875,6 +891,7 @@ function troopFleets(game: GameState, p: Player) {
       }
       continue;
     }
+    if (!targets.length && !prep) continue;
     for (const o of freighters()) if (o !== f && o.orbiting === f.orbiting && game.fleets.includes(o)) mergeFleets(game, f, o);
     f.purpose = 'freighter';
     const cap = fleetSpec(game, f).cargoCapacity - cargoMass(f.cargo) + f.cargo.colonists;
@@ -924,7 +941,12 @@ function mineLayers(game: GameState, p: Player) {
       if (wp.task !== 'layMines') { wp.task = 'layMines'; wp.layYears = undefined; wp.processed = false; }
       continue;
     }
-    if (claimed) continue; // travelling or waiting
+    // (0.3.9.22: idle away from its world (the trip cut short), it goes again, or gives the world up: it waited for ever)
+    if (claimed) {
+      const pl = game.planets[+claimed[0]];
+      if (!safeGoto(game, f, { x: pl.x, y: pl.y, planetId: pl.id }, 'layMines', false)) delete st.mineClaims[pl.id];
+      continue;
+    }
     let best: Planet | undefined, bs = -Infinity;
     for (const h of homes) {
       if (st.mineClaims[h.id] !== undefined) continue;
@@ -934,7 +956,7 @@ function mineLayers(game: GameState, p: Player) {
     if (!best) continue;
     st.mineClaims[best.id] = f.id;
     if (f.orbiting === best.id) { f.waypoints[0].task = 'layMines'; f.waypoints[0].layYears = undefined; f.waypoints[0].processed = false; }
-    else safeGoto(game, f, { x: best.x, y: best.y, planetId: best.id }, 'layMines', false);
+    else if (!safeGoto(game, f, { x: best.x, y: best.y, planetId: best.id }, 'layMines', false)) delete st.mineClaims[best.id];
   }
 }
 

@@ -36,7 +36,11 @@ export function missionModel(g: GameState, me: Player, p: Planet, kind: MissionK
   const designs = missionDesigns(g, me, kind);
   const design = designs.find(d => d.id === designId) ?? designs[0];
   // shipyards only matter when no ready fleet can go in good time (or in the Options panel)
-  const build = withBuild && design && (buildAlways || !send.length || send[0].slow) ? buildOptions(g, me, p.id, kind, design) : [];
+  let build = withBuild && design && (buildAlways || !send.length || send[0].slow) ? buildOptions(g, me, p.id, kind, design) : [];
+  // (0.3.9.22: no design chosen: the next ones when the first, the biggest hold, finds no world with enough colonists
+  // to fill it; the button said no ark could be built, "il faut une station avec chantier")
+  if (!build.length && withBuild && design && designId == null && (buildAlways || !send.length || send[0].slow))
+    for (const d of designs.slice(1)) { build = buildOptions(g, me, p.id, kind, d); if (build.length) break; }
   const queued = st.queued.some(q => q.kind === kind);
   const busy = kind === 'colonize' ? st.arks.length > 0 || queued : kind === 'mine' ? st.miners.length > 0 || st.mining.length > 0 || queued : kind === 'haul' ? st.haulers.length > 0 || queued : st.scouts.length > 0 || queued;
   return { kind, st, send, build, designs, busy, opts };
@@ -129,7 +133,7 @@ export function MissionButton({ g, p, m, short, label }: { g: GameState; p: Plan
   if (sd) return <button class={'primary mbtn' + (sd.slow ? ' slow' : '')} disabled={m.busy && oneOnly} onClick={() => sd.slow ? slowWarning(sd.fleet.name, sd.years, sd.warp, () => doSend(g, sd.fleet, p, m.kind, m.opts)) : doSend(g, sd.fleet, p, m.kind, m.opts)} title={m.busy && oneOnly ? 'Déjà prévu. « Options » permet d\'en ajouter un autre.' : sd.slow ? `Trajet très lent : ${sd.fleet.name} est à ${fmt(distance(sd.fleet, p), 0)} al de ${p.name} et n'a pas assez de carburant pour y aller plus vite : ${sd.years} ans à Warp ${sd.warp}. « Options » pour un autre vaisseau, ou pour en construire un plus près.` : `${sd.fleet.name}, à ${fmt(distance(sd.fleet, p), 0)} al · Warp ${sd.warp}`}>{label ? label(false) : haul ? 'Créer la navette' : <>Envoyer{word}</>}<small>{sd.fleet.name} · {haul ? `1er chargement dans ${sd.years} a` : `${sd.years} a`}{sd.warp <= 1 ? ' · Warp 1 !' : sd.slow ? ` · Warp ${sd.warp} !` : ''}</small></button>;
   const b = m.build[0] && m.build[0].reachable && !m.build[0].slow ? m.build[0] : quick ?? m.build[0];
   if (b) return <button class={'primary mbtn' + (b.slow || !b.reachable ? ' slow' : '')} disabled={m.busy} onClick={() => b.slow && !m.busy ? slowWarning(`${b.design.name}, construit à ${b.planet.name},`, b.travelYears, b.warp, () => doBuild(g, b, p, m.kind, m.opts)) : doBuild(g, b, p, m.kind, m.opts)} title={m.busy ? 'Déjà prévu. « Options » permet d\'en ajouter un autre.' : b.slow ? `Trajet très lent : ${b.travelYears} ans à Warp ${b.warp}, faute de carburant. « Options » pour un autre chantier ou modèle.` : !b.reachable ? 'Hors de portée avec son carburant' : `${b.design.name} construit à ${b.planet.name}`}>{label ? label(true) : haul ? 'Construire un cargo pour la navette' : <>Construire et envoyer{word}</>}<small>{label ? 'à construire · ' : ''}{b.planet.name} · ≈ {b.buildYears} + {b.travelYears} a{b.slow ? ` · Warp ${b.warp} !` : !b.reachable ? ' · hors de portée' : ''}</small></button>;
-  return <button class="primary mbtn" disabled title={m.designs.length ? 'Aucune planète ne peut le construire : il faut une station avec chantier.' : `Aucun modèle de ${w.noneHint} : créez-en un dans Conception.`}>{w.none}</button>;
+  return <button class="primary mbtn" disabled title={!m.designs.length ? `Aucun modèle de ${w.noneHint} : créez-en un dans Conception.` : m.kind === 'colonize' ? 'Aucune planète ne peut le construire : il faut une station avec chantier, et assez de colons pour remplir la soute.' : 'Aucune planète ne peut le construire : il faut une station avec chantier.'}>{w.none}</button>;
 }
 
 /** The "Options" panel: choose another fleet, design or shipyard. */
@@ -181,7 +185,9 @@ export function HaulBlock({ g, me, p, compact, onDone }: { g: GameState; me: Pla
   const [opts, setOpts] = useState(false);
   const cap = capitalOf(g, me);
   const ports = g.planets.filter(x => x.owner === me.id && x.id !== p.id).sort((a, b) => distance(a, p) - distance(b, p));
-  const homeId = homeSel ?? cap?.id;
+  // (0.3.9.22: the shuttle of a world mined from the capital itself delivers to the nearest other world: to itself,
+  // the order failed and the list showed another port than the one used)
+  const homeId = homeSel ?? haulHome(g, me, p);
   const mo: MissionOpts = { homeId };
   const m = missionModel(g, me, p, 'haul', null, true, false, mo);
   const intel = me.intel.planets[p.id];
@@ -197,11 +203,20 @@ export function HaulBlock({ g, me, p, compact, onDone }: { g: GameState; me: Pla
     {(yearly > 0 || flow > 0) && <div class={'small ' + (flow > 0 && flow < yearly ? 'yellow' : 'muted')}>Extraction ≈ {fmt(yearly)} kt/an{flow > 0 ? ` · navettes ≈ ${fmt(flow)} kt/an${flow < yearly ? ' : insuffisant, les minerais s\'accumulent' : ''}` : ''}{intel.surface ? ` · en surface ${fmt(intel.surface.ironium + intel.surface.boranium + intel.surface.germanium)} kt` : ''}</div>}
     {ports.length > 0 && <label class="haul-port">{m.st.haulers.length ? 'Nouvelle navette, livrée à' : 'Livrer à'} {portSelect(homeId, setHomeSel, 'Port de livraison')}</label>}
     <div class="mission-btns">
-      <MissionButton g={g} p={p} m={m} />
-      <button class="ghost" onClick={() => setOpts(!opts)} aria-expanded={opts}>Options {opts ? '▴' : '▾'}</button>
+      {homeId !== undefined && <MissionButton g={g} p={p} m={m} />}
+      {homeId !== undefined && <button class="ghost" onClick={() => setOpts(!opts)} aria-expanded={opts}>Options {opts ? '▴' : '▾'}</button>}
     </div>
-    {opts && <MissionOptions g={g} me={me} p={p} kind="haul" opts={mo} onDone={() => { setOpts(false); onDone?.(); }} />}
+    {opts && homeId !== undefined && <MissionOptions g={g} me={me} p={p} kind="haul" opts={mo} onDone={() => { setOpts(false); onDone?.(); }} />}
   </div>;
+}
+
+/** The port a new shuttle of p delivers to by default: the capital, or the nearest other world of the empire. */
+export function haulHome(g: GameState, me: Player, p: Planet): number | undefined {
+  const cap = capitalOf(g, me);
+  if (cap && cap.id !== p.id) return cap.id;
+  let best: Planet | undefined;
+  for (const x of g.planets) if (x.owner === me.id && x.id !== p.id && (!best || distance(x, p) < distance(best, p))) best = x;
+  return best?.id;
 }
 
 /** Block of the selection panel for a planet that is not ours (or ours, for remote mining by orbital races). */

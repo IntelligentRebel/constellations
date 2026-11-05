@@ -14,14 +14,26 @@ import { estimateQueue, type QueueEstimate } from '../engine/production';
 /** The state of the game as far as the caches are concerned (every bump of the game, and every order: store.checkpoint). */
 const rev = () => store.dataRev;
 
+/**
+ * 0.3.9.22: the game as the next production will see it: the turn counts the year first, then produces. The panels
+ * showed a golden age, a disorganisation or a conquered world's recovery one year off (in their last year, a bonus
+ * or a loss the turn no longer applies).
+ */
+let shifted: { rev: number; game: GameState; next: GameState } | null = null;
+export function nextYearView(game: GameState): GameState {
+  const r = rev();
+  if (!shifted || shifted.rev !== r || shifted.game !== game || shifted.next.year !== game.year + 1) shifted = { rev: r, game, next: { ...game, year: game.year + 1 } };
+  return shifted.next;
+}
+
 const specs = new WeakMap<Planet, { rev: number; game: GameState; by: Map<number, PlanetSpec> }>();
-/** planetSpec, kept while the game does not change. */
+/** planetSpec, kept while the game does not change (for the coming year's production). */
 export function viewSpec(game: GameState, planet: Planet, player: Player = game.players[planet.owner]): PlanetSpec {
   const r = rev();
   let e = specs.get(planet);
   if (!e || e.rev !== r || e.game !== game) specs.set(planet, e = { rev: r, game, by: new Map() });
   let sp = e.by.get(player.id);
-  if (!sp) e.by.set(player.id, sp = planetSpec(game, planet, player));
+  if (!sp) e.by.set(player.id, sp = planetSpec(nextYearView(game), planet, player));
   return sp;
 }
 

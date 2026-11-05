@@ -1,4 +1,5 @@
 // Ship & starbase designer and technology browser.
+import { seenOwner } from '../../engine/aiknow';
 import { useEffect, useState } from 'preact/hooks';
 import { partBrief } from '../techtext';
 import { upgradeTargets } from '../../engine/upgrade';
@@ -9,7 +10,7 @@ import type { DesignSlot, ShipDesign, Player, ShipRole } from '../../engine/type
 import { simulateBattle, type SimResult } from '../../engine/battle';
 import { Num } from '../components';
 import * as A from '../actions';
-import { HULLS, TECHS, hasTech, partFitsSlot, playerCost, slotLabel, CATEGORY_NAMES, techRequirementText, FIELD_NAMES, reqLevels, canLearn, mainField } from '../../engine/tech';
+import { HULLS, TECHS, hasTech, partFitsSlot, playerCost, slotLabel, CATEGORY_NAMES, techRequirementText, FIELD_NAMES, reqLevels, canLearn, mainField, ruleOffTech } from '../../engine/tech';
 import { designSpec, validateDesign, availableHulls, autoRole, type DesignSpec , isScoutDesign } from '../../engine/design';
 import { addDesign } from '../../engine/newgame';
 import type { HullData, TechData } from '../../data/types';
@@ -108,7 +109,7 @@ function EnemyDesign({ id }: { id: number }) {
   return <div>
     <h3>{d.name} <span class="small" style={{ color: owner.color }}>({owner.name})</span></h3>
     <Schematic hull={h} slots={d.slots ?? []} color={owner.color} />
-    {d.slots ? <StatsPanel spec={designSpec(owner, { hull: d.hull, slots: d.slots, starbase: d.starbase })} /> : <p class="muted small">Équipement inconnu : il sera révélé lors d'une bataille contre ce modèle.</p>}
+    {d.slots ? <StatsPanel spec={designSpec(seenOwner(me, owner), { hull: d.hull, slots: d.slots, starbase: d.starbase })} /> : <p class="muted small">Équipement inconnu : il sera révélé lors d'une bataille contre ce modèle.</p>}
     {d.slots && <DesignCompare key={'cmpe' + id} owner={owner} design={{ id: d.id, owner: d.owner, name: d.name, hull: d.hull, slots: d.slots, starbase: d.starbase, built: 0 }} />}
   </div>;
 }
@@ -241,14 +242,14 @@ function DesignCompare({ design, owner }: { design: ShipDesign; owner?: Player }
   const g = s.game!, me = s.me!;
   const own = owner ?? me;
   const st = design.starbase;
-  const theirs = Object.values(me.intel.designs).filter(d => d.slots && d.starbase === st && d.id !== design.id).sort((a, b) => designSpec(g.players[b.owner], { hull: b.hull, slots: b.slots!, starbase: st }).powerRating - designSpec(g.players[a.owner], { hull: a.hull, slots: a.slots!, starbase: st }).powerRating).map(d => ({ key: 'e' + d.id, label: `${d.name} (${g.players[d.owner].name})`, owner: g.players[d.owner], d: { id: d.id, owner: d.owner, name: d.name, hull: d.hull, slots: d.slots!, starbase: st, built: 0 } as ShipDesign }));
+  const theirs = Object.values(me.intel.designs).filter(d => d.slots && d.starbase === st && d.id !== design.id).sort((a, b) => designSpec(seenOwner(me, g.players[b.owner]), { hull: b.hull, slots: b.slots!, starbase: st }).powerRating - designSpec(seenOwner(me, g.players[a.owner]), { hull: a.hull, slots: a.slots!, starbase: st }).powerRating).map(d => ({ key: 'e' + d.id, label: `${d.name} (${g.players[d.owner].name})`, owner: g.players[d.owner], d: { id: d.id, owner: d.owner, name: d.name, hull: d.hull, slots: d.slots!, starbase: st, built: 0 } as ShipDesign }));
   const ours = g.designs.filter(d => d.owner === me.id && !d.deleted && d.starbase === st && d.id !== design.id).sort((a, b) => designSpec(me, b).powerRating - designSpec(me, a).powerRating).map(d => ({ key: 'o' + d.id, label: `${d.name} (vos modèles)`, owner: me, d }));
   // an enemy design is compared with ours first; ours with the enemy's first
   const opts = own.id === me.id ? [...theirs, ...ours] : [...ours, ...theirs];
   const [other, setOther] = useState(opts[0]?.key ?? '');
   const o = opts.find(x => x.key === other) ?? opts[0];
   if (!o) return null;
-  const sa = designSpec(own, design), sb = designSpec(o.owner, o.d);
+  const sa = designSpec(seenOwner(me, own), design), sb = designSpec(seenOwner(me, o.owner), o.d);
   const rows = compareMetrics(sa, sb, st);
   const better = (x: Metric) => x.a === x.b ? 0 : (x.a > x.b) !== !!x.lower ? 1 : -1;
   const width = (v: number, x: Metric) => {
@@ -475,7 +476,7 @@ export function TechBrowserBody({ focus }: { focus?: string } = {}) {
   const items: (TechData | HullData)[] = cat === 'ShipHull' ? HULL_DATA.filter(h => !h.starbase) : cat === 'StarbaseHull' ? HULL_DATA.filter(h => h.starbase) : TECH_DATA.filter(t => t.cat === cat);
   // the Mystery Trader's technologies stay a surprise until obtained
   // 0.3.9.21: the parts of a rule that is off (decoys, sovereignty beacons) are not offered, so not listed either
-  const ruleOff = (t: TechData | HullData) => 'origin' in t && ((t.origin === 'deception' && !g.settings.deception) || (t.origin === 'culture' && !g.settings.culture));
+  const ruleOff = (t: TechData | HullData) => ruleOffTech(g, t);
   const visible = items.filter(t => !ruleOff(t) && ((canLearn(me.race, t.req) && !t.req.acquirable) || hasTech(me, t)));
   const unknown = visible.filter(t => knownState(g, me, t) === 'unknown');
   const shown = visible.filter(t => knownState(g, me, t) !== 'unknown' && (!onlyAvail || hasTech(me, t)));

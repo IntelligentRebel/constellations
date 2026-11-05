@@ -184,6 +184,7 @@ class Store {
     this.handoff = !g.pbem && this.humans().length > 1;
     try { moodNow(g, me); } catch { /* ignore */ }
     this.achievements(me);
+    if (!this.handoff) this.announceVictory();
     this.save();
     // 0.3.6.7: the backup folder, proposed once (the player may decline)
     if (!g.tutorial && backupSupported() && backup.status === 'none' && !backupDeclined()) this.open('backups', { intro: true });
@@ -395,6 +396,16 @@ class Store {
     this.handoff = true;
   }
 
+  /** 0.3.9.22: the end of the game, shown once to each human (when it is their turn to look). */
+  announceVictory() {
+    const g = this.game;
+    if (!g || g.victor == null || !this.me || this.me.ai) return;
+    const seen = g.victorySeen ?? (g.victorySeen = g.victoryAnnounced ? [g.human] : []); // (an older save: shown to the one playing then)
+    if (seen.includes(this.me.id)) return;
+    seen.push(this.me.id); g.victoryAnnounced = true;
+    this.open('gameOver');
+  }
+
   /** 0.3.9: achievements just earned, told in the toast. */
   achievements(p: Player) {
     if (!this.game || p.ai) return;
@@ -438,7 +449,9 @@ class Store {
     this.undo = [];
     this.messageIndex = 0;
     // keep commanded object valid
-    if (this.commanded?.kind === 'fleet' && !this.game.fleets.some(f => f.id === this.commanded!.id)) {
+    // (0.3.9.22: nor one that is no longer ours: a fleet given away stayed commanded, its new owner's route drawn, our
+    // orders given to it)
+    if (this.commanded?.kind === 'fleet' && !this.game.fleets.some(f => f.id === this.commanded!.id && f.owner === this.game!.human)) {
       const hw = this.game.planets.find(p => p.owner === this.game!.human);
       this.commanded = hw ? { kind: 'planet', id: hw.id } : null;
     }
@@ -455,7 +468,8 @@ class Store {
     const after = this.humans();
     if (humans.length > 1 && after.length) this.switchTo(after[0]);
     // (0.3.9.21: in hot seat, the year's sounds and achievements were the last player's, heard and shown by the next)
-    if (this.game.victor !== null && !this.game.victoryAnnounced) { this.game.victoryAnnounced = true; this.open('gameOver'); }
+    // (0.3.9.22: to every human, once: in hot seat the next one never saw it, by turn files nobody did)
+    if (humans.length <= 1 || !after.length) this.announceVictory();
     this.save();
     if (humans.length <= 1) try { afterTurn(this.game, listener, before); } catch { /* sound is never worth an error */ }
     if (!P && humans.length <= 1) this.achievements(listener);

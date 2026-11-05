@@ -743,6 +743,8 @@ export interface AIState {
   lastDesignYear: number;
   scouted: number[];
   colonyTargets: Record<number, number>; // planet id -> fleet id
+  /** 0.3.9.22: planet id -> year a colony ship of ours was refused there (a territory it had not seen) */
+  refusedColony?: Record<number, number>;
   attackStartYear?: number;
   /** planet id -> troop fleet id */
   troopClaims?: Record<number, number>;
@@ -1064,6 +1066,8 @@ export interface GameState {
   pbem?: PbemState;
   victor: number | null;
   victoryAnnounced: boolean;
+  /** 0.3.9.22: the humans who have seen the end of the game (each sees it once, in hot seat and by turn files) */
+  victorySeen?: number[];
   /** Constellations 3: nebulae, ion storms, dense clusters */
   terrain?: Terrain[];
   /** Constellations 3.6: the galaxy's natural shape (absent: a square) */
@@ -1203,6 +1207,8 @@ export interface DiploPair {
   status: DiploStatus;
   /** year the status began */
   since: number;
+  /** 0.3.9.22: year the peace began, when an alliance signed or ended since (the lasting peace counts from it) */
+  peaceSince?: number;
   /** treaties (year signed) */
   trade?: number;
   research?: number;

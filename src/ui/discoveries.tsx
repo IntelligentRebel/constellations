@@ -1,7 +1,7 @@
 // Discoveries (Constellations 3.2) in the interface: anomaly and guardian of a planet, the Empire page section
 // (relics, map of the Ancients, choices waiting), and the notes of the map tooltip.
-import { viewFleet } from './memo';
-import type { GameState, Planet, Player } from '../engine/types';
+import { viewFleet, viewMemo } from './memo';
+import type { Fleet, GameState, Planet, Player } from '../engine/types';
 import { store, useStore, fmt } from './store';
 import { useSorted } from './components';
 import { ANOMALIES, anomalyAt, currentRate, defOf, finished, fragmentsNeeded, knownAnomalies, pointsNeeded, studyBlockerSeen, studyingFleets, vaultOf, anomaliesOn, decide, isStudying } from '../engine/anomalies';
@@ -15,7 +15,7 @@ import { RELICS, type RelicId } from '../engine/relics';
 import { ORIGIN } from '../engine/origins';
 import { fleetSpec, distance } from '../engine/fleet';
 import { hasOrders } from '../engine/tasks';
-import { sendOptions, sendFleet, buildOptions, queueMission } from '../engine/missions';
+import { sendOptions, sendFleet, buildOptions, queueMission, missionStatus } from '../engine/missions';
 import { slowWarning } from './missionui';
 import { SECRET_INFO, secretOfPlanet, probeFleets, sealFleets, PROBE_NEED, OPEN_NEED, SLING_RANGE } from '../engine/secrets';
 import { PULSAR_SHIELD_RANGE } from '../engine/terrain';
@@ -102,9 +102,13 @@ function AnomalyBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const block = studyBlockerSeen(g, me, a);
   const here = studyingFleets(g, me, a);
   const years = rate > 0 ? Math.ceil((need - have) / rate) : 0;
-  const rivals = g.players.filter(o => o.id !== me.id && (a.progress[o.id] ?? 0) > 0).length;
-  const send = !block && !here.length ? sendOptions(g, me, p.id, 'explore') : [];
-  const build = !block && !here.length && !send.length ? buildOptions(g, me, p.id, 'explore') : [];
+  // (0.3.9.22: the rivals our scanners see at work there: their progress itself is no news we get)
+  const rivals = new Set(me.intel.fleets.filter(fi => fi.owner >= 0 && fi.owner !== me.id && fi.orbiting === p.id && (a.progress[fi.owner] ?? 0) > 0).map(fi => fi.owner)).size;
+  // (0.3.9.22: a scout already on its way or ordered counts: each click sent one more, or queued one more)
+  const st = !block && !here.length ? viewMemo(`mstat:${p.id}`, g, () => missionStatus(g, me, p.id)) : undefined;
+  const coming = st ? [...st.scouts.map(x => x.fleet.name), ...st.queued.filter(q => q.kind === 'explore').map(q => `${q.planet.name} (en chantier)`)] : [];
+  const send = !block && !here.length && !coming.length ? sendOptions(g, me, p.id, 'explore') : [];
+  const build = !block && !here.length && !coming.length && !send.length ? buildOptions(g, me, p.id, 'explore') : [];
   const goSend = () => { const s = store; s.checkpoint(); if (sendFleet(g, send[0].fleet, p.id, 'explore')) s.notify(`${send[0].fleet.name} part étudier ${d.name} : il restera en orbite`); else s.undo.pop(); s.bump(); };
   const goBuild = () => { const s = store; s.checkpoint(); queueMission(g, build[0].planet, build[0].design, { kind: 'explore', planetId: p.id }); s.notify(`${build[0].design.name} mis en chantier à ${build[0].planet.name} : il ira étudier ${p.name}`); s.bump(); };
   return <section class="blk anomaly">
@@ -117,7 +121,8 @@ function AnomalyBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
       : <div class="small muted">Un vaisseau équipé d'un scanner, laissé en orbite sans autre destination, étudie l'anomalie ({currentRateIf(g, me)} points par an avec un seul vaisseau).</div>}
     {rivals > 0 && <div class="small yellow">{rivals > 1 ? `${rivals} autres empires étudient` : 'Un autre empire étudie'} aussi ce site : le premier qui termine l'emporte.</div>}
     {d.site && <div class="small muted">{d.site.relic ? <>À la fin des fouilles : une relique, {RELICS[d.site.relic].name} ({RELICS[d.site.relic].effect}).</> : 'Chaque chapitre rapporte de la recherche ou des minerais.'}</div>}
-    {!block && !here.length && <div class="mission-btns">
+    {!block && !here.length && coming.length > 0 && <div class="small">En route pour l'étudier : {coming.join(', ')}.</div>}
+    {!block && !here.length && !coming.length && <div class="mission-btns">
       {send[0] ? <button class={'primary mbtn' + (send[0].slow ? ' slow' : '')} onClick={() => send[0].slow ? slowWarning(send[0].fleet.name, send[0].years, send[0].warp, goSend) : goSend()}>Envoyer étudier<small>{send[0].fleet.name} · {send[0].years} a{send[0].slow ? ` · Warp ${send[0].warp} !` : ''}</small></button>
         : build[0] ? <button class={'primary mbtn' + (build[0].slow || !build[0].reachable ? ' slow' : '')} onClick={() => build[0].slow ? slowWarning(`${build[0].design.name}, construit à ${build[0].planet.name},`, build[0].travelYears, build[0].warp, goBuild) : goBuild()}>Construire et envoyer un éclaireur<small>{build[0].planet.name} · ≈ {build[0].buildYears} + {build[0].travelYears} a{build[0].slow ? ` · Warp ${build[0].warp} !` : ''}</small></button>
         : <button class="primary mbtn" disabled>Aucun éclaireur disponible</button>}
@@ -127,6 +132,11 @@ function AnomalyBlock({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
 const currentRateIf = (g: GameState, me: Player) => { let r = 2 + Math.floor(me.tech.electronics / 4); if (me.origin === 'explorers') r *= 2; return r; };
 
 /** 0.3.7: sends the nearest idle ship with a scanner to a point (the zone where to sound a cloud). */
+/** 0.3.9.22: one of our fleets whose route ends at this point (sent by the button, still on its way). */
+function headingTo(g: GameState, me: Player, at: { x: number; y: number }, r = 1.5): Fleet | undefined {
+  return g.fleets.find(f => f.owner === me.id && f.waypoints.length > 1 && Math.hypot(f.waypoints[f.waypoints.length - 1].x - at.x, f.waypoints[f.waypoints.length - 1].y - at.y) <= r);
+}
+
 function sendScanner(g: GameState, me: Player, at: { x: number; y: number }, what: string) {
   const cands = g.fleets.filter(f => f.owner === me.id && !hasOrders(f) && !isStudying(g, f) && viewFleet(g, f).hasEngines && (viewFleet(g, f).scanRange > 0 || viewFleet(g, f).scanRangePen > 0)).sort((a, b) => distance(a, at) - distance(b, at));
   const f = cands[0];
@@ -163,7 +173,7 @@ function SecretQuest({ g, me, s }: { g: GameState; me: Player; s: Secret }) {
       <div class="anom-prog"><div class="bar"><div style={{ width: Math.min(100, have / PROBE_NEED * 100) + '%' }} /></div><span class="small">passage : {fmt(have)} / {PROBE_NEED} points</span></div>
       {fl.length ? <div class="small green">{fl.map(f => f.name).join(', ')} sonde{fl.length > 1 ? 'nt' : ''} le nuage : {rate} points par an.</div>
         : <><div class="small muted">Aucune route connue n'y mène. Un vaisseau équipé d'un scanner qui stationne dans la zone marquée sur la carte, au bord du nuage, finira par trouver un passage.</div>
-          <div class="mission-btns"><button class="primary mbtn" onClick={() => sendScanner(g, me, s.zone!, 'sonder le nuage')}>Envoyer un vaisseau sonder le nuage</button></div></>}
+          {headingTo(g, me, s.zone!, s.zone!.r) ? <div class="small">{headingTo(g, me, s.zone!, s.zone!.r)!.name} est en route pour sonder le nuage.</div> : <div class="mission-btns"><button class="primary mbtn" onClick={() => sendScanner(g, me, s.zone!, 'sonder le nuage')}>Envoyer un vaisseau sonder le nuage</button></div>}</>}
     </>;
   }
   if (s.kind === 'pocket') return <p class="small muted">Un itinéraire qui sort de l'amas ou y entre passe par le trou de ver.</p>;
@@ -184,7 +194,7 @@ export function SealBlock({ g, me, wormholeId }: { g: GameState; me: Player; wor
     <p class="small"><b>Scellé.</b> Rien ne le traverse. Un vaisseau équipé d'un scanner qui reste à son embouchure peut l'étudier pour l'ouvrir ; il faut « Navigation des anomalies ». Il ne bouge jamais.</p>
     <div class="anom-prog"><div class="bar"><div style={{ width: Math.min(100, have / OPEN_NEED * 100) + '%' }} /></div><span class="small">ouverture : {fmt(have)} / {OPEN_NEED} points</span></div>
     {fl.length ? <div class="small green">{fl.map(f => f.name).join(', ')} l'étudie{fl.length > 1 ? 'nt' : ''}.</div>
-      : <div class="mission-btns"><button class="primary mbtn" onClick={() => sendScanner(g, me, w, 'étudier le trou de ver scellé')}>Envoyer un vaisseau l'étudier</button></div>}
+      : headingTo(g, me, w) ? <div class="small">{headingTo(g, me, w)!.name} est en route pour l'étudier.</div> : <div class="mission-btns"><button class="primary mbtn" onClick={() => sendScanner(g, me, w, 'étudier le trou de ver scellé')}>Envoyer un vaisseau l'étudier</button></div>}
   </div>;
 }
 
@@ -255,7 +265,7 @@ export function DiscoveriesSection({ g, me }: { g: GameState; me: Player }) {
     </div>
     {(me.relics ?? []).length > 0 && <div class="relics">{(me.relics as RelicId[]).map(r => <div class={'relic' + (focusR !== undefined && Object.keys(RELICS)[focusR] === r ? ' hl' : '')}><b>✦ {RELICS[r].name}</b><span class="small">{RELICS[r].effect}</span></div>)}</div>}
     {anomaliesOn(g) && (rows.length ? <div class="report-scroll"><table class="report compact"><thead><tr>{th('name', 'Découverte')}{th('planet', 'Planète')}{th('level', 'Diff.')}{th('pct', 'Avancement')}{th('status', 'État')}{th('dist', 'Distance')}</tr></thead>
-      <tbody>{sorted.map(r => <tr onClick={() => s.focus({ kind: 'planet', id: r.pl.id }, r.pl)} class={'go' + (r.a.id === focusA ? ' hl' : '')}><td>{r.d.name}{r.d.site ? <span class="tag dim">site {(r.a.chapter ?? 0)}/{r.d.site.chapters}</span> : ''}</td><td>{r.pl.name}</td><td class="num">{r.a.level}</td><td class="num">{Math.round(r.pct * 100)} %</td><td class={r.cls}>{r.status}{finished(r.a) && r.a.doneBy !== me.id && r.a.doneBy !== undefined ? ` (${g.players[r.a.doneBy].name})` : ''}</td><td class="num">{fmt(r.dist)} al</td></tr>)}</tbody></table></div>
+      <tbody>{sorted.map(r => <tr onClick={() => s.focus({ kind: 'planet', id: r.pl.id }, r.pl)} class={'go' + (r.a.id === focusA ? ' hl' : '')}><td>{r.d.name}{r.d.site ? <span class="tag dim">site {(r.a.chapter ?? 0)}/{r.d.site.chapters}</span> : ''}</td><td>{r.pl.name}</td><td class="num">{r.a.level}</td><td class="num">{Math.round(r.pct * 100)} %</td><td class={r.cls}>{r.status}{finished(r.a) && r.a.doneBy !== me.id && r.a.doneBy !== undefined && me.intel.met.includes(r.a.doneBy) ? ` (${g.players[r.a.doneBy].name})` : ''}</td><td class="num">{fmt(r.dist)} al</td></tr>)}</tbody></table></div>
       : <p class="small muted">Aucune anomalie repérée pour l'instant : elles apparaissent quand vos vaisseaux analysent une planète.</p>)}
     {secrets.length > 0 && <div class="emp-guards">{secrets.map(x => {
       const pl = g.planets[x.ids[0]];

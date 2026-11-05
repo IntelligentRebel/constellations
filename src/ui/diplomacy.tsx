@@ -56,7 +56,7 @@ function Actions({ g, me, o }: { g: GameState; me: Player; o: Player }) {
     else store.notify(`Proposition envoyée aux ${o.name}.`);
   });
   const blocked = (kind: ProposalKind) => DIP.proposalBlocker(g, me.id, o.id, kind);
-  const treaty = pr.trade !== undefined || pr.research !== undefined || st === 'alliance';
+  const treaty = DIP.isBetrayal(g, me.id, o.id);
   return <div class="diplo-acts">
     {st === 'war' && <div class="diplo-act">
       <button class="primary" disabled={!!blocked('peace')} onClick={() => send('peace', offerNow, offerNow ? me.id : undefined)}>Proposer la paix</button>
@@ -123,7 +123,7 @@ function HegemonNote() {
   // the leader must be known to you
   const L0 = g.players[hg.id];
   if (hg.id !== me.id && !me.intel.met.includes(hg.id)) return null;
-  if (!g.players.some(a => a.ai && !a.dead && !a.monster && a.id !== hg.id && a.intel.met.includes(hg.id) && DIP.coalitionMind(a, L0) && DIP.runaway(g, hg.id, a.id) > 0)) return null;
+  if (!g.players.some(a => a.ai && !a.dead && !a.monster && a.id !== hg.id && a.intel.met.includes(hg.id) && DIP.statusOf(g, a.id, hg.id) !== 'alliance' && DIP.coalitionMind(a, L0) && DIP.runaway(g, hg.id, a.id) > 0)) return null;
   const strong = hg.t >= 0.5;
   if (hg.id === me.id) return <div class="alert small">{strong ? 'Votre avance écrase la galaxie : les autres empires se rapprochent les uns des autres pour vous tenir tête, et ceux qui vous détestaient déjà ne manqueront pas une occasion.' : 'Votre avance commence à inquiéter la galaxie : les autres empires se rapprochent les uns des autres contre vous.'}</div>;
   const L = g.players[hg.id];
@@ -136,7 +136,9 @@ export function DiplomacyDialog() {
   const focus: number | undefined = s.tab === 'diplomacy' ? s.tabData?.playerId : undefined;
   const [open, setOpen] = useState<Record<number, boolean>>(focus !== undefined ? { [focus]: true } : {});
   const met = me.intel.met.map(id => g.players[id]).filter(p => p && !p.monster);
-  const incoming = g.diplomacy!.proposals.filter(x => x.to === me.id);
+  // (0.3.9.22: not those of an empire destroyed meanwhile)
+  const incoming = g.diplomacy!.proposals.filter(x => x.to === me.id && !g.players[x.from]?.dead);
+  const reply = (id: number, yes: boolean) => { let why: string | null = null; act(() => { why = DIP.answer(g, id, yes); }); s.notify(why ? `Cette proposition ne peut plus être acceptée : ${why}.` : yes ? 'Proposition acceptée.' : 'Proposition refusée.'); };
   const outgoing = g.diplomacy!.proposals.filter(x => x.from === me.id);
   const tb = DIP.tradeBonus(g, me.id), rb = DIP.researchBonus(g, me.id);
   const intel = intelOn(g);
@@ -149,7 +151,7 @@ export function DiplomacyDialog() {
         const terms = x.minerals ? (x.payer === x.from ? `, contre ${x.minerals} kt de minerais qu'ils vous versent` : `, contre ${x.minerals} kt de minerais que vous leur versez`) : '';
         const against = x.against !== undefined ? g.players[x.against]?.name : undefined;
         return <div class="alert info diplo-prop"><span><b style={{ color: o.color }}>{o.name}</b> {x.kind === 'tribute' ? `exigent de vous un tribut de ${x.minerals} kt de minerais` : x.kind === 'borders' ? `vous demandent d'ouvrir vos frontières à leurs vaisseaux${terms}` : against ? `vous proposent une alliance contre les ${against}, dont l'avance menace toute la galaxie` : `vous proposent ${DIP.KIND_NAMES[x.kind]}${terms}`}. <span class="small muted">Expire en {x.expires}.</span></span>
-          <span class="row-btns"><button class="primary small" onClick={() => act(() => DIP.answer(g, x.id, true), 'Proposition acceptée.')}>Accepter</button> <button class="small" onClick={() => act(() => DIP.answer(g, x.id, false), 'Proposition refusée.')}>Refuser</button></span></div>;
+          <span class="row-btns"><button class="primary small" onClick={() => reply(x.id, true)}>Accepter</button> <button class="small" onClick={() => reply(x.id, false)}>Refuser</button></span></div>;
       })}</div>}
       {BD.bordersOn(g) && <div class="diplo-policy small">Frontières pour les empires rencontrés désormais : <select value={me.borderPolicy ?? 'open'} onChange={e => { const v = (e.target as HTMLSelectElement).value as 'open' | 'closed'; act(() => { me.borderPolicy = v; }, v === 'closed' ? 'Les empires rencontrés désormais trouveront vos frontières fermées.' : 'Les empires rencontrés désormais trouveront vos frontières ouvertes.'); }}><option value="open">Ouvertes</option><option value="closed">Fermées</option></select> <span class="muted">(puis empire par empire, ci-dessous)</span></div>}
       {met.length === 0 ? <p class="muted">Vous n'avez encore rencontré aucun autre empire. Les empires apparaissent ici après un premier contact (scanner pénétrant, colonie découverte ou combat). En attendant, vous êtes en paix avec tous.</p> :

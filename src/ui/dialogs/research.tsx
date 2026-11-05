@@ -4,7 +4,7 @@ import { useState } from 'preact/hooks';
 import { useStore, fmt, fmtPeople } from '../store';
 import { Modal, Bar, Row, Num, CompIcon, HullImg, useSorted } from '../components';
 import { FIELDS, type Field } from '../../engine/types';
-import { FIELD_NAMES, TECHS, HULLS, canLearn, meetsLevels, FIELD_KEYS, hasTech, CATEGORY_NAMES, mainField, effReq } from '../../engine/tech';
+import { FIELD_NAMES, TECHS, HULLS, canLearn, meetsLevels, FIELD_KEYS, hasTech, CATEGORY_NAMES, mainField, effReq, ruleOffTech } from '../../engine/tech';
 import { TECH_HORIZON, researchCost, MAX_TECH, estimateNextLevel, techOdds, earliestLevel, pointsToReach, breakthroughChance, researchPace, yearsFor, goalTarget, goalProgress, type Pace } from '../../engine/research';
 import { planetSpec } from '../../engine/planet';
 import { raceSpec, researchCostFactor } from '../../engine/race';
@@ -155,7 +155,7 @@ function setGoal(s: ReturnType<typeof useStore>, g: GameState, me: Player, name:
 function TechHorizon({ g, me, view, setView, pace }: { g: GameState; me: Player; view: Field | 'all'; setView: (v: Field | 'all') => void; pace: Pace }) {
   const s = useStore();
   const fuzzy = !!g.settings.fuzzyTechTree;
-  const items: Item[] = [...TECHS.values(), ...HULLS.values()].filter(t => canLearn(me.race, t.req) && !t.req.acquirable && !hasTech(me, t) && mainField(t.req));
+  const items: Item[] = [...TECHS.values(), ...HULLS.values()].filter(t => !ruleOffTech(g, t) && canLearn(me.race, t.req) && !t.req.acquirable && !hasTech(me, t) && mainField(t.req));
   const fields = view === 'all' ? FIELDS : [view];
   // components and hulls (chances), technologies without a component and megaprojects (fixed levels): one table
   type HRow = { key: string; f: Field; chance: number[]; median: number; others: { field: Field; level: number }[]; years: number; t?: Item; sp?: SpecialTech; m?: MegaInfo };
@@ -256,7 +256,7 @@ function KnownTechs({ g, me }: { g: GameState; me: Player }) {
   const open = !(s.collapsed['rs-known'] ?? true);
   const toggle = () => { s.collapsed['rs-known'] = open; s.savePrefs(); s.bump(); };
   const [cat, setCat] = useState<string>('upg');
-  const owned: Item[] = [...TECHS.values(), ...HULLS.values()].filter(t => hasTech(me, t));
+  const owned: Item[] = [...TECHS.values(), ...HULLS.values()].filter(t => !ruleOffTech(g, t) && hasTech(me, t));
   const designs = g.designs.filter(d => d.owner === me.id && !d.deleted);
   const rows = owned.map(t => {
     const isHull = 'slots' in t;

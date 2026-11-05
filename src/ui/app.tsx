@@ -2,6 +2,7 @@
 import { pendingRefit } from '../engine/refit';
 import { LangPicker } from './langpick';
 import { useEffect, useState } from 'preact/hooks';
+import { resetStepSession } from './map';
 import { store, useStore, useChannel, fmt, fmtPop, fmtGrowth, INSPECTOR_TABS, type TabId } from './store';
 import { viewSpec, viewFleet } from './memo';
 import { CenterPage, fitGalaxy } from './pages';
@@ -24,7 +25,7 @@ import { TECHS, HULLS, FIELD_NAMES } from '../engine/tech';
 import { tl } from '../data/labels';
 import { pendingForks } from '../engine/doctrines';
 import { inGoldenAge } from '../engine/golden';
-import { portalThreat } from '../engine/megaprojects';
+import { portalThreat, rivalPortal } from '../engine/megaprojects';
 import { nemesisOn, nemesisOf } from '../engine/nemesis';
 import { actsOn, actOf, ACT_INFO, actRules, nextActText } from '../engine/acts';
 import { loadedArks } from '../engine/diaspora';
@@ -96,8 +97,7 @@ function EmpireAlerts() {
   const s = useStore();
   const g = s.game!, me = s.me!;
   const forks = pendingForks(g, me);
-  const portal = portalThreat(g);
-  const rival = portal && portal.owner !== me.id && portal.announced > 0 ? portal : null;
+  const rival = rivalPortal(g, me);
   const disorg = g.settings.distanceCost && me.disorgUntil !== undefined && g.year < me.disorgUntil;
   const decisions = me.decisions?.length ?? 0;
   const nem = nemesisOn(g) ? nemesisOf(g, me.id) : undefined;
@@ -225,9 +225,12 @@ function useKeyboard() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); s.save(); s.notify('Partie sauvegardée'); return; }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') { e.preventDefault(); s.open('find'); return; }
       if (e.key === 'Escape') {
+        // (0.3.9.22: typing in a page (a design's name): the field lets go, the page stays; it went back to the map and
+        // the design being drawn was lost)
+        if (typing && !s.dialogs.length) { (document.activeElement as HTMLElement | null)?.blur(); return; }
         if (s.dialogs.length) { s.close(); e.preventDefault(); }
         else if (s.drawer) { s.drawer = false; s.bump(); }
-        else if (s.wpMode) { s.wpMode = false; s.bump(); }
+        else if (s.wpMode) { s.wpMode = false; resetStepSession(); s.bump(); }
         else if (s.tab !== 'map') s.goTab('map');
         return;
       }
@@ -376,7 +379,7 @@ function Handoff() {
       <h2 style={{ color: me.color }}>Au tour des {me.name}</h2>
       <p class="muted">Les autres joueurs ne doivent pas regarder l'écran.</p>
       <ul class="handoff-list">{humans.map(h => <li class={h === me.id ? 'cur' : done.includes(h) ? 'done' : ''}><span class="dot" style={{ background: g.players[h].color }} />{g.players[h].name}<span class="muted small">{h === me.id ? 'à vous de jouer' : done.includes(h) ? 'ordres donnés' : 'en attente'}</span></li>)}</ul>
-      <button class="primary big" onClick={() => { s.handoff = false; if (s.me) s.achievements(s.me); s.bump(); }}>Afficher mon empire</button>
+      <button class="primary big" onClick={() => { s.handoff = false; if (s.me) s.achievements(s.me); s.announceVictory(); s.bump(); }}>Afficher mon empire</button>
     </div>
   </div>;
 }

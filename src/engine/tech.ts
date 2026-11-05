@@ -58,9 +58,27 @@ export function effReq(player: { techShift?: Record<string, number> }, item: { n
   return { ...item.req, [k]: Math.max(1, Math.min(26, (item.req[k] as number) + d)) };
 }
 
+/**
+ * 0.3.9.22: a component or hull of a rule switched off in this game (decoys without Deception, sovereignty beacons
+ * without Culture): not offered, listed, aimed at nor announced (the designer alone left them out).
+ */
+export function ruleOffTech(game: { settings: { deception?: boolean; culture?: boolean } }, t: { origin?: string } | object): boolean {
+  const o = (t as { origin?: string }).origin;
+  return (o === 'deception' && !game.settings.deception) || (o === 'culture' && !game.settings.culture);
+}
+
 export function hasTech(player: Player, item: { name: string; req: TechReq }): boolean {
   if (!canLearn(player.race, item.req)) return false;
-  if (!meetsLevels(player.tech, effReq(player, item))) return false;
+  // 0.3.9.22: without a shift for this item, its own requirements, compared field by field (the same tests as
+  // meetsLevels: a missing requirement fails)
+  const d = player.techShift?.[item.name];
+  const l = player.tech, r = item.req;
+  // (with a shift, the requirement of the main field moved as effReq does, without building a new requirement)
+  const f = d ? mainField(r) : null;
+  const k = f ? FIELD_KEYS[f] : null;
+  const need = (key: keyof TechReq) => key === k ? Math.max(1, Math.min(26, (r[key] as number) + d!)) : r[key] as number;
+  if (!k) { if (!(l.energy >= r.en && l.weapons >= r.we && l.propulsion >= r.pr && l.construction >= r.co && l.electronics >= r.el && l.biotechnology >= r.bi)) return false; }
+  else if (!(l.energy >= need('en') && l.weapons >= need('we') && l.propulsion >= need('pr') && l.construction >= need('co') && l.electronics >= need('el') && l.biotechnology >= need('bi'))) return false;
   if (item.req.acquirable && !player.acquiredTechs.includes(item.name)) return false;
   return true;
 }
@@ -100,6 +118,15 @@ export function playerCost(player: { tech: TechLevels; race: Race; techShift?: R
 
 export function techsInCategory(cat: string): TechData[] {
   return TECH_DATA.filter(t => t.cat === cat);
+}
+/** 0.3.9.22: the same list, kept (the table is complete once the modules are loaded); not to be changed by callers. */
+const byCat = new Map<string, TechData[]>();
+let byCatLen = -1;
+export function techsOfCategory(cat: string): readonly TechData[] {
+  if (byCatLen !== TECH_DATA.length) { byCat.clear(); byCatLen = TECH_DATA.length; }
+  let l = byCat.get(cat);
+  if (!l) { l = TECH_DATA.filter(t => t.cat === cat); byCat.set(cat, l); }
+  return l;
 }
 
 export const CATEGORY_NAMES: Record<string, string> = {

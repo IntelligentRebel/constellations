@@ -270,6 +270,11 @@ export function detourPoints(game: Geo, a: { x: number; y: number }, b: { x: num
     pathCache.set(key, cells);
   }
   if (!cells) return null;
+  // 0.3.9.22: the same ends on the same grid give the same points (asked again and again in a year: the computers
+  // weigh their routes, the map draws them)
+  const tk = `${key}|${a.x},${a.y}>${b.x},${b.y}`;
+  const hit = tightCache.get(tk);
+  if (hit) return hit.map(p => ({ x: p.x, y: p.y }));
   // pull the path tight: keep only the points where the straight line would hit a cloud
   const pts = [a, ...cells, b];
   const out: { x: number; y: number }[] = [];
@@ -282,8 +287,11 @@ export function detourPoints(game: Geo, a: { x: number; y: number }, b: { x: num
     out.push(q);
     from = q; i = j;
   }
+  if (tightCache.size > 4000) tightCache.clear();
+  tightCache.set(tk, out.map(p => ({ x: p.x, y: p.y })));
   return out;
 }
+const tightCache = new Map<string, { x: number; y: number }[]>();
 
 /** The grid with the closed territory around cell s open (a fleet that starts inside may cross it to get out). */
 function leavingGrid(game: Geo, g: Grid, extra: Obstacles, s: number): Grid {
@@ -315,9 +323,17 @@ function leavingGrid(game: Geo, g: Grid, extra: Obstacles, s: number): Grid {
  * when it is cheap) but stays open: a narrow pass between two clouds is taken when going around costs more
  * (0.3.6.8; before, a pass narrower than three cells was never taken while any way around existed).
  */
+// 0.3.9.22: the search arrays are kept from one search to the next (a cell counts as untouched unless its stamp is
+// the current search's): filling three arrays of the whole grid took a third of each search
+let A_COST = new Float32Array(0), A_PREV = new Int32Array(0), A_STAMP = new Int32Array(0), A_DONE = new Int32Array(0), aGen = 0;
 function astar(g: Grid, s: number, t: number): { x: number; y: number }[] | null {
   const n = g.cols * g.rows, NEAR = 2.2;
-  const cost = new Float32Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1);
+  if (A_COST.length < n) { A_COST = new Float32Array(n); A_PREV = new Int32Array(n); A_STAMP = new Int32Array(n); A_DONE = new Int32Array(n); aGen = 0; }
+  if (++aGen > 0x7ffffff0) { A_STAMP.fill(0); A_DONE.fill(0); aGen = 1; }
+  const gen = aGen, COST = A_COST, PREV = A_PREV, STAMP = A_STAMP, DONE = A_DONE;
+  const costOf = (c: number) => STAMP[c] === gen ? COST[c] : Infinity;
+  const prevOf = (c: number) => STAMP[c] === gen ? PREV[c] : -1;
+  const setCost = (c: number, v: number, p: number) => { STAMP[c] = gen; COST[c] = v; PREV[c] = p; };
   const tx = t % g.cols, ty = Math.floor(t / g.cols);
   const h = (c: number) => Math.hypot(c % g.cols - tx, Math.floor(c / g.cols) - ty);
   const free = (c: number) => c === s || c === t || !g.hard[c];
@@ -344,12 +360,11 @@ function astar(g: Grid, s: number, t: number): { x: number; y: number }[] | null
     }
     return top;
   };
-  cost[s] = 0; push(h(s), s);
-  const done = new Uint8Array(n);
+  setCost(s, 0, -1); push(h(s), s);
   while (heapF.length) {
     const c = pop();
-    if (done[c]) continue;
-    done[c] = 1;
+    if (DONE[c] === gen) continue;
+    DONE[c] = gen;
     if (c === t) break;
     const cx = c % g.cols, cy = Math.floor(c / g.cols);
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
@@ -357,15 +372,15 @@ function astar(g: Grid, s: number, t: number): { x: number; y: number }[] | null
       const x = cx + dx, y = cy + dy;
       if (x < 0 || y < 0 || x >= g.cols || y >= g.rows) continue;
       const nb = y * g.cols + x;
-      if (done[nb] || !free(nb)) continue;
+      if (DONE[nb] === gen || !free(nb)) continue;
       if (dx && dy && (!free(cy * g.cols + x) || !free(y * g.cols + cx))) continue;
-      const nc = cost[c] + (dx && dy ? Math.SQRT2 : 1) * (g.soft[nb] && nb !== t ? NEAR : 1);
-      if (nc < cost[nb]) { cost[nb] = nc; prev[nb] = c; push(nc + h(nb), nb); }
+      const nc = costOf(c) + (dx && dy ? Math.SQRT2 : 1) * (g.soft[nb] && nb !== t ? NEAR : 1);
+      if (nc < costOf(nb)) { setCost(nb, nc, c); push(nc + h(nb), nb); }
     }
   }
-  if (prev[t] < 0 && s !== t) return null;
+  if (prevOf(t) < 0 && s !== t) return null;
   const out: { x: number; y: number }[] = [];
-  for (let c = prev[t]; c >= 0 && c !== s; c = prev[c]) out.unshift({ x: (c % g.cols + 0.5) * g.cell, y: (Math.floor(c / g.cols) + 0.5) * g.cell });
+  for (let c = prevOf(t); c >= 0 && c !== s; c = prevOf(c)) out.unshift({ x: (c % g.cols + 0.5) * g.cell, y: (Math.floor(c / g.cols) + 0.5) * g.cell });
   return out;
 }
 
