@@ -5526,6 +5526,8 @@
 "Apprendre à jouer, pas à pas, dans une vraie partie":"在一局真实的游戏中，一步步学习如何游玩",
 "apprendre à jouer pas à pas":"一步步学习如何游玩",
 "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)":"快速游戏：地球人对阵三个帝国，位于旋臂（小型星图）",
+"Multijoueur par fichiers (PBEM)…":"通过回合文件多人游戏（PBEM）…",
+"Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».":"每个人都在自己家里玩，就像通过电子邮件玩 Stars!：此浏览器托管游戏，并把回合文件发给每位玩家。收到回合文件的玩家用 « 导入游戏… » 打开它。",
 "Succès ({0} sur {1})":"成就（{0}/{1}）",
 "Autres parties de ce navigateur":"此浏览器中的其他游戏",
 "Partie illisible":"游戏无法读取",

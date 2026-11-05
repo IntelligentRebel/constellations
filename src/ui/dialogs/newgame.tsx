@@ -37,11 +37,13 @@ export function NewGameDialog() {
   const [raceKey, setRaceKey] = useState('Humanoid');
   const [wizard, setWizard] = useState(false);
   const saved = savedRaces();
-  const [tab, setTab] = useState<'simple' | 'advanced' | 'rules' | 'players' | 'victory'>('simple');
+  // 0.3.9.23: opened from « Multijoueur par fichiers » of the welcome screen: one human opponent, by turn files
+  const pbem = !!s.dialogs.find(d => d.kind === 'newGame')?.data?.pbem;
+  const [tab, setTab] = useState<'simple' | 'advanced' | 'rules' | 'players' | 'victory'>(pbem ? 'players' : 'simple');
   const [name, setName] = useState(NAMES[Math.floor(Math.random() * NAMES.length)]);
-  const [opponents, setOpponents] = useState<Opp[]>([{ race: 0, diff: 'standard' }, { race: 1, diff: 'standard' }, { race: 7, diff: 'standard' }]);
+  const [opponents, setOpponents] = useState<Opp[]>(pbem ? [{ race: 0, diff: 'human' }, { race: 1, diff: 'standard' }] : [{ race: 0, diff: 'standard' }, { race: 1, diff: 'standard' }, { race: 7, diff: 'standard' }]);
   const [origin, setOrigin] = useState('standard');
-  const [byFiles, setByFiles] = useState(false);
+  const [byFiles, setByFiles] = useState(pbem);
   const set = (fn: (x: GameSettings) => void) => { const c = JSON.parse(JSON.stringify(settings)); fn(c); setSettings(c); };
   if (wizard) return <RaceWizard initial={race} onCancel={() => setWizard(false)} onDone={r => { saveRace(r); setRace(r); setRaceKey('saved:' + r.name); setWizard(false); }} />;
   const start = () => {
@@ -144,6 +146,10 @@ export function NewGameDialog() {
         </div>
       </div>}
       {tab === 'players' && <div>
+        {opponents.some(o => o.diff === 'human') && <div class="ng-pbem">
+          <label class="chk"><input type="checkbox" checked={byFiles} onChange={e => setByFiles((e.target as HTMLInputElement).checked)} /> Chacun joue chez soi, par fichiers de tour (comme Stars! par courrier)</label>
+          <p class="small muted">{byFiles ? `Partie par fichiers : ${opponents.filter(o => o.diff === 'human').length + 1} joueurs humains jouent chacun chez soi ; ce navigateur héberge la partie.` : `Partie à plusieurs sur cet appareil : ${opponents.filter(o => o.diff === 'human').length + 1} joueurs humains jouent chacun leur tour.`}</p>
+        </div>}
         <table class="report">
           <thead><tr><th>#</th><th>Race</th><th>Joueur</th><th></th></tr></thead>
           <tbody>

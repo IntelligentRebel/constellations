@@ -5526,6 +5526,8 @@
 "Apprendre à jouer, pas à pas, dans une vraie partie":"実際のゲームで、遊び方を一歩ずつ学ぶ",
 "apprendre à jouer pas à pas":"遊び方を一歩ずつ学ぶ",
 "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)":"クイックゲーム：テラン人対3つの帝国、渦状腕にて（小さなマップ）",
+"Multijoueur par fichiers (PBEM)…":"ターンファイルでマルチプレイ（PBEM）…",
+"Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».":"各自が自宅でプレイします。Stars! のメール対戦と同じです。このブラウザがゲームをホストし、各プレイヤーにターンファイルを送ります。ターンファイルを受け取ったプレイヤーは « ゲームをインポート… » で開きます。",
 "Succès ({0} sur {1})":"実績（{1}中{0}）",
 "Autres parties de ce navigateur":"このブラウザーの他のゲーム",
 "Partie illisible":"読み込めないゲーム",

@@ -5526,6 +5526,8 @@
 "Apprendre à jouer, pas à pas, dans une vraie partie":"Научиться играть шаг за шагом в настоящей партии",
 "apprendre à jouer pas à pas":"учиться играть шаг за шагом",
 "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)":"Быстрая партия: Земляне против трёх империй, в спиральном рукаве (малая карта)",
+"Multijoueur par fichiers (PBEM)…":"Мультиплеер по файлам ходов (PBEM)…",
+"Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».":"Каждый играет у себя, как в Stars! по почте: этот браузер ведёт партию и отправляет каждому игроку его файл хода. Игрок, получивший файл хода, открывает его через « Импорт партии… ».",
 "Succès ({0} sur {1})":"Достижения ({0} из {1})",
 "Autres parties de ce navigateur":"Другие партии в этом браузере",
 "Partie illisible":"Партию не удалось прочитать",

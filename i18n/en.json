@@ -5526,6 +5526,8 @@
 "Apprendre à jouer, pas à pas, dans une vraie partie":"Learn to play, step by step, in a real game",
 "apprendre à jouer pas à pas":"learn to play step by step",
 "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)":"Quick game: Terrans vs. three empires, in a spiral arm (small map)",
+"Multijoueur par fichiers (PBEM)…":"Multiplayer by turn files (PBEM)…",
+"Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».":"Everyone plays at home, like Stars! by e-mail: this browser hosts the game and sends each player their turn file. A player who receives a turn file opens it with « Import game… ».",
 "Succès ({0} sur {1})":"Achievements ({0} of {1})",
 "Autres parties de ce navigateur":"Other games in this browser",
 "Partie illisible":"Unreadable game",

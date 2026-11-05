@@ -16977,7 +16977,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:151 prop:label",
-   "ui/welcome.tsx:83 jsx"
+   "ui/welcome.tsx:84 jsx"
   ]
  },
  {
@@ -17051,7 +17051,7 @@
   "kind": "str",
   "refs": [
    "ui/app.tsx:162 prop:label",
-   "ui/welcome.tsx:85 jsx"
+   "ui/welcome.tsx:86 jsx"
   ]
  },
  {
@@ -17112,7 +17112,7 @@
   "kind": "jsx",
   "refs": [
    "ui/app.tsx:181 jsx",
-   "ui/dialogs/newgame.tsx:96 jsx",
+   "ui/dialogs/newgame.tsx:98 jsx",
    "ui/inspector.tsx:293 jsx",
    "ui/tutorial.tsx:126 prop:exportBtn"
   ]
@@ -17158,7 +17158,7 @@
   "kind": "jsx",
   "refs": [
    "ui/app.tsx:187 jsx",
-   "ui/welcome.tsx:82 jsx"
+   "ui/welcome.tsx:83 jsx"
   ]
  },
  {
@@ -21437,7 +21437,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:69 jsx",
-   "ui/dialogs/newgame.tsx:148 jsx"
+   "ui/dialogs/newgame.tsx:154 jsx"
   ]
  },
  {
@@ -21692,7 +21692,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/misc.tsx:175 attr:title",
-   "ui/welcome.tsx:84 jsx"
+   "ui/welcome.tsx:85 jsx"
   ]
  },
  {
@@ -22040,7 +22040,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:215 jsx",
-   "ui/dialogs/newgame.tsx:112 jsx"
+   "ui/dialogs/newgame.tsx:114 jsx"
   ]
  },
  {
@@ -23217,7 +23217,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:341 jsx",
-   "ui/dialogs/newgame.tsx:141 jsx"
+   "ui/dialogs/newgame.tsx:143 jsx"
   ]
  },
  {
@@ -23350,245 +23350,248 @@
   "key": "Partie hébergée : envoyez à chaque joueur son fichier de tour.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:72 call:notify"
+   "ui/dialogs/newgame.tsx:74 call:notify"
   ]
  },
  {
   "key": "Nouvelle partie créée. Bonne chance !",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:73 call:notify"
+   "ui/dialogs/newgame.tsx:75 call:notify"
   ]
  },
  {
   "key": "Nouvelle partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:80 attr:title"
+   "ui/dialogs/newgame.tsx:82 attr:title"
   ]
  },
  {
   "key": "{0} planètes · {1} joueurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:81 jsx"
+   "ui/dialogs/newgame.tsx:83 jsx"
   ]
  },
  {
   "key": "Commencer la partie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:83 jsx"
+   "ui/dialogs/newgame.tsx:85 jsx"
   ]
  },
  {
   "key": "La race d'un adversaire humain dépasse son budget de points",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:83 attr:title"
+   "ui/dialogs/newgame.tsx:85 attr:title"
   ]
  },
  {
   "key": "Partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 prop:label"
+   "ui/dialogs/newgame.tsx:87 prop:label"
   ]
  },
  {
   "key": "Options avancées",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 prop:label"
+   "ui/dialogs/newgame.tsx:87 prop:label"
   ]
  },
  {
   "key": "Règles Constellations",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 prop:label"
+   "ui/dialogs/newgame.tsx:87 prop:label"
   ]
  },
  {
   "key": "Adversaires ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 prop:label"
+   "ui/dialogs/newgame.tsx:87 prop:label"
   ]
  },
  {
   "key": "Conditions de victoire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 prop:label"
+   "ui/dialogs/newgame.tsx:87 prop:label"
   ]
  },
  {
   "key": "Votre race",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:89 jsx"
+   "ui/dialogs/newgame.tsx:91 jsx"
   ]
  },
  {
   "key": "Vos races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:92 attr:label"
+   "ui/dialogs/newgame.tsx:94 attr:label"
   ]
  },
  {
   "key": "Personnaliser la race…",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:94 jsx"
+   "ui/dialogs/newgame.tsx:96 jsx"
   ]
  },
  {
   "key": "Importer une race…",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:95 jsx"
+   "ui/dialogs/newgame.tsx:97 jsx"
   ]
  },
  {
   "key": "Exporter la race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:96 prop:title"
+   "ui/dialogs/newgame.tsx:98 prop:title"
   ]
  },
  {
   "key": "{0} · points restants {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:98 jsx"
+   "ui/dialogs/newgame.tsx:100 jsx"
   ]
  },
  {
   "key": "Traits : ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:98 jsx"
+   "ui/dialogs/newgame.tsx:100 jsx"
   ]
  },
  {
   "key": "Aucun trait secondaire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:98 jsx"
+   "ui/dialogs/newgame.tsx:100 jsx"
   ]
  },
  {
   "key": "Origine",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:100 jsx"
+   "ui/dialogs/newgame.tsx:102 jsx"
   ]
  },
  {
   "key": "À débloquer par un succès secret.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:102 jsx"
+   "ui/dialogs/newgame.tsx:104 jsx"
   ]
  },
  {
   "key": "À débloquer par le succès « {0} ».",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:102 jsx"
+   "ui/dialogs/newgame.tsx:104 jsx"
   ]
  },
  {
   "key": "Les ordinateurs tirent leur origine au sort.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:106 jsx"
+   "ui/dialogs/newgame.tsx:108 jsx"
   ]
  },
  {
   "key": "Taille de l'univers",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:110 jsx"
+   "ui/dialogs/newgame.tsx:112 jsx"
   ]
  },
  {
   "key": "({0} planètes)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:111 jsx"
+   "ui/dialogs/newgame.tsx:113 jsx"
   ]
  },
  {
   "key": "Difficulté des adversaires",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:115 jsx"
+   "ui/dialogs/newgame.tsx:117 jsx"
   ]
  },
  {
   "key": "Partie par fichiers : {0} joueurs humains jouent chacun chez soi ; ce navigateur héberge la partie.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:119 jsx"
+   "ui/dialogs/newgame.tsx:121 jsx",
+   "ui/dialogs/newgame.tsx:151 jsx"
   ]
  },
  {
   "key": "Partie à plusieurs sur cet appareil : {0} joueurs humains jouent chacun leur tour.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:119 jsx"
+   "ui/dialogs/newgame.tsx:121 jsx",
+   "ui/dialogs/newgame.tsx:151 jsx"
   ]
  },
  {
   "key": "{0} Chacun joue chez soi, par fichiers de tour (comme Stars! par courrier)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:120 jsx"
+   "ui/dialogs/newgame.tsx:122 jsx",
+   "ui/dialogs/newgame.tsx:150 jsx"
   ]
  },
  {
   "key": "Nombre d'adversaires",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:122 attr:k"
+   "ui/dialogs/newgame.tsx:124 attr:k"
   ]
  },
  {
   "key": "Nom de la partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:127 attr:k"
+   "ui/dialogs/newgame.tsx:129 attr:k"
   ]
  },
  {
   "key": "Graine (univers reproductible)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:128 attr:k"
+   "ui/dialogs/newgame.tsx:130 attr:k"
   ]
  },
  {
   "key": "Densité",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:129 jsx"
+   "ui/dialogs/newgame.tsx:131 jsx"
   ]
  },
  {
   "key": "Positions des joueurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:131 jsx"
+   "ui/dialogs/newgame.tsx:133 jsx"
   ]
  },
  {
   "key": "Options",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:135 jsx",
+   "ui/dialogs/newgame.tsx:137 jsx",
    "ui/pages.tsx:314 attr:aria-label",
    "ui/pages.tsx:492 attr:aria-label"
   ]
@@ -23597,70 +23600,70 @@
   "key": "{0} Débutant : minerais maximaux",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:136 jsx"
+   "ui/dialogs/newgame.tsx:138 jsx"
   ]
  },
  {
   "key": "{0} Progrès technologique plus lent",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:137 jsx"
+   "ui/dialogs/newgame.tsx:139 jsx"
   ]
  },
  {
   "key": "{0} Partie accélérée (départ plus riche)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:138 jsx"
+   "ui/dialogs/newgame.tsx:140 jsx"
   ]
  },
  {
   "key": "{0} Pas d'événements aléatoires (comètes, Marchand…)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:139 jsx"
+   "ui/dialogs/newgame.tsx:141 jsx"
   ]
  },
  {
   "key": "{0} Les ordinateurs forment des alliances",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:140 jsx"
+   "ui/dialogs/newgame.tsx:142 jsx"
   ]
  },
  {
   "key": "{0} Galaxie en amas",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:142 jsx"
+   "ui/dialogs/newgame.tsx:144 jsx"
   ]
  },
  {
   "key": "{0} Contacts anonymes hors scanner pénétrant {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:143 jsx"
+   "ui/dialogs/newgame.tsx:145 jsx"
   ]
  },
  {
   "key": "(décoché : toute flotte détectée est identifiée)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:143 jsx"
+   "ui/dialogs/newgame.tsx:145 jsx"
   ]
  },
  {
   "key": "Joueur",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:148 jsx"
+   "ui/dialogs/newgame.tsx:154 jsx"
   ]
  },
  {
   "key": "Vous",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:150 jsx",
+   "ui/dialogs/newgame.tsx:156 jsx",
    "ui/intel.tsx:126 jsx"
   ]
  },
@@ -23668,49 +23671,49 @@
   "key": "Humain",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:150 jsx"
+   "ui/dialogs/newgame.tsx:156 jsx"
   ]
  },
  {
   "key": "Aléatoire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:154 jsx"
+   "ui/dialogs/newgame.tsx:160 jsx"
   ]
  },
  {
   "key": "Ordinateur {0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:155 jsx"
+   "ui/dialogs/newgame.tsx:161 jsx"
   ]
  },
  {
   "key": "Humain (même appareil)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:155 jsx"
+   "ui/dialogs/newgame.tsx:161 jsx"
   ]
  },
  {
   "key": "Ajouter un adversaire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:159 jsx"
+   "ui/dialogs/newgame.tsx:165 jsx"
   ]
  },
  {
   "key": "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:162 jsx"
+   "ui/dialogs/newgame.tsx:168 jsx"
   ]
  },
  {
   "key": "Toutes",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:163 jsx",
+   "ui/dialogs/newgame.tsx:169 jsx",
    "ui/dialogs/research.tsx:283 call:map",
    "ui/pages.tsx:525 jsx"
   ]
@@ -23719,105 +23722,105 @@
   "key": "Aucune (Stars! classique)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:163 jsx"
+   "ui/dialogs/newgame.tsx:169 jsx"
   ]
  },
  {
   "key": "La victoire est déclarée quand un joueur :",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:175 jsx"
+   "ui/dialogs/newgame.tsx:181 jsx"
   ]
  },
  {
   "key": "{0} possède {1} % des planètes",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:176 jsx"
+   "ui/dialogs/newgame.tsx:182 jsx"
   ]
  },
  {
   "key": "{0} atteint le niveau {1} dans {2} domaines",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:177 jsx"
+   "ui/dialogs/newgame.tsx:183 jsx"
   ]
  },
  {
   "key": "{0} dépasse un score de {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:178 jsx"
+   "ui/dialogs/newgame.tsx:184 jsx"
   ]
  },
  {
   "key": "{0} a un score supérieur d'au moins {1} % à celui du deuxième",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:179 jsx"
+   "ui/dialogs/newgame.tsx:185 jsx"
   ]
  },
  {
   "key": "{0} produit {1} milliers de ressources par an",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:180 jsx"
+   "ui/dialogs/newgame.tsx:186 jsx"
   ]
  },
  {
   "key": "{0} possède {1} vaisseaux capitaux",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:181 jsx"
+   "ui/dialogs/newgame.tsx:187 jsx"
   ]
  },
  {
   "key": "{0} a le meilleur score après {1} ans",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:182 jsx"
+   "ui/dialogs/newgame.tsx:188 jsx"
   ]
  },
  {
   "key": "Nombre de critères requis",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:183 attr:k"
+   "ui/dialogs/newgame.tsx:189 attr:k"
   ]
  },
  {
   "key": "Années minimales avant victoire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:184 attr:k"
+   "ui/dialogs/newgame.tsx:190 attr:k"
   ]
  },
  {
   "key": "Expérience proche de Stars! {0} ({1}){2}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:196 jsx"
+   "ui/dialogs/newgame.tsx:202 jsx"
   ]
  },
  {
   "key": " · modifiée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:196 jsx"
+   "ui/dialogs/newgame.tsx:202 jsx"
   ]
  },
  {
   "key": "Les règles du jeu d'origine : galaxie carrée, aucune règle Constellations, flottes identifiées dès qu'elles sont vues, trous de ver franchissables d'emblée, modèles de production qui ne s'enchaînent pas, victoire au plus tôt après 50 ans. Les aides d'interface (automatisations, planificateurs, rapports, simulateur) restent.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:198 jsx"
+   "ui/dialogs/newgame.tsx:204 jsx"
   ]
  },
  {
   "key": "Pour retrouver Stars! tel qu'il était dans sa dernière version ({0}, {1}) : toutes les règles Constellations retirées, galaxie carrée.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:199 jsx"
+   "ui/dialogs/newgame.tsx:205 jsx"
   ]
  },
  {
@@ -39371,52 +39374,66 @@
   ]
  },
  {
+  "key": "Multijoueur par fichiers (PBEM)…",
+  "kind": "jsx",
+  "refs": [
+   "ui/welcome.tsx:82 jsx"
+  ]
+ },
+ {
+  "key": "Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».",
+  "kind": "str",
+  "refs": [
+   "ui/welcome.tsx:82 attr:title"
+  ]
+ },
+ {
   "key": "Succès ({0} sur {1})",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:86 jsx"
+   "ui/welcome.tsx:87 jsx"
   ]
  },
  {
   "key": "Autres parties de ce navigateur",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:89 jsx"
+   "ui/welcome.tsx:90 jsx"
   ]
  },
  {
   "key": "Partie illisible",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:91 call:notify"
+   "ui/welcome.tsx:92 call:notify"
   ]
  },
  {
   "key": " · {0} joueurs",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:92 jsx"
+   "ui/welcome.tsx:93 jsx"
   ]
  },
  {
   "key": "Supprimer cette sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/welcome.tsx:93 attr:title"
+   "ui/welcome.tsx:94 attr:title"
   ]
  },
  {
   "key": "Supprimer définitivement la partie « {0} » ({1}) de ce navigateur ?",
   "kind": "tpl",
   "refs": [
-   "ui/welcome.tsx:93 call:ask"
+   "ui/welcome.tsx:94 call:ask"
   ]
  },
  {
   "key": "Tout se déroule dans votre navigateur, hors ligne. Sauvegarde automatique locale (huit parties au plus).",
   "kind": "jsx",
   "refs": [
-   "ui/welcome.tsx:98 jsx"
+   "ui/welcome.tsx:99 jsx"
   ]
  },
  {

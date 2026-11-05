@@ -5526,6 +5526,8 @@
 "Apprendre à jouer, pas à pas, dans une vraie partie":"Spielen lernen, Schritt für Schritt, in einem echten Spiel",
 "apprendre à jouer pas à pas":"Schritt für Schritt spielen lernen",
 "Partie rapide : Terriens contre trois empires, dans un bras spiral (petite carte)":"Schnelles Spiel: Terraner gegen drei Imperien, in einem Spiralarm (kleine Karte)",
+"Multijoueur par fichiers (PBEM)…":"Mehrspieler per Zugdateien (PBEM)…",
+"Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».":"Jeder spielt bei sich zu Hause, wie Stars! per E-Mail: Dieser Browser hostet die Partie und schickt jedem Spieler seine Zugdatei. Wer eine Zugdatei erhält, öffnet sie mit « Spiel importieren… ».",
 "Succès ({0} sur {1})":"Erfolge ({0} von {1})",
 "Autres parties de ce navigateur":"Weitere Spiele in diesem Browser",
 "Partie illisible":"Unlesbares Spiel",

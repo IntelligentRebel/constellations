@@ -2038,5 +2038,7 @@
  "Scanner intégré : portée {0} al, pénétrant {1} al (selon votre niveau d'électronique).": "Scanner integrato: portata {0} al, penetrante {1} al (secondo il tuo livello di elettronica).",
  "Station déployée par un module de construction orbitale.": "Stazione installata da un modulo di costruzione orbitale.",
  "Elle se construit dans la file : les éléments « Terraformation min. (auto) » et « Terraformation max. (auto) » de la Colonie standard s'en chargent. Le mode de carte [[4]] montre la valeur que chaque monde atteindrait une fois terraformé.": "Si costruisce nella coda: gli elementi « Terraformazione min. (auto) » e « Terraformazione max. (auto) » della Colonia standard se ne occupano. La modalità mappa [[4]] mostra il valore che ogni mondo raggiungerebbe una volta terraformato.",
- "{0} : « {1} » est retiré de la file, qu'il retenait depuis des années ; ce qu'il avait reçu en minerais revient en surface.": "{0}: « {1} » viene tolto dalla coda, che bloccava da anni; i minerali che aveva ricevuto tornano in superficie."
+ "{0} : « {1} » est retiré de la file, qu'il retenait depuis des années ; ce qu'il avait reçu en minerais revient en surface.": "{0}: « {1} » viene tolto dalla coda, che bloccava da anni; i minerali che aveva ricevuto tornano in superficie.",
+ "Multijoueur par fichiers (PBEM)…": "Multigiocatore via file (PBEM)…",
+ "Chacun joue chez soi, comme Stars! par courrier : ce navigateur héberge la partie et envoie à chaque joueur son fichier de tour. Un joueur qui reçoit un fichier de tour l'ouvre avec « Importer une partie… ».": "Ognuno gioca a casa sua, come Stars! per posta: questo browser ospita la partita e invia a ogni giocatore il suo file di turno. Chi riceve un file di turno lo apre con « Importa una partita… »."
 }

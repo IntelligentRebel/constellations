@@ -1311,7 +1311,7 @@
   "kind": "tpl",
   "refs": [
    "ui/dialogs/index.tsx:50 prop:file",
-   "ui/dialogs/newgame.tsx:96 prop:file"
+   "ui/dialogs/newgame.tsx:98 prop:file"
   ]
  },
  {
@@ -1398,14 +1398,14 @@
   "key": "races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:49 call:seedFromString"
+   "ui/dialogs/newgame.tsx:51 call:seedFromString"
   ]
  },
  {
   "key": "preset",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:194 attr:class"
+   "ui/dialogs/newgame.tsx:200 attr:class"
   ]
  },
  {
