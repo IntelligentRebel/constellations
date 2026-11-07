@@ -1,8 +1,9 @@
 // 0.3.9.26: a whole galaxy from a name, after Rick's galaxy generator (Galaxy Generator 0.8.0.0, written with Claude):
 // the name ("Galaxy1") goes through SHA-256 and a Mersenne Twister; the numbers that come out give the shape of the
 // galaxy (spiral, elliptical, irregular, lenticular, ring), then each star its place, its spectral type and its
-// planets and moons. Reproduced here number for number: Galaxy1 in Constellations is Galaxy1 in his generator, and
-// the stars of a game are the first stars of his (those that have planets, at a playable distance from each other).
+// planets and moons. Reproduced here number for number (Galaxy1 in Constellations is Galaxy1 in his generator), with
+// one fix of 0.3.9.27: a spiral's star past the edge of the disc is drawn again instead of being put on the edge. The
+// stars of a game are the first stars of the galaxy (those that have planets, at a playable distance from each other).
 // Constellations keeps the abstraction of Stars!: a star of the map is a system summed up in one world; the planets
 // and moons are only shown (the system view), never managed.
 
@@ -88,7 +89,7 @@ export function galaxyParams(gid: string): GalaxyParams {
 }
 
 const PI = 3.14159265, PI2 = PI * 2;
-function starPosition(starId: string, g: GalaxyParams, gHash: string, even: boolean): { x: number; y: number; dist: number } {
+export function starPosition(starId: string, g: GalaxyParams, gHash: string, even: boolean): { x: number; y: number; dist: number } | null {
   const sh = sha256Hex(starId);
   let seed = 0;
   for (let i = 0; i < 8; i++) { seed ^= parseInt(sh.substr(i * 8, 8), 16); seed ^= parseInt(gHash.substr(i * 8, 8), 16); }
@@ -100,7 +101,10 @@ function starPosition(starId: string, g: GalaxyParams, gHash: string, even: bool
   if (st === 0) {
     dist = Math.abs(Math.sqrt(-2 * Math.log10(Math.max(0.000001, rDist))) * Math.cos(PI2 * rAngle)) / 1.2;
     if (even) { const linear = Math.sqrt(rDist) * 1.3, cr = g.coreSize / 100, blend = Math.min(1, dist / cr); dist = dist * (1 - blend) + linear * blend; }
-    dist = Math.min(dist, 1.3);
+    // (0.3.9.27: a star past the edge of the disc is drawn again, by the next attempt, as one too close to another; the
+    // generator 0.8.0.0 put it on the edge, dist = Math.min(dist, 1.3), and since the winding grows with the distance,
+    // those stars lined up in a short arc at the end of each arm)
+    if (dist > 1.3) return null;
     const na = Math.min(g.numArms, 6), ab = (Math.floor(rArm * na) / na) * PI2, asp = PI2 / na;
     const sa = (asp * 0.25) - (dist * 0.1), cr = g.coreSize / 100, cb = Math.max(0, cr - dist) / cr;
     const aa = ab + ((rScatter - 0.5) * sa * 2) + orient, ra = rEccAdj * PI2;
@@ -198,6 +202,7 @@ export function galaxyStars(gid: string, even: boolean, count: number, W: number
   const place = (n: number) => {
     for (let a = 1; a <= 13; a++) {
       const c = starPosition(starIdOf(gid, n, a), g, gHash, even);
+      if (!c) continue;
       let tooClose = false;
       const lim = 0.01 * (0.01 + c.dist * 0.99);
       for (const e of placed) { const dx = c.x - e.x, dy = c.y - e.y; if (dx * dx + dy * dy < lim * lim) { tooClose = true; break; } }

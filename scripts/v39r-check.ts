@@ -187,6 +187,11 @@ console.log('--- 0.3.9.26: a galaxy from a name, as in Rick\'s generator');
   const sp = GG.starProps('Galaxy1_Star579_attempt1');
   check(sp.type === 'M' && sp.temperature === 3000 && Math.abs(sp.luminosity - 0.0885) < 0.001, `Galaxy1_Star579: type M, 3000 K, 0.089 L (as his tooltip) (${sp.type} ${sp.temperature})`);
   check(GG.galaxyParams('Galaxy7').shapeType === 4, 'Galaxy7 is a ring');
+  // 0.3.9.27: no more arc of stars at the end of the arms (stars past the edge are drawn again)
+  const g40 = GG.galaxyParams('Galaxy40'), h40 = GG.sha256Hex('Galaxy40');
+  let redrawn = 0, onEdge = 0;
+  for (let n = 1; n <= g40.numStars; n++) { const c = GG.starPosition(GG.starIdOf('Galaxy40', n, 1), g40, h40, false); if (!c) redrawn++; else if (Math.abs(c.dist - 1.3) < 1e-9) onEdge++; }
+  check(redrawn > 0 && onEdge === 0, `Galaxy40: the stars past the edge are drawn again (${redrawn}), none left on the edge`);
   const mk = () => quickGame(PREDEFINED_RACES.Humanoid(), 'Medium', 3, 'standard', 'r-gal', { shape: 'procedural', galaxyId: 'Galaxy1' } as any);
   const a = mk(), b2 = mk();
   check(JSON.stringify(a) === JSON.stringify(b2) && a.planets.every(p => p.star) && a.planets.length === 288, `the same name and seed give the same game, every world on a star of the galaxy (${a.planets.length} worlds)`);
