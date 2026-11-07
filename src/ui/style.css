@@ -1284,3 +1284,6 @@ a.btn.ghost { background: transparent; }
 .pbem-shared p { margin: 0; }
 .pbem-mail { width: 190px; max-width: 100%; }
 .btns.col { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+.sys-canvas { width: 100%; height: 320px; display: block; border-radius: 6px; background: #05070d; }
+.sys-table tr.sel td { background: var(--line2); }
+.ng-galaxy { margin: 4px 0 8px; display: flex; flex-direction: column; gap: 4px; }

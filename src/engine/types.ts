@@ -96,6 +96,8 @@ export interface Planet {
   name: string;
   x: number;
   y: number;
+  /** 0.3.9.26, a galaxy from a name: the star of the generator (its number, its attempt) and its spectral type */
+  star?: { n: number; a: number; t: string };
   hab: Hab;
   baseHab: Hab;
   /** terraforming applied so far (signed clicks per hab) */
@@ -881,7 +883,7 @@ export interface VictoryConditions {
  * (a few hundred to two thousand light-years); 'spiral', 'elliptical' and 'irregular' (whole galaxies) only remain for
  * games created with 0.3.5.8 to 0.3.6.2.
  */
-export type GalaxyShape = 'arm' | 'nursery' | 'bubble' | 'spiral' | 'elliptical' | 'irregular' | 'square';
+export type GalaxyShape = 'arm' | 'nursery' | 'bubble' | 'spiral' | 'elliptical' | 'irregular' | 'square' | 'procedural';
 /**
  * A dark molecular cloud: impassable (at Warp speeds its dust is lethal); lobes in map units [-1, 1], melted into one
  * shape (shape.ts, cloudAt). `name` as written when the game was created, `ni` its index in the list of names (shown in
@@ -907,6 +909,11 @@ export interface ShapeParams {
   walls?: DarkCloud[];
   /** 0.3.6.8: narrow passes carved through the clouds (segments and half-width, map units): chokepoints */
   passes?: { x1: number; y1: number; x2: number; y2: number; w: number }[];
+  /** 0.3.9.26, a galaxy from a name (galaxygen.ts): the name, the even spread, and where its stars are (gridN × gridN, 0 to 1) */
+  gid?: string;
+  even?: boolean;
+  grid?: number[];
+  gridN?: number;
 }
 
 export interface GameSettings {
@@ -988,6 +995,9 @@ export interface GameSettings {
   greenhouse?: boolean;
   /** Constellations 3.6: the shape of the galaxy (absent: the square of Stars!) */
   shape?: GalaxyShape;
+  /** 0.3.9.26: the name of the galaxy ('procedural' shape) and its even spread */
+  galaxyId?: string;
+  galaxyEven?: boolean;
   /** Constellations 3.6: created with the "close to the original Stars!" preset */
   classic?: boolean;
   /** Constellations 3.6: populations shown in millions (one colonist of the rules = a thousand people); display only */

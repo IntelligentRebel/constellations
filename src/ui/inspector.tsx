@@ -140,7 +140,7 @@ function OwnPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   return <div class="insp-body">
     <Head eyebrow={<>{seatLabel(g, me, p)} · n° {p.id}</>} title={p.name}
       sub={<>{me.name} · {p.x}, {p.y} · fondée en {p.colonizedYear ?? 2400}</>}
-      nav={<><button class="icon" onClick={() => go(-1)} title="Planète précédente (p)">‹</button><button class="icon" onClick={() => go(1)} title="Planète suivante (n)">›</button><button class="icon" onClick={() => s.center(p.x, p.y)} title="Centrer (v)">◎</button></>} />
+      nav={<><button class="icon" onClick={() => go(-1)} title="Planète précédente (p)">‹</button><button class="icon" onClick={() => go(1)} title="Planète suivante (n)">›</button><button class="icon" onClick={() => s.center(p.x, p.y)} title="Centrer (v)">◎</button>{p.star && <button class="icon" onClick={() => s.open('system', { planetId: p.id })} title="Voir le système : l'étoile, ses planètes et ses lunes">☉</button>}</>} />
     <TerrainNote g={g} at={p} />
     <DiscoveryBlock g={g} me={me} p={p} />
     <ProdBlock g={g} me={me} p={p} />
@@ -355,7 +355,7 @@ function OtherPlanet({ g, me, p }: { g: GameState; me: Player; p: Planet }) {
   const age = known ? g.year - intel.year! : 0;
   const val = intel.hab ? habitability(me.race, intel.hab) : null;
   return <div class="insp-body">
-    <Head eyebrow={<>Système n° {p.id}</>} title={p.name}
+    <Head eyebrow={<>Système n° {p.id}</>} title={p.name} nav={p.star ? <button class="icon" onClick={() => store.open('system', { planetId: p.id })} title="Voir le système : l'étoile, ses planètes et ses lunes">☉</button> : undefined}
       sub={<>{owned ? <span style={{ color: g.players[owner].color }}>{RACE_ICONS[g.players[owner].race.icon % RACE_ICONS.length]} {g.players[owner].name}{intel.homeworld ? ' · monde natal' : ''}</span> : known ? 'Monde libre' : 'Données inconnues'} · {p.x}, {p.y}</>}>
       {known && <div class={'report-age' + (age > 0 ? ' old' : '')}>{age === 0 ? `Relevé de cette année (${intel.year})` : `Relevé de ${intel.year}, il y a ${age} an${age > 1 ? 's' : ''}`}</div>}
     </Head>

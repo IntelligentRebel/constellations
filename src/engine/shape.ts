@@ -6,12 +6,13 @@
 // as a faint glow behind the stars.
 import type { DarkCloud, GalaxyShape, GameState, ShapeParams } from './types';
 import { Rng, seedFromString } from './rng';
+import { galaxyName } from './galaxygen';
 
 /** A region of a galaxy (0.3.6.3), rather than a whole galaxy (0.3.5.8)? */
 export const isRegion = (k: GalaxyShape) => k === 'arm' || k === 'nursery' || k === 'bubble';
 
 /** The regions a new game can be set in (the whole galaxies of 0.3.5.8 are no longer offered). */
-export const SHAPES_OFFERED: GalaxyShape[] = ['arm', 'nursery', 'bubble', 'square'];
+export const SHAPES_OFFERED: GalaxyShape[] = ['arm', 'nursery', 'bubble', 'square', 'procedural'];
 export const SHAPE_LABELS: Record<GalaxyShape, string> = {
   arm: 'Bras spiral',
   nursery: 'Pouponnière d\'étoiles',
@@ -20,6 +21,7 @@ export const SHAPE_LABELS: Record<GalaxyShape, string> = {
   spiral: 'Galaxie spirale',
   elliptical: 'Galaxie elliptique',
   irregular: 'Galaxie irrégulière',
+  procedural: 'Galaxie entière, d\'après son nom',
 };
 export const SHAPE_TEXT: Record<GalaxyShape, string> = {
   arm: 'Un secteur de bras spiral, comme le voisinage du Soleil (un bras fait des milliers d\'années-lumière de large : la carte en montre un bord) : des étoiles denses d\'un côté, plus rares vers le vide entre les bras, des associations d\'étoiles jeunes, des superbulles soufflées par d\'anciennes supernovae, la bande de poussière du bras coupée de quelques passages et un ou deux grands nuages sombres, infranchissables. Les nuages couvrent quelques pour cent de la carte, comme autour du Soleil.',
@@ -29,14 +31,17 @@ export const SHAPE_TEXT: Record<GalaxyShape, string> = {
   spiral: 'Un noyau dense et deux à quatre bras, séparés par des vides où les étoiles se font rares.',
   elliptical: 'Un disque ovale, plus dense au centre, au bord irrégulier.',
   irregular: 'Quelques nuages d\'étoiles de tailles inégales, reliés par des ponts plus clairsemés.',
+  procedural: 'Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d\'un univers moyen.',
 };
 
 /** Names of the dark clouds: they kill whoever tries to cross them. */
 const CLOUD_NAMES = ['le Linceul', 'la Gueule de Charbon', 'le Sac à Charbon', 'l\'Abîme de Tantale', 'le Voile des Noyés', 'la Mâchoire Noire', 'le Mur des Silences', 'les Cendres d\'Érèbe', 'la Nuit sans Retour', 'le Gouffre de Sel', 'la Tombe des Pilotes', 'l\'Ombre de Charon', 'la Forge Éteinte', 'le Grand Suaire', 'le Puits des Veuves', 'la Muraille de Suie', 'les Dents du Néant', 'le Cimetière de Kaeth'];
 
 /** The shape of a new game (its own random stream: the rest of the universe does not depend on it). */
-export function makeShape(seed: string, kind: GalaxyShape, width = 1200): ShapeParams | undefined {
+export function makeShape(seed: string, kind: GalaxyShape, width = 1200, galaxy?: { id?: string; even?: boolean }): ShapeParams | undefined {
   if (kind === 'square') return undefined;
+  // 0.3.9.26: a galaxy from a name (its stars are placed with the planets, generatePlanets)
+  if (kind === 'procedural') return { kind, seed: new Rng(seedFromString((galaxy?.id || seed) + '|glow')).int(1_000_000_000), rot: 0, arms: 0, twist: 0, flat: 1, blobs: [], gid: galaxy?.id || galaxyName(1), even: !!galaxy?.even };
   const rng = new Rng(seedFromString(seed + '|shape'));
   const p: ShapeParams = { kind, seed: rng.int(1_000_000_000), rot: rng.random() * Math.PI * 2, arms: 2 + rng.int(3), twist: 3.2 + rng.random() * 1.8, flat: 0.62 + rng.random() * 0.2, blobs: [] };
   if (kind === 'irregular') {
@@ -310,6 +315,15 @@ export const cloudDepth = (p: ShapeParams, u: number, v: number) => cloudAt(p, u
 
 /** Density of stars at a point (0 empty, 1 densest); u, v in [-1, 1] from the centre of the map. */
 export function densityAt(p: ShapeParams, u: number, v: number): number {
+  // 0.3.9.26: a galaxy from a name: where its stars are
+  if (p.kind === 'procedural') {
+    const N = p.gridN ?? 0, g = p.grid;
+    if (!g || !N) return 1;
+    const fx = (u + 1) / 2 * N - 0.5, fy = (v + 1) / 2 * N - 0.5;
+    const i = Math.floor(fx), j = Math.floor(fy), tx = fx - i, ty = fy - j;
+    const at = (a: number, b: number) => a < 0 || b < 0 || a >= N || b >= N ? 0 : g[b * N + a];
+    return (at(i, j) * (1 - tx) + at(i + 1, j) * tx) * (1 - ty) + (at(i, j + 1) * (1 - tx) + at(i + 1, j + 1) * tx) * ty;
+  }
   const r0 = Math.hypot(u, v);
   // the edge: ragged, never a straight line
   const edge = 0.16 * (fbm(p.seed + 3, u * 2.2 + 5, v * 2.2 + 5) - 0.5);

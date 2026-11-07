@@ -1,5 +1,6 @@
 // The scanner: a canvas map of the galaxy (pan, zoom, select, waypoints, overlays).
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { SPECTRAL_COLOR, type Spectral } from '../engine/galaxygen';
 import { viewRoute, viewFleet, viewScanners } from './memo';
 import { mapColors, uiPrefs } from './prefs';
 import { store, useStore, type ObjRef, fmt, fmtPop } from './store';
@@ -98,6 +99,17 @@ function routeClick(ref: ObjRef, pos: { x: number; y: number }, append: boolean)
 
 // 0.3.9: the semantic colours follow the colour-blind palette chosen in the preferences
 const NEUTRAL_KNOWN = '#e8ecf4', UNKNOWN = '#4a5568';
+/** 0.3.9.26: the colour of a star not explored yet, toned down toward the grey of the unknown (never an empire's colour). */
+const TINTS = new Map<string, string>();
+function starTint(t: string): string {
+  let c = TINTS.get(t);
+  if (!c) {
+    const hex = SPECTRAL_COLOR[t as Spectral] ?? UNKNOWN, u = UNKNOWN;
+    const mix = (i: number) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.45 + parseInt(u.slice(i, i + 2), 16) * 0.55).toString(16).padStart(2, '0');
+    c = '#' + mix(1) + mix(3) + mix(5); TINTS.set(t, c);
+  }
+  return c;
+}
 const OWN_ = () => mapColors().own, ENEMY_ = () => mapColors().enemy, FRIEND_ = () => mapColors().friend, GOOD_ = () => mapColors().good, BAD_ = () => mapColors().bad;
 /** 3.6: at peace (neither ally nor at war) */
 const PEACE = '#a9b8cc';
@@ -998,6 +1010,9 @@ export function MapView() {
         const val = habitability(me.race, intel.hab);
         lines.push(`Valeur pour vous ${val} %${intel.year !== game.year ? ` · relevé ${intel.year}` : ''}`);
       } else lines.push('Inexploré');
+      // 0.3.9.26: the star of a galaxy made from a name (its system: right click)
+      const st = game.planets[h.ref.id].star;
+      if (st) lines.push(`Étoile de type ${st.t} · clic droit : voir le système`);
       if (intel.owner !== undefined && intel.owner >= 0) lines.push(`${game.players[intel.owner].name} · ${fmtPop(intel.pop ?? 0)} hab.`);
       for (const t of tipExtras(game, me, h.ref.id)) lines.push(t);
     }
@@ -1053,6 +1068,7 @@ export function MapView() {
           </>}
           {s.commanded?.kind === 'fleet' && menu.items.filter(it => it.ref.kind === 'fleet' && s.me!.intel.fleets.some(fi => fi.id === it.ref.id)).slice(0, 3).map(it => <button class="hl" onClick={() => { setMenu(null); interceptFleet(it.ref.id); }} title="Calcule le point de rencontre et le recalcule chaque année">Intercepter : {it.label.length > 34 ? it.label.slice(0, 33) + '…' : it.label}</button>)}
           {menu.items.length === 0 && s.commanded?.kind !== 'fleet' && <div class="muted small">Rien ici</div>}
+          {menu.items.filter(it => it.ref.kind === 'planet' && s.game?.planets[it.ref.id]?.star).slice(0, 2).map(it => <button onClick={() => { setMenu(null); s.open('system', { planetId: it.ref.id }); }}>{`Voir le système : ${s.game!.planets[it.ref.id].name}`}</button>)}
           <button onClick={() => { setMenu(null); s.center(menu.wx, menu.wy); }}>Centrer ici</button>
         </div>
       )}
@@ -1406,7 +1422,8 @@ function drawPlanet(ctx: CanvasRenderingContext2D, game: GameState, me: Player, 
     return;
   }
   // normal: owner colour for inhabited worlds, habitability (green / red, size = strength) for the others
-  let color = UNKNOWN, r = base * 0.75;
+  // 0.3.9.26: a galaxy made from a name: a star not explored yet shows its colour (its spectral type, seen from afar)
+  let color = pl.star && !known ? starTint(pl.star.t) : UNKNOWN, r = base * 0.75;
   const owned = owner !== undefined && owner >= 0;
   let val: number | null = null;
   if (known) {
@@ -1424,7 +1441,7 @@ function drawPlanet(ctx: CanvasRenderingContext2D, game: GameState, me: Player, 
       ctx.fillStyle = owner === me.id ? OWN_() : game.players[owner!].color; ctx.beginPath(); ctx.arc(x, y, base + 1.5, 0, Math.PI * 2); ctx.fill();
       if (owner !== me.id) { ctx.strokeStyle = relationColor(game, me, owner); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, base + 4, 0, Math.PI * 2); ctx.stroke(); }
       r = base + 2.5;
-    } else { ctx.fillStyle = known ? '#56627a' : UNKNOWN; ctx.beginPath(); ctx.arc(x, y, known ? 1.8 : 1.4, 0, Math.PI * 2); ctx.fill(); r = 2; }
+    } else { ctx.fillStyle = known ? '#56627a' : pl.star ? starTint(pl.star.t) : UNKNOWN; ctx.beginPath(); ctx.arc(x, y, known ? 1.8 : 1.4, 0, Math.PI * 2); ctx.fill(); r = 2; }
   }
   else if (z >= 2.2) {
     // close-up: rendered planet with an ownership ring

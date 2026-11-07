@@ -1,5 +1,6 @@
 // Renders the stack of open dialogs.
 import { DiplomacyDialog } from '../diplomacy';
+import { SystemDialog } from '../systemview';
 import { useState } from 'preact/hooks';
 import { store, useStore, saveFile, saveMode } from '../store';
 import { Modal } from '../components';
@@ -44,6 +45,7 @@ export function Dialogs() {
       case 'dilemma': return <DilemmaDialog id={d.data?.id} />;
       case 'pbem': return <PbemDialog />;
       case 'joinShared': return <JoinSharedDialog data={d.data} />;
+      case 'system': return <SystemDialog data={d.data} />;
       case 'battle': return <BattleDialog battleId={d.data?.battleId} />;
       case 'cargo': return <CargoDialog fleetId={d.data?.fleetId} planetId={d.data?.planetId} otherId={d.data?.otherId} />;
       case 'split': return <SplitDialog fleetId={d.data?.fleetId} />;

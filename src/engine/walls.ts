@@ -141,7 +141,7 @@ export function shapeKey(game: Geo): string {
   if (!p) return 'none';
   let k = shapeKeys.get(p);
   if (k === undefined) {
-    const full = `${p.kind}|${p.seed}|${game.width}|${game.height}|` + (p.walls ?? []).map(w => w.lobes.map(l => `${l.x.toFixed(4)},${l.y.toFixed(4)},${l.r.toFixed(4)}`).join(';')).join('/') + '|' + JSON.stringify(p.passes ?? []);
+    const full = `${p.kind}|${p.seed}|${game.width}|${game.height}|` + (p.walls ?? []).map(w => w.lobes.map(l => `${l.x.toFixed(4)},${l.y.toFixed(4)},${l.r.toFixed(4)}`).join(';')).join('/') + '|' + JSON.stringify(p.passes ?? []) + (p.gid !== undefined ? `|${p.gid}|${p.even ? 1 : 0}|${p.gridN}` : '');
     // a short key (the routes are cached under it): FNV-1a of the whole description, and its length
     let h = 0x811c9dc5;
     for (let i = 0; i < full.length; i++) { h ^= full.charCodeAt(i); h = Math.imul(h, 0x01000193); }

@@ -1,5 +1,19 @@
 // New game (simple + advanced settings).
 import { useState } from 'preact/hooks';
+import { galaxyParams, galaxyName } from '../../engine/galaxygen';
+import { fmt as fmtN } from '../store';
+
+/** 0.3.9.26: what a galaxy name gives (Rick's generator). */
+function galaxyLine(id: string): string {
+  const g = galaxyParams(id), n = fmtN(g.numStars);
+  switch (g.shapeType) {
+    case 0: return `${id} : galaxie spirale à ${Math.min(g.numArms, 6)} bras, ${n} étoiles.`;
+    case 1: return `${id} : galaxie elliptique, ${n} étoiles.`;
+    case 2: return `${id} : galaxie irrégulière, ${n} étoiles.`;
+    case 3: return `${id} : galaxie lenticulaire, ${n} étoiles.`;
+    default: return `${id} : galaxie en anneau, ${n} étoiles.`;
+  }
+}
 import { store, useStore } from '../store';
 import { Modal, Row, Num, Tabs } from '../components';
 import type { AIDifficulty, Density, GalaxyShape, GameSettings, PlayerPositions, Race, UniverseSize } from '../../engine/types';
@@ -112,8 +126,13 @@ export function NewGameDialog() {
           <h4>Taille de l'univers</h4>
           {(Object.keys(SIZE_LABELS) as UniverseSize[]).map(k => <label class="radio"><input type="radio" checked={settings.size === k} onChange={() => set(x => { x.size = k; })} /> {SIZE_LABELS[k]} <span class="muted small">({planetCount(k, settings.density)} planètes)</span></label>)}
           <h4>Région de la galaxie</h4>
-          {SHAPES_OFFERED.map(k => <label class="radio" title={SHAPE_TEXT[k]}><input type="radio" checked={(settings.shape ?? 'square') === k} onChange={() => set(x => { x.shape = k; })} /> {SHAPE_LABELS[k]}</label>)}
+          {SHAPES_OFFERED.map(k => <label class="radio" title={SHAPE_TEXT[k]}><input type="radio" checked={(settings.shape ?? 'square') === k} onChange={() => set(x => { x.shape = k; if (k === 'procedural' && !x.galaxyId) x.galaxyId = galaxyName(1 + Math.floor(Math.random() * 999)); })} /> {SHAPE_LABELS[k]}</label>)}
           <p class="small muted">{SHAPE_TEXT[settings.shape ?? 'square']}</p>
+          {settings.shape === 'procedural' && <div class="ng-galaxy">
+            <Row k="Nom de la galaxie" v={<input value={settings.galaxyId ?? ''} onInput={e => set(x => { x.galaxyId = (e.target as HTMLInputElement).value; })} placeholder="Galaxy1" />} />
+            <label class="chk"><input type="checkbox" checked={!!settings.galaxyEven} onChange={e => set(x => { x.galaxyEven = (e.target as HTMLInputElement).checked; })} /> Répartition égale (un cœur moins dense)</label>
+            <p class="small muted">{galaxyLine(settings.galaxyId?.trim() || galaxyName(1))}</p>
+          </div>}
           <h4>Difficulté des adversaires</h4>
           {(Object.keys(DIFF) as AIDifficulty[]).map(k => <label class="radio" title={DIFF_TIP[k]}><input type="radio" checked={opponents.filter(o => o.diff !== 'human').every(o => o.diff === k)} onChange={() => setOpponents(opponents.map(o => o.diff === 'human' ? o : { ...o, diff: k }))} /> {DIFF[k]}</label>)}
           {(() => { const ds = [...new Set(opponents.filter(o => o.diff !== 'human').map(o => o.diff as AIDifficulty))]; return ds.length ? <p class="small muted">{ds.length === 1 ? DIFF_TIP[ds[0]] + ' ' : ''}{FAIR}</p> : null; })()}

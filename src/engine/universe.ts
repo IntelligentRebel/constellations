@@ -1,6 +1,7 @@
 // Universe generation: planets, homeworlds, wormholes.
 import type { Density, GameState, Hab, Minerals, Planet, PlayerPositions, ShapeParams, UniverseSize, Wormhole } from './types';
 import { densityAt, pointInGalaxy, coverage, cloudAt } from './shape';
+import { galaxyStars, densityGrid, galaxyName } from './galaxygen';
 import { mainRegionTest } from './walls';
 import { STABILITIES } from './types';
 import { Rng } from './rng';
@@ -84,6 +85,14 @@ function shapedPoints(rng: Rng, W: number, n: number, shape: ShapeParams, clumpi
 export function generatePlanets(rng: Rng, size: UniverseSize, density: Density, clumping: boolean, accelerated: boolean, shape?: ShapeParams): Planet[] {
   const W = UNIVERSE_SIZES[size];
   const n = planetCount(size, density);
+  // 0.3.9.26: a galaxy from a name: the first stars of the generator that have planets
+  if (shape?.kind === 'procedural') {
+    const stars = galaxyStars(shape.gid ?? galaxyName(1), !!shape.even, n, W);
+    shape.gridN = 48; shape.grid = densityGrid(stars, W, shape.gridN);
+    const ps = toPlanets(rng, stars, accelerated);
+    ps.forEach((p, i) => { p.star = { n: stars[i].n, a: stars[i].a, t: stars[i].t }; });
+    return ps;
+  }
   if (shape) return toPlanets(rng, shapedPoints(rng, W, n, shape, clumping), accelerated);
   const border = 30;
   const pts: { x: number; y: number }[] = [];

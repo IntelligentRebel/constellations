@@ -1808,7 +1808,7 @@
   "refs": [
    "data/labels.ts:105",
    "ui/command.tsx:73",
-   "ui/map.tsx:780 prop:label",
+   "ui/map.tsx:792 prop:label",
    "ui/summary.tsx:248 jsx"
   ]
  },
@@ -13363,224 +13363,238 @@
   "key": "Bras spiral",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:16 prop:arm"
+   "engine/shape.ts:17 prop:arm"
   ]
  },
  {
   "key": "Pouponnière d'étoiles",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:17 prop:nursery"
+   "engine/shape.ts:18 prop:nursery"
   ]
  },
  {
   "key": "Superbulle",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:18 prop:bubble"
+   "engine/shape.ts:19 prop:bubble"
   ]
  },
  {
   "key": "Carrée (Stars! d'origine)",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:19 prop:square"
+   "engine/shape.ts:20 prop:square"
   ]
  },
  {
   "key": "Galaxie spirale",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:20 prop:spiral"
+   "engine/shape.ts:21 prop:spiral"
   ]
  },
  {
   "key": "Galaxie elliptique",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:21 prop:elliptical"
+   "engine/shape.ts:22 prop:elliptical"
   ]
  },
  {
   "key": "Galaxie irrégulière",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:22 prop:irregular"
+   "engine/shape.ts:23 prop:irregular"
+  ]
+ },
+ {
+  "key": "Galaxie entière, d'après son nom",
+  "kind": "str",
+  "refs": [
+   "engine/shape.ts:24 prop:procedural"
   ]
  },
  {
   "key": "Un secteur de bras spiral, comme le voisinage du Soleil (un bras fait des milliers d'années-lumière de large : la carte en montre un bord) : des étoiles denses d'un côté, plus rares vers le vide entre les bras, des associations d'étoiles jeunes, des superbulles soufflées par d'anciennes supernovae, la bande de poussière du bras coupée de quelques passages et un ou deux grands nuages sombres, infranchissables. Les nuages couvrent quelques pour cent de la carte, comme autour du Soleil.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:25 prop:arm"
+   "engine/shape.ts:27 prop:arm"
   ]
  },
  {
   "key": "Un complexe de nuages moléculaires où naissent les étoiles, comme Orion ou le Cygne : amas jeunes et serrés, nébuleuses brillantes, couloirs entre des nuages sombres infranchissables qui ferment la carte. Des passages obligés à tenir.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:26 prop:nursery"
+   "engine/shape.ts:28 prop:nursery"
   ]
  },
  {
   "key": "Une cavité de plusieurs centaines d'années-lumière soufflée par des supernovae, comme la bulle locale où se trouve le Soleil : moins d'étoiles au centre, un anneau d'étoiles nées dans sa coquille, et sur la coquille, des arcs de nuages sombres que l'onde de choc a balayés.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:27 prop:bubble"
+   "engine/shape.ts:29 prop:bubble"
   ]
  },
  {
   "key": "Les planètes réparties uniformément dans un carré, comme dans Stars!.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:28 prop:square"
+   "engine/shape.ts:30 prop:square"
   ]
  },
  {
   "key": "Un noyau dense et deux à quatre bras, séparés par des vides où les étoiles se font rares.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:29 prop:spiral"
+   "engine/shape.ts:31 prop:spiral"
   ]
  },
  {
   "key": "Un disque ovale, plus dense au centre, au bord irrégulier.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:30 prop:elliptical"
+   "engine/shape.ts:32 prop:elliptical"
   ]
  },
  {
   "key": "Quelques nuages d'étoiles de tailles inégales, reliés par des ponts plus clairsemés.",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:31 prop:irregular"
+   "engine/shape.ts:33 prop:irregular"
+  ]
+ },
+ {
+  "key": "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.",
+  "kind": "str",
+  "refs": [
+   "engine/shape.ts:34 prop:procedural"
   ]
  },
  {
   "key": "le Linceul",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Gueule de Charbon",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Sac à Charbon",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "l'Abîme de Tantale",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Voile des Noyés",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Mâchoire Noire",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Mur des Silences",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "les Cendres d'Érèbe",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Nuit sans Retour",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Gouffre de Sel",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Tombe des Pilotes",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "l'Ombre de Charon",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Forge Éteinte",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Grand Suaire",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Puits des Veuves",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "la Muraille de Suie",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "les Dents du Néant",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
   "key": "le Cimetière de Kaeth",
   "kind": "str",
   "refs": [
-   "engine/shape.ts:35"
+   "engine/shape.ts:38"
   ]
  },
  {
@@ -15250,126 +15264,126 @@
   "key": "Minuscule",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:10 prop:Tiny"
+   "engine/universe.ts:11 prop:Tiny"
   ]
  },
  {
   "key": "Petit",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:10 prop:Small"
+   "engine/universe.ts:11 prop:Small"
   ]
  },
  {
   "key": "Moyen",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:10 prop:Medium"
+   "engine/universe.ts:11 prop:Medium"
   ]
  },
  {
   "key": "Grand",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:10 prop:Large"
+   "engine/universe.ts:11 prop:Large"
   ]
  },
  {
   "key": "Immense",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:10 prop:Huge"
+   "engine/universe.ts:11 prop:Huge"
   ]
  },
  {
   "key": "Clairsemée",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:11 prop:Sparse"
+   "engine/universe.ts:12 prop:Sparse"
   ]
  },
  {
   "key": "Normale",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:11 prop:Normal"
+   "engine/universe.ts:12 prop:Normal"
   ]
  },
  {
   "key": "Compacte",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:11 prop:Packed"
+   "engine/universe.ts:12 prop:Packed"
   ]
  },
  {
   "key": "Proches",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:12 prop:Close"
+   "engine/universe.ts:13 prop:Close"
   ]
  },
  {
   "key": "Modérées",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:12 prop:Moderate"
+   "engine/universe.ts:13 prop:Moderate"
   ]
  },
  {
   "key": "Éloignées",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:12 prop:Farther"
+   "engine/universe.ts:13 prop:Farther"
   ]
  },
  {
   "key": "Distantes",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:12 prop:Distant"
+   "engine/universe.ts:13 prop:Distant"
   ]
  },
  {
   "key": "Stable comme le roc",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:186 prop:rockSolid"
+   "engine/universe.ts:195 prop:rockSolid"
   ]
  },
  {
   "key": "Plutôt stable",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:186 prop:mostlyStable"
+   "engine/universe.ts:195 prop:mostlyStable"
   ]
  },
  {
   "key": "Moyenne",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:186 prop:average"
+   "engine/universe.ts:195 prop:average"
   ]
  },
  {
   "key": "Un peu instable",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:187 prop:slightlyVolatile"
+   "engine/universe.ts:196 prop:slightlyVolatile"
   ]
  },
  {
   "key": "Instable",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:187 prop:volatile"
+   "engine/universe.ts:196 prop:volatile"
   ]
  },
  {
   "key": "Très instable",
   "kind": "str",
   "refs": [
-   "engine/universe.ts:187 prop:extremelyVolatile"
+   "engine/universe.ts:196 prop:extremelyVolatile"
   ]
  },
  {
@@ -17112,7 +17126,7 @@
   "kind": "jsx",
   "refs": [
    "ui/app.tsx:182 jsx",
-   "ui/dialogs/newgame.tsx:98 jsx",
+   "ui/dialogs/newgame.tsx:112 jsx",
    "ui/inspector.tsx:293 jsx",
    "ui/tutorial.tsx:126 prop:exportBtn"
   ]
@@ -17882,7 +17896,7 @@
   "kind": "str",
   "refs": [
    "ui/command.tsx:70",
-   "ui/map.tsx:47 prop:name"
+   "ui/map.tsx:48 prop:name"
   ]
  },
  {
@@ -17890,7 +17904,7 @@
   "kind": "str",
   "refs": [
    "ui/command.tsx:72",
-   "ui/map.tsx:777 prop:label",
+   "ui/map.tsx:789 prop:label",
    "ui/summary.tsx:43 jsx"
   ]
  },
@@ -20528,7 +20542,7 @@
    "ui/dialogs/designer.tsx:436 jsx",
    "ui/dialogs/fleetops.tsx:92 jsx",
    "ui/dialogs/fleetops.tsx:119 jsx",
-   "ui/dialogs/index.tsx:82 jsx"
+   "ui/dialogs/index.tsx:84 jsx"
   ]
  },
  {
@@ -21047,28 +21061,28 @@
   "key": "Race enregistrée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:51 prop:title"
+   "ui/dialogs/index.tsx:53 prop:title"
   ]
  },
  {
   "key": "La race est aussi mémorisée dans ce navigateur (liste des races de « Nouvelle partie »). Conservez ce texte pour la réutiliser ailleurs : « Nouvelle partie » puis « Importer une race ».",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:51 prop:note"
+   "ui/dialogs/index.tsx:53 prop:note"
   ]
  },
  {
   "key": "Confirmation",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:82 attr:title"
+   "ui/dialogs/index.tsx:84 attr:title"
   ]
  },
  {
   "key": "Confirmer",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:82 jsx",
+   "ui/dialogs/index.tsx:84 jsx",
    "ui/store.ts:364"
   ]
  },
@@ -21076,63 +21090,63 @@
   "key": "Télécharger le fichier",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:91 jsx"
+   "ui/dialogs/index.tsx:93 jsx"
   ]
  },
  {
   "key": "Copié",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:93 jsx"
+   "ui/dialogs/index.tsx:95 jsx"
   ]
  },
  {
   "key": "Copier le texte",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:93 jsx"
+   "ui/dialogs/index.tsx:95 jsx"
   ]
  },
  {
   "key": "Vous pouvez aussi copier ce texte dans un fichier .json : il se réimporte par « Importer » ou en le collant.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:97 jsx"
+   "ui/dialogs/index.tsx:99 jsx"
   ]
  },
  {
   "key": "Race importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:108 call:notify"
+   "ui/dialogs/index.tsx:110 call:notify"
   ]
  },
  {
   "key": "fichier de tour ou d'ordres endommagé",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:112"
+   "ui/dialogs/index.tsx:114"
   ]
  },
  {
   "key": "Tour {0} des {1} : donnez vos ordres, puis envoyez-les.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:113 call:notify"
+   "ui/dialogs/index.tsx:115 call:notify"
   ]
  },
  {
   "key": "ouvrez d'abord la partie hébergée (écran d'accueil, sauvegardes), puis importez ces ordres",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:115"
+   "ui/dialogs/index.tsx:117"
   ]
  },
  {
   "key": "Ordres des {0} reçus.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:119 call:notify",
+   "ui/dialogs/index.tsx:121 call:notify",
    "ui/pbemui.tsx:20 call:push"
   ]
  },
@@ -21140,56 +21154,56 @@
   "key": "Partie importée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:124 call:notify"
+   "ui/dialogs/index.tsx:126 call:notify"
   ]
  },
  {
   "key": "Contenu invalide : ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:125 call:setErr"
+   "ui/dialogs/index.tsx:127 call:setErr"
   ]
  },
  {
   "key": "Importer une race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:127 attr:title"
+   "ui/dialogs/index.tsx:129 attr:title"
   ]
  },
  {
   "key": "Importer une partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:127 attr:title"
+   "ui/dialogs/index.tsx:129 attr:title"
   ]
  },
  {
   "key": "Choisir un fichier…{0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:128 jsx"
+   "ui/dialogs/index.tsx:130 jsx"
   ]
  },
  {
   "key": "Importer le texte collé",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:129 jsx"
+   "ui/dialogs/index.tsx:131 jsx"
   ]
  },
  {
   "key": "Choisissez un fichier exporté, ou collez son contenu ci-dessous.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/index.tsx:131 jsx"
+   "ui/dialogs/index.tsx:133 jsx"
   ]
  },
  {
   "key": "Collez ici le texte de la sauvegarde",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:132 attr:placeholder"
+   "ui/dialogs/index.tsx:134 attr:placeholder"
   ]
  },
  {
@@ -21438,7 +21452,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:69 jsx",
-   "ui/dialogs/newgame.tsx:154 jsx"
+   "ui/dialogs/newgame.tsx:173 jsx"
   ]
  },
  {
@@ -22041,7 +22055,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:215 jsx",
-   "ui/dialogs/newgame.tsx:114 jsx"
+   "ui/dialogs/newgame.tsx:128 jsx"
   ]
  },
  {
@@ -23218,7 +23232,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/misc.tsx:341 jsx",
-   "ui/dialogs/newgame.tsx:143 jsx"
+   "ui/dialogs/newgame.tsx:162 jsx"
   ]
  },
  {
@@ -23236,363 +23250,412 @@
   ]
  },
  {
+  "key": "{0} : galaxie spirale à {1} bras, {2} étoiles.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:10"
+  ]
+ },
+ {
+  "key": "{0} : galaxie elliptique, {1} étoiles.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:11"
+  ]
+ },
+ {
+  "key": "{0} : galaxie irrégulière, {1} étoiles.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:12"
+  ]
+ },
+ {
+  "key": "{0} : galaxie lenticulaire, {1} étoiles.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:13"
+  ]
+ },
+ {
+  "key": "{0} : galaxie en anneau, {1} étoiles.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:14"
+  ]
+ },
+ {
   "key": "Facile",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:20 prop:easy"
+   "ui/dialogs/newgame.tsx:34 prop:easy"
   ]
  },
  {
   "key": "Difficile",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:20 prop:harder"
+   "ui/dialogs/newgame.tsx:34 prop:harder"
   ]
  },
  {
   "key": "Expert",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:20 prop:expert"
+   "ui/dialogs/newgame.tsx:34 prop:expert"
   ]
  },
  {
   "key": "Économie et guerre simples, peu de recherche, des guerres tardives. Ne se ligue jamais contre vous, mais s'allie à vous contre un ordinateur qui écrase la partie.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:23 prop:easy"
+   "ui/dialogs/newgame.tsx:37 prop:easy"
   ]
  },
  {
   "key": "Entretient son économie et sa défense : modernise ses vaisseaux et ses stations, défend ses mondes menacés, garde ses flottes groupées, s'étend plus vite et ne gaspille pas ses minerais. S'allie aux autres contre l'empire qui écrase la partie, vous compris.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:24 prop:standard"
+   "ui/dialogs/newgame.tsx:38 prop:standard"
   ]
  },
  {
   "key": "Comme Standard, et prépare ses invasions et conçoit ses navires contre ceux de l'ennemi. Recherche plus rapide, guerres plus précoces.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:25 prop:harder"
+   "ui/dialogs/newgame.tsx:39 prop:harder"
   ]
  },
  {
   "key": "Comme Difficile, avec la recherche la plus rapide et les guerres les plus précoces.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:26 prop:expert"
+   "ui/dialogs/newgame.tsx:40 prop:expert"
   ]
  },
  {
   "key": "Aucun niveau ne triche : mêmes règles que vous, sans bonus de production ni de recherche, et ils ne savent que ce que leurs scanners, leurs batailles et leurs espions leur apprennent.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:29"
+   "ui/dialogs/newgame.tsx:43"
   ]
  },
  {
   "key": "Une promenade pieds nus",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Le grand bazar stellaire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Les confins du zénith",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "La valse des comètes",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Le dernier phare",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Opération Tournesol",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Les nébuleuses perdues",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Croisière en eaux noires",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:30"
+   "ui/dialogs/newgame.tsx:44"
   ]
  },
  {
   "key": "Partie hébergée : envoyez à chaque joueur son fichier de tour.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:74 call:notify"
+   "ui/dialogs/newgame.tsx:88 call:notify"
   ]
  },
  {
   "key": "Nouvelle partie créée. Bonne chance !",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:75 call:notify"
+   "ui/dialogs/newgame.tsx:89 call:notify"
   ]
  },
  {
   "key": "Nouvelle partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:82 attr:title"
+   "ui/dialogs/newgame.tsx:96 attr:title"
   ]
  },
  {
   "key": "{0} planètes · {1} joueurs",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:83 jsx"
+   "ui/dialogs/newgame.tsx:97 jsx"
   ]
  },
  {
   "key": "Commencer la partie",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 jsx"
+   "ui/dialogs/newgame.tsx:99 jsx"
   ]
  },
  {
   "key": "La race d'un adversaire humain dépasse son budget de points",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:85 attr:title"
+   "ui/dialogs/newgame.tsx:99 attr:title"
   ]
  },
  {
   "key": "Partie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:87 prop:label"
+   "ui/dialogs/newgame.tsx:101 prop:label"
   ]
  },
  {
   "key": "Options avancées",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:87 prop:label"
+   "ui/dialogs/newgame.tsx:101 prop:label"
   ]
  },
  {
   "key": "Règles Constellations",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:87 prop:label"
+   "ui/dialogs/newgame.tsx:101 prop:label"
   ]
  },
  {
   "key": "Adversaires ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:87 prop:label"
+   "ui/dialogs/newgame.tsx:101 prop:label"
   ]
  },
  {
   "key": "Conditions de victoire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:87 prop:label"
+   "ui/dialogs/newgame.tsx:101 prop:label"
   ]
  },
  {
   "key": "Votre race",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:91 jsx"
+   "ui/dialogs/newgame.tsx:105 jsx"
   ]
  },
  {
   "key": "Vos races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:94 attr:label"
+   "ui/dialogs/newgame.tsx:108 attr:label"
   ]
  },
  {
   "key": "Personnaliser la race…",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:96 jsx"
+   "ui/dialogs/newgame.tsx:110 jsx"
   ]
  },
  {
   "key": "Importer une race…",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:97 jsx"
+   "ui/dialogs/newgame.tsx:111 jsx"
   ]
  },
  {
   "key": "Exporter la race",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:98 prop:title"
+   "ui/dialogs/newgame.tsx:112 prop:title"
   ]
  },
  {
   "key": "{0} · points restants {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:100 jsx"
+   "ui/dialogs/newgame.tsx:114 jsx"
   ]
  },
  {
   "key": "Traits : ",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:100 jsx"
+   "ui/dialogs/newgame.tsx:114 jsx"
   ]
  },
  {
   "key": "Aucun trait secondaire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:100 jsx"
+   "ui/dialogs/newgame.tsx:114 jsx"
   ]
  },
  {
   "key": "Origine",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:102 jsx"
+   "ui/dialogs/newgame.tsx:116 jsx"
   ]
  },
  {
   "key": "À débloquer par un succès secret.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:104 jsx"
+   "ui/dialogs/newgame.tsx:118 jsx"
   ]
  },
  {
   "key": "À débloquer par le succès « {0} ».",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:104 jsx"
+   "ui/dialogs/newgame.tsx:118 jsx"
   ]
  },
  {
   "key": "Les ordinateurs tirent leur origine au sort.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:108 jsx"
+   "ui/dialogs/newgame.tsx:122 jsx"
   ]
  },
  {
   "key": "Taille de l'univers",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:112 jsx"
+   "ui/dialogs/newgame.tsx:126 jsx"
   ]
  },
  {
   "key": "({0} planètes)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:113 jsx"
+   "ui/dialogs/newgame.tsx:127 jsx"
   ]
  },
  {
-  "key": "Difficulté des adversaires",
-  "kind": "jsx",
-  "refs": [
-   "ui/dialogs/newgame.tsx:117 jsx"
-  ]
- },
- {
-  "key": "Partie par fichiers : {0} joueurs humains jouent chacun chez soi ; ce navigateur héberge la partie.",
-  "kind": "tpl",
-  "refs": [
-   "ui/dialogs/newgame.tsx:121 jsx",
-   "ui/dialogs/newgame.tsx:151 jsx"
-  ]
- },
- {
-  "key": "Partie à plusieurs sur cet appareil : {0} joueurs humains jouent chacun leur tour.",
-  "kind": "tpl",
-  "refs": [
-   "ui/dialogs/newgame.tsx:121 jsx",
-   "ui/dialogs/newgame.tsx:151 jsx"
-  ]
- },
- {
-  "key": "{0} Chacun joue chez soi, par fichiers de tour (comme Stars! par courrier)",
-  "kind": "jsx",
-  "refs": [
-   "ui/dialogs/newgame.tsx:122 jsx",
-   "ui/dialogs/newgame.tsx:150 jsx"
-  ]
- },
- {
-  "key": "Nombre d'adversaires",
+  "key": "Nom de la galaxie",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:124 attr:k"
+   "ui/dialogs/newgame.tsx:132 attr:k"
   ]
  },
  {
-  "key": "Nom de la partie",
-  "kind": "str",
-  "refs": [
-   "ui/dialogs/newgame.tsx:129 attr:k"
-  ]
- },
- {
-  "key": "Graine (univers reproductible)",
-  "kind": "str",
-  "refs": [
-   "ui/dialogs/newgame.tsx:130 attr:k"
-  ]
- },
- {
-  "key": "Densité",
-  "kind": "jsx",
-  "refs": [
-   "ui/dialogs/newgame.tsx:131 jsx"
-  ]
- },
- {
-  "key": "Positions des joueurs",
+  "key": "{0} Répartition égale (un cœur moins dense)",
   "kind": "jsx",
   "refs": [
    "ui/dialogs/newgame.tsx:133 jsx"
   ]
  },
  {
+  "key": "Difficulté des adversaires",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/newgame.tsx:136 jsx"
+  ]
+ },
+ {
+  "key": "Partie par fichiers : {0} joueurs humains jouent chacun chez soi ; ce navigateur héberge la partie.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:140 jsx",
+   "ui/dialogs/newgame.tsx:170 jsx"
+  ]
+ },
+ {
+  "key": "Partie à plusieurs sur cet appareil : {0} joueurs humains jouent chacun leur tour.",
+  "kind": "tpl",
+  "refs": [
+   "ui/dialogs/newgame.tsx:140 jsx",
+   "ui/dialogs/newgame.tsx:170 jsx"
+  ]
+ },
+ {
+  "key": "{0} Chacun joue chez soi, par fichiers de tour (comme Stars! par courrier)",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/newgame.tsx:141 jsx",
+   "ui/dialogs/newgame.tsx:169 jsx"
+  ]
+ },
+ {
+  "key": "Nombre d'adversaires",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:143 attr:k"
+  ]
+ },
+ {
+  "key": "Nom de la partie",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:148 attr:k"
+  ]
+ },
+ {
+  "key": "Graine (univers reproductible)",
+  "kind": "str",
+  "refs": [
+   "ui/dialogs/newgame.tsx:149 attr:k"
+  ]
+ },
+ {
+  "key": "Densité",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/newgame.tsx:150 jsx"
+  ]
+ },
+ {
+  "key": "Positions des joueurs",
+  "kind": "jsx",
+  "refs": [
+   "ui/dialogs/newgame.tsx:152 jsx"
+  ]
+ },
+ {
   "key": "Options",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:137 jsx",
+   "ui/dialogs/newgame.tsx:156 jsx",
    "ui/pages.tsx:314 attr:aria-label",
    "ui/pages.tsx:492 attr:aria-label"
   ]
@@ -23601,70 +23664,70 @@
   "key": "{0} Débutant : minerais maximaux",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:138 jsx"
+   "ui/dialogs/newgame.tsx:157 jsx"
   ]
  },
  {
   "key": "{0} Progrès technologique plus lent",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:139 jsx"
+   "ui/dialogs/newgame.tsx:158 jsx"
   ]
  },
  {
   "key": "{0} Partie accélérée (départ plus riche)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:140 jsx"
+   "ui/dialogs/newgame.tsx:159 jsx"
   ]
  },
  {
   "key": "{0} Pas d'événements aléatoires (comètes, Marchand…)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:141 jsx"
+   "ui/dialogs/newgame.tsx:160 jsx"
   ]
  },
  {
   "key": "{0} Les ordinateurs forment des alliances",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:142 jsx"
+   "ui/dialogs/newgame.tsx:161 jsx"
   ]
  },
  {
   "key": "{0} Galaxie en amas",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:144 jsx"
+   "ui/dialogs/newgame.tsx:163 jsx"
   ]
  },
  {
   "key": "{0} Contacts anonymes hors scanner pénétrant {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:145 jsx"
+   "ui/dialogs/newgame.tsx:164 jsx"
   ]
  },
  {
   "key": "(décoché : toute flotte détectée est identifiée)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:145 jsx"
+   "ui/dialogs/newgame.tsx:164 jsx"
   ]
  },
  {
   "key": "Joueur",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:154 jsx"
+   "ui/dialogs/newgame.tsx:173 jsx"
   ]
  },
  {
   "key": "Vous",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:156 jsx",
+   "ui/dialogs/newgame.tsx:175 jsx",
    "ui/intel.tsx:126 jsx"
   ]
  },
@@ -23672,56 +23735,56 @@
   "key": "Humain",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:156 jsx"
+   "ui/dialogs/newgame.tsx:175 jsx"
   ]
  },
  {
   "key": "Aléatoire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:160 jsx"
+   "ui/dialogs/newgame.tsx:179 jsx"
   ]
  },
  {
   "key": "Ordinateur {0}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:161 jsx"
+   "ui/dialogs/newgame.tsx:180 jsx"
   ]
  },
  {
   "key": "Humain (chez lui, par fichiers)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:161 jsx"
+   "ui/dialogs/newgame.tsx:180 jsx"
   ]
  },
  {
   "key": "Humain (même appareil)",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:161 jsx"
+   "ui/dialogs/newgame.tsx:180 jsx"
   ]
  },
  {
   "key": "Ajouter un adversaire",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:165 jsx"
+   "ui/dialogs/newgame.tsx:184 jsx"
   ]
  },
  {
   "key": "Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:168 jsx"
+   "ui/dialogs/newgame.tsx:187 jsx"
   ]
  },
  {
   "key": "Toutes",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:169 jsx",
+   "ui/dialogs/newgame.tsx:188 jsx",
    "ui/dialogs/research.tsx:283 call:map",
    "ui/pages.tsx:525 jsx"
   ]
@@ -23730,105 +23793,105 @@
   "key": "Aucune (Stars! classique)",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:169 jsx"
+   "ui/dialogs/newgame.tsx:188 jsx"
   ]
  },
  {
   "key": "La victoire est déclarée quand un joueur :",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:181 jsx"
+   "ui/dialogs/newgame.tsx:200 jsx"
   ]
  },
  {
   "key": "{0} possède {1} % des planètes",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:182 jsx"
+   "ui/dialogs/newgame.tsx:201 jsx"
   ]
  },
  {
   "key": "{0} atteint le niveau {1} dans {2} domaines",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:183 jsx"
+   "ui/dialogs/newgame.tsx:202 jsx"
   ]
  },
  {
   "key": "{0} dépasse un score de {1}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:184 jsx"
+   "ui/dialogs/newgame.tsx:203 jsx"
   ]
  },
  {
   "key": "{0} a un score supérieur d'au moins {1} % à celui du deuxième",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:185 jsx"
+   "ui/dialogs/newgame.tsx:204 jsx"
   ]
  },
  {
   "key": "{0} produit {1} milliers de ressources par an",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:186 jsx"
+   "ui/dialogs/newgame.tsx:205 jsx"
   ]
  },
  {
   "key": "{0} possède {1} vaisseaux capitaux",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:187 jsx"
+   "ui/dialogs/newgame.tsx:206 jsx"
   ]
  },
  {
   "key": "{0} a le meilleur score après {1} ans",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:188 jsx"
+   "ui/dialogs/newgame.tsx:207 jsx"
   ]
  },
  {
   "key": "Nombre de critères requis",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:189 attr:k"
+   "ui/dialogs/newgame.tsx:208 attr:k"
   ]
  },
  {
   "key": "Années minimales avant victoire",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:190 attr:k"
+   "ui/dialogs/newgame.tsx:209 attr:k"
   ]
  },
  {
   "key": "Expérience proche de Stars! {0} ({1}){2}",
   "kind": "jsx",
   "refs": [
-   "ui/dialogs/newgame.tsx:202 jsx"
+   "ui/dialogs/newgame.tsx:221 jsx"
   ]
  },
  {
   "key": " · modifiée",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:202 jsx"
+   "ui/dialogs/newgame.tsx:221 jsx"
   ]
  },
  {
   "key": "Les règles du jeu d'origine : galaxie carrée, aucune règle Constellations, flottes identifiées dès qu'elles sont vues, trous de ver franchissables d'emblée, modèles de production qui ne s'enchaînent pas, victoire au plus tôt après 50 ans. Les aides d'interface (automatisations, planificateurs, rapports, simulateur) restent.",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:204 jsx"
+   "ui/dialogs/newgame.tsx:223 jsx"
   ]
  },
  {
   "key": "Pour retrouver Stars! tel qu'il était dans sa dernière version ({0}, {1}) : toutes les règles Constellations retirées, galaxie carrée.",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/newgame.tsx:205 jsx"
+   "ui/dialogs/newgame.tsx:224 jsx"
   ]
  },
  {
@@ -24921,7 +24984,7 @@
   "kind": "jsx",
   "refs": [
    "ui/dialogs/race.tsx:66 jsx",
-   "ui/map.tsx:1061 jsx"
+   "ui/map.tsx:1077 jsx"
   ]
  },
  {
@@ -25367,7 +25430,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/reports.tsx:64 prop:get",
-   "ui/map.tsx:776 prop:label"
+   "ui/map.tsx:788 prop:label"
   ]
  },
  {
@@ -26041,7 +26104,8 @@
   "key": "Type",
   "kind": "str",
   "refs": [
-   "ui/dialogs/research.tsx:286 call:th"
+   "ui/dialogs/research.tsx:286 call:th",
+   "ui/systemview.tsx:87 jsx"
   ]
  },
  {
@@ -27346,7 +27410,7 @@
   "refs": [
    "ui/discoveries.tsx:159 jsx",
    "ui/discoveries.tsx:273 jsx",
-   "ui/map.tsx:1282 call:fillText"
+   "ui/map.tsx:1298 call:fillText"
   ]
  },
  {
@@ -29306,6 +29370,14 @@
   ]
  },
  {
+  "key": "Voir le système : l'étoile, ses planètes et ses lunes",
+  "kind": "str",
+  "refs": [
+   "ui/inspector.tsx:143 attr:title",
+   "ui/inspector.tsx:358 attr:title"
+  ]
+ },
+ {
   "key": "Minerais en réserve",
   "kind": "str",
   "refs": [
@@ -31262,70 +31334,70 @@
   "key": "le Marchand nomade",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:43 prop:name"
+   "ui/map.tsx:44 prop:name"
   ]
  },
  {
   "key": "scellé",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:382 call:fillText"
+   "ui/map.tsx:394 call:fillText"
   ]
  },
  {
   "key": "Portail {0} %",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:511 call:fillText"
+   "ui/map.tsx:523 call:fillText"
   ]
  },
  {
   "key": "Raid pirate !",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:526 call:fillText"
+   "ui/map.tsx:538 call:fillText"
   ]
  },
  {
   "key": "Raid vers {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:526 call:fillText"
+   "ui/map.tsx:538 call:fillText"
   ]
  },
  {
   "key": "Raid annoncé",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:526 call:fillText"
+   "ui/map.tsx:538 call:fillText"
   ]
  },
  {
   "key": "en orbite de {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:602 call:push"
+   "ui/map.tsx:614 call:push"
   ]
  },
  {
   "key": "sur votre territoire",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:602 call:push"
+   "ui/map.tsx:614 call:push"
   ]
  },
  {
   "key": "{0} · {1} al",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:641 call:fillText"
+   "ui/map.tsx:653 call:fillText"
   ]
  },
  {
   "key": "Patrouille",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:641 call:fillText",
+   "ui/map.tsx:653 call:fillText",
    "ui/sidebar.tsx:16",
    "ui/sidebar.tsx:64 prop:label"
   ]
@@ -31334,7 +31406,7 @@
   "key": "Ravitaillement",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:641 call:fillText",
+   "ui/map.tsx:653 call:fillText",
    "ui/sidebar.tsx:16",
    "ui/sidebar.tsx:29 prop:label",
    "ui/sidebar.tsx:63 prop:label"
@@ -31344,84 +31416,84 @@
   "key": " · arrivée {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:672"
+   "ui/map.tsx:684"
   ]
  },
  {
   "key": "{0} attendu en {1}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:676 call:push"
+   "ui/map.tsx:688 call:push"
   ]
  },
  {
   "key": "Interception : même année ✓",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:677 call:push"
+   "ui/map.tsx:689 call:push"
   ]
  },
  {
   "key": "En avance de {0} an{1} (attente sur place)",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:677 call:push"
+   "ui/map.tsx:689 call:push"
   ]
  },
  {
   "key": "Trop tard de {0} an{1}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:677 call:push"
+   "ui/map.tsx:689 call:push"
   ]
  },
  {
   "key": " ⚠ carburant",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:752 call:fillText"
+   "ui/map.tsx:764 call:fillText"
   ]
  },
  {
   "key": " ⚠ mines",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:752 call:fillText"
+   "ui/map.tsx:764 call:fillText"
   ]
  },
  {
   "key": " ⚠ scellé",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:752 call:fillText"
+   "ui/map.tsx:764 call:fillText"
   ]
  },
  {
   "key": " ⚠ traversée verrouillée",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:752"
+   "ui/map.tsx:764"
   ]
  },
  {
   "key": " · identifiée en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:776"
+   "ui/map.tsx:788"
   ]
  },
  {
   "key": "{0} · ≈ {1} kt, ≈ {2} vaisseau{3}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:776 prop:label"
+   "ui/map.tsx:788 prop:label"
   ]
  },
  {
   "key": "Flotte des {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:776",
+   "ui/map.tsx:788",
    "ui/summary.tsx:174 jsx"
   ]
  },
@@ -31429,14 +31501,14 @@
   "key": "Contact",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:776"
+   "ui/map.tsx:788"
   ]
  },
  {
   "key": "Trou de ver scellé",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:777 prop:label",
+   "ui/map.tsx:789 prop:label",
    "ui/summary.tsx:43 jsx"
   ]
  },
@@ -31444,280 +31516,294 @@
   "key": "Paquet ({0} kt)",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:778 prop:label"
+   "ui/map.tsx:790 prop:label"
   ]
  },
  {
   "key": "Épave ({0} kt)",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:779 prop:label"
+   "ui/map.tsx:791 prop:label"
   ]
  },
  {
   "key": "Champ de mines ({0})",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:783 prop:label"
+   "ui/map.tsx:795 prop:label"
   ]
  },
  {
   "key": "Glisser pour ajouter une étape ici",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:892 prop:text"
+   "ui/map.tsx:904 prop:text"
   ]
  },
  {
   "key": "Rayon d'action",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:893 prop:text"
+   "ui/map.tsx:905 prop:text"
   ]
  },
  {
   "key": "Glisser pour l'agrandir ou le réduire",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:893 prop:text"
+   "ui/map.tsx:905 prop:text"
   ]
  },
  {
   "key": "Position estimée en {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:896 prop:text"
+   "ui/map.tsx:908 prop:text"
   ]
  },
  {
   "key": "Point d'interception : glissez-y une étape (aimantée)",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:896 prop:text"
+   "ui/map.tsx:908 prop:text"
   ]
  },
  {
   "key": "Couloir à travers {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:903 prop:text"
+   "ui/map.tsx:915 prop:text"
   ]
  },
  {
   "key": "Poussière raréfiée : on y vole à Warp 3 au plus. Vous seul connaissez ce passage.",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:903 prop:text"
+   "ui/map.tsx:915 prop:text"
   ]
  },
  {
   "key": "Zone de sondage",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:905 prop:text"
+   "ui/map.tsx:917 prop:text"
   ]
  },
  {
   "key": "Quelque part au bord du nuage s'ouvre un passage vers {0}. Une flotte équipée d'un scanner qui stationne ici le trouve ({1} / {2} points).",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:905 prop:text"
+   "ui/map.tsx:917 prop:text"
   ]
  },
  {
   "key": "Nuage sombre, infranchissable : à vitesse Warp, chaque grain de poussière frappe comme un obus. Les flottes le contournent.",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:906 prop:text"
+   "ui/map.tsx:918 prop:text"
   ]
  },
  {
   "key": "Glisser pour déplacer l'étape",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:907 prop:text"
+   "ui/map.tsx:919 prop:text"
   ]
  },
  {
   "key": "Étape · glisser pour la déplacer",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:908 prop:text"
+   "ui/map.tsx:920 prop:text"
   ]
  },
  {
   "key": "Destination des paquets : {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:959 call:notify"
+   "ui/map.tsx:971 call:notify"
   ]
  },
  {
   "key": "Route supprimée",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:960 call:notify"
+   "ui/map.tsx:972 call:notify"
   ]
  },
  {
   "key": "Les vaisseaux construits sur {0} iront à {1}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:960 call:notify"
+   "ui/map.tsx:972 call:notify"
   ]
  },
  {
   "key": "Valeur pour vous {0} %{1}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:999 call:push"
+   "ui/map.tsx:1011 call:push"
   ]
  },
  {
   "key": " · relevé {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:999 call:push"
+   "ui/map.tsx:1011 call:push"
   ]
  },
  {
   "key": "Inexploré",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1000 call:push"
+   "ui/map.tsx:1012 call:push"
+  ]
+ },
+ {
+  "key": "Étoile de type {0} · clic droit : voir le système",
+  "kind": "tpl",
+  "refs": [
+   "ui/map.tsx:1015 call:push"
   ]
  },
  {
   "key": "{0} · {1} hab.",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1001 call:push"
+   "ui/map.tsx:1016 call:push"
   ]
  },
  {
   "key": "§Trajet de votre flotte {0}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1013 call:push"
+   "ui/map.tsx:1028 call:push"
   ]
  },
  {
   "key": "{0} al · {1} a à Warp {2}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1020 call:push"
+   "ui/map.tsx:1035 call:push"
   ]
  },
  {
   "key": "Consommation ≈ {0} mg (à bord : {1} mg)",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1021 call:push"
+   "ui/map.tsx:1036 call:push"
   ]
  },
  {
   "key": "⚠ Carburant insuffisant : il faut ≈ {0} mg, à bord {1} mg",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1021 call:push"
+   "ui/map.tsx:1036 call:push"
   ]
  },
  {
   "key": "{0} al · immobile",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1022 call:push"
+   "ui/map.tsx:1037 call:push"
   ]
  },
  {
   "key": "la planète",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1026 call:push"
+   "ui/map.tsx:1041 call:push"
   ]
  },
  {
   "key": "Aller ici",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1051 jsx"
+   "ui/map.tsx:1066 jsx"
   ]
  },
  {
   "key": "Ajouter une étape ici",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1052 jsx"
+   "ui/map.tsx:1067 jsx"
   ]
  },
  {
   "key": "Intercepter : {0}",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1054 jsx"
+   "ui/map.tsx:1069 jsx"
   ]
  },
  {
   "key": "Calcule le point de rencontre et le recalcule chaque année",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1054 attr:title"
+   "ui/map.tsx:1069 attr:title"
   ]
  },
  {
   "key": "Rien ici",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1055 jsx"
+   "ui/map.tsx:1070 jsx"
+  ]
+ },
+ {
+  "key": "Voir le système : {0}",
+  "kind": "tpl",
+  "refs": [
+   "ui/map.tsx:1071 jsx"
   ]
  },
  {
   "key": "Centrer ici",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1056 jsx"
+   "ui/map.tsx:1072 jsx"
   ]
  },
  {
   "key": "{0} al / 100 px{1}",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1059 jsx"
+   "ui/map.tsx:1075 jsx"
   ]
  },
  {
   "key": " · Maj+clic : destination · Ctrl+Maj+clic : étape en plus",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1059 jsx"
+   "ui/map.tsx:1075 jsx"
   ]
  },
  {
   "key": " · Ctrl+glisser : règle",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1059 jsx"
+   "ui/map.tsx:1075 jsx"
   ]
  },
  {
   "key": "Mode étapes : le premier toucher fixe la destination, les suivants ajoutent des étapes {0}",
   "kind": "jsx",
   "refs": [
-   "ui/map.tsx:1061 jsx"
+   "ui/map.tsx:1077 jsx"
   ]
  },
  {
   "key": "Zone de sondage · {0} %",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:1270 call:fillText"
+   "ui/map.tsx:1286 call:fillText"
   ]
  },
  {
   "key": "Vue d'ensemble : cliquez ou glissez pour vous déplacer",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1537 attr:title"
+   "ui/map.tsx:1554 attr:title"
   ]
  },
  {
@@ -35449,6 +35535,139 @@
   "kind": "str",
   "refs": [
    "ui/summary.tsx:302 attr:title"
+  ]
+ },
+ {
+  "key": "désertique",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Desert"
+  ]
+ },
+ {
+  "key": "océanique",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Ocean"
+  ]
+ },
+ {
+  "key": "géante gazeuse",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Gas Giant"
+  ]
+ },
+ {
+  "key": "géante de glace",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Ice Giant"
+  ]
+ },
+ {
+  "key": "gelée",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Frozen"
+  ]
+ },
+ {
+  "key": "glacée",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:12 prop:Icy"
+  ]
+ },
+ {
+  "key": "capturée",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:12 prop:Captured"
+  ]
+ },
+ {
+  "key": "{0} · système",
+  "kind": "tpl",
+  "refs": [
+   "ui/systemview.tsx:84 attr:title"
+  ]
+ },
+ {
+  "key": "Étoile de type {0} ({1} K, {2} fois la luminosité du Soleil) · zone habitable de {3} à {4} UA · métallicité {5} %",
+  "kind": "tpl",
+  "refs": [
+   "ui/systemview.tsx:86 jsx"
+  ]
+ },
+ {
+  "key": "Orbite",
+  "kind": "jsx",
+  "refs": [
+   "ui/systemview.tsx:87 jsx"
+  ]
+ },
+ {
+  "key": "Lunes",
+  "kind": "jsx",
+  "refs": [
+   "ui/systemview.tsx:87 jsx"
+  ]
+ },
+ {
+  "key": "{0} UA",
+  "kind": "jsx",
+  "refs": [
+   "ui/systemview.tsx:91 jsx"
+  ]
+ },
+ {
+  "key": "monde principal",
+  "kind": "jsx",
+  "refs": [
+   "ui/systemview.tsx:93 jsx"
+  ]
+ },
+ {
+  "key": "zone habitable",
+  "kind": "jsx",
+  "refs": [
+   "ui/systemview.tsx:93 jsx"
+  ]
+ },
+ {
+  "key": "Lunes de P{0} : ",
+  "kind": "tpl",
+  "refs": [
+   "ui/systemview.tsx:95 jsx"
+  ]
+ },
+ {
+  "key": "Monde principal : inconnu tant que le système n'a pas été exploré.",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:96 jsx"
+  ]
+ },
+ {
+  "key": "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:96 jsx"
+  ]
+ },
+ {
+  "key": "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)",
+  "kind": "tpl",
+  "refs": [
+   "ui/systemview.tsx:97 jsx"
+  ]
+ },
+ {
+  "key": " · répartition égale",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:97"
   ]
  },
  {
@@ -39716,7 +39935,7 @@
   "kind": "str",
   "refs": [
    "engine/movement.ts:564 call:msg",
-   "ui/map.tsx:361 call:fillText"
+   "ui/map.tsx:373 call:fillText"
   ]
  },
  {
@@ -39840,7 +40059,7 @@
   "key": "format inconnu",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:122"
+   "ui/dialogs/index.tsx:124"
   ]
  },
  {
@@ -39947,8 +40166,8 @@
   "key": "espace",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:700",
-   "ui/map.tsx:700",
+   "ui/map.tsx:712",
+   "ui/map.tsx:712",
    "ui/summary.tsx:163"
   ]
  },
@@ -40574,7 +40793,7 @@
   "key": "{0}{1} a{2}{3}{4}",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:752 call:fillText"
+   "ui/map.tsx:764 call:fillText"
   ]
  },
  {
@@ -40626,7 +40845,7 @@
   "key": "→ {0} · {1} a",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:603 call:push"
+   "ui/map.tsx:615 call:push"
   ]
  },
  {

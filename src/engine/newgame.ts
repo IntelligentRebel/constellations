@@ -237,7 +237,7 @@ export function createGame(opts: NewGameOptions): GameState {
     nextId: 1, human: 0, victor: null, victoryAnnounced: false,
   };
   // 3.6: a region of a spiral arm (or a whole galaxy in the games of 0.3.5.8), or the square of Stars!
-  game.shape = settings.shape ? makeShape(settings.seed, settings.shape, W) : undefined;
+  game.shape = settings.shape ? makeShape(settings.seed, settings.shape, W, { id: settings.galaxyId?.trim(), even: settings.galaxyEven }) : undefined;
   if (!game.shape) delete game.shape;
   game.planets = generatePlanets(rng, settings.size, settings.density, settings.clumping, settings.accelerated, game.shape);
   game.nextId = 1000;

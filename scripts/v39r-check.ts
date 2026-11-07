@@ -177,6 +177,25 @@ console.log('--- the interface: orders go to our own fleets only, trailing detou
   check(f.pursue === 12345 && store.undo.length === n0, 'a network refused leaves the fleet\'s orders as they were');
 }
 
+console.log('--- 0.3.9.26: a galaxy from a name, as in Rick\'s generator');
+{
+  const GG = await import('../src/engine/galaxygen');
+  const { createHash } = await import('node:crypto');
+  check(['', 'Galaxy1', 'x'.repeat(55), 'y'.repeat(64), 'é🙂'.repeat(40)].every(t => GG.sha256Hex(t) === createHash('sha256').update(t).digest('hex')), 'SHA-256 matches the reference');
+  const gp = GG.galaxyParams('Galaxy1');
+  check(gp.shapeType === 0 && gp.numArms === 5 && gp.numStars === 2000 && gp.coreSize === 17 && gp.orientation === 265 && gp.windiness === 77, 'Galaxy1: a spiral of 5 arms, 2000 stars, orientation 265, wind 77, core 17 (as his generator says)');
+  const sp = GG.starProps('Galaxy1_Star579_attempt1');
+  check(sp.type === 'M' && sp.temperature === 3000 && Math.abs(sp.luminosity - 0.0885) < 0.001, `Galaxy1_Star579: type M, 3000 K, 0.089 L (as his tooltip) (${sp.type} ${sp.temperature})`);
+  check(GG.galaxyParams('Galaxy7').shapeType === 4, 'Galaxy7 is a ring');
+  const mk = () => quickGame(PREDEFINED_RACES.Humanoid(), 'Medium', 3, 'standard', 'r-gal', { shape: 'procedural', galaxyId: 'Galaxy1' } as any);
+  const a = mk(), b2 = mk();
+  check(JSON.stringify(a) === JSON.stringify(b2) && a.planets.every(p => p.star) && a.planets.length === 288, `the same name and seed give the same game, every world on a star of the galaxy (${a.planets.length} worlds)`);
+  let close = 0; for (const p of a.planets) for (const q of a.planets) if (p !== q && Math.hypot(p.x - q.x, p.y - q.y) < 14) close++;
+  check(close === 0 && a.planets.filter(p => p.homeworld).length === 4, 'worlds at least 14 ly apart, every empire placed');
+  for (let i = 0; i < 5; i++) generateTurn(a);
+  check(a.year === 2405, 'its turns run');
+}
+
 console.log(`\n${bad} failure(s), ${good} ok`);
 process.exit(bad ? 1 : 0);
 }

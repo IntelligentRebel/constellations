@@ -702,7 +702,7 @@
    "ui/app.tsx:65 attr:aria-hidden",
    "ui/app.tsx:92 attr:aria-hidden",
    "ui/chronicle.tsx:102 attr:aria-hidden",
-   "ui/dialogs/index.tsx:76 attr:aria-hidden"
+   "ui/dialogs/index.tsx:78 attr:aria-hidden"
   ]
  },
  {
@@ -1126,7 +1126,7 @@
   "kind": "str",
   "refs": [
    "ui/dialogs/backups.tsx:45 attr:class",
-   "ui/dialogs/index.tsx:76 attr:class",
+   "ui/dialogs/index.tsx:78 attr:class",
    "ui/dialogs/prefs.tsx:25 attr:class",
    "ui/tutorial.tsx:1276 attr:class"
   ]
@@ -1310,15 +1310,15 @@
   "key": "race-{0}.json",
   "kind": "tpl",
   "refs": [
-   "ui/dialogs/index.tsx:51 prop:file",
-   "ui/dialogs/newgame.tsx:98 prop:file"
+   "ui/dialogs/index.tsx:53 prop:file",
+   "ui/dialogs/newgame.tsx:112 prop:file"
   ]
  },
  {
   "key": "dv",
   "kind": "str",
   "refs": [
-   "ui/dialogs/index.tsx:54 attr:key"
+   "ui/dialogs/index.tsx:56 attr:key"
   ]
  },
  {
@@ -1398,14 +1398,14 @@
   "key": "races",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:51 call:seedFromString"
+   "ui/dialogs/newgame.tsx:65 call:seedFromString"
   ]
  },
  {
   "key": "preset",
   "kind": "str",
   "refs": [
-   "ui/dialogs/newgame.tsx:200 attr:class"
+   "ui/dialogs/newgame.tsx:219 attr:class"
   ]
  },
  {
@@ -1896,43 +1896,43 @@
   "key": "middle",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:188"
+   "ui/map.tsx:200"
   ]
  },
  {
   "key": "{0}px",
   "kind": "tpl",
   "refs": [
-   "ui/map.tsx:190"
+   "ui/map.tsx:202"
   ]
  },
  {
   "key": "right",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:498"
+   "ui/map.tsx:510"
   ]
  },
  {
   "key": "left",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:498",
-   "ui/map.tsx:1270"
+   "ui/map.tsx:510",
+   "ui/map.tsx:1286"
   ]
  },
  {
   "key": "grabbing",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1042 prop:cursor"
+   "ui/map.tsx:1057 prop:cursor"
   ]
  },
  {
   "key": "grab",
   "kind": "str",
   "refs": [
-   "ui/map.tsx:1042 prop:cursor"
+   "ui/map.tsx:1057 prop:cursor"
   ]
  },
  {
@@ -2121,13 +2121,6 @@
   ]
  },
  {
-  "key": "adresse",
-  "kind": "str",
-  "refs": [
-   "ui/pbemui.tsx:147 attr:placeholder"
-  ]
- },
- {
   "key": "post",
   "kind": "str",
   "refs": [
@@ -2239,6 +2232,35 @@
   "kind": "str",
   "refs": [
    "ui/summary.tsx:280 attr:class"
+  ]
+ },
+ {
+  "key": "rocheuse",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:10 prop:Rocky",
+   "ui/systemview.tsx:12 prop:Rocky"
+  ]
+ },
+ {
+  "key": "pointer",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:88 prop:cursor"
+  ]
+ },
+ {
+  "key": "default",
+  "kind": "str",
+  "refs": [
+   "ui/systemview.tsx:88 prop:cursor"
+  ]
+ },
+ {
+  "key": "P{0}-{1} {2}",
+  "kind": "tpl",
+  "refs": [
+   "ui/systemview.tsx:95 call:map"
   ]
  },
  {
