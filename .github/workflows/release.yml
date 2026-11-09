@@ -2,12 +2,13 @@
 # and that version has no release yet, it creates the release v<version> with the game itself (index.html, the whole
 # game in one file: the local copies offer it when they find a newer version) and a zip of the repository. Its notes
 # are docs/releases/<version>.md (English), followed by docs/releases/<version>.fr.md in a « En français » block when
-# there is one (the game shows the French part to French players).
+# there is one (the game shows the French part to French players). A second job keeps the notes of releases already
+# published in step with docs/releases/: a fix to an older version's notes (a credit, a typo) reaches its release page.
 name: Release
 on:
   push:
     branches: [main]
-    paths: [package.json, 'docs/releases/**']
+    paths: [package.json, 'docs/releases/**', .github/workflows/release.yml]
   workflow_dispatch:
 permissions:
   contents: write
@@ -40,3 +41,26 @@ jobs:
             printf '\n\n</details>\n' >> /tmp/notes.md
           fi
           gh release create "v$V" "/tmp/game/index.html" "Constellations_v$V.zip" --title "Constellations $V" --notes-file /tmp/notes.md --target "$GITHUB_SHA" --latest
+  notes:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bring the notes of published releases in step
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in docs/releases/*.md; do
+            case "$f" in *.fr.md) continue;; esac
+            V=$(basename "$f" .md)
+            current=$(gh release view "v$V" --json body -q .body 2>/dev/null) || continue
+            cp "$f" /tmp/notes.md
+            if [ -f "docs/releases/$V.fr.md" ]; then
+              printf '\n\n<details><summary>En français</summary>\n\n' >> /tmp/notes.md
+              cat "docs/releases/$V.fr.md" >> /tmp/notes.md
+              printf '\n\n</details>\n' >> /tmp/notes.md
+            fi
+            if [ "$(printf '%s' "$current" | tr -d '\r' | sed -e 's/[[:space:]]*$//')" != "$(tr -d '\r' < /tmp/notes.md | sed -e 's/[[:space:]]*$//')" ]; then
+              gh release edit "v$V" --notes-file /tmp/notes.md && echo "notes of v$V updated"
+            fi
+          done
