@@ -2092,7 +2092,7 @@
  "Rejoindre une partie (dossier partagé)…": "ゲームに参加（共有フォルダー）…",
  "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.": "ホストが Dropbox、Google Drive または OneDrive のフォルダーを共有してくれました：それを選ぶとターンが開きます。",
  "Galaxie entière, d'après son nom": "銀河全体を名前から",
- "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "名前から生成される銀河全体。Rick の銀河ジェネレーターを使います：渦巻、楕円、不規則、レンズ状、リング状。同じ名前からは、ここでも彼のジェネレーターでも、常に同じ銀河が生まれます。各恒星は Stars! と同じく一つの世界に要約された星系です。右クリックの « 星系を見る » で惑星と衛星が表示されます。渦巻は中サイズ以上の宇宙で見やすくなります。",
+ "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "名前から生成される銀河全体。Ron の銀河ジェネレーターを使います：渦巻、楕円、不規則、レンズ状、リング状。同じ名前からは、ここでも彼のジェネレーターでも、常に同じ銀河が生まれます。各恒星は Stars! と同じく一つの世界に要約された星系です。右クリックの « 星系を見る » で惑星と衛星が表示されます。渦巻は中サイズ以上の宇宙で見やすくなります。",
  "{0} : galaxie spirale à {1} bras, {2} étoiles.": "{0}：{1} 本の腕を持つ渦巻銀河、恒星 {2} 個。",
  "{0} : galaxie elliptique, {1} étoiles.": "{0}：楕円銀河、恒星 {1} 個。",
  "{0} : galaxie irrégulière, {1} étoiles.": "{0}：不規則銀河、恒星 {1} 個。",
@@ -2120,6 +2120,6 @@
  "Lunes de P{0} : ": "P{0} の衛星：",
  "Monde principal : inconnu tant que le système n'a pas été exploré.": "主要な世界：星系が探査されるまで不明。",
  "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.": "Constellations は各星系を一つの世界、つまり主要な世界に要約します。ゲームの値が表しているのはその世界です。ほかの惑星と衛星は管理しません。",
- "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)": "カタログ：{0} · 恒星 {1}{2}（Rick の銀河ジェネレーター）",
+ "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)": "カタログ：{0} · 恒星 {1}{2}（Ron の銀河ジェネレーター）",
  " · répartition égale": " · 均等な分布"
 }

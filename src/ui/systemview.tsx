@@ -1,4 +1,4 @@
-// 0.3.9.26: the system behind a star of a galaxy made from a name: its star, its planets and their moons, as Rick's
+// 0.3.9.26: the system behind a star of a galaxy made from a name: its star, its planets and their moons, as Ron's
 // galaxy generator draws them. Constellations keeps the abstraction of Stars!: the game sums the system up in one world,
 // the main world (the one that fits the values the game gives it); the rest is shown, never managed.
 import { useEffect, useRef, useState } from 'preact/hooks';
@@ -94,6 +94,6 @@ export function SystemDialog({ data }: { data: { planetId: number } }) {
       </tr>)}</tbody></table>
     {sel !== null && moons.length > 0 && <p class="small">{`Lunes de P${sel} : ` + moons.map(m => `P${sel}-${m.num} ${MOON_LABEL[m.type]}`).join(', ') + '.'}</p>}
     <p class="small muted">{main === undefined ? 'Monde principal : inconnu tant que le système n\'a pas été exploré.' : 'Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.'}</p>
-    <p class="small muted">{`Catalogue : ${g.shape!.gid} · étoile ${pl.star!.n}${g.shape!.even ? ' · répartition égale' : ''} (générateur de galaxies de Rick)`}</p>
+    <p class="small muted">{`Catalogue : ${g.shape!.gid} · étoile ${pl.star!.n}${g.shape!.even ? ' · répartition égale' : ''} (générateur de galaxies de Ron)`}</p>
   </Modal>;
 }

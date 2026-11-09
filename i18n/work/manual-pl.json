@@ -2086,7 +2086,7 @@
  "Rejoindre une partie (dossier partagé)…": "Dołącz do gry (folder współdzielony)…",
  "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.": "Gospodarz udostępnił ci folder Dropbox, Google Drive lub OneDrive: wybierz go, a twoja tura się otworzy.",
  "Galaxie entière, d'après son nom": "Cała galaktyka, z jej nazwy",
- "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Cała galaktyka wyprowadzona z nazwy, generatorem galaktyk Ricka: spiralna, eliptyczna, nieregularna, soczewkowata lub pierścieniowa. Ta sama nazwa zawsze daje tę samą galaktykę, tutaj tak samo jak w jego generatorze. Każda gwiazda to układ streszczony w jednym świecie, jak w Stars!; prawy klik, « Pokaż układ », pokazuje jego planety i księżyce. Spirale najlepiej widać od średniego wszechświata wzwyż.",
+ "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Cała galaktyka wyprowadzona z nazwy, generatorem galaktyk Rona: spiralna, eliptyczna, nieregularna, soczewkowata lub pierścieniowa. Ta sama nazwa zawsze daje tę samą galaktykę, tutaj tak samo jak w jego generatorze. Każda gwiazda to układ streszczony w jednym świecie, jak w Stars!; prawy klik, « Pokaż układ », pokazuje jego planety i księżyce. Spirale najlepiej widać od średniego wszechświata wzwyż.",
  "{0} : galaxie spirale à {1} bras, {2} étoiles.": "{0}: galaktyka spiralna o {1} ramionach, {2} gwiazd.",
  "{0} : galaxie elliptique, {1} étoiles.": "{0}: galaktyka eliptyczna, {1} gwiazd.",
  "{0} : galaxie irrégulière, {1} étoiles.": "{0}: galaktyka nieregularna, {1} gwiazd.",
@@ -2114,6 +2114,6 @@
  "Lunes de P{0} : ": "Księżyce P{0}: ",
  "Monde principal : inconnu tant que le système n'a pas été exploré.": "Świat główny: nieznany, dopóki układ nie zostanie zbadany.",
  "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.": "Constellations streszcza każdy układ w jednym świecie, świecie głównym: tym, który opisują wartości gry. Pozostałymi planetami i księżycami się nie zarządza.",
- "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)": "Katalog: {0} · gwiazda {1}{2} (generator galaktyk Ricka)",
+ "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)": "Katalog: {0} · gwiazda {1}{2} (generator galaktyk Rona)",
  " · répartition égale": " · równomierny rozkład"
 }

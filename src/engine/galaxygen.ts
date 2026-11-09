@@ -1,4 +1,4 @@
-// 0.3.9.26: a whole galaxy from a name, after Rick's galaxy generator (Galaxy Generator 0.8.0.0, written with Claude):
+// 0.3.9.26: a whole galaxy from a name, after Ron's galaxy generator (Galaxy Generator 0.8.0.0, written with Claude):
 // the name ("Galaxy1") goes through SHA-256 and a Mersenne Twister; the numbers that come out give the shape of the
 // galaxy (spiral, elliptical, irregular, lenticular, ring), then each star its place, its spectral type and its
 // planets and moons. Reproduced here number for number (Galaxy1 in Constellations is Galaxy1 in his generator), with

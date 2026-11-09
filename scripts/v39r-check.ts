@@ -177,7 +177,7 @@ console.log('--- the interface: orders go to our own fleets only, trailing detou
   check(f.pursue === 12345 && store.undo.length === n0, 'a network refused leaves the fleet\'s orders as they were');
 }
 
-console.log('--- 0.3.9.26: a galaxy from a name, as in Rick\'s generator');
+console.log('--- 0.3.9.26: a galaxy from a name, as in Ron\'s generator');
 {
   const GG = await import('../src/engine/galaxygen');
   const { createHash } = await import('node:crypto');

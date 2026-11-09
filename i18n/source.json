@@ -13465,7 +13465,7 @@
   ]
  },
  {
-  "key": "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.",
+  "key": "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.",
   "kind": "str",
   "refs": [
    "engine/shape.ts:34 prop:procedural"
@@ -35657,7 +35657,7 @@
   ]
  },
  {
-  "key": "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)",
+  "key": "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)",
   "kind": "tpl",
   "refs": [
    "ui/systemview.tsx:97 jsx"

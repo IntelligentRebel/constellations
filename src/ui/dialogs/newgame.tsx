@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import { galaxyParams, galaxyName } from '../../engine/galaxygen';
 import { fmt as fmtN } from '../store';
 
-/** 0.3.9.26: what a galaxy name gives (Rick's generator). */
+/** 0.3.9.26: what a galaxy name gives (Ron's generator). */
 function galaxyLine(id: string): string {
   const g = galaxyParams(id), n = fmtN(g.numStars);
   switch (g.shapeType) {

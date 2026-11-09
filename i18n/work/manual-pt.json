@@ -2081,7 +2081,7 @@
  "Rejoindre une partie (dossier partagé)…": "Juntar-se a uma partida (pasta partilhada)…",
  "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.": "O anfitrião partilhou consigo uma pasta do Dropbox, Google Drive ou OneDrive: escolha-a e o seu turno abre-se.",
  "Galaxie entière, d'après son nom": "Galáxia inteira, a partir do seu nome",
- "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Uma galáxia inteira tirada do seu nome, com o gerador de galáxias de Rick: espiral, elíptica, irregular, lenticular ou em anel. O mesmo nome dá sempre a mesma galáxia, aqui como no gerador dele. Cada estrela é um sistema resumido num mundo, como em Stars!; um clique direito, « Ver o sistema », mostra os seus planetas e luas. As espirais leem-se melhor a partir de um universo médio.",
+ "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Uma galáxia inteira tirada do seu nome, com o gerador de galáxias de Ron: espiral, elíptica, irregular, lenticular ou em anel. O mesmo nome dá sempre a mesma galáxia, aqui como no gerador dele. Cada estrela é um sistema resumido num mundo, como em Stars!; um clique direito, « Ver o sistema », mostra os seus planetas e luas. As espirais leem-se melhor a partir de um universo médio.",
  "{0} : galaxie spirale à {1} bras, {2} étoiles.": "{0}: galáxia espiral com {1} braços, {2} estrelas.",
  "{0} : galaxie elliptique, {1} étoiles.": "{0}: galáxia elíptica, {1} estrelas.",
  "{0} : galaxie irrégulière, {1} étoiles.": "{0}: galáxia irregular, {1} estrelas.",
@@ -2109,6 +2109,6 @@
  "Lunes de P{0} : ": "Luas de P{0}: ",
  "Monde principal : inconnu tant que le système n'a pas été exploré.": "Mundo principal: desconhecido enquanto o sistema não for explorado.",
  "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.": "Constellations resume cada sistema num único mundo, o mundo principal: aquele que os valores do jogo descrevem. Os outros planetas e as luas não se gerem.",
- "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)": "Catálogo: {0} · estrela {1}{2} (gerador de galáxias de Rick)",
+ "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)": "Catálogo: {0} · estrela {1}{2} (gerador de galáxias de Ron)",
  " · répartition égale": " · distribuição uniforme"
 }

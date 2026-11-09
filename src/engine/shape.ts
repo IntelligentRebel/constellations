@@ -31,7 +31,7 @@ export const SHAPE_TEXT: Record<GalaxyShape, string> = {
   spiral: 'Un noyau dense et deux à quatre bras, séparés par des vides où les étoiles se font rares.',
   elliptical: 'Un disque ovale, plus dense au centre, au bord irrégulier.',
   irregular: 'Quelques nuages d\'étoiles de tailles inégales, reliés par des ponts plus clairsemés.',
-  procedural: 'Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d\'un univers moyen.',
+  procedural: 'Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d\'un univers moyen.',
 };
 
 /** Names of the dark clouds: they kill whoever tries to cross them. */

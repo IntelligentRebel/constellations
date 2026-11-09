@@ -7,7 +7,7 @@ entirely in the browser, offline, with nothing to install.
 
 **[▶ Play it in your browser](https://intelligentrebel.github.io/constellations/)**, or download it to play offline (see [Play](#play)).
 
-**Version 0.3.9.27** (early version: the numbering restarts at 0.x until the game is considered complete).
+**Version 0.3.9.28** (early version: the numbering restarts at 0.x until the game is considered complete).
 
 ![The galaxy map in the middle of a game: a spiral arm crossed by dark clouds, the borders of rival empires, fleets on their way, and on the right the panel of the capital, with its sector governor and its culture.](docs/screenshots/en/map.png)
 
@@ -23,6 +23,8 @@ quality of life, and adds many new mechanics inspired by Stellaris and other 4X 
 All the names are its own (hulls, components, races, technologies): it is a tribute, not a copy.
 
 It was created with the help of **Claude Opus 5.5** (Anthropic).
+
+The galaxy option « Whole galaxy, from its name » uses **Ron's galaxy generator**, shared by Ron Miller, former administrator of Stars! AutoHost.
 
 ## Screenshots
 

@@ -2077,7 +2077,7 @@
  "Rejoindre une partie (dossier partagé)…": "Присоединиться к партии (общая папка)…",
  "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.": "Хост поделился с вами папкой Dropbox, Google Drive или OneDrive: выберите её, и ваш ход откроется.",
  "Galaxie entière, d'après son nom": "Целая галактика по её имени",
- "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Целая галактика, созданная по её имени генератором галактик Рика: спиральная, эллиптическая, неправильная, линзообразная или кольцевая. Одно и то же имя всегда даёт одну и ту же галактику, здесь так же, как в его генераторе. Каждая звезда — это система, сведённая к одному миру, как в Stars!; правый щелчок, « Показать систему », показывает её планеты и луны. Спирали лучше читаются начиная со среднего размера вселенной.",
+ "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "Целая галактика, созданная по её имени генератором галактик Рона: спиральная, эллиптическая, неправильная, линзообразная или кольцевая. Одно и то же имя всегда даёт одну и ту же галактику, здесь так же, как в его генераторе. Каждая звезда — это система, сведённая к одному миру, как в Stars!; правый щелчок, « Показать систему », показывает её планеты и луны. Спирали лучше читаются начиная со среднего размера вселенной.",
  "{0} : galaxie spirale à {1} bras, {2} étoiles.": "{0}: спиральная галактика с {1} рукавами, {2} звёзд.",
  "{0} : galaxie elliptique, {1} étoiles.": "{0}: эллиптическая галактика, {1} звёзд.",
  "{0} : galaxie irrégulière, {1} étoiles.": "{0}: неправильная галактика, {1} звёзд.",
@@ -2105,6 +2105,6 @@
  "Lunes de P{0} : ": "Луны P{0}: ",
  "Monde principal : inconnu tant que le système n'a pas été exploré.": "Главный мир: неизвестен, пока система не исследована.",
  "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.": "Constellations сводит каждую систему к одному миру, главному: тому, который описывают значения игры. Остальные планеты и луны не управляются.",
- "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)": "Каталог: {0} · звезда {1}{2} (генератор галактик Рика)",
+ "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)": "Каталог: {0} · звезда {1}{2} (генератор галактик Рона)",
  " · répartition égale": " · равномерное распределение"
 }

@@ -2091,7 +2091,7 @@
  "Rejoindre une partie (dossier partagé)…": "게임 참가(공유 폴더)…",
  "L'hôte a partagé avec vous un dossier Dropbox, Google Drive ou OneDrive : choisissez-le, votre tour s'ouvre.": "호스트가 Dropbox, Google Drive 또는 OneDrive 폴더를 공유했습니다: 그 폴더를 고르면 턴이 열립니다.",
  "Galaxie entière, d'après son nom": "이름으로 만드는 은하 전체",
- "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Rick : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "이름에서 생성되는 은하 전체, Rick의 은하 생성기를 사용합니다: 나선, 타원, 불규칙, 렌즈형 또는 고리형. 같은 이름은 여기서도 그의 생성기에서도 항상 같은 은하를 만듭니다. 각 별은 Stars!처럼 하나의 세계로 요약된 항성계입니다. 오른쪽 클릭 « 항성계 보기 »로 행성과 위성을 볼 수 있습니다. 나선은 중간 크기 이상의 우주에서 잘 보입니다.",
+ "Une galaxie entière tirée de son nom, avec le générateur de galaxies de Ron : spirale, elliptique, irrégulière, lenticulaire ou en anneau. Le même nom donne toujours la même galaxie, ici comme dans son générateur. Chaque étoile est un système résumé en un monde, comme dans Stars! ; un clic droit, « Voir le système », montre ses planètes et ses lunes. Les spirales se lisent mieux à partir d'un univers moyen.": "이름에서 생성되는 은하 전체, Ron의 은하 생성기를 사용합니다: 나선, 타원, 불규칙, 렌즈형 또는 고리형. 같은 이름은 여기서도 그의 생성기에서도 항상 같은 은하를 만듭니다. 각 별은 Stars!처럼 하나의 세계로 요약된 항성계입니다. 오른쪽 클릭 « 항성계 보기 »로 행성과 위성을 볼 수 있습니다. 나선은 중간 크기 이상의 우주에서 잘 보입니다.",
  "{0} : galaxie spirale à {1} bras, {2} étoiles.": "{0}: 팔 {1}개의 나선 은하, 별 {2}개.",
  "{0} : galaxie elliptique, {1} étoiles.": "{0}: 타원 은하, 별 {1}개.",
  "{0} : galaxie irrégulière, {1} étoiles.": "{0}: 불규칙 은하, 별 {1}개.",
@@ -2119,6 +2119,6 @@
  "Lunes de P{0} : ": "P{0}의 위성: ",
  "Monde principal : inconnu tant que le système n'a pas été exploré.": "주 세계: 항성계를 탐사하기 전까지 알 수 없음.",
  "Constellations résume chaque système en un seul monde, le monde principal : celui que décrivent les valeurs du jeu. Les autres planètes et les lunes ne se gèrent pas.": "Constellations는 각 항성계를 하나의 세계, 곧 주 세계로 요약합니다. 게임의 값이 나타내는 세계입니다. 다른 행성과 위성은 관리하지 않습니다.",
- "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Rick)": "목록: {0} · 별 {1}{2} (Rick의 은하 생성기)",
+ "Catalogue : {0} · étoile {1}{2} (générateur de galaxies de Ron)": "목록: {0} · 별 {1}{2} (Ron의 은하 생성기)",
  " · répartition égale": " · 균등 분포"
 }
