@@ -357,7 +357,8 @@ console.log('--- automatic items on poor worlds');
 console.log('--- regions of a spiral arm, dark clouds');
 {
   const sizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge'] as const;
-  check(SHAPES_OFFERED.join() === 'arm,nursery,bubble,square', 'the whole galaxies are no longer offered: arm, nursery, superbubble, square');
+  // (0.3.9.26: plus the whole galaxy drawn from its name by Ron's generator, which is not one of the old whole galaxies)
+  check(SHAPES_OFFERED.join() === 'arm,nursery,bubble,square,procedural', 'the old whole galaxies are no longer offered: arm, nursery, superbubble, square, and a galaxy from its name');
   {
     const nb = (shape: 'arm' | 'nursery' | 'bubble', size: GameState['settings']['size']) => (quickGame(undefined, size, 3, 'standard', 'v365-neb-' + shape + size, { shape }).terrain ?? []).filter(t => t.kind === 'nebula');
     const arm = nb('arm', 'Medium'), nur = nb('nursery', 'Medium'), g = quickGame(undefined, 'Medium', 3, 'standard', 'v365-neb-armMedium', { shape: 'arm' });

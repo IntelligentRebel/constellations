@@ -141,6 +141,7 @@ function Logistics({ g, me }: { g: GameState; me: Player }) {
       {idle.length > 0 && <button class="small primary" onClick={() => { s.checkpoint(); for (const f of idle) joinNetwork(g, f); s.notify(`${idle.length} cargo${idle.length > 1 ? 's' : ''} affecté${idle.length > 1 ? 's' : ''} au réseau.`); s.bump(); }}>{idle.length > 1 ? `Affecter les ${idle.length} cargos inactifs` : 'Affecter le cargo inactif'}</button>}
       {fd && yard && <button class="small" onClick={() => { s.checkpoint(); queueMission(g, yard, fd, { kind: 'logistics', planetId: yard.id }); s.notify(`${fd.name} ajouté à la file de ${yard.name} pour le réseau.`); s.bump(); }}>Construire un {fd.name} ({yard.name})</button>}
       <button class="small" onClick={suggest} title={`Capitale : émigration au-delà de ${DEFAULT_OUT} % ; colonies habitables peu peuplées : immigration jusqu'à ${DEFAULT_IN} %`}>Politique conseillée</button>
+      <button class="small" onClick={() => s.goTab('fleets', { view: 'transports' })} title="Tous vos cargos : chargement, convoi ou route, destination">Voir les transports</button>
     </div>
     <div class="emp-pol">
       <div><h4>Émigration <span class="muted">· colons à envoyer</span></h4>{senders.length ? senders.map(p => <div class="pl" onClick={() => s.focus({ kind: 'planet', id: p.id }, p)} title={`Envoie les colons au-delà de ${p.migration!.target} % de sa capacité`}><span>{p.name} <small class="muted">&gt; {p.migration!.target} %</small></span><b>{fmtPop(colonistSurplus(g, p) * 100)}</b></div>) : <span class="muted small">aucune</span>}</div>

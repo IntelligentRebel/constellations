@@ -303,6 +303,13 @@ export function gateJumpAllowed(game: GameState, fleet: Fleet, src: Planet | und
   return true;
 }
 
+export const SLING_RANGE = 40, SLING = 1.5;
+/** 0.3.7 fronde: a fleet leaving from near a black hole its empire knows gains half a year of travel. */
+export function slingshot(game: GameState, owner: number, at: { x: number; y: number }): number {
+  for (const s of game.secrets ?? []) if (s.kind === 'blackhole' && s.ids.length && s.known.includes(owner) && distance(at, s) <= SLING_RANGE) return SLING;
+  return 1;
+}
+
 function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], startFuel: number): LegEstimate[] {
   const owner = game.players[fleet.owner];
   const spec = fleetSpec(game, fleet);
@@ -312,8 +319,11 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
   let cargo = cargoMass(fleet.cargo);
   let pos = { x: fleet.x, y: fleet.y };
   // completed years, and what is left of the current one
-  let year = 0, budget = 1, prevArrival = 0;
-  const fresh = () => { if (budget < 1) { year++; budget = 1; } };
+  // 0.3.9.29: a year that starts near a known black hole has the half year more of its slingshot, as in the movement
+  // (the estimate gave one year too many to the fleets that left from near one)
+  const sling = (at: { x: number; y: number }) => game.secrets ? slingshot(game, fleet.owner, at) : 1;
+  let year = 0, full = sling(pos), budget = full, prevArrival = 0;
+  const fresh = () => { if (budget < full) { year++; full = sling(pos); budget = full; } };
   // refuel at current position if possible
   if (canRefuelAt(game, owner, fleet.orbiting >= 0 ? game.planets[fleet.orbiting] : undefined)) fuel = spec.fuelCapacity;
   for (let i = 1; i < waypoints.length; i++) {
@@ -339,7 +349,7 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
       // same steps as the movement phase, including the rounding of positions at the end of each year
       let cur = { x: pos.x, y: pos.y }, guard = 0;
       while (guard++ < 5000) {
-        if (budget <= 1e-9) { year++; budget = 1; }
+        if (budget <= 1e-9) { year++; full = sling(cur); budget = full; }
         // same terrain cap as the movement phase, evaluated for each year's path
         const w = effectiveWarp(game, cur, wp, warp, budget);
         const speed = w * w;
@@ -370,9 +380,9 @@ function simulateRoute(game: GameState, fleet: Fleet, waypoints: Waypoint[], sta
         // and, at the end of every year, what fuel transports and anti-matter generators make
         if (spec.fuelGeneration > 0) fuel = Math.min(spec.fuelCapacity, fuel + spec.fuelGeneration);
       }
-      arrival = year + (budget < 1 ? 1 : 0);
-    } else arrival = year + (budget < 1 ? 1 : 0);
-    if (!pass && Number.isFinite(arrival)) { year = arrival; budget = 1; }
+      arrival = year + (budget < full ? 1 : 0);
+    } else arrival = year + (budget < full ? 1 : 0);
+    if (!pass && Number.isFinite(arrival)) { year = arrival; full = sling(wp); budget = full; }
     const planet = wp.target === 'planet' && wp.targetId !== undefined ? game.planets[wp.targetId] : undefined;
     const fuelArrive = Math.max(0, fuel);
     let refuelled = false;

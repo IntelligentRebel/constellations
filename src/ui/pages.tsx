@@ -25,6 +25,7 @@ import { isPureScout, canMineHere, miningYield, missionDesigns, missionStatus, h
 import { designSpec } from '../engine/design';
 import { scannersOf } from '../engine/scan';
 import { fleetMission } from './sidebar';
+import { canServe, jobText, logisticsOn, idleFreighters } from '../engine/logistics';
 import { missionModel, MissionButton, MissionOptions, HaulBlock, haulHome } from './missionui';
 import { wpName } from './command';
 import { EmpirePage } from './empire';
@@ -514,11 +515,15 @@ export function FleetsPage() {
   const [type, setType] = useState('all');
   const [design, setDesign] = useState('');
   const [mission, setMission] = useState('all');
+  const [view, setView] = useState<'all' | 'transports'>(() => (store.tabData?.view === 'transports' ? 'transports' : 'all'));
   const all = g.fleets.filter(f => f.owner === me.id).map(f => { const sp = viewFleet(g, f); return { f, sp, est: viewRoute(g, f), mi: fleetMission(g, me, f), type: fleetType(sp) }; });
   const rows = all.filter(r => (type === 'all' || r.type === type) && (!design || r.f.tokens.some(t => t.designId === +design)) && (mission === 'all' || (mission === 'idle' ? r.mi.id === 'idle' : r.mi.id !== 'idle')));
   const designs = g.designs.filter(d => d.owner === me.id && !d.starbase && !d.deleted);
   const sel = s.selected;
+  const viewSeg = <div class="seg fleet-view"><button class={view === 'all' ? 'on' : ''} onClick={() => setView('all')}>Toutes les flottes</button><button class={view === 'transports' ? 'on' : ''} onClick={() => setView('transports')} title="Cargos et transports : chargement, convois, réseau logistique">Transports</button></div>;
+  if (view === 'transports') return <TransportsView viewSeg={viewSeg} />;
   return <Page title="Vos flottes" sub={<>{rows.length} sur {all.length} flotte{all.length > 1 ? 's' : ''} · double-cliquez une ligne pour la montrer sur la carte</>}>
+    {viewSeg}
     <div class="filters">
       <label class="field">Type de vaisseau<select value={type} onChange={e => setType((e.target as HTMLSelectElement).value)}>{FLEET_TYPES.map(([k, l]) => <option value={k}>{l}</option>)}</select></label>
       <label class="field">Modèle<select value={design} onChange={e => setDesign((e.target as HTMLSelectElement).value)}><option value="">Tous les modèles</option>{designs.map(d => <option value={d.id}>{d.name}</option>)}</select></label>
@@ -538,6 +543,43 @@ export function FleetsPage() {
   </Page>;
 }
 
+/**
+ * 0.3.9.29: the transports at a glance (a player's request): what each one carries, the convoy or the route it follows,
+ * where it goes and when it gets there, and the network it can join or leave from here.
+ */
+function TransportsView({ viewSeg }: { viewSeg: ComponentChildren }) {
+  const s = useStore();
+  const g = s.game!, me = s.me!;
+  const net = logisticsOn(g);
+  const rows = g.fleets.filter(f => f.owner === me.id).map(f => ({ f, sp: viewFleet(g, f) })).filter(r => r.sp.cargoCapacity > 0 && !r.sp.colonizer && r.sp.miningRate === 0 && !r.sp.hasWeapons)
+    .map(r => ({ ...r, est: viewRoute(g, r.f), mi: fleetMission(g, me, r.f), load: cargoMass(r.f.cargo) }));
+  const cap = rows.reduce((a, r) => a + r.sp.cargoCapacity, 0), used = rows.reduce((a, r) => a + Math.min(r.load, r.sp.cargoCapacity), 0);
+  const inNet = rows.filter(r => r.f.auto === 'logistics').length, idle = rows.filter(r => r.mi.id === 'idle').length;
+  const free = net ? idleFreighters(g, me) : [];
+  const sel = s.selected;
+  const task = (r: typeof rows[number]) => r.f.auto === 'logistics' ? jobText(g, r.f) : r.mi.id === 'idle' ? '' : r.mi.detail || r.mi.label;
+  return <Page title="Vos transports" sub={<>{rows.length} transport{rows.length > 1 ? 's' : ''}{net ? `, dont ${inNet} dans le réseau logistique` : ''} · double-cliquez une ligne pour la montrer sur la carte</>}>
+    {viewSeg}
+    <div class="emp-kpis">
+      <div><small>Capacité totale</small><b>{fmt(cap)} kt</b></div>
+      <div><small>Chargée</small><b>{cap ? Math.round(used / cap * 100) : 0} %</b><small>{fmt(used)} kt</small></div>
+      {net && <div><small>Réseau logistique</small><b>{inNet}</b></div>}
+      <div><small>Sans ordre</small><b class={idle ? 'yellow' : ''}>{idle}</b></div>
+    </div>
+    {free.length > 0 && <div class="btns"><button class="small primary" onClick={() => { s.checkpoint(); for (const f of free) A.setNetwork(f, true); }}>{free.length > 1 ? `Affecter les ${free.length} cargos sans ordre au réseau` : `Affecter ${free[0].name} au réseau`}</button></div>}
+    <SortTable csv="transports" rows={rows} onRow={r => s.select({ kind: 'fleet', id: r.f.id })} onDbl={r => s.focus({ kind: 'fleet', id: r.f.id }, r.f)} isSel={r => sel?.kind === 'fleet' && sel.id === r.f.id} empty="Aucun transport : construisez des cargos (coque à soute, sans armes) pour déplacer colons et minerais." cols={[
+      { key: 'name', label: 'Transport', get: r => r.f.name, render: r => <><b>{r.f.name}</b>{r.f.auto === 'logistics' && <span class="tag">réseau</span>}<div class="muted small">{r.f.tokens.map((t, k) => { const d = g.designs.find(x => x.id === t.designId); return <>{k ? ', ' : ''}{t.qty} × {d?.name ?? '?'}</>; })}</div></> },
+      { key: 'loc', label: 'Position', get: r => r.f.orbiting >= 0 ? g.planets[r.f.orbiting].name : `(${Math.round(r.f.x)}, ${Math.round(r.f.y)})` },
+      { key: 'load', label: 'Chargement', num: true, get: r => r.sp.cargoCapacity ? r.load / r.sp.cargoCapacity : 0, csv: r => r.load, render: r => <div class="fuelcell"><span>{fmt(r.load)} / {fmt(r.sp.cargoCapacity)} kt</span><i><b style={{ width: `${Math.min(100, r.sp.cargoCapacity ? r.load / r.sp.cargoCapacity * 100 : 0)}%` }} /></i></div> },
+      { key: 'what', label: 'Contenu', get: r => r.f.cargo.colonists * 100 + r.f.cargo.ironium + r.f.cargo.boranium + r.f.cargo.germanium, csv: r => `${r.f.cargo.ironium}/${r.f.cargo.boranium}/${r.f.cargo.germanium}/${r.f.cargo.colonists * 100}`, render: r => r.load > 0 ? <span class="small">{r.f.cargo.ironium + r.f.cargo.boranium + r.f.cargo.germanium > 0 && <MineralLine m={r.f.cargo} />}{r.f.cargo.colonists > 0 && <> {fmtPop(r.f.cargo.colonists * 100)} colons</>}</span> : <span class="muted small">vide</span> },
+      { key: 'task', label: 'Convoi ou route', get: r => task(r), render: r => { const t = task(r); return t ? <span class="small">{t}</span> : <span class="yellow small">Sans ordre</span>; } },
+      { key: 'dest', label: 'Destination', get: r => r.est.length ? r.est[r.est.length - 1].arrival : 99999, csv: r => r.f.waypoints.length > 1 ? `${wpName(g, me.id, r.f.waypoints[r.f.waypoints.length - 1])} ${r.est.length ? g.year + r.est[r.est.length - 1].arrival : ''}` : '', render: r => r.f.waypoints.length > 1 ? <>{wpName(g, me.id, r.f.waypoints[r.f.waypoints.length - 1])}{r.est.length > 0 && <div class="muted small">{g.year + r.est[r.est.length - 1].arrival}</div>}</> : <span class="muted">—</span> },
+      ...(net ? [{ key: 'net', label: 'Réseau', get: (r: typeof rows[number]) => r.f.auto === 'logistics' ? 1 : 0, render: (r: typeof rows[number]) => <input type="checkbox" checked={r.f.auto === 'logistics'} disabled={!canServe(g, r.f)} title={r.f.auto === 'logistics' ? 'Retirer du réseau logistique (la flotte attend vos ordres)' : 'Confier au réseau logistique (il choisit ses convois)'} onClick={e => e.stopPropagation()} onChange={e => A.setNetwork(r.f, (e.target as HTMLInputElement).checked)} /> }] : []),
+    ]} />
+    <p class="small muted">{net ? 'Les cargos du réseau choisissent eux-mêmes leurs convois d\'après les politiques d\'émigration et de minerais de vos planètes (Empire, Réseau logistique). Un cargo hors réseau suit les ordres de route que vous lui donnez.' : 'Donnez à chaque cargo une route avec des ordres de chargement et de déchargement ; cochez « Répéter l\'itinéraire » pour une navette.'}</p>
+  </Page>;
+}
+
 // ------------------------------------------------------------------ tool pages (the former windows, laid out as pages)
 
 export function ToolPage({ children }: { children: ComponentChildren }) {
@@ -551,7 +593,7 @@ export function CenterPage() {
     case 'colonies': return <ColoniesPage />;
     case 'planner': return <PlannerPage />;
     case 'mining': return <MiningPage key={'mn' + JSON.stringify(s.tabData?.focus ?? '')} />;
-    case 'fleets': return <FleetsPage />;
+    case 'fleets': return <FleetsPage key={'fl' + (s.tabData?.view ?? '')} />;
     case 'empire': return <EmpirePage />;
     case 'design': return <ToolPage><DesignerDialog designId={s.tabData?.designId} newHull={s.tabData?.newHull} key={'d' + (s.tabData?.designId ?? '') + (s.tabData?.newHull ?? '')} /></ToolPage>;
     case 'research': return <ToolPage><ResearchDialog /></ToolPage>;

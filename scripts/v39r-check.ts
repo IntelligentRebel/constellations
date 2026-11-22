@@ -201,6 +201,35 @@ console.log('--- 0.3.9.26: a galaxy from a name, as in Ron\'s generator');
   check(a.year === 2405, 'its turns run');
 }
 
+console.log('--- 0.3.9.29: long-range ships keep their distance; the estimate counts the slingshot');
+{
+  const { simulateBattle } = await import('../src/engine/battle');
+  const { designSpec } = await import('../src/engine/design');
+  const g = quickGame(undefined, 'Small', 3, 'standard', 'kite');
+  const me = g.players[0];
+  for (const k of Object.keys(me.tech)) (me.tech as any)[k] = 26;
+  let id = 9e6;
+  const ship = (eng: string, w: string, mech?: string) => { const d: any = { id: id++, owner: 0, name: w, hull: 'Destroyer', slots: [{ slot: 1, part: eng, qty: 1 }, { slot: 2, part: w, qty: 1 }, { slot: 3, part: w, qty: 1 }, { slot: 5, part: 'Tritanium', qty: 2 }, ...(mech ? [{ slot: 6, part: mech, qty: 1 }] : [])], starbase: false, built: 0 }; g.designs.push(d); return d; };
+  const beams = ship('Trans-Galactic Drive', 'Yakimora Light Phaser');
+  const fast = ship('Trans-Galactic Drive', 'Delta Torpedo', 'Overthruster'), slow = ship('Long Hump 6', 'Delta Torpedo');
+  check(designSpec(me, fast).movement > designSpec(me, beams).movement && designSpec(me, slow).movement < designSpec(me, beams).movement, 'the test ships: torpedoes faster, and slower, than the phasers');
+  const rf = simulateBattle(g, 0, [{ design: fast, qty: 4 }], [{ design: beams, qty: 4 }], 40, { tactic: 'maximizeDamage' }, { tactic: 'maximizeDamageRatio' }, 'k-fast');
+  check(rf.winA >= 25 && rf.lostA < 2.5, `faster torpedo ships keep their distance and win (${rf.winA}/40, ${rf.lostA.toFixed(1)} lost; 0/40 and 4 lost before)`);
+  const rs = simulateBattle(g, 0, [{ design: slow, qty: 4 }], [{ design: beams, qty: 4 }], 40, { tactic: 'maximizeDamage' }, { tactic: 'maximizeDamageRatio' }, 'k-slow');
+  check(rs.winB >= 30, `slower ones still get caught, as in Stars! (${rs.winB}/40 for the phasers)`);
+  const mirror = simulateBattle(g, 0, [{ design: beams, qty: 4 }], [{ design: beams, qty: 4 }], 200, { tactic: 'maximizeDamage' }, { tactic: 'maximizeDamage' }, 'k-mirror');
+  check(Math.abs(mirror.winA - mirror.winB) <= 30, `no side has the edge in a mirror battle (${mirror.winA} / ${mirror.winB})`);
+  const { estimateRoute } = await import('../src/engine/fleet');
+  const s = quickGame(undefined, 'Small', 3, 'standard', 'sling');
+  const f = s.fleets.find(x => x.owner === s.human && fleetSpec(s, x).hasEngines)!;
+  f.waypoints = [{ x: f.x, y: f.y, target: 'space', warp: 0, task: 'none', processed: true }, { x: f.x + 30, y: f.y, target: 'space', warp: 5, task: 'none' }];
+  f.fuel = fleetSpec(s, f).fuelCapacity;
+  const plain = estimateRoute(s, f)[0].arrival;
+  s.secrets = [{ kind: 'blackhole', ids: [1], known: [s.human], x: f.x + 10, y: f.y } as any];
+  const flung = estimateRoute(s, f)[0].arrival;
+  check(plain === 2 && flung === 1, `leaving from near a known black hole, the estimate counts the slingshot (${plain} years, ${flung} with it)`);
+}
+
 console.log(`\n${bad} failure(s), ${good} ok`);
 process.exit(bad ? 1 : 0);
 }

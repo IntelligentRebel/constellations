@@ -26,6 +26,8 @@ import { RaceWizard, savedRaces, saveRace } from './race';
 import { Rng, seedFromString } from '../../engine/rng';
 import { RULE_INFO } from '../../engine/rules';
 import { CONSTELLATIONS_RULES } from '../../engine/newgame';
+// 0.3.9.29: a lighter set for those who find a game busy (a player's feedback): the event layers go, the core stays
+const LIGHT_OFF: readonly string[] = ['acts', 'dilemmas', 'eventChains', 'cataclysms', 'pirates', 'espionage', 'nemesis', 'greenhouse', 'ancientSecret', 'portalRelays', 'deception'];
 import { originsFor } from '../../engine/origins';
 import { startHosting } from '../../engine/pbem';
 import { originUnlocked, originAchievement } from '../achievements';
@@ -185,7 +187,7 @@ export function NewGameDialog() {
       </div>}
       {tab === 'rules' && <div class="rules-tab">
         <p class="small muted">Constellations ajoute ces règles à celles de Stars!. Toutes sont actives par défaut ; décochez-les pour retrouver le jeu d'origine (ou cochez « Expérience proche de Stars! » dans l'onglet Partie). En cours de partie (Paramètres de la partie), on peut en ajouter mais plus en retirer ; les origines se choisissent au départ.</p>
-        <div class="btnrow"><button class="small" onClick={() => set(x => { for (const k of CONSTELLATIONS_RULES) (x as any)[k] = true; })}>Toutes</button><button class="small" onClick={() => set(x => { for (const k of CONSTELLATIONS_RULES) (x as any)[k] = false; })}>Aucune (Stars! classique)</button></div>
+        <div class="btnrow"><button class="small" onClick={() => set(x => { for (const k of CONSTELLATIONS_RULES) (x as any)[k] = true; })}>Toutes</button><button class="small" onClick={() => set(x => { for (const k of CONSTELLATIONS_RULES) (x as any)[k] = !LIGHT_OFF.includes(k); })} title="Garde le cœur de Constellations (terrain, réseau logistique, rôles de combat, gouverneurs, diplomatie…) et retire les couches d'événements : actes, dilemmes, histoires au long cours, cataclysmes, pirates, renseignement, némésis, effet de serre, secret des Anciens, relais du Portail, leurres">Allégées (moins d'événements)</button><button class="small" onClick={() => set(x => { for (const k of CONSTELLATIONS_RULES) (x as any)[k] = false; })}>Aucune (Stars! classique)</button></div>
         <div class="rules-list">{CONSTELLATIONS_RULES.map(k => <label class="chk rule"><input type="checkbox" checked={!!(settings as any)[k]} onChange={e => set(x => { (x as any)[k] = (e.target as HTMLInputElement).checked; })} /> <span class="rule-txt"><b>{RULE_INFO[k].name}</b><small class="muted">{RULE_INFO[k].text}</small></span></label>)}</div>
       </div>}
       {tab === 'victory' && <VictoryEditor settings={settings} set={set} />}

@@ -22,6 +22,15 @@ import { ChronicleView, shareChronicle } from '../chronicle';
 
 const TARGETS: Record<TargetClass, string> = { none: 'Aucune / désengagement', any: 'N\'importe laquelle', starbase: 'Stations orbitales', armed: 'Vaisseaux armés', bomberFreighter: 'Bombardiers / cargos', unarmed: 'Vaisseaux non armés', fuelTransport: 'Transports de carburant', freighter: 'Cargos' };
 const TACTICS: Record<Tactic, string> = { disengage: 'Se désengager', disengageIfChallenged: 'Se désengager si attaqué', minimizeDamage: 'Minimiser les dégâts subis', maximizeNetDamage: 'Maximiser les dégâts nets', maximizeDamageRatio: 'Maximiser le ratio de dégâts', maximizeDamage: 'Maximiser les dégâts infligés' };
+// 0.3.9.29: what each tactic does on the battle board (the names come from Stars! and say little on their own)
+const TACTIC_HELP: Record<Tactic, string> = {
+  disengage: 'N\'engage pas le combat et ne tire pas. Attaquée, la flotte fuit et quitte le champ de bataille après sept déplacements.',
+  disengageIfChallenged: 'Combat normalement, mais fuit dès qu\'elle subit des dégâts, quel que soit le réglage de retraite.',
+  minimizeDamage: 'Se place d\'abord là où elle subira le moins de dégâts, puis là où elle en inflige le plus : avec des armes qui portent plus loin que celles de l\'ennemi, elle reste hors de sa portée.',
+  maximizeNetDamage: 'Cherche le plus grand écart entre les dégâts infligés et les dégâts subis.',
+  maximizeDamageRatio: 'Cherche le meilleur rapport entre dégâts infligés et subis : avec des armes qui portent plus loin que celles de l\'ennemi, elle tire de loin et recule quand il approche, si elle est assez rapide au combat.',
+  maximizeDamage: 'Fonce au contact pour infliger le plus de dégâts, sans tenir compte de ceux qu\'elle subit.',
+};
 
 export function BattlePlansDialog() {
   const s = useStore();
@@ -42,9 +51,12 @@ export function BattlePlansDialog() {
           <Row k="Nom" v={<input value={plan.name} disabled={sel === 0} onInput={e => upd(p => { p.name = (e.target as HTMLInputElement).value; })} />} />
           <Row k="Cible principale" v={<select value={plan.primary} onChange={e => upd(p => { p.primary = (e.target as HTMLSelectElement).value as TargetClass; })}>{Object.entries(TARGETS).map(([k, l]) => <option value={k}>{l}</option>)}</select>} />
           <Row k="Cible secondaire" v={<select value={plan.secondary} onChange={e => upd(p => { p.secondary = (e.target as HTMLSelectElement).value as TargetClass; })}>{Object.entries(TARGETS).map(([k, l]) => <option value={k}>{l}</option>)}</select>} />
-          <Row k="Tactique" v={<select value={plan.tactic} onChange={e => upd(p => { p.tactic = (e.target as HTMLSelectElement).value as Tactic; })}>{Object.entries(TACTICS).map(([k, l]) => <option value={k}>{l}</option>)}</select>} />
+          <Row k="Tactique" v={<select value={plan.tactic} onChange={e => upd(p => { p.tactic = (e.target as HTMLSelectElement).value as Tactic; })}>{Object.entries(TACTICS).map(([k, l]) => <option value={k} title={TACTIC_HELP[k as Tactic]}>{l}</option>)}</select>} />
+          <p class="small bp-help">{TACTIC_HELP[plan.tactic]}{g.settings.combatRoles && plan.tactic !== 'disengage' && plan.tactic !== 'disengageIfChallenged' ? ' Rôles des modèles : quelle que soit cette tactique, l\'artillerie garde ses distances et les écrans foncent au contact ; la tactique règle les vaisseaux de ligne.' : ''}</p>
           <Row k="Attaquer" v={<select value={plan.attackWho} onChange={e => upd(p => { p.attackWho = (e.target as HTMLSelectElement).value as AttackWho; })}>{who.map(([k, l]) => <option value={k}>{l}</option>)}</select>} />
           {g.settings.combatRoles && <Row k="Retraite" v={<><select value={plan.retreatAt ?? 0} onChange={e => upd(p => { p.retreatAt = +(e.target as HTMLSelectElement).value; })}>{[...new Set([0, 25, 40, 50, 60, 70, 80, plan.retreatAt ?? 0])].sort((x, y) => x - y).map(v => <option value={v}>{v ? `après ${v} % de blindage perdu` : 'jamais (combat jusqu\'au bout)'}</option>)}</select></>} title="Part du blindage de la flotte perdue au-delà de laquelle elle rompt le combat et se replie vers votre planète la plus proche" />}
+          {g.settings.combatRoles && plan.tactic === 'disengageIfChallenged' && !plan.retreatAt && <p class="small warn">« Se désengager si attaqué » fait fuir la flotte au premier tir reçu : la retraite « jamais » ne l'en empêche pas. Pour combattre jusqu'au bout en gardant vos distances, choisissez « Maximiser le ratio de dégâts ».</p>}
+          {plan.tactic === 'disengage' && (plan.primary !== 'none' || plan.attackWho !== 'nobody') && <p class="small warn">« Se désengager » l'emporte : la flotte ne tire pas, quelles que soient ses cibles.</p>}
           <p class="small muted">Le plan « Par défaut » s'applique aux flottes sans autre plan ; vos stations utilisent son réglage « Attaquer ». {g.settings.diplomacy && g.diplomacy ? 'Diplomatie négociée : quel que soit ce réglage, vos flottes n\'attaquent que les empires avec qui vous êtes en guerre (et les pirates, gardiens et Moissonneurs). ' : ''}{g.settings.combatRoles ? 'Ciblage par la menace : les tirs vont d\'abord aux piles qui infligent le plus de dégâts (un peu plus aux cibles faciles à achever) ; les écrans attirent les tirs, l\'artillerie est visée en dernier. Une flotte en retraite tire encore en se dégageant.' : 'Les cibles sont choisies par attractivité : coût de la cible divisé par la défense qu\'elle oppose à l\'arme.'}</p>
         </div>
       </div>

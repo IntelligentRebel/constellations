@@ -545,6 +545,8 @@ table.split td { padding: 3px 6px; }
 .bp { display: grid; grid-template-columns: 220px 1fr; gap: 14px; }
 .bp .list { max-height: 300px; margin-bottom: 6px; }
 .bp-edit .row { margin: 4px 0; }
+.bp-edit .bp-help { margin: 2px 0 8px; color: var(--muted, #9aa); }
+.bp-edit .warn { color: var(--warn); margin: 4px 0; }
 .guide { line-height: 1.55; max-width: 900px; }
 .guide li { margin: 5px 0; }
 .guide.keys table td { padding: 3px 10px; }
@@ -1287,3 +1289,8 @@ a.btn.ghost { background: transparent; }
 .sys-canvas { width: 100%; height: 320px; display: block; border-radius: 6px; background: #05070d; }
 .sys-table tr.sel td { background: var(--line2); }
 .ng-galaxy { margin: 4px 0 8px; display: flex; flex-direction: column; gap: 4px; }
+/* 0.3.9.29: the fleets page, all fleets or the transports */
+.fleet-view { display: inline-flex; margin-bottom: 12px; }
+.fleet-view button { border-radius: 0; }
+.fleet-view button:first-child { border-radius: 6px 0 0 6px; }
+.fleet-view button:last-child { border-radius: 0 6px 6px 0; margin-left: -1px; }

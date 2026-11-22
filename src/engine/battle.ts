@@ -342,8 +342,8 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     sec.sort((p, q) => attractiveness(w, a, q, roles) - attractiveness(w, a, p, roles));
     return [...prim, ...sec];
   };
-  const estDamage = (a: Token, w: WeaponSpec, from: { x: number; y: number }, b: Token): number => {
-    const dist = cheb(from, b);
+  const estDamage = (a: Token, w: WeaponSpec, from: { x: number; y: number }, b: Token): number => estDamageAt(a, w, cheb(from, b), b);
+  const estDamageAt = (a: Token, w: WeaponSpec, dist: number, b: Token): number => {
     if (dist > w.range) return 0;
     if (w.torpedo) return w.power * w.qty * a.qty * accuracy(w, a, b) + w.power * w.qty * a.qty * (1 - accuracy(w, a, b)) / 8;
     return w.power * w.qty * a.qty * (w.range === 0 ? 1 : 1 - dist / w.range * 0.1) * b.spec.beamDefense;
@@ -356,6 +356,30 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     }
     return sum;
   };
+  // 0.3.9.29: the moves each token still has this round. Nobody fires before every token has moved, so an enemy that has
+  // moves left can still close in: a square out of its reach now is not out of its reach when it fires.
+  const movesLeft = new Map<Token, number>();
+  const reach = (e: Token, w: WeaponSpec) => w.range + (movesLeft.get(e) ?? 0);
+  /** Damage taken at pos once every enemy that can still move has closed in by the moves it has left this round. */
+  const damageAhead = (t: Token, pos: { x: number; y: number }) => {
+    let sum = 0;
+    for (const e of tokens) {
+      if (!alive(e) || !attacks(e, t) || !(matchesClass(t, e.plan.primary) || matchesClass(t, e.plan.secondary))) continue;
+      const near = Math.max(0, cheb(pos, e) - (movesLeft.get(e) ?? 0));
+      for (const w of e.spec.weapons) sum += estDamageAt(e, w, near, t);
+    }
+    return sum;
+  };
+  /** How many squares an enemy would still have to cover, after its moves left, to bring a weapon to bear on pos. */
+  const slackAt = (t: Token, pos: { x: number; y: number }) => {
+    let m = Infinity;
+    for (const e of tokens) {
+      if (!alive(e) || !attacks(e, t)) continue;
+      for (const w of e.spec.weapons) m = Math.min(m, cheb(pos, e) - reach(e, w));
+    }
+    return m;
+  };
+  const maxRange = (t: Token) => Math.max(0, ...t.spec.weapons.map(w => w.range));
   const damageDoneAt = (t: Token, pos: { x: number; y: number }) => {
     let sum = 0;
     for (const w of t.spec.weapons) {
@@ -391,7 +415,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
       if (t.fleeMoves >= 7) { t.ranAway = true; actions.push({ t: 'leave', id: t.rec.id }); return; }
       t.fleeMoves++;
       let bv = Infinity;
-      for (const c of cands) { const v = damageTakenAt(t, c) - (c.x === t.x && c.y === t.y ? -0.001 : 0); if (v < bv - 1e-9) { bv = v; best = [c]; } else if (Math.abs(v - bv) < 1e-9) best.push(c); }
+      for (const c of cands) { const v = damageAhead(t, c) - (c.x === t.x && c.y === t.y ? -0.001 : 0); if (v < bv - 1e-9) { bv = v; best = [c]; } else if (Math.abs(v - bv) < 1e-9) best.push(c); }
       // prefer moving away from the centre of enemies
       const enemies = tokens.filter(e => alive(e) && e.owner !== t.owner);
       if (enemies.length) {
@@ -400,15 +424,24 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
         best = [best[0]];
       }
     } else {
-      const scored = cands.map(c => ({ c, done: damageDoneAt(t, c), taken: damageTakenAt(t, c) }));
+      // 0.3.9.29: every tactic but Maximize damage weighs the damage taken as it will be once the enemies have closed in
+      // by the moves they have left this round (nobody fires before everyone has moved), and keeps the range it has over
+      // them: before, a ship with torpedoes (whose damage does not fall with the distance) found every square out of the
+      // enemy's reach worth the same, took the one nearest the centre of the board, where the enemy came from, and walked
+      // into its guns even when it was the faster
+      const careful = tactic !== 'maximizeDamage';
+      const scored = cands.map(c => ({ c, done: damageDoneAt(t, c), taken: careful ? damageAhead(t, c) : damageTakenAt(t, c) }));
       const anyDone = scored.some(s => s.done > 0);
       if (!anyDone) {
         // move toward the most attractive target
         let target: Token | null = null, ta = -Infinity;
         for (const w of t.spec.weapons) { const tg = targetsOf(t, w); if (tg.length) { const a = attractiveness(w, t, tg[0], roles); if (a > ta) { ta = a; target = tg[0]; } } }
         if (!target) return;
+        // a ship that outranges the enemies closes in only through squares they cannot reach this round
+        const theirs = Math.max(0, ...tokens.filter(e => alive(e) && attacks(e, t)).map(maxRange));
+        const outranges = careful && maxRange(t) > theirs;
         let bd = Infinity;
-        for (const c of cands) { const d = cheb(c, target); if (d < bd) { bd = d; best = [c]; } else if (d === bd) best.push(c); }
+        for (const c of scored) { const d = cheb(c.c, target) + (outranges && c.taken > 0 ? 100 : 0); if (d < bd) { bd = d; best = [c.c]; } else if (d === bd) best.push(c.c); }
       } else {
         let bv = -Infinity;
         for (const s of scored) {
@@ -421,6 +454,13 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
           }
           if (v > bv + 1e-9) { bv = v; best = [s.c]; } else if (Math.abs(v - bv) <= 1e-9) best.push(s.c);
         }
+      }
+      // at equal value, a margin of up to two squares beyond the enemies' reach (room to give way next round), then the
+      // centre below (away from the edges, where a ship keeping its distance gets cornered)
+      if (careful && best.length > 1) {
+        const room = (c: { x: number; y: number }) => Math.min(2, slackAt(t, c));
+        const m = Math.max(...best.map(room));
+        best = best.filter(c => room(c) === m);
       }
     }
     if (!best.length) return;
@@ -536,8 +576,10 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
       const tbl = MOVES[String(Math.max(2, Math.min(10, t.movement)))] ?? [1, 1, 1, 1];
       movesThisRound.set(t, t.movement > 0 ? tbl[(round - 1) % 4] : 0);
     }
+    movesLeft.clear();
+    for (const [t, n] of movesThisRound) movesLeft.set(t, n);
     for (const phase of [3, 2, 1]) {
-      for (const t of order) if ((movesThisRound.get(t) ?? 0) >= phase) moveToken(t);
+      for (const t of order) if ((movesThisRound.get(t) ?? 0) >= phase) { movesLeft.set(t, (movesLeft.get(t) ?? 1) - 1); moveToken(t); }
     }
     // fire in initiative order
     const slots: Slot[] = [];
@@ -677,6 +719,28 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     else logFleet(game, f, lost ? `Prise dans la bataille de ${where} : ${lost} vaisseau${lost > 1 ? 'x' : ''} perdu${lost > 1 ? 's' : ''}.` : `Prise dans la bataille de ${where}, sans perte.`);
   }
   battleGrudges(game, killsBy);
+  // 0.3.9.29: why ships that outranged the enemy were still shot at by shorter weapons, and why a fleet left the battle
+  const byId = new Map(tokens.map(t => [t.rec.id, t]));
+  const perRound = (t: Token) => (t.movement / 4).toFixed(2).replace('.', ',').replace(/,?0+$/, '');
+  const whyOf = (o: number): string => {
+    let caught: { me: Token; by: Token } | null = null;
+    for (const a of actions) {
+      if (a.t !== 'fire') continue;
+      const me = byId.get(a.target), by = byId.get(a.id);
+      if (!me || !by || me.owner !== o || me.movement <= 0) continue;
+      const w = by.spec.weapons.find(x => x.part === a.weapon);
+      if (w && w.range < maxRange(me) && by.movement > me.movement && (!caught || by.movement - me.movement > caught.by.movement - caught.me.movement)) caught = { me, by };
+    }
+    let why = '';
+    if (caught) {
+      const a = perRound(caught.by), b = perRound(caught.me);
+      const speed = caught.by.movement >= 8 ? `${a} cases par round contre ${b}` : `${a} case par round contre ${b}`;
+      why += ` Vos vaisseaux « ${caught.me.rec.designName} » portent plus loin que les armes qui les ont touchés, mais l'ennemi est plus rapide au combat (${speed}) : impossible de garder ses distances. Des réacteurs plus rapides, des propulseurs de manœuvre ou une coque plus légère y remédient.`;
+    }
+    const fled = [...new Set(tokens.filter(t => t.owner === o && t.ranAway && t.fleet && t.plan.tactic === 'disengageIfChallenged').map(t => t.fleet!.name))];
+    if (fled.length) why += fled.length > 1 ? ` ${fled.join(', ')} ont quitté le combat au premier tir reçu (tactique « Se désengager si attaqué »).` : ` ${fled[0]} a quitté le combat au premier tir reçu (tactique « Se désengager si attaqué »).`;
+    return why;
+  };
   for (const o of owners) {
     const p = game.players[o];
     for (const other of owners) if (other !== o) meet(game, p, other, { target: planet ? { kind: 'planet', id: planet.id } : { kind: 'space', id: 0, x: Math.round(x), y: Math.round(y) }, how: `au combat, à ${where}` });
@@ -686,7 +750,7 @@ function fight(game: GameState, rng: Rng, fleets: Fleet[], planet: Planet | null
     // 0.3.9.21: the losses of those it fought, and the ships it destroyed itself (not an ally's losses, nor its kills)
     const foes = foughtWith(record, o);
     const lostTheirs = tokens.filter(t => foes.has(t.owner)).reduce((a, t) => a + (t.rec.qty - t.qty), 0);
-    p.messages.push({ year: game.year, kind: 'battle', text: `Bataille à ${where} : ${lostOurs} de vos vaisseaux détruits, ${lostTheirs} vaisseaux adverses détruits.`, target: { kind: 'battle', id: record.id } });
+    p.messages.push({ year: game.year, kind: 'battle', text: `Bataille à ${where} : ${lostOurs} de vos vaisseaux détruits, ${lostTheirs} vaisseaux adverses détruits.${whyOf(o)}`, target: { kind: 'battle', id: record.id } });
     p.stats.shipsDestroyed += Object.values(killsBy[o] ?? {}).reduce((a, k) => a + k, 0);
   }
   return record;

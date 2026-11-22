@@ -41,7 +41,8 @@ const NEAR: Record<SecretKind, number> = { veiled: 0, dwarf: 30, ancients: 25, p
 export const IR_DWARF = 450, IR_DYSON = 700, LENS_RANGE = 600, OBS_LENS = 1000;
 /** Study points to find the way into the veiled star, to open the sealed wormhole. */
 export const PROBE_NEED = 12, OPEN_NEED = 26;
-export const SLING_RANGE = 40, SLING = 1.5;
+// (0.3.9.29: the slingshot lives with the routes, whose estimate now counts it too)
+export { SLING_RANGE, SLING, slingshot } from './fleet';
 export const FLARE_RANGE = 35;
 export const DYSON_BONUS = 200;
 const POCKET_NAMES = ['Thulé', 'Lémurie', 'Hyperborée', 'Brocéliande', 'Cimmérie', 'Shambhala'];
@@ -530,11 +531,6 @@ function raids(game: GameState, rng: Rng) {
 
 // ------------------------------------------------------------------ effects and rules
 
-/** 0.3.7 fronde: a fleet leaving from near a black hole its empire knows gains half a year of travel. */
-export function slingshot(game: GameState, owner: number, at: Pt): number {
-  for (const s of game.secrets ?? []) if (s.kind === 'blackhole' && s.ids.length && s.known.includes(owner) && distance(at, s) <= SLING_RANGE) return SLING;
-  return 1;
-}
 
 /** Can this empire's ships get there by ordinary flight (the veiled star needs its way in, the cluster its wormhole)? */
 export function reachable(game: GameState, p: Player, pl: Planet): boolean {
